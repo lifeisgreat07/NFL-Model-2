@@ -37,6 +37,21 @@ def test_a_starters_rate_is_shrunk_toward_the_league_by_150_outs():
     assert league == pytest.approx(4.0)  # 16 runs over 108 outs, per 27
     assert rates['p'] == pytest.approx((9 + 150 * 16 / 108) / (27 + 150) * 27)
     assert ratings.DayRatings({}, league, rates).starter('nobody') == pytest.approx(league)
+    _, firm = ratings.pitcher_rates(lines, day_of, pd.Timestamp('2025-04-02'), 1e9, k=1200)
+    assert firm['p'] == pytest.approx((9 + 1200 * 16 / 108) / (27 + 1200) * 27), 'K is the grid value given'
+
+
+def test_each_k_in_the_grid_gets_its_own_starter_column():
+    rows = [[str(i), 2025, f'2025-04-{1 + i // 60:02d}', 'regular', 'A' if i % 2 else 'B', 'B' if i % 2 else 'A',
+             3 + i % 3, 2, False, 'p' if i % 2 else 'q', 'q' if i % 2 else 'p'] for i in range(180)]
+    g = games(rows)
+    pid = [p for i in range(180) for p in (('p', 'q') if i % 2 else ('q', 'p'))]
+    lines = pd.DataFrame({'game_id': [str(i) for i in range(180) for _ in (0, 1)], 'pitcher_id': pid,
+                          'outs': [27] * 360, 'runs': [6 if p == 'p' else 1 for p in pid]})
+    t = ratings.features(g, lines, 120, [10.0], [150.0, 2400.0])
+    assert {'starter_matchup_150', 'starter_matchup_2400', 'run_matchup_10'} <= set(t.columns)
+    assert 'starter_matchup' not in t.columns
+    assert (t['starter_matchup_2400'].abs() < t['starter_matchup_150'].abs()).all(), 'more shrinkage, smaller gap'
 
 
 def test_a_rating_reads_only_appearances_before_its_day():
@@ -77,7 +92,7 @@ def test_only_seasons_checked_against_retrosheet_are_read(tmp_path):
 def test_tuning_reads_no_game_after_the_validation_seasons(monkeypatch):
     seen = {}
 
-    def fake_features(g, lines, h, alphas, last_day=None):
+    def fake_features(g, lines, h, alphas, shrinks=None, last_day=None):
         seen['max_season'] = int(g['season'].max())
         raise StopIteration
     monkeypatch.setattr(backtest.ratings, 'features', fake_features)

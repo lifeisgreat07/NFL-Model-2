@@ -6,9 +6,9 @@
   on the club terms only. The feature is the home club's rating minus the away club's.
 - **starter_matchup**: the away starter's rate minus the home starter's, so a higher value favours home. A pitcher's
   rate is his runs allowed per 27 outs over his earlier appearances (starts and relief), recency-weighted with the
-  same H and shrunk toward the league by 150 outs: (weighted runs + 150 x the league's runs per out) / (weighted outs
-  + 150) x 27, the league's runs per out taken from the same earlier games. A pitcher with no earlier appearance
-  gets the league rate.
+  same H and shrunk toward the league by K outs: (weighted runs + K x the league's runs per out) / (weighted outs
+  + K) x 27, the league's runs per out taken from every pitcher's appearances in the same earlier games. A pitcher
+  with no earlier appearance gets the league rate. K is tuned with H and lambda (the amendment of 2026-11-12).
 
 Every feature for a game day uses only games that ended before that day: the rows each day rates from are selected
 by `day < today` and nothing else. The core's `ridge_ratings` has a home term on every game; MLB's registration
@@ -26,7 +26,7 @@ from src.core.day_ratings import weights as weights
 
 #: Fewer earlier games than this and a day is not rated (the first days of the first training season).
 MIN_TRAIN = 100
-#: The registration's shrinkage toward the league, in outs.
+#: The shrinkage toward the league, in outs, when none is given (the grid's lowest, the value first registered).
 SHRINK_OUTS = 150.0
 OUTS_PER_GAME = 27.0
 
@@ -64,20 +64,36 @@ def run_ratings(train: pd.DataFrame, w: npt.NDArray[np.float64], alpha: float) -
     return float(beta[0]), {c: float(beta[i]) for c, i in idx.items()}
 
 
-def pitcher_rates(lines: pd.DataFrame, day_of: pd.Series, day: pd.Timestamp,
-                  half_life: float) -> tuple[float, dict[str, float]]:
-    """(the league's rate, each pitcher's shrunk rate) per 27 outs, from every appearance before `day`."""
+def pitcher_totals(lines: pd.DataFrame, day_of: pd.Series, day: pd.Timestamp,
+                   half_life: float) -> tuple[float, pd.DataFrame]:
+    """(the league's runs per out, each pitcher's weighted runs `r` and outs `o`) from every appearance before
+    `day`, starts and relief alike."""
     earlier = lines[lines['game_id'].map(day_of) < day]
     if earlier.empty:
-        return 0.0, {}
+        return 0.0, pd.DataFrame(columns=['r', 'o'])
     w = weights(earlier['game_id'].map(day_of), day, half_life)
     runs = earlier['runs'].to_numpy(float) * w
     outs = earlier['outs'].to_numpy(float) * w
     total_outs = float(outs.sum())
     league = float(runs.sum()) / total_outs if total_outs else 0.0
     per = pd.DataFrame({'p': earlier['pitcher_id'].to_numpy(), 'r': runs, 'o': outs}).groupby('p')[['r', 'o']].sum()
-    rate = (per['r'] + SHRINK_OUTS * league) / (per['o'] + SHRINK_OUTS) * OUTS_PER_GAME
-    return league * OUTS_PER_GAME, {str(p): float(v) for p, v in rate.items()}
+    return league, per
+
+
+def shrunk(league: float, per: pd.DataFrame, k: float) -> dict[str, float]:
+    """Each pitcher's rate per 27 outs, shrunk toward the league by `k` outs."""
+    rate = (per['r'] + k * league) / (per['o'] + k) * OUTS_PER_GAME
+    return {str(p): float(v) for p, v in rate.items()}
+
+
+def pitcher_rates(lines: pd.DataFrame, day_of: pd.Series, day: pd.Timestamp, half_life: float,
+                  k: float = SHRINK_OUTS) -> tuple[float, dict[str, float]]:
+    """(the league's rate, each pitcher's rate shrunk by `k` outs) per 27 outs, from every appearance before
+    `day`."""
+    league, per = pitcher_totals(lines, day_of, day, half_life)
+    if per.empty:
+        return 0.0, {}
+    return league * OUTS_PER_GAME, shrunk(league, per, k)
 
 
 @dataclass(frozen=True)
@@ -96,17 +112,18 @@ class DayRatings:
 
 
 def day_ratings(train: pd.DataFrame, lines: pd.DataFrame, day_of: pd.Series, day: pd.Timestamp, half_life: float,
-                alpha: float) -> DayRatings:
+                alpha: float, k: float = SHRINK_OUTS) -> DayRatings:
     _, runs = run_ratings(train, weights(train['day'], day, half_life), alpha)
-    league, pitchers = pitcher_rates(lines, day_of, day, half_life)
+    league, pitchers = pitcher_rates(lines, day_of, day, half_life, k)
     return DayRatings(runs, league, pitchers)
 
 
 def features(games: pd.DataFrame, lines: pd.DataFrame, half_life: float, alphas: list[float],
-             last_day: str | None = None) -> pd.DataFrame:
-    """One row per game with starter_matchup and run_matchup_<lambda> for each lambda, each built only from games on
-    earlier days. `games` is `prepare`d; `lines` is the history's pitchers table. Days after `last_day` are not
-    rated."""
+             shrinks: list[float] | None = None, last_day: str | None = None) -> pd.DataFrame:
+    """One row per game with run_matchup_<lambda> for each lambda and starter_matchup_<K> for each K in `shrinks`
+    (SHRINK_OUTS alone when None), each built only from games on earlier days. `games` is `prepare`d; `lines` is the
+    history's pitchers table. Days after `last_day` are not rated."""
+    shrinks = [SHRINK_OUTS] if shrinks is None else shrinks
     day_of = pd.Series(games['day'].to_numpy(), index=games['game_id'])
     lines = lines.assign(game_id=lines['game_id'].astype(str), pitcher_id=lines['pitcher_id'].astype(str))
     lines = lines[lines['game_id'].isin(day_of.index)]
@@ -121,13 +138,15 @@ def features(games: pd.DataFrame, lines: pd.DataFrame, half_life: float, alphas:
             continue
         w = weights(train['day'], day, half_life)
         runs = {a: run_ratings(train, w, a)[1] for a in alphas}
-        league, pitchers = pitcher_rates(lines, day_of, day, half_life)
-        rated = DayRatings({}, league, pitchers)
+        league, per = pitcher_totals(lines, day_of, day, half_life)
+        rated = {k: DayRatings({}, league * OUTS_PER_GAME, shrunk(league, per, k) if not per.empty else {})
+                 for k in shrinks}
         for g in games[games['day'] == day].itertuples():
             row: dict[str, object] = {'game_id': g.game_id, 'day': day, 'season': g.season, 'game_type': g.game_type,
                                       'home': g.home, 'away': g.away, 'home_win': g.home_win,
-                                      'neutral_site': g.neutral_site,
-                                      'starter_matchup': rated.starter(g.away_starter) - rated.starter(g.home_starter)}
+                                      'neutral_site': g.neutral_site}
+            for k in shrinks:
+                row[f'starter_matchup_{k:g}'] = rated[k].starter(g.away_starter) - rated[k].starter(g.home_starter)
             for a in alphas:
                 row[f'run_matchup_{a:g}'] = runs[a].get(g.home, 0.0) - runs[a].get(g.away, 0.0)
             out.append(row)

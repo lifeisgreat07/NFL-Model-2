@@ -74,7 +74,8 @@ def test_tuning_touches_only_the_validation_seasons():
     p = registry()['protocol']
     assert 'validation seasons only' in p['tuning']
     grid = registry()['models']['model_a']['grid']
-    assert grid == {'H_days': [60, 120, 240, 480], 'lambda': [1.0, 3.0, 10.0, 30.0]}
+    assert grid == {'H_days': [60, 120, 240, 480], 'lambda': [1.0, 3.0, 10.0, 30.0, 100.0],
+                    'K_outs': [150.0, 300.0, 600.0, 1200.0, 2400.0]}
 
 
 def test_model_b_is_model_a_plus_the_market_and_nothing_else():
@@ -85,7 +86,9 @@ def test_model_b_is_model_a_plus_the_market_and_nothing_else():
 
 def test_the_starter_term_reads_only_earlier_appearances_and_is_shrunk():
     s = registry()['models']['model_a']['starter_matchup']
-    assert 'over his earlier appearances' in s and '150' in s
+    assert 'over his earlier appearances' in s and 'K_outs' in s and '150 as first registered' in s
+    assert "every pitcher's appearances" in s and 'as a starter or in relief' in s
+    assert "(weighted runs + K_outs x the league's runs per out) / (weighted outs + K_outs) x 27" in s
     assert 'A starter with no earlier appearance gets the league rate' in s
     assert "live it is the Stats API's probable pitcher" in s
 
@@ -113,4 +116,6 @@ def test_it_was_registered_before_any_result_exists():
     if not (FOLDER / 'results').exists():
         assert all('result' not in h and 'label' not in h for h in reg['hypotheses'])
     assert reg['registered'] == '2026-11-12'
-    assert reg['amendments'] == []
+    assert [a['entry'] for a in reg['amendments']] == ['models.model_a.grid', 'models.model_a.starter_matchup',
+                                                       'protocol.games']
+    assert all(a['before_any_result'] and a['date'] == '2026-11-12' for a in reg['amendments'])

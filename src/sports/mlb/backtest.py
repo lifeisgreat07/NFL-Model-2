@@ -1,6 +1,6 @@
 """MLB's Stage 98 backtest, as registered (experiments/mlb/stage98/registry.json). Stage 99 item 3, first part.
 
-**Tuning** (`results/tuning.json`): for each (H, lambda) in the registered grid, Model A walk-forward over the
+**Tuning** (`results/tuning.json`): for each (H, lambda, K_outs) in the registered grid, Model A walk-forward over the
 validation seasons 2023 and 2024, scored by log loss over all their games pooled. The lowest wins; ties go to the
 earlier grid entry. No game after the last validation season is read.
 
@@ -80,14 +80,16 @@ def tune(games: pd.DataFrame, lines: pd.DataFrame, reg: dict[str, Any]) -> dict[
     games = games[games['season'] <= max(seasons)]
     results = []
     for h in grid['H_days']:
-        table = ratings.features(games, lines, h, grid['lambda'])
+        table = ratings.features(games, lines, h, grid['lambda'], grid['K_outs'])
         for lam in grid['lambda']:
-            cols = [f'run_matchup_{lam:g}', 'starter_matchup']
-            s = scores(walk_forward(table, cols, seasons), table)
-            results.append({'H_days': h, 'lambda': lam, **s})
-            print(f'H={h} lambda={lam}: log loss {s["log_loss"]:.5f} over {s["games"]} games', flush=True)
+            for k in grid['K_outs']:
+                cols = [f'run_matchup_{lam:g}', f'starter_matchup_{k:g}']
+                s = scores(walk_forward(table, cols, seasons), table)
+                results.append({'H_days': h, 'lambda': lam, 'K_outs': k, **s})
+                print(f'H={h} lambda={lam} K={k}: log loss {s["log_loss"]:.5f} over {s["games"]} games', flush=True)
     best = min(results, key=lambda r: r['log_loss'])  # min keeps the first of equals
-    return {'seasons': seasons, 'grid': results, 'chosen': {'H_days': best['H_days'], 'lambda': best['lambda']}}
+    return {'seasons': seasons, 'grid': results,
+            'chosen': {'H_days': best['H_days'], 'lambda': best['lambda'], 'K_outs': best['K_outs']}}
 
 
 def main() -> int:
@@ -97,7 +99,8 @@ def main() -> int:
     tuning = tune(ratings.prepare(games), lines, reg)
     RESULTS.mkdir(parents=True, exist_ok=True)
     (RESULTS / 'tuning.json').write_text(json.dumps(tuning, indent=1) + '\n', encoding='utf-8')
-    print(f"chosen: H {tuning['chosen']['H_days']}, lambda {tuning['chosen']['lambda']}")
+    c = tuning['chosen']
+    print(f"chosen: H {c['H_days']}, lambda {c['lambda']}, K {c['K_outs']}")
     return 0
 
 
