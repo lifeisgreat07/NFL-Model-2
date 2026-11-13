@@ -158,7 +158,8 @@ def test_both_pages_still_carry_the_same_functions():
 def test_every_saved_nhl_pick_carries_both_goalies():
     """The NHL has no pick made without its goalie term, so no second baseline."""
     folder = ROOT / 'predictions' / 'nhl'
-    paths = sorted(folder.glob('*/*.json'))
+    # A season's own folder only: predictions/nhl/<season>-v2 holds the v2 shadow's forecasts (#722), never picks.
+    paths = sorted(p for p in folder.glob('*/*.json') if p.parent.name.isdigit())
     assert paths
     for path in paths:
         goalies = json.loads(path.read_text(encoding='utf-8'))['goalies']
