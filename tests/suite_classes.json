@@ -31,6 +31,7 @@
   "tests/test_backtest_reruns.py": "mixed",
   "tests/test_board_first.py": "mixed",
   "tests/test_board_lede.py": "template/JS",
+  "tests/test_board_picks_reads_picks_only.py": "workflow/docs/tests-of-tests",
   "tests/test_board_slots.py": "template/JS",
   "tests/test_booth_alert.py": "mixed",
   "tests/test_booth_edited_trigger.py": "workflow/docs/tests-of-tests",

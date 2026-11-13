@@ -1,0 +1,88 @@
+{
+ "game_id": "401909297",
+ "season": 2026,
+ "slate": "2026-11-13",
+ "start_utc": "2026-11-14T00:00:00Z",
+ "home": "ORL",
+ "away": "MIL",
+ "model_a": 0.6937,
+ "model_b": 0.7736,
+ "pick": "ORL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7992,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": 5.635774,
+  "efficiency_matchup": 5.690175,
+  "availability_matchup": -0.200779
+ },
+ "market": {
+  "game_id": "401909297",
+  "home": "ORL",
+  "away": "MIL",
+  "start_utc": "2026-11-14T00:00:00Z",
+  "read_utc": "2026-11-13T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -395.0,
+  "away_price": 312.0,
+  "home_prob": 0.7668
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-13T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "5107251",
+    "name": "Izaiyah Nelson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432165",
+    "name": "Jalen Suggs",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4278572",
+    "name": "Jamal Cain",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4065654",
+    "name": "Jonathan Isaac",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5214637",
+    "name": "Noah Penda",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432573",
+    "name": "Paolo Banchero",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4702382",
+    "name": "Tristan da Silva",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": []
+ },
+ "saved_utc": "2026-11-13T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14232,
+  "training_games_priced": 14191,
+  "training_ids_sha256": "bbdbdb05cb4b100b25c2eeddaa9d667bc8b6bbd3da7e634206c5fbdd505a1100"
+ },
+ "code_sha256": "5240f15fca150165b77a547ff07c630393d444d34e89ca48433e90f5cdffe8f6",
+ "code_commit": "021589a0f3e2852b2a2da99c4ce0e111d6867d3b"
+}

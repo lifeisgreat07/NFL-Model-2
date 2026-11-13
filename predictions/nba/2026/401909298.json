@@ -1,0 +1,74 @@
+{
+ "game_id": "401909298",
+ "season": 2026,
+ "slate": "2026-11-13",
+ "start_utc": "2026-11-14T01:00:00Z",
+ "home": "MIA",
+ "away": "CLE",
+ "model_a": 0.5391,
+ "model_b": 0.5443,
+ "pick": "MIA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.8073
+ },
+ "features": {
+  "point_matchup": -3.001605,
+  "efficiency_matchup": -2.872685,
+  "availability_matchup": 0.192684
+ },
+ "market": {
+  "game_id": "401909298",
+  "home": "MIA",
+  "away": "CLE",
+  "start_utc": "2026-11-14T01:00:00Z",
+  "read_utc": "2026-11-13T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -135.0,
+  "away_price": 114.0,
+  "home_prob": 0.5514
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-13T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "6475",
+    "name": "Klay Thompson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4601025",
+    "name": "Pelle Larsson",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4432158",
+    "name": "Evan Mobley",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066757",
+    "name": "Sam Merrill",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-13T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14232,
+  "training_games_priced": 14191,
+  "training_ids_sha256": "bbdbdb05cb4b100b25c2eeddaa9d667bc8b6bbd3da7e634206c5fbdd505a1100"
+ },
+ "code_sha256": "5240f15fca150165b77a547ff07c630393d444d34e89ca48433e90f5cdffe8f6",
+ "code_commit": "021589a0f3e2852b2a2da99c4ce0e111d6867d3b"
+}

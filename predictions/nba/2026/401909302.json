@@ -1,0 +1,104 @@
+{
+ "game_id": "401909302",
+ "season": 2026,
+ "slate": "2026-11-13",
+ "start_utc": "2026-11-14T02:30:00Z",
+ "home": "SA",
+ "away": "GS",
+ "model_a": 0.7859,
+ "model_b": 0.8345,
+ "pick": "SA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.8149
+ },
+ "features": {
+  "point_matchup": 5.175767,
+  "efficiency_matchup": 5.051576,
+  "availability_matchup": 0.185137
+ },
+ "market": {
+  "game_id": "401909302",
+  "home": "SA",
+  "away": "GS",
+  "start_utc": "2026-11-14T02:30:00Z",
+  "read_utc": "2026-11-13T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -670.0,
+  "away_price": 487.0,
+  "home_prob": 0.8363
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-13T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "4066259",
+    "name": "De'Aaron Fox",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4395630",
+    "name": "Devin Vassell",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5101845",
+    "name": "Jayden Quaintance",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6440",
+    "name": "Tobias Harris",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4397040",
+    "name": "Brandon Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4397886",
+    "name": "Charles Bassey",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6430",
+    "name": "Jimmy Butler III",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102531",
+    "name": "Kristaps Porzingis",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432171",
+    "name": "Moses Moody",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3975",
+    "name": "Stephen Curry",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-13T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14232,
+  "training_games_priced": 14191,
+  "training_ids_sha256": "bbdbdb05cb4b100b25c2eeddaa9d667bc8b6bbd3da7e634206c5fbdd505a1100"
+ },
+ "code_sha256": "5240f15fca150165b77a547ff07c630393d444d34e89ca48433e90f5cdffe8f6",
+ "code_commit": "021589a0f3e2852b2a2da99c4ce0e111d6867d3b"
+}
