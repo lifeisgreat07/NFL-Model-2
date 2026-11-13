@@ -1,0 +1,89 @@
+{
+ "game_id": "401909301",
+ "season": 2026,
+ "slate": "2026-11-13",
+ "start_utc": "2026-11-14T01:30:00Z",
+ "home": "HOU",
+ "away": "UTAH",
+ "model_a": 0.8823,
+ "model_b": 0.8862,
+ "pick": "HOU",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9224,
+  "away": 0.8927
+ },
+ "features": {
+  "point_matchup": 11.81719,
+  "efficiency_matchup": 11.525155,
+  "availability_matchup": 0.029754
+ },
+ "market": {
+  "game_id": "401909301",
+  "home": "HOU",
+  "away": "UTAH",
+  "start_utc": "2026-11-14T01:30:00Z",
+  "read_utc": "2026-11-13T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -1180.0,
+  "away_price": 740.0,
+  "home_prob": 0.8856
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-13T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "3102529",
+    "name": "Clint Capela",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2990992",
+    "name": "Marcus Smart",
+    "status": "Suspension"
+   },
+   {
+    "athlete_id": "2991235",
+    "name": "Steven Adams",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4277961",
+    "name": "Jaren Jackson Jr.",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102530",
+    "name": "Jusuf Nurkic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066336",
+    "name": "Lauri Markkanen",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433268",
+    "name": "Trey Alexander",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-13T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14232,
+  "training_games_priced": 14191,
+  "training_ids_sha256": "bbdbdb05cb4b100b25c2eeddaa9d667bc8b6bbd3da7e634206c5fbdd505a1100"
+ },
+ "code_sha256": "5240f15fca150165b77a547ff07c630393d444d34e89ca48433e90f5cdffe8f6",
+ "code_commit": "021589a0f3e2852b2a2da99c4ce0e111d6867d3b"
+}

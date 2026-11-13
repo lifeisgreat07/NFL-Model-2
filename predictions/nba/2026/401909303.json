@@ -1,0 +1,89 @@
+{
+ "game_id": "401909303",
+ "season": 2026,
+ "slate": "2026-11-13",
+ "start_utc": "2026-11-14T03:00:00Z",
+ "home": "SAC",
+ "away": "POR",
+ "model_a": 0.2489,
+ "model_b": 0.2069,
+ "pick": "POR",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8474,
+  "away": 0.9102
+ },
+ "features": {
+  "point_matchup": -9.216593,
+  "efficiency_matchup": -9.053926,
+  "availability_matchup": -0.062845
+ },
+ "market": {
+  "game_id": "401909303",
+  "home": "SAC",
+  "away": "POR",
+  "start_utc": "2026-11-14T03:00:00Z",
+  "read_utc": "2026-11-13T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 361.0,
+  "away_price": -468.0,
+  "home_prob": 0.2084
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-13T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431679",
+    "name": "Precious Achiuwa",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4706557",
+    "name": "Chris Youngblood",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4279888",
+    "name": "Ja Morant",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4914336",
+    "name": "Shaedon Sharpe",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4578893",
+    "name": "Vit Krejci",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-13T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14232,
+  "training_games_priced": 14191,
+  "training_ids_sha256": "bbdbdb05cb4b100b25c2eeddaa9d667bc8b6bbd3da7e634206c5fbdd505a1100"
+ },
+ "code_sha256": "5240f15fca150165b77a547ff07c630393d444d34e89ca48433e90f5cdffe8f6",
+ "code_commit": "021589a0f3e2852b2a2da99c4ce0e111d6867d3b"
+}
