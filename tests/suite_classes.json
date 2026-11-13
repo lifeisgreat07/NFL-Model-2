@@ -73,6 +73,7 @@
   "tests/test_content_security_policy.py": "template/JS",
   "tests/test_contributing.py": "workflow/docs/tests-of-tests",
   "tests/test_core_python.py": "isolated behavioural",
+  "tests/test_credentials.py": "mixed",
   "tests/test_csp_hashes.py": "template/JS",
   "tests/test_css_sheets_guarded.py": "isolated behavioural",
   "tests/test_css_tokens_defined.py": "mixed",

@@ -12,8 +12,8 @@
     {
       "id": "dependency-audit-fails-the-run",
       "why": "a finding fails the step, so the job goes red and the step that records the exit code never runs: the alert says the job failed instead of naming the vulnerability",
-      "find": "          set +e\n",
-      "replace": "",
+      "find": "          set +e\n          # Both files (Stage 68 item 14)",
+      "replace": "          # Both files (Stage 68 item 14)",
       "expect_caught_by": "test_the_audit_never_fails_the_run"
     },
     {
