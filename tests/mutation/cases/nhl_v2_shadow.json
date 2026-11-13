@@ -1,0 +1,34 @@
+{
+  "target": "src/sports/nhl/v2_shadow.py",
+  "tests": "tests/test_nhl_v2_shadow.py",
+  "cases": [
+    {
+      "id": "nhl-v2-shadow-read-after-start",
+      "why": "a price read after the start enters the season market, so v2 trains on an in-game line.",
+      "find": "or not read or not start or read >= start:",
+      "replace": "or not read or not start:",
+      "expect_caught_by": "test_the_season_market_is_each_games_last_read_before_its_start_and_two_way"
+    },
+    {
+      "id": "nhl-v2-shadow-band-unchecked",
+      "why": "every live price is used, so a garbled line feeds v2 Model B.",
+      "find": "    return v2.TWO_WAY_SUM[0] <= total <= v2.TWO_WAY_SUM[1]\n",
+      "replace": "    return total > 0\n",
+      "expect_caught_by": "test_item_29_holds_a_live_price_to_the_two_way_band"
+    },
+    {
+      "id": "nhl-v2-shadow-neutral-ignored",
+      "why": "a neutral-site game keeps the fitted home edge in the shadow, against item 28.",
+      "find": "    if neutral:\n        z -= float(model[-1].intercept_[0])\n",
+      "replace": "",
+      "expect_caught_by": "test_a_neutral_site_forecast_loses_exactly_the_intercept"
+    },
+    {
+      "id": "nhl-v2-shadow-removal-lost",
+      "why": "K None is read as a goalie term, so the shadow runs a model its backtest did not choose.",
+      "find": "    return float(c['H_days']), None if c['K_shots'] is None else float(c['K_shots'])",
+      "replace": "    return float(c['H_days']), float(c['K_shots'] or 2000)",
+      "expect_caught_by": "test_the_shadow_uses_what_its_backtest_chose_goalie_term_removed_included"
+    }
+  ]
+}
