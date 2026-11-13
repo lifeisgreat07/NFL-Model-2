@@ -1,0 +1,79 @@
+{
+ "game_id": "401909943",
+ "season": 2026,
+ "slate": "2026-11-07",
+ "start_utc": "2026-11-08T02:00:00Z",
+ "home": "PHX",
+ "away": "HOU",
+ "model_a": 0.3874,
+ "model_b": 0.2956,
+ "pick": "HOU",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9605,
+  "away": 0.9409
+ },
+ "features": {
+  "point_matchup": -5.456075,
+  "efficiency_matchup": -5.511844,
+  "availability_matchup": 0.019613
+ },
+ "market": {
+  "game_id": "401909943",
+  "home": "PHX",
+  "away": "HOU",
+  "start_utc": "2026-11-08T02:00:00Z",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 221.0,
+  "away_price": -270.0,
+  "home_prob": 0.2992
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4278402",
+    "name": "Jordan Goodwin",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4701232",
+    "name": "Mark Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105977",
+    "name": "Rasheer Fleming",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3102529",
+    "name": "Clint Capela",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2991235",
+    "name": "Steven Adams",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-07T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-06",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14190,
+  "training_games_priced": 14149,
+  "training_ids_sha256": "fb78c7f86a745c40190fb3c55cb6e4a3f0decfcb11d700a10a6ea0ce720038ae"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "cb3867668d2eef31db63aeacf5c08bc4b94e0af7"
+}

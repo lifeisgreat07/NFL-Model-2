@@ -1,0 +1,74 @@
+{
+ "game_id": "401909979",
+ "season": 2026,
+ "slate": "2026-11-12",
+ "start_utc": "2026-11-13T02:00:00Z",
+ "home": "PHX",
+ "away": "CHA",
+ "model_a": 0.678,
+ "model_b": 0.663,
+ "pick": "PHX",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9646,
+  "away": 0.784
+ },
+ "features": {
+  "point_matchup": 1.360602,
+  "efficiency_matchup": 1.212242,
+  "availability_matchup": 0.180555
+ },
+ "market": {
+  "game_id": "401909979",
+  "home": "PHX",
+  "away": "CHA",
+  "start_utc": "2026-11-13T02:00:00Z",
+  "read_utc": "2026-11-12T21:31:34Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -229.0,
+  "away_price": 190.0,
+  "home_prob": 0.6687
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-12T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "4701232",
+    "name": "Mark Williams",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4433287",
+    "name": "Brandon Miller",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3032979",
+    "name": "Dennis Schroder",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061575",
+    "name": "Kon Knueppel",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-12T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-11",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14228,
+  "training_games_priced": 14187,
+  "training_ids_sha256": "39f4900977689f1a73560e15e509c0187e7907ebf265047ae122d62b04a115a8"
+ },
+ "code_sha256": "f350a8ca582a32c6bc2eef39e49a65cd3e20ad46992d0265eda218fb610fb941",
+ "code_commit": "c71f59f384b3f7e1b328a129d4e06080041a41b0"
+}

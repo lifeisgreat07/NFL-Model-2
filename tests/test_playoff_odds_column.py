@@ -319,7 +319,7 @@ def test_the_meta_block_carries_the_run_details_and_not_the_teams():
     'teams' crept back in, every team's odds would ship twice and the two
     copies could disagree."""
     src = Path(gd.__file__).read_text(encoding='utf-8')
-    block = re.search(r'__PLAYOFF_META_JSON__.*?\*\*COMPACT\)\)', src, re.S)
+    block = re.search(r'__PLAYOFF_META_JSON__.*?\*\*COMPACT\),', src, re.S)
     assert block, "the meta injection has changed shape"
     keys = set(re.findall(r"'(\w+)'", block.group(0)))
     assert 'n_simulations' in keys and 'games_played' in keys

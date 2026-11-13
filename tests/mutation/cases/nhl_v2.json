@@ -1,0 +1,48 @@
+{
+  "target": "src/sports/nhl/v2.py",
+  "tests": "tests/test_nhl_v2.py",
+  "cases": [
+    {
+      "id": "nhl-v2-one-band-for-both-lines",
+      "why": "every price is judged by the two-way band, so every three-way price to 2023-24 is thrown away.",
+      "find": "    lo = np.where(three, THREE_WAY_SUM[0], TWO_WAY_SUM[0])\n    hi = np.where(three, THREE_WAY_SUM[1], TWO_WAY_SUM[1])\n",
+      "replace": "    lo = np.where(three, TWO_WAY_SUM[0], TWO_WAY_SUM[0])\n    hi = np.where(three, TWO_WAY_SUM[1], TWO_WAY_SUM[1])\n",
+      "expect_caught_by": "test_item_29_prices_are_judged_by_their_own_lines_band"
+    },
+    {
+      "id": "nhl-v2-box-shots-unchecked",
+      "why": "a box missing a team's shots on goal is used, so a missing count trains the shot rating as nothing.",
+      "find": "box['home_sog'].isna() | box['away_sog'].isna()",
+      "replace": "box['home_sog'].isna() & box['away_sog'].isna()",
+      "expect_caught_by": "test_item_29_a_box_without_both_shot_counts_is_not_used"
+    },
+    {
+      "id": "nhl-v2-unusable-box-trains",
+      "why": "a box marked unusable still trains the ratings, so item 29 marks it and changes nothing.",
+      "find": "    usable = games[~games['game_id'].astype(str).isin(unusable)]\n",
+      "replace": "    usable = games\n",
+      "expect_caught_by": "test_item_29_an_unusable_box_never_trains_the_ratings_but_is_still_forecast"
+    },
+    {
+      "id": "nhl-v2-neutral-keeps-home-edge",
+      "why": "a neutral-site game keeps the fitted home edge, which item 28 says it does not get.",
+      "find": "        z = np.where(neutral, z - float(model[-1].intercept_[0]), z)\n",
+      "replace": "",
+      "expect_caught_by": "test_item_28_a_neutral_game_gets_no_home_edge"
+    },
+    {
+      "id": "nhl-v2-neutral-from-one-season",
+      "why": "only the first season's schedule is read for the neutral flag, so later neutral games keep the home edge.",
+      "find": "        out |= set(sched.loc[sched['neutral_site'].astype(bool), 'game_id'].astype(str))\n",
+      "replace": "        out |= set(sched.loc[sched['neutral_site'].astype(bool), 'game_id'].astype(str))\n        break\n",
+      "expect_caught_by": "test_item_28_neutral_games_are_the_leagues_own_flag"
+    },
+    {
+      "id": "nhl-v2-removal-keeps-goalie",
+      "why": "K_shots none keeps a goalie column, so the grid never tries the goalie term removed.",
+      "find": "    return TEAM_COLUMNS if k is None else [*TEAM_COLUMNS, goalie_column(k)]",
+      "replace": "    return [*TEAM_COLUMNS, goalie_column(k or 16000)]",
+      "expect_caught_by": "test_item_35_none_is_the_goalie_term_removed"
+    }
+  ]
+}

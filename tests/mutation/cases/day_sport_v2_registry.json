@@ -1,0 +1,50 @@
+{
+  "target": "experiments/nba/stage95_v2/registry.json",
+  "tests": "tests/test_day_sport_v2_registry.py",
+  "cases": [
+    {
+      "id": "v2-decided-at-95",
+      "why": "the two comparisons are each decided at 95%, so the season spends more than its 5%",
+      "find": "1 - 0.05/2 (97.5%)",
+      "replace": "0.95 (95%)",
+      "expect_caught_by": "test_it_is_tuned_on_the_validation_seasons_only_and_decided_live_at_975"
+    },
+    {
+      "id": "v2-switches-mid-season",
+      "why": "an ACCEPT swaps the registered model mid-season, changing what the live forward test is scoring",
+      "find": "never during the 2026 season",
+      "replace": "from the next run",
+      "expect_caught_by": "test_it_is_tuned_on_the_validation_seasons_only_and_decided_live_at_975"
+    },
+    {
+      "id": "v2-box-rule-ignores-rounding",
+      "why": "any box summing under 240 minutes is dropped, which throws out about a quarter of complete boxes whose rounded minutes sum to 238 or 239",
+      "find": "fall short of 240 (a regulation game) by more than half a minute for each player it lists",
+      "replace": "sum to under 240 (a regulation game)",
+      "expect_caught_by": "test_each_sport_registers_its_own_audit_items"
+    },
+    {
+      "id": "v2-doubled-slate-guessed",
+      "why": "a game ESPN's record cannot place is put on a date no source gives, instead of being dropped and listed",
+      "find": "is dropped from v2's history, with every other game that shares the doubling, and the dropped ids are written into v2's results; no date is guessed.",
+      "replace": "is placed on the day before.",
+      "expect_caught_by": "test_a_slate_still_doubled_is_dropped_and_listed_not_guessed"
+    },
+    {
+      "id": "v2-nhl-one-price-band",
+      "target": "experiments/nhl/stage95_v2/registry.json",
+      "why": "the NHL's three-way regulation prices are held to the two-way band, so every price before 2024-25 is dropped and Model B loses four seasons of market",
+      "find": "[0.75, 1.00] for the two sides of the three-way",
+      "replace": "[1.00, 1.20] for the two sides of the three-way",
+      "expect_caught_by": "test_each_sport_registers_its_own_audit_items"
+    },
+    {
+      "id": "v2-nhl-grid-not-extended",
+      "target": "experiments/nhl/stage95_v2/registry.json",
+      "why": "the NHL's grid stops at K 2000, the top Stage 56 already chose, so v2 cannot move it",
+      "find": "K_shots in {1000, 2000, 4000, 8000, 16000, none}",
+      "replace": "K_shots in {250, 500, 1000, 2000}",
+      "expect_caught_by": "test_each_sport_registers_its_own_audit_items"
+    }
+  ]
+}

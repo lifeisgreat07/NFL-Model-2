@@ -1,0 +1,89 @@
+{
+ "game_id": "401909292",
+ "season": 2026,
+ "slate": "2026-11-06",
+ "start_utc": "2026-11-07T01:00:00Z",
+ "home": "MIL",
+ "away": "TOR",
+ "model_a": 0.3216,
+ "model_b": 0.3783,
+ "pick": "TOR",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.9929
+ },
+ "features": {
+  "point_matchup": -7.568072,
+  "efficiency_matchup": -7.199496,
+  "availability_matchup": 0.007138
+ },
+ "market": {
+  "game_id": "401909292",
+  "home": "MIL",
+  "away": "TOR",
+  "start_utc": "2026-11-07T01:00:00Z",
+  "read_utc": "2026-11-06T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 154.0,
+  "away_price": -184.0,
+  "home_prob": 0.378
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-06T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4697268",
+    "name": "Kam Jones",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4395724",
+    "name": "Immanuel Quickley",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3134908",
+    "name": "Jakob Poeltl",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6450",
+    "name": "Kawhi Leonard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2993874",
+    "name": "Kyle Anderson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4432586",
+    "name": "Nate Bittle",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433134",
+    "name": "Scottie Barnes",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-06T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-05",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14181,
+  "training_games_priced": 14140,
+  "training_ids_sha256": "5ba09b265ad27c14c359a5f56ef377cd914c93c31e27f1d7b022f6f3c89db8ea"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "95fbe74f196629144b73020fc235786939a40563"
+}

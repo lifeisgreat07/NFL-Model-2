@@ -20,8 +20,8 @@
    "id": "provenance-nba-not-saved",
    "target": "src/sports/nba/daily.py",
    "why": "the NBA's picks lose it",
-   "find": "injury_list, now) | trained\n",
-   "replace": "injury_list, now)\n",
+   "find": "injury_list, now, why) | trained\n",
+   "replace": "injury_list, now, why)\n",
    "expect_caught_by": "test_both_day_sports_save_it_with_every_pick"
   },
   {
@@ -31,6 +31,28 @@
    "find": "injury_list) | trained\n",
    "replace": "injury_list)\n",
    "expect_caught_by": "test_both_day_sports_save_it_with_every_pick"
+  },
+  {
+   "id": "provenance-ids-in-table-order",
+   "why": "the training-ids digest follows the order the table is in, so the same games trained on read as different ones",
+   "find": "    keys = sorted(str(i) for i in ids)\n",
+   "replace": "    keys = [str(i) for i in ids]\n",
+   "expect_caught_by": "test_the_training_ids_are_a_digest_of_the_sorted_ids"
+  },
+  {
+   "id": "provenance-code-digest-skips-the-sport",
+   "why": "the code digest covers src/core only, so a change to the sport's own model code leaves it the same",
+   "find": "    for folder in (root / 'src' / 'core', root / 'src' / 'sports' / sport):\n",
+   "replace": "    for folder in (root / 'src' / 'core',):\n",
+   "expect_caught_by": "test_the_code_digest_follows_the_code_and_not_the_line_endings"
+  },
+  {
+   "id": "provenance-nba-code-identity-not-saved",
+   "target": "src/sports/nba/daily.py",
+   "why": "the NBA's picks lose their code identity",
+   "find": "            trained = trained | code_identity('nba')  # Stage 95 item 39\n",
+   "replace": "",
+   "expect_caught_by": "test_both_day_sports_save_their_code_identity_with_every_pick"
   }
  ]
 }

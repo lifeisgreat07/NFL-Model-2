@@ -39,7 +39,11 @@ NBA_PAGE = 'nba.html'
 HOME_PAGE = 'home.html'
 # The type check run-tests.yml runs (Stage 35).
 TYPES = [PY, '-m', 'mypy', '--ignore-missing-imports', 'src/sports/nfl/weekly_update.py', 'src/sports/nfl/ratings_engine.py',
-         'src/core', 'src/site', 'src/sports/nhl', 'src/sports/nba']  # the last four: Stage 68 item 25
+         'src/sports/nfl/generate_dashboard.py', 'src/sports/nfl/generate_picks_pdf.py']  # the last two: Stage 87 item 5
+# Stage 87 item 5: the core, the site and the day sports under --strict (since Stage 68 item 25 they
+# were in TYPES, not strict).
+STRICT_TYPES = [PY, '-m', 'mypy', '--strict', '--ignore-missing-imports', 'src/core', 'src/site',
+                'src/sports/nhl', 'src/sports/nba', 'src/sports/mlb']
 # The strict type check over the agents (Stage 48 item 19). --follow-imports=silent
 # checks src/agents alone: the pipeline modules it imports are not strict yet.
 AGENT_TYPES = [PY, '-m', 'mypy', '--strict', '--ignore-missing-imports', '--follow-imports=silent', 'src/agents']
@@ -64,9 +68,9 @@ TASKS = {
               lambda a: [[PY, '-B', '-m', 'pytest', '-q', '-p', 'no:cacheprovider', '-m', 'not slow']]),
     'lint': ('ruff, then mypy over the weekly run\'s two core modules and strict mypy over the '
              'agents, as run-tests.yml runs them',
-             lambda a: [['ruff', 'check', '.'], TYPES, AGENT_TYPES]),
+             lambda a: [['ruff', 'check', '.'], TYPES, STRICT_TYPES, AGENT_TYPES]),
     'check': ('lint, then the suite: the four things run-tests.yml runs',
-              lambda a: [['ruff', 'check', '.'], TYPES, AGENT_TYPES,
+              lambda a: [['ruff', 'check', '.'], TYPES, STRICT_TYPES, AGENT_TYPES,
                          [PY, '-B', '-m', 'pytest', '-q', '-p', 'no:cacheprovider']]),
     'build': ('build the whole site into _site/, one sport at a time, from the data on disk '
               '(deploy-pages.yml does this, keeping a failed sport\'s live page)',

@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "card-lanes-never-dodge",
+      "target": "src/dashboard/app_board.js",
       "why": "markers that would touch all stay on the line, so at ATL@GB the circle hides under the triangle.",
       "find": "    out[k] = crowded ? CARD_LANE[k] : 0;",
       "replace": "    out[k] = 0;",
@@ -11,6 +12,7 @@
     },
     {
       "id": "card-lanes-share-a-side",
+      "target": "src/dashboard/app_board.js",
       "why": "the market dodges below instead of above, into Model A's lane, so the two still overlap.",
       "find": "const CARD_LANE = {market: -1, b: 0, a: 1};",
       "replace": "const CARD_LANE = {market: 1, b: 0, a: 1};",
@@ -18,6 +20,7 @@
     },
     {
       "id": "card-even-call-reads-as-disagreement",
+      "target": "src/dashboard/app_board.js",
       "why": "a model calling the game even is reported as picking the other team.",
       "find": "  return !!(a && b && a.team && b.team && a.team !== b.team);",
       "replace": "  return !!(a && b && a.team !== b.team);",
@@ -25,6 +28,7 @@
     },
     {
       "id": "card-headline-from-model-a",
+      "target": "src/dashboard/app_board.js",
       "why": "the headline and bar follow Model A, the weaker model, instead of Model B.",
       "find": "  const b = cardSide(g.mktB_home, g), a = cardSide(g.fbA_home, g), m = cardSide(g.mkt_home, g);\n  const vals",
       "replace": "  const b = cardSide(g.fbA_home, g), a = cardSide(g.mktB_home, g), m = cardSide(g.mkt_home, g);\n  const vals",
@@ -32,6 +36,7 @@
     },
     {
       "id": "card-picks-inside-the-even-band",
+      "target": "src/dashboard/app_board.js",
       "why": "a 50.8% call is headlined as a pick.",
       "find": "  if(Math.abs(pHome - 50) < CARD_EVEN_BAND) return {team: null, pct: Math.max(pHome, 100 - pHome)};",
       "replace": "  if(false) return {team: null, pct: Math.max(pHome, 100 - pHome)};",
@@ -39,6 +44,7 @@
     },
     {
       "id": "card-market-colour-drifts",
+      "target": "src/dashboard/app_board.js",
       "why": "the card's market triangle takes a different colour from Season Accuracy's.",
       "find": "  market: {label:'Market',  color:'var(--series-c)', shape:'triangle'},",
       "replace": "  market: {label:'Market',  color:'var(--series-d)', shape:'triangle'},",
@@ -48,16 +54,25 @@
       "id": "card-market-probability-dropped",
       "target": "src/sports/nfl/generate_dashboard.py",
       "why": "the market's probability never reaches the page, so the card shows it only as a spread.",
-      "find": "            'mkt_home': (round(p['market_prob_home'] * 100, 1)\n                         if p.get('market_prob_home') is not None else None),",
+      "find": "            'mkt_home': (round(p['market_prob_home'] * 100, 2)\n                         if p.get('market_prob_home') is not None else None),",
       "replace": "            'mkt_home': None,",
       "expect_caught_by": "test_the_market_probability_reaches_the_page"
     },
     {
       "id": "card-threshold-too-tight",
+      "target": "src/dashboard/app_board.js",
       "why": "markers 3 points apart share a lane, and on a phone-width line a 12px marker covers 6.8 points, so they overlap.",
       "find": "const CARD_NEAR = 7;",
       "replace": "const CARD_NEAR = 3;",
       "expect_caught_by": "test_the_threshold_clears_a_marker_on_the_narrowest_line"
+    },
+    {
+      "id": "nfl-probability-rounded-twice",
+      "why": "Model B's percentage is stored at one decimal again, so the board rounds twice and a saved 0.8047 shows 81%",
+      "find": "            'mktB_home': round((model_b if model_b is not None else model_a) * 100, 2),\n",
+      "replace": "            'mktB_home': round((model_b if model_b is not None else model_a) * 100, 1),\n",
+      "expect_caught_by": "test_a_probability_is_rounded_once",
+      "target": "src/sports/nfl/generate_dashboard.py"
     }
   ]
 }

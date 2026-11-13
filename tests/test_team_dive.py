@@ -34,6 +34,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.optional import require_tool
+
 REPO_ROOT = Path(__file__).parent.parent
 HARNESS = Path(__file__).parent / 'team_dive_harness.js'
 HISTORY = REPO_ROOT / 'data' / 'nfl' / 'team_history.json'
@@ -104,8 +106,7 @@ def test_the_generated_page_actually_carries_the_history():
 
 @pytest.fixture(scope='module')
 def flip():
-    if NODE is None:
-        pytest.skip("node not on PATH -- the flip logic cannot be executed")
+    require_tool('node')
     proc = subprocess.run([NODE, str(HARNESS)], cwd=REPO_ROOT,
                           capture_output=True, text=True, timeout=60)
     assert proc.returncode == 0, f"harness failed:\n{proc.stderr}"

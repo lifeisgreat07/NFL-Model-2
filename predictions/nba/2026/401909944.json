@@ -1,0 +1,84 @@
+{
+ "game_id": "401909944",
+ "season": 2026,
+ "slate": "2026-11-07",
+ "start_utc": "2026-11-08T03:00:00Z",
+ "home": "POR",
+ "away": "SA",
+ "model_a": 0.3513,
+ "model_b": 0.3575,
+ "pick": "SA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8583,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": -5.013841,
+  "efficiency_matchup": -4.834588,
+  "availability_matchup": -0.141701
+ },
+ "market": {
+  "game_id": "401909944",
+  "home": "POR",
+  "away": "SA",
+  "start_utc": "2026-11-08T03:00:00Z",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 171.0,
+  "away_price": -205.0,
+  "home_prob": 0.3544
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4279888",
+    "name": "Ja Morant",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066211",
+    "name": "Robert Williams III",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4914336",
+    "name": "Shaedon Sharpe",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4578893",
+    "name": "Vit Krejci",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5101845",
+    "name": "Jayden Quaintance",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6440",
+    "name": "Tobias Harris",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-07T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-06",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14190,
+  "training_games_priced": 14149,
+  "training_ids_sha256": "fb78c7f86a745c40190fb3c55cb6e4a3f0decfcb11d700a10a6ea0ce720038ae"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "cb3867668d2eef31db63aeacf5c08bc4b94e0af7"
+}

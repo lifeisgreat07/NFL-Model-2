@@ -38,6 +38,24 @@ function icon(sport){
     + 'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + parts + '</svg>' : '';
 }
 
+/* Stage 102 (Mark, 2026-11-11, option B): each card shows its league's own
+   mark, hot-linked from ESPN's image server as the team logos are, never
+   committed to this repository. Both the light and the dark version are on
+   the card and the theme shows one (home.css .lgm). If either fails to load,
+   the card falls back to our own icon (the listener below), so a refused
+   image never leaves a gap. The footer says the site is not affiliated. */
+const LEAGUE_MARKS = 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/';
+function leagueMark(sport){
+  if(!ICON_PARTS[sport]) return '';
+  const img = (v, cls) => `<img class="${cls}" src="${LEAGUE_MARKS}${v}/${sport}.png&amp;w=56&amp;h=56" alt="" width="26" height="26">`;
+  return `<span class="lgm" aria-hidden="true">${img('500', 'lgm-l')}${img('500-dark', 'lgm-d')}`
+    + `<span class="lgm-own">${icon(sport)}</span></span>`;
+}
+document.addEventListener('error', e => {
+  const box = e.target instanceof HTMLImageElement && e.target.closest('.lgm');
+  if(box) box.classList.add('lgm-failed');
+}, true);
+
 /* Stage 80 item 52 (the 2026-10-13 audit's F2): the best pick on each card,
    "COL 57% over DAL · 8:30 PM", from the slate the build hands over
    (home.py slate()): the strongest saved pick among `games` not started. */
@@ -53,7 +71,7 @@ function slateOf(sport){ return (HOME.slate || []).filter(r => r.s === sport); }
 function card(sport, name, href, status, big, rows, go){
   const kv = rows.length
     ? `<dl class="home-kv">${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>` : '';
-  const inner = `<div class="home-card-top"><span class="home-sport">${icon(sport)}${esc(name)}</span>`
+  const inner = `<div class="home-card-top"><span class="home-sport">${leagueMark(sport)}${esc(name)}</span>`
     + `<span class="home-status${status.cls ? ' ' + status.cls : ''}">${esc(status.text)}</span></div>`
     + `<div class="home-big">${esc(big)}</div>${kv}`;
   // A sport with no page in this build gets a card that links nowhere.
@@ -166,9 +184,41 @@ function updatedText(iso){
 }
 document.getElementById('home-updated').textContent = updatedText(HOME.built_utc);
 
+/* Stage 90 item 1: the track record. Each sport's Model B, market and base
+   rate, live beside the backtest (src/site/track_record.py); no section at
+   all until a sport has a figure to show. */
+function trackNum(x){ return x === null || x === undefined ? '-' : Number(x).toFixed(3); }
+function trackTable(sport, t){
+  if(!t || !Array.isArray(t.rows) || !t.rows.length) return '';
+  const rows = t.rows.map(r => `<tr><th scope="row">${esc(r.label)}</th>`
+    + `<td>${trackNum(r.live.log_loss)}</td><td>${trackNum(r.backtest.log_loss)}</td>`
+    + `<td>${trackNum(r.live.brier)}</td></tr>`).join('');
+  const games = t.rows[0].live.games, back = t.rows[0].backtest.games;
+  const cal = t.calibration ? `<p class="home-track-note">Model B's calibration slope live: ${Number(t.calibration.value).toFixed(2)} `
+    + `(${Number(t.calibration.low).toFixed(2)} to ${Number(t.calibration.high).toFixed(2)}); 1 is perfect, `
+    + `above 1 means its chances sit too close to 50%.</p>` : '';
+  const note = t.note ? `<p class="home-track-note">${esc(t.note)}</p>` : '';
+  return `<div class="home-track-sport"><h3>${SPORT_NAME[sport]} ${esc(String(t.season))}</h3>`
+    + `<table><caption class="sr-only">${SPORT_NAME[sport]}: log loss live and in the backtest, and Brier score live</caption>`
+    + `<thead><tr><th scope="col"></th><th scope="col">Live</th><th scope="col">Backtest</th><th scope="col">Live Brier</th></tr></thead>`
+    + `<tbody>${rows}</tbody></table>`
+    + `<p class="home-track-note">Live: ${Number(games)} graded picks through ${esc(String(t.through))}. `
+    + `Backtest: ${Number(back)} games, ${esc(t.backtest_label)}.</p>${cal}${note}</div>`;
+}
+function trackRecord(track){
+  return ['nfl', 'nhl', 'nba'].map(s => trackTable(s, (track || {})[s])).join('');
+}
+
 // The hero's one action (Stage 68 item 34, option A2): the sport whose next
 // game starts first, from the same facts the cards read.
 const SPORT_NAME = {nfl:'NFL', nhl:'NHL', nba:'NBA'};
+{
+  const tables = trackRecord(HOME.track);
+  if(tables){
+    document.getElementById('home-track-tables').innerHTML = tables;
+    document.getElementById('home-track').hidden = false;
+  }
+}
 function nextGame(){
   const ahead = [];
   const n = HOME.nfl;
@@ -300,8 +350,10 @@ function yoursHtml(slate, favs, now){
 })();
 
 // The theme button: the same choice, under the same key, as every sport's page.
+// Found by its id: the search button wears .home-theme too, for the same round
+// shape, and on desktop it comes first, so a class lookup bound the theme to it.
 (function(){
-  const btn = document.querySelector('.home-theme');
+  const btn = document.getElementById('theme-toggle');
   if(!btn) return;
   const light = () => document.documentElement.getAttribute('data-theme') === 'light';
   const label = () => btn.setAttribute('aria-label', light() ? 'Switch to the dark theme' : 'Switch to the light theme');

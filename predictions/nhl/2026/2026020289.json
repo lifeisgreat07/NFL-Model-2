@@ -1,0 +1,84 @@
+{
+ "game_id": "2026020289",
+ "season": 2026,
+ "slate": "2026-11-10",
+ "start_utc": "2026-11-11T00:30:00Z",
+ "home": "CBJ",
+ "away": "FLA",
+ "model_a": 0.5178,
+ "model_b": 0.4572,
+ "pick": "FLA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.031288,
+  "shot_matchup": -2.408976,
+  "goalie_matchup_2000": 0.002229
+ },
+ "market": {
+  "game_id": "2026020289",
+  "start_utc": "2026-11-11T00:30:00Z",
+  "home": "CBJ",
+  "away": "FLA",
+  "book": "DraftKings",
+  "home_price": 100.0,
+  "away_price": -120.0,
+  "home_prob": 0.4783,
+  "read_utc": "2026-11-10T21:01:41Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475660,
+   "name": "Cam Talbot",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/DougPlagens/status/2120190506248577504"
+  },
+  "away": {
+   "player_id": 8474593,
+   "name": "Jacob Markstrom",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/FlaPanthers/status/2120201131611840956"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-10",
+  "read_utc": "2026-11-10T21:01:41Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Sandis Vilmanis",
+    "position": "LW",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-10T21:01:41Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-09",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14688,
+  "training_games_priced": 7658,
+  "training_ids_sha256": "67c2a3f54dca9c05f30bb71fd6316bb529cadeced0fe5493a26bb356539ac2e0"
+ },
+ "code_sha256": "63f42334834f3d3baf7bade876c1fc04c6ec848289eec884d0b8cd14ff7c67ef",
+ "code_commit": "d62c944bd017dec7cb3d76833aa97ac8ad6bd145"
+}

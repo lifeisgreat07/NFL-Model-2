@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "filter-handler-selects-the-style-class-again",
+      "target": "src/dashboard/app_board.js",
       "why": "the exact defect that shipped on main. `.filter-btn` is a shared pill style worn by nine elements of which three are filters, so an unscoped selector hands the Week Board's filter handler to Export My Picks, Import My Picks, Copy Share Link, the two shared-picks banner buttons and the onboarding Got it. Tapping any of them strips .active off All Games, paints that button in the accent as though it were a filter, and sets currentFilter to undefined -- which falls through the games filter's final `return true`, so the board re-renders showing everything with no pill marked. Nothing throws, no test was red, and the symptom was recorded in CLAUDE.md for days as a :focus state persisting after touch.",
       "find": "document.querySelectorAll('#filter-row .filter-btn[data-filter]').forEach(btn=>{",
       "replace": "document.querySelectorAll('.filter-btn').forEach(btn=>{",
@@ -11,6 +12,7 @@
     },
     {
       "id": "filter-handler-fixed-on-the-attach-side-only",
+      "target": "src/dashboard/app_board.js",
       "why": "the half-fix, and the one a reviewer is most likely to wave through. The handler is attached only to real filters, so clicking Export My Picks no longer runs it -- but the CLEAR selector inside still reaches every pill on the page, so clicking a genuine filter now strips .active from buttons on My Picks and the onboarding banner as a side effect. The visible symptom moves rather than going away, and the diff looks like the fix.",
       "find": "    document.querySelectorAll('#filter-row .filter-btn[data-filter]').forEach(b=>{",
       "replace": "    document.querySelectorAll('.filter-btn').forEach(b=>{",
@@ -18,6 +20,7 @@
     },
     {
       "id": "filter-handler-scoped-by-row-but-not-by-attribute",
+      "target": "src/dashboard/app_board.js",
       "why": "scoping to #filter-row alone looks equivalent and is not. It is correct for exactly as long as nobody puts a non-filter pill in that row -- and the row already holds pills elsewhere on the page, so the pattern is established. The attribute is what the handler actually reads via btn.dataset.filter, so selecting on it is the version that stays true when the markup moves.",
       "find": "document.querySelectorAll('#filter-row .filter-btn[data-filter]').forEach(btn=>{",
       "replace": "document.querySelectorAll('#filter-row .filter-btn').forEach(btn=>{",
@@ -27,16 +30,16 @@
       "id": "a-data-filter-button-escapes-the-filter-row",
       "target": "src/dashboard/body.html",
       "why": "a fourth filter is added to My Picks by copying the markup, which is the natural way to add one. It wears data-filter and the active style, so it looks exactly like a working filter -- and the handler is scoped to #filter-row, so nothing wires it. A control that renders, invites a click and is inert: the same shape as the stepper that was never wired, and invisible to any test that only counts filters.",
-      "find": "      <button class=\"btn\" onclick=\"copyShareLink(this)\">Copy Share Link</button>",
-      "replace": "      <button class=\"btn btn-chip filter-btn\" data-filter=\"flagged\">Flagged Only</button>\n      <button class=\"btn\" onclick=\"copyShareLink(this)\">Copy Share Link</button>",
+      "find": "      <button class=\"btn\" data-act=\"copy-share-link\">Copy Share Link</button>",
+      "replace": "      <button class=\"btn btn-chip filter-btn\" data-filter=\"flagged\">Flagged Only</button>\n      <button class=\"btn\" data-act=\"copy-share-link\">Copy Share Link</button>",
       "expect_caught_by": "test_no_data_filter_button_lives_outside_the_filter_row"
     },
     {
       "id": "an-action-wears-the-filter-hook-again",
       "target": "src/dashboard/body.html",
       "why": "Export My Picks goes back to wearing .filter-btn, the way six actions did before Stage 10. Today's handler is scoped by attribute so nothing breaks yet -- which is exactly why it would go unnoticed until the next selector someone writes against the class.",
-      "find": "<button class=\"btn\" onclick=\"exportMyPicks()\">",
-      "replace": "<button class=\"btn filter-btn\" onclick=\"exportMyPicks()\">",
+      "find": "<button class=\"btn\" data-act=\"export-my-picks\">",
+      "replace": "<button class=\"btn filter-btn\" data-act=\"export-my-picks\">",
       "expect_caught_by": "test_only_real_filters_wear_the_filter_hook"
     }
   ]

@@ -1,0 +1,35 @@
+{
+ "target": "src/core/page_render.py",
+ "tests": "tests/test_page_render.py",
+ "cases": [
+  {
+   "id": "page-render-fills-a-missing-placeholder-silently",
+   "why": "a fill whose placeholder the page does not have is accepted, so a renamed placeholder fills nothing and nobody hears of it",
+   "find": "    if unknown:\n        raise ValueError(f'fills for placeholders the page does not have: {unknown}')\n",
+   "replace": "",
+   "expect_caught_by": "test_a_fill_for_a_missing_placeholder_is_refused"
+  },
+  {
+   "id": "page-render-leaves-a-placeholder-unfilled",
+   "why": "a placeholder without a fill is left on the page, which then shows __NAME__ to a visitor",
+   "find": "    if left:\n        raise ValueError(f'unfilled placeholders: {left}')\n    return PLACEHOLDER.sub(lambda m: fills[m.group(0)], template)\n",
+   "replace": "    return PLACEHOLDER.sub(lambda m: fills.get(m.group(0), m.group(0)), template)\n",
+   "expect_caught_by": "test_a_placeholder_without_a_fill_is_refused"
+  },
+  {
+   "id": "page-render-fills-one-at-a-time",
+   "why": "placeholders are filled one after another, so data that reads like a later placeholder is filled too",
+   "find": "    return PLACEHOLDER.sub(lambda m: fills[m.group(0)], template)\n",
+   "replace": "    for k, v in fills.items():\n        template = template.replace(k, v)\n    return template\n",
+   "expect_caught_by": "test_the_fill_is_one_pass"
+  },
+  {
+   "id": "page-render-nhl-expands-an-include-by-hand",
+   "target": "src/sports/nhl/site.py",
+   "why": "the NHL's renderer goes back to expanding an include itself, outside the shared renderer",
+   "find": "    return page_render.finish(page_render.assemble(TEMPLATE, SHARED_PARTS),\n",
+   "replace": "    _ = (TEMPLATE / 'page.html').read_text(encoding='utf-8').replace('{% include \"nhl.js\" %}', '')\n    return page_render.finish(page_render.assemble(TEMPLATE, SHARED_PARTS),\n",
+   "expect_caught_by": "test_every_page_is_rendered_by_the_shared_renderer"
+  }
+ ]
+}

@@ -36,6 +36,9 @@ Each run, in order:
    (`src/sports/nhl/standings.py`; `results/nhl/standings_<season>.json`).
 8. **Page inputs.** Every run writes the season's schedule and today's
    ratings for the NHL's pages (`src/sports/nhl/page_inputs.py`).
+9. **v2 shadow.** After the picks are saved, v2's forecasts for the same games
+   (`src/sports/nhl/v2_shadow.py`), in `predictions/nhl/<season>-v2/`: never a
+   pick, never graded here.
 
 `.github/workflows/nhl-daily.yml` runs this at 14:00 and 21:00 UTC.
 
@@ -52,8 +55,19 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test
-from src.core.provenance import training
+from src.core import (
+    after_save,
+    forward_test,
+    priced,
+    request_budget,
+    schedule_guard,
+    season_prices,
+)
+from src.core.day_picks import grade as grade
+from src.core.day_picks import missed as missed
+from src.core.day_picks import missed_line as missed_line
+from src.core.day_picks import save_once as save_once
+from src.core.provenance import code_identity, training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nhl import (
     backtest,
@@ -61,11 +75,13 @@ from src.sports.nhl import (
     goalies,
     history,
     injuries,
+    m2,
     market,
     page_inputs,
     ratings,
     roster,
     standings,
+    v2_shadow,
 )
 from src.sports.nhl import schedule as nhl_schedule
 from src.sports.nhl.lock import GameLock
@@ -161,14 +177,18 @@ def pick_record(game: pd.Series, feats: dict[str, float], k: float, model_a: Any
     }
 
 
-def read_injuries(season: int, get: Callable[[str], bytes]) -> tuple[str, pd.DataFrame] | None:
+def read_injuries(season: int, get: Callable[[str], bytes]) -> injuries.Latest | None:
     """The latest injury list, or None when it cannot be read: injuries are
-    context, so their source failing never stops a pick being saved."""
+    context, so their source failing never stops a pick being saved. Club
+    names it could not match are said on a DEGRADED line (Stage 83 item 5)."""
     try:
-        return injuries.latest(get(injuries.source(season)))
+        got = injuries.latest(get(injuries.source(season)))
     except (injuries.InjurySourceError, OSError) as exc:
         print(f'DEGRADED: injuries: not read, picks saved without them: {exc}')
         return None
+    if got.unknown:
+        print(f'DEGRADED: injuries: clubs not recognised, their players left out: {got.unknown}')
+    return got
 
 
 def read_market(get: Callable[[str], bytes], now: datetime) -> tuple[list[dict[str, Any]], list[str]]:
@@ -195,65 +215,42 @@ def read_rosters(clubs: set[str], get: Callable[[str], bytes]) -> dict[str, list
     return out
 
 
-def save_once(record: dict[str, Any], folder: Path) -> bool:
-    """Write the pick unless one is already saved. True when written."""
-    path = folder / f"{record['game_id']}.json"
-    if path.exists():
-        return False
-    folder.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix('.tmp')
-    tmp.write_text(json.dumps(record, indent=1) + '\n', encoding='utf-8')
-    tmp.replace(path)
-    return True
+def recently_started(sched: pd.DataFrame, now: datetime) -> tuple[str, ...]:
+    """Every game of yesterday's and today's slates (Eastern) that has started.
 
-
-def missed(started: tuple[str, ...] | list[str], folder: Path) -> list[str]:
-    """Games of this slate that have started with no pick saved for them.
-
-    A pick is written once, before its game, so one of these can never be
-    made now; the daily workflow raises an alert on the line main prints
-    (Stage 68 item 3, the 2026-10-09 audit)."""
-    return sorted(str(g) for g in started if not (folder / f'{g}.json').exists())
-
-
-def missed_line(started: tuple[str, ...] | list[str], folder: Path) -> str | None:
-    """The line the workflow's alert step greps for, or None when nothing
-    was missed."""
-    lost = missed(started, folder)
-    return f'MISSED PICKS: {len(lost)} started with no saved pick: {", ".join(lost)}' if lost else None
-
-
-def grade(folder: Path, sched: pd.DataFrame) -> list[dict[str, Any]]:
-    """One row per saved pick: correct, wrong, cancelled, or pending."""
-    by_id = sched.set_index('game_id')
-    rows = []
-    for path in sorted(folder.glob('*.json')):
-        pick = json.loads(path.read_text(encoding='utf-8'))
-        g = by_id.loc[pick['game_id']] if pick['game_id'] in by_id.index else None
-        status = None if g is None else g['status']
-        if status == GameStatus.CANCELLED.value:
-            result = 'cancelled'
-        elif status == GameStatus.FINAL.value:
-            assert g is not None
-            winner = g['home'] if int(g['home_win']) == 1 else g['away']
-            result = 'correct' if pick['pick'] == winner else 'wrong'
-        else:
-            result = 'pending'
-        rows.append({'game_id': pick['game_id'], 'pick': pick['pick'], 'result': result,
-                     'saved_utc': pick.get('saved_utc')})
-    return rows
+    Stage 92 item 11 (audit 7, R11): the run used to check only the games of
+    the slates it was deciding, today's and tomorrow's, so a game of
+    yesterday's slate that started after the last run that could have saved it
+    was never named. Postponed and cancelled games are not started."""
+    today = pd.Timestamp(now).tz_convert('America/New_York').normalize()
+    days = {str((today - pd.Timedelta(days=1)).date()), str(today.date())}
+    return GameLock().decide(sched[sched['slate'].isin(days)], now).started
 
 
 def drift_rows(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, int | None]]:
     """(Model A's home probability, home won) for every saved pick whose game
     is final."""
     finals = sched[sched['status'] == GameStatus.FINAL.value].set_index('game_id')
-    rows: list[tuple[float | None, int | None]] = []
+    keyed: list[tuple[tuple[str, str], tuple[float | None, int | None]]] = []
     for path in sorted(folder.glob('*.json')):
         pick = json.loads(path.read_text(encoding='utf-8'))
         if pick['game_id'] in finals.index:
-            rows.append((pick.get('model_a'), int(finals.loc[pick['game_id'], 'home_win'])))
-    return rows
+            keyed.append(((pick.get('start_utc') or '', pick['game_id']),
+                          (pick.get('model_a'), int(finals.loc[pick['game_id'], 'home_win']))))
+    # Stage 85 item 1: in the order the games started, so a registered look's
+    # first n picks are the first n games played, not the first n game ids.
+    return [row for _, row in sorted(keyed, key=lambda kr: kr[0])]
+
+
+def drift_days(folder: Path, sched: pd.DataFrame) -> list[str]:
+    """Stage 95 item 32: each `drift_rows` row's slate day, in the same order."""
+    finals = sched[sched['status'] == GameStatus.FINAL.value].set_index('game_id')
+    keyed = []
+    for path in sorted(folder.glob('*.json')):
+        pick = json.loads(path.read_text(encoding='utf-8'))
+        if pick['game_id'] in finals.index:
+            keyed.append(((pick.get('start_utc') or '', pick['game_id']), str(pick['slate'])))
+    return [day for _, day in sorted(keyed, key=lambda kd: kd[0])]
 
 
 def write_standings(sched: pd.DataFrame, games: pd.DataFrame, rated: ratings.DayRatings, model_a: Any,
@@ -291,10 +288,17 @@ def write_page_inputs(sched: pd.DataFrame, games: pd.DataFrame, folder: Path, h:
 def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetch) -> int:
     now = now or datetime.now(UTC)
     season = nhl_schedule.current_season(now)
-    sched = nhl_schedule.load_schedule(season)
+    # Stage 93 item 18: retried like the history and odds reads, and under a budget.
+    sched = nhl_schedule.load_schedule(season, get=request_budget.Budget().wrap(lambda u: json.loads(get(u))))
+    # Stage 91 item 2: an empty or shrunken feed stops the run before anything is written.
+    schedule_guard.check(len(sched), PATHS.results / f'schedule_{season}.json')
     first = backtest.registry()['protocol']['training_from_season']
     past = backtest.load_history(first, season - 1)
     current = refresh_season(season, sched)
+    # Stage 85 item 5: this season's games enter Model B's training rows with
+    # the price the runs recorded, the last read before each game started.
+    recorded = season_prices.read(PATHS.data / 'lines' / f'{season}.json')
+    current = current.assign(home_prob=current['game_id'].astype(str).map(recorded))
     games = ratings.prepare(pd.concat([past, current], ignore_index=True))
     h, k = chosen()
 
@@ -303,8 +307,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     slate = sched[sched['slate'].isin(days)]
     decision = GameLock().decide(slate, now)
     folder = PATHS.predictions / str(season)
+    # Every run builds the feature table: the picks are fitted on it, and M2
+    # (Stage 84 item 4) refits on it whether or not this run saves a pick.
+    table = ratings.features(games, h, [k]).merge(games[['game_id', 'home_prob']], on='game_id', how='left')
     if decision.lock:
-        table = ratings.features(games, h, [k]).merge(games[['game_id', 'home_prob']], on='game_id', how='left')
         fitted: dict[pd.Timestamp, tuple[Any, Any, dict[str, Any]]] = {}
         lines, missing = read_market(get, now)
         for m in missing:
@@ -312,25 +318,34 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         market.record(lines, PATHS.data / 'lines' / f'{season}.json')
         line_by_id = {r['game_id']: r for r in lines}
         projected = {}
+        # Stage 92 item 7: a goalie page that cannot be read for a day with games locking costs
+        # those picks their projected starters, so it is a DEGRADED line; another day's is not.
+        locking_days = set(slate[slate['game_id'].isin(decision.lock)]['slate'].astype(str))
         for day in sorted(days):
             try:
                 rows = goalies.parse_faceoff(get(f'{goalies.SOURCE}/{day}').decode('utf-8', 'replace'), now)
                 attached = goalies.attach_games(rows, sched[sched['slate'] == day].to_dict('records'))
             except goalies.GoalieSourceError as exc:
-                print(f'goalies for {day}: {exc}')
+                print(f"{'DEGRADED: ' if day in locking_days else ''}goalies for {day}: {exc}")
                 continue
             goalies.record(attached, PATHS.data / 'goalies' / f'{season}.json')
             projected.update({r['game_id']: r for r in attached})
         locking = slate[slate['game_id'].isin(decision.lock)]
+        # Stage 92 item 7: a feed that answered but priced none of the locking games says so.
+        unpriced = priced.unpriced_line(locking['game_id'], (r['game_id'] for r in lines))
+        if unpriced and not any(m.startswith('odds feed not read') for m in missing):
+            print(unpriced)
         rosters = read_rosters(set(locking['home']) | set(locking['away']), get)
         fallback = last_starters(games)
         injury_table = read_injuries(season, get)
         rated = ratings.day_ratings(games[games['day'] < today.tz_localize(None)], today.tz_localize(None), h)
+        goalie_ids: dict[str, tuple[Any, Any]] = {}
         for _, g in locking.iterrows():
             day = pd.Timestamp(str(g['slate']))
             if day not in fitted:
                 fitted[day] = fit_before(table, day, k, first)
             model_a, model_b, trained = fitted[day]
+            trained = trained | code_identity('nhl')  # Stage 95 item 39
             notes, ids = {}, {}
             proj = projected.get(str(g['game_id']), {})
             for side in ('home', 'away'):
@@ -348,31 +363,77 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                                    'report': proj.get(f'{side}_report')}
                 ids[side] = pid
             feats = rated.matchup(g['home'], g['away'], ids['home'], ids['away'], [k])
+            goalie_ids[str(g['game_id'])] = (ids['home'], ids['away'])
             injury_list = None if injury_table is None else injuries.for_game(
-                injury_table[0], injury_table[1], g['home'], g['away'], now)
+                injury_table.day, injury_table.table, g['home'], g['away'], now, injury_table.unknown)
             record = pick_record(g, feats, k, model_a, model_b, line_by_id.get(str(g['game_id'])), notes, now,
                                  injury_list) | trained
             print(('saved ' if save_once(record, folder) else 'already saved ') + record['game_id'])
-        print(f'standings: {write_standings(sched, games, rated, model_a, k, str(today.date()), season)}')
-    graded = grade(folder, sched)
-    out = PATHS.results / f'graded_{season}.json'
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(graded, indent=1) + '\n', encoding='utf-8')
-    write_page_inputs(sched, games, folder, h, k, today, season)
-    spec = drift.baseline()
-    losses = drift.per_game_log_loss(drift_rows(folder, sched))
-    flagged = drift.flags(losses, spec)
-    (PATHS.results / f'drift_{season}.json').write_text(json.dumps(
-        {'games': len(losses), 'mean_log_loss': (sum(losses) / len(losses)) if losses else None,
-         'baseline': spec['baseline']['value'], 'flagged': flagged}, indent=1) + '\n', encoding='utf-8')
-    if flagged:
-        print('DRIFT CHECK: FLAGGED (Model A log loss is significantly above its backtest)')
-    # Stage 84 item 1: the registered forward test, on every saved pick whose game is final.
-    fwd = forward_test.write(PATHS.results / f'forward_{season}.json', 'nhl', season,
-                             'experiments/nhl/stage58/registry.json', folder, sched,
-                             games[['day', 'home_score', 'away_score']])
-    print(f"forward test: {fwd['graded_picks']} graded picks through {fwd['through']}")
-    lost = missed_line(decision.started, folder)
+        # Stage 91 item 3: from here on the picks are saved, and no step may lose them.
+        standings = after_save.guarded('standings', write_standings, sched, games, rated, model_a, k,
+                                       str(today.date()), season)
+        if standings is not None:
+            print(f'standings: {standings}')
+        # Stage 95 item 36: v2's shadow forecasts for the games just saved, never a pick
+        # (experiments/nhl/stage95_v2/registry.json, forward_test.shadow).
+        shadow = after_save.guarded(
+            'v2 shadow', v2_shadow.save, locking, line_by_id, goalie_ids, pd.concat([past, current], ignore_index=True),
+            v2_shadow.history_market(first, season - 1, PATHS.data / 'lines' / f'{season}.json'), sched,
+            PATHS.predictions / f'{season}-v2', now, first)
+        if shadow is not None:
+            print(f'v2 shadow: {len(shadow)} saved')
+    def write_grades() -> list[dict[str, Any]]:
+        graded = grade(folder, sched)
+        out = PATHS.results / f'graded_{season}.json'
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(graded, indent=1) + '\n', encoding='utf-8')
+        return graded
+
+    def write_drift() -> None:
+        spec = drift.baseline()
+        rows = drift_rows(folder, sched)
+        losses = drift.per_game_log_loss(rows)
+        days = drift.kept_days(rows, drift_days(folder, sched))   # Stage 95 item 32
+        flagged = drift.flags(losses, spec, days)
+        mean = (sum(losses) / len(losses)) if losses else None
+        # Stage 95 item 33: the other direction a leak shows in, said rather than flagged.
+        leak = drift.leak_direction(mean, len(losses), spec['baseline']['value'], drift.spread_range(),
+                                    spec['rule']['checkpoints'][0], drift.leaked_picks(folder))
+        (PATHS.results / f'drift_{season}.json').write_text(json.dumps(
+            {'games': len(losses), 'mean_log_loss': mean,
+             'baseline': spec['baseline']['value'], 'flagged': flagged,
+             'looks': drift.looks(losses, spec, days), 'next_look': drift.next_look(len(losses), spec), 'leak': leak},
+            indent=1) + '\n', encoding='utf-8')
+        for line in drift.leak_lines(leak):
+            print(line)
+        if flagged:
+            print('DRIFT CHECK: FLAGGED (Model A log loss is significantly above its backtest)')
+
+    def write_forward() -> None:
+        # Stage 84 item 1: the registered forward test, on every saved pick whose game is final.
+        fwd = forward_test.write(PATHS.results / f'forward_{season}.json', 'nhl', season,
+                                 'experiments/nhl/stage58/registry.json', folder, sched,
+                                 games[['day', 'home_score', 'away_score']])
+        print(f"forward test: {fwd['graded_picks']} graded picks through {fwd['through']}")
+        # Stage 95 item 36: the deciding file, frozen once when the regular season is over.
+        frozen = forward_test.freeze(PATHS.results / f'forward_{season}.json', sched, str(now.date()))
+        if frozen is not None:
+            print(f'forward test: the regular season is over; the deciding file is {frozen.name}')
+
+    def write_m2() -> None:
+        # Stage 84 item 4: Stage 56's M2, the projected starter against the actual one.
+        m2_out = m2.write(PATHS.results / f'm2_{season}.json', forward_test.read_picks(folder), games, table,
+                          current, h, k, fit_models)
+        print(f"M2: {m2_out['graded']} graded games")
+
+    # Stage 91 item 3: each step below runs after the picks are saved; a failure prints
+    # DEGRADED (which raises an issue) and the run goes on to commit the picks.
+    graded = after_save.guarded('grading', write_grades) or []
+    after_save.guarded('page inputs', write_page_inputs, sched, games, folder, h, k, today, season)
+    after_save.guarded('drift check', write_drift)
+    after_save.guarded('forward test', write_forward)
+    after_save.guarded('M2', write_m2)
+    lost = missed_line(sorted(set(decision.started) | set(recently_started(sched, now))), folder)
     if lost:
         print(lost)
     print(f'lock {len(decision.lock)}, hold {len(decision.hold)}, started {len(decision.started)}; '

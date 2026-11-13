@@ -1,0 +1,28 @@
+{
+  "target": "src/sports/nfl/override_automerge.py",
+  "tests": "tests/test_override_automerge.py",
+  "cases": [
+    {
+      "id": "automerge-takes-code-with-the-overrides",
+      "why": "a pull request that adds an override and changes code merges itself, the code unreviewed",
+      "find": "        if not OVERRIDE.match(name):\n",
+      "replace": "        if False:\n",
+      "expect_caught_by": "test_anything_else_is_left_for_a_person_and_says_why"
+    },
+    {
+      "id": "automerge-ignores-the-check",
+      "why": "an override that failed the roster or source check merges anyway",
+      "find": "    if check_exit != 0:\n",
+      "replace": "    if check_exit > 1:\n",
+      "expect_caught_by": "test_anything_else_is_left_for_a_person_and_says_why"
+    },
+    {
+      "id": "automerge-switched-on-by-default",
+      "target": ".github/workflows/nfl-override-automerge.yml",
+      "why": "the job runs without the switch Mark has not set, so pull requests merge themselves before he decides",
+      "find": "    if: vars.AUTO_MERGE_OVERRIDES == 'true' && github.event.pull_request.head.repo.full_name == github.repository\n",
+      "replace": "    if: github.event.pull_request.head.repo.full_name == github.repository\n",
+      "expect_caught_by": "test_the_workflow_is_off_until_the_variable_is_set_and_runs_the_base_commits_code"
+    }
+  ]
+}

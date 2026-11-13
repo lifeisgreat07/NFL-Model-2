@@ -58,6 +58,13 @@ body{ flex-direction:column; }
 .home-card-top{ display:flex; justify-content:space-between; align-items:baseline; gap:var(--s2); flex-wrap:wrap; }
 .home-sport{ font-size:var(--fs-20); font-weight:800; display:inline-flex; align-items:center; gap:var(--s2); }
 .home-icon{ width:26px; height:26px; flex:none; overflow:visible; }
+/* Stage 102 (option B): the league marks, sized for the cards (the shared .lgm rules are in styles.css).
+   A mark that fails to load is hidden; on a card our own icon takes its place (home.js leagueMark). */
+.home-sport .lgm{ width:26px; height:26px; }
+.lgm .lgm-own{ display:none; }
+.lgm.lgm-failed img{ display:none; }
+.lgm.lgm-failed .lgm-own{ display:inline-flex; }
+.lgm-sm.lgm-failed{ display:none; }
 .home-status{ font-size:var(--fs-11); font-weight:700; letter-spacing:var(--track-label); text-transform:uppercase; color:var(--accent); }
 .home-status.is-live::before{ content:''; display:inline-block; width:7px; height:7px; border-radius:50%;
   background:var(--accent); margin-right:var(--s2); vertical-align:1px; }
@@ -68,6 +75,7 @@ body{ flex-direction:column; }
 .home-kv dd{ margin:0; color:var(--text); font-weight:700; font-variant-numeric:tabular-nums; text-align:right; }
 .home-go{ font-size:var(--fs-14); font-weight:700; color:var(--accent); }
 .home-foot{ margin:calc(-1 * var(--s3)) 0 0; font-size:var(--fs-12); color:var(--text-3); max-width:70ch; }
+.home-legal{ flex-basis:100%; margin:var(--s2) 0 0; font-size:var(--fs-12); color:var(--text-3); max-width:70ch; }
 /* Stage 77 item 30 (H2): when the page was made, as each sport's page says. */
 .home-updated{ margin:calc(-1 * var(--s4)) 0 0; font-size:var(--fs-12); color:var(--text-3); }
 .home-updated:empty{ display:none; }
@@ -76,8 +84,24 @@ body{ flex-direction:column; }
 .home-steps{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:var(--s6); }
 .home-steps li{ display:flex; gap:var(--s3); min-width:0; font-size:var(--fs-14); line-height:1.45; color:var(--text-2); }
 .home-steps b{ display:block; font-size:var(--fs-16); color:var(--text); margin-bottom:var(--s1); }
+.home-step-link{ display:block; margin-top:var(--s1); font-weight:600; color:var(--accent); }
 .home-step-n{ flex:none; width:28px; height:28px; border-radius:50%; border:1px solid var(--border-strong);
   display:inline-flex; align-items:center; justify-content:center; font-size:var(--fs-13); font-weight:700; color:var(--accent); }
+/* Stage 90 item 1: the track record, one small table a sport. */
+.home-track{ display:grid; gap:var(--s3); }
+.home-track h2{ margin:0; font-size:var(--fs-20); font-weight:800; color:var(--text); }
+.home-track-lede, .home-track-note{ margin:0; font-size:var(--fs-14); line-height:1.45; color:var(--text-2); }
+.home-track-tables{ display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:var(--s6); }
+.home-track-sport{ min-width:0; display:grid; gap:var(--s2); align-content:start; }
+.home-track-sport h3{ margin:0; font-size:var(--fs-16); color:var(--text); }
+.home-track table{ width:100%; border-collapse:collapse; font-size:var(--fs-13); font-variant-numeric:tabular-nums; }
+.home-track th, .home-track td{ padding:var(--s1) var(--s2); text-align:right; border-bottom:1px solid var(--border); }
+.home-track th:first-child, .home-track td:first-child{ text-align:left; padding-left:0; }
+.home-track thead th{ font-weight:600; color:var(--text-2); }
+/* A sport's table needs about 270px; three side by side fit from about 1000px. Below that they stack
+   (at 768px three columns were 227px each and the page scrolled sideways). */
+@media (max-width: 1000px){ .home-track-tables{ grid-template-columns:minmax(0, 1fr); } }
+.home-track .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 /* Option C's questions for a newcomer, closed until asked. */
 .home-faq{ gap:0; }
 .home-faq h2{ margin-bottom:var(--s1); }

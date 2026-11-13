@@ -1,0 +1,95 @@
+{
+ "game_id": "2026020290",
+ "season": 2026,
+ "slate": "2026-11-10",
+ "start_utc": "2026-11-11T01:00:00Z",
+ "home": "STL",
+ "away": "DET",
+ "model_a": 0.5609,
+ "model_b": 0.553,
+ "pick": "STL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.354418,
+  "shot_matchup": -3.046272,
+  "goalie_matchup_2000": 0.006827
+ },
+ "market": {
+  "game_id": "2026020290",
+  "start_utc": "2026-11-11T01:00:00Z",
+  "home": "STL",
+  "away": "DET",
+  "book": "DraftKings",
+  "home_price": -142.0,
+  "away_price": 120.0,
+  "home_prob": 0.5635,
+  "read_utc": "2026-11-10T21:01:41Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480981,
+   "name": "Joel Hofer",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://thehockeynews.com/nhl/st-louis-blues/game-day/11-10-26-red-wings-blues-gameday-lineup"
+  },
+  "away": {
+   "player_id": 8476434,
+   "name": "John Gibson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JonathanDMillsy/status/2120210225064202360?a=c0zK7RGkiVj5BnzQnoU&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-10",
+  "read_utc": "2026-11-10T21:01:41Z",
+  "home": [
+   {
+    "name": "Dillon Dube",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Torey Krug",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Tucker",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Albert Johansson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Dylan Larkin",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Simon Edvinsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-10T21:01:41Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-09",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14688,
+  "training_games_priced": 7658,
+  "training_ids_sha256": "67c2a3f54dca9c05f30bb71fd6316bb529cadeced0fe5493a26bb356539ac2e0"
+ },
+ "code_sha256": "63f42334834f3d3baf7bade876c1fc04c6ec848289eec884d0b8cd14ff7c67ef",
+ "code_commit": "d62c944bd017dec7cb3d76833aa97ac8ad6bd145"
+}

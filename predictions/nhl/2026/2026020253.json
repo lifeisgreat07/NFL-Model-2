@@ -1,0 +1,82 @@
+{
+ "game_id": "2026020253",
+ "season": 2026,
+ "slate": "2026-11-05",
+ "start_utc": "2026-11-06T00:00:00Z",
+ "home": "TBL",
+ "away": "CHI",
+ "model_a": 0.766,
+ "model_b": 0.8156,
+ "pick": "TBL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 1.687289,
+  "shot_matchup": 8.399276,
+  "goalie_matchup_2000": 0.003492
+ },
+ "market": {
+  "game_id": "2026020253",
+  "start_utc": "2026-11-06T00:00:00Z",
+  "home": "TBL",
+  "away": "CHI",
+  "book": "DraftKings",
+  "home_price": -455.0,
+  "away_price": 350.0,
+  "home_prob": 0.7867,
+  "read_utc": "2026-11-05T21:01:35Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476883,
+   "name": "Andrei Vasilevskiy",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/DFOFantasy/status/2118393834778296574"
+  },
+  "away": {
+   "player_id": 8482821,
+   "name": "Arvid Soderblom",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/VinnieParise/status/2118428010189656330?a=Cx5p7vJaTibgZFcY0Ew&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-05",
+  "read_utc": "2026-11-05T21:01:35Z",
+  "home": [
+   {
+    "name": "Yanni Gourde",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Zemgus Girgensons",
+    "position": "C",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Bowen Byram",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Patrick Kane",
+    "position": "RW",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-05T21:01:35Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-04",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14653,
+  "training_games_priced": 7626
+ }
+}

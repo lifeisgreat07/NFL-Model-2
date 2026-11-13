@@ -1,0 +1,82 @@
+{
+ "target": "src/sports/nba/drift.py",
+ "tests": "tests/test_like_for_like.py",
+ "cases": [
+  {
+   "id": "nba-drift-one-baseline-for-every-pick",
+   "why": "a look ignores the picks' own baselines, so a day without the injury report counts as drift",
+   "find": "    by = {float(spec['baseline']['value']): look_value(spec, 'baseline', n),\n          float(spec['baseline_no_availability']['value']): look_value(spec, 'baseline_no_availability', n)}\n    return float(sum(by[b] for b in baselines[:n]) / n)\n",
+   "replace": "    return look_value(spec, 'baseline', n)\n",
+   "expect_caught_by": "test_picks_without_the_report_at_their_own_backtest_do_not_flag"
+  },
+  {
+   "id": "nba-drift-baselines-swapped",
+   "why": "a pick made with the injury report is held to the no-availability backtest and one made without it to the other",
+   "find": "    return [float(with_it if read else without) for read in reads]\n",
+   "replace": "    return [float(without if read else with_it) for read in reads]\n",
+   "expect_caught_by": "test_each_pick_is_held_to_the_backtest_of_the_model_it_ran"
+  },
+  {
+   "id": "nba-drift-look-held-to-every-picks-baselines",
+   "why": "a look at 100 picks is held to the mean of every graded pick's baseline, not its own 100",
+   "find": "    return float(sum(by[b] for b in baselines[:n]) / n)\n",
+   "replace": "    return float(sum(by[b] for b in baselines) / len(baselines))\n",
+   "expect_caught_by": "test_a_look_is_held_to_the_mean_of_its_own_picks_baselines"
+  },
+  {
+   "id": "nba-drift-dropped-game-keeps-its-baseline",
+   "why": "a game with no result is dropped from the losses but not the baselines, so every later pick is held to the wrong one",
+   "find": "    return per_game_log_loss((p, y) for p, y, _ in kept), pick_baselines((read for *_, read in kept), spec)\n",
+   "replace": "    return per_game_log_loss((p, y) for p, y, _ in kept), pick_baselines((read for *_, read in rows), spec)\n",
+   "expect_caught_by": "test_a_game_without_a_result_takes_its_baseline_with_it"
+  },
+  {
+   "id": "nba-daily-reads-every-pick-as-made-with-the-report",
+   "target": "src/sports/nba/daily.py",
+   "why": "the daily run never sees a pick made without the injury report, so it holds every pick to the with-availability backtest",
+   "find": "    return (pick.get('availability') or {}).get('read', True) is not False\n",
+   "replace": "    return True\n",
+   "expect_caught_by": "test_the_daily_reads_whether_each_pick_had_the_report"
+  },
+  {
+   "id": "nba-daily-flag-ignores-the-baselines",
+   "target": "src/sports/nba/daily.py",
+   "why": "the daily run writes the looks with their own baselines but flags on the one baseline",
+   "find": "    flagged = drift.flags(losses, spec, bases, days)\n",
+   "replace": "    flagged = drift.flags(losses, spec, None, days)\n",
+   "expect_caught_by": "test_the_daily_run_writes_its_own_baselines"
+  },
+  {
+   "id": "nba-page-hides-the-second-baseline",
+   "target": "src/core/day_board.js",
+   "why": "the page states one baseline while the check holds some picks to another",
+   "find": "${rule.baseline_no_availability_by_look ? `; a pick made without the injury report against the model without it: ${at('baseline_no_availability')}` : ''}",
+   "replace": "",
+   "expect_caught_by": "test_the_nba_page_names_both_baselines_and_how_many_picks_are_held_to_the_second"
+  },
+  {
+   "id": "nfl-version-split-all-on-one-baseline",
+   "target": "src/sports/nfl/check_drift.py",
+   "why": "v2.4's picks, made with last game's quarterback, are printed beside the listed-starter backtest",
+   "find": "        base = None if key is None else spec['printed_beside'] if key < (2, 5) else spec['baseline']\n",
+   "replace": "        base = None if key is None else spec['baseline']\n",
+   "expect_caught_by": "test_each_nfl_version_is_beside_the_backtest_it_is_like"
+  },
+  {
+   "id": "nfl-version-split-sorted-as-text",
+   "target": "src/sports/nfl/check_drift.py",
+   "why": "v2.10 is listed before v2.4, sorted as text rather than as a version",
+   "find": "    for version in sorted(groups, key=lambda v: (version_key(v) is None, version_key(v) or (), v)):\n",
+   "replace": "    for version in sorted(groups):\n",
+   "expect_caught_by": "test_each_nfl_version_is_beside_the_backtest_it_is_like"
+  },
+  {
+   "id": "nfl-version-split-not-printed",
+   "target": "src/sports/nfl/check_drift.py",
+   "why": "the weekly drift report never prints the split",
+   "find": "    log_by_version(records, spec)\n",
+   "replace": "",
+   "expect_caught_by": "test_the_split_is_printed_and_the_flag_is_unchanged"
+  }
+ ]
+}

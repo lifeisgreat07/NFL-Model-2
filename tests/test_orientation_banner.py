@@ -21,6 +21,7 @@ import subprocess
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -40,8 +41,7 @@ def banner(src):
 
 @pytest.fixture(scope='module')
 def slots(src):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     consts = re.search(r'const ORIENTATION_AFTER = [^;]+;', src)
     fn = re.search(r'function orientationSlot\(.*?\n\}\n', src.replace('\r\n', '\n'), re.S)
     assert consts and fn, 'orientationSlot is not findable -- re-anchor this guard'
@@ -59,7 +59,7 @@ def test_three_lines_show_and_the_rest_waits_behind_how_to_read_this(banner):
     assert len(re.findall(r'<li>', shown)) == 3, 'the banner no longer shows exactly three lines'
     assert re.search(r'<summary>How to read this</summary>', rest)
     assert len(re.findall(r'<li>', rest)) >= 3, 'the disclosure lost the explanations it holds'
-    assert 'onclick="dismissOnboarding()">Got it</button>' in banner, '"Got it" is gone'
+    assert 'data-act="dismiss-onboarding">Got it</button>' in banner, '"Got it" is gone'
 
 
 def test_the_disclosure_is_a_24px_control_that_shows_its_state(src):

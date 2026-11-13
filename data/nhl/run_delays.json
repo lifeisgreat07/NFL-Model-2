@@ -1,0 +1,98 @@
+[
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-05T14:00:00Z",
+  "started": "2026-11-05T20:54:08Z",
+  "delay_minutes": 414
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-05T21:00:00Z",
+  "started": "2026-11-06T01:12:36Z",
+  "delay_minutes": 252
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-06T14:00:00Z",
+  "started": "2026-11-06T20:12:32Z",
+  "delay_minutes": 372
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-06T21:00:00Z",
+  "started": "2026-11-07T00:28:05Z",
+  "delay_minutes": 208
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-07T14:00:00Z",
+  "started": "2026-11-07T18:25:50Z",
+  "delay_minutes": 265
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-07T21:00:00Z",
+  "started": "2026-11-08T00:02:35Z",
+  "delay_minutes": 182
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-08T14:00:00Z",
+  "started": "2026-11-08T18:36:30Z",
+  "delay_minutes": 276
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-08T21:00:00Z",
+  "started": "2026-11-09T00:11:09Z",
+  "delay_minutes": 191
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-09T14:00:00Z",
+  "started": "2026-11-09T23:14:40Z",
+  "delay_minutes": 554
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-09T21:00:00Z",
+  "started": "2026-11-10T03:00:48Z",
+  "delay_minutes": 360
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-10T14:00:00Z",
+  "started": "2026-11-10T20:40:28Z",
+  "delay_minutes": 400
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-10T21:00:00Z",
+  "started": "2026-11-11T00:56:04Z",
+  "delay_minutes": 236
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-11T14:00:00Z",
+  "started": "2026-11-11T21:00:34Z",
+  "delay_minutes": 420
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-11T21:00:00Z",
+  "started": "2026-11-12T02:02:08Z",
+  "delay_minutes": 302
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-12T14:00:00Z",
+  "started": "2026-11-12T21:16:45Z",
+  "delay_minutes": 436
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-12T21:00:00Z",
+  "started": "2026-11-13T01:33:09Z",
+  "delay_minutes": 273
+ }
+]

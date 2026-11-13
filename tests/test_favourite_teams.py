@@ -18,11 +18,12 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from src.core.template_parts import APP_SCRIPT
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 CORE = (ROOT / 'src' / 'core' / 'favs.js').read_text(encoding='utf-8')
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 NHL = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
 NBA = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
 HOME = (ROOT / 'src' / 'site' / 'home' / 'home.js').read_text(encoding='utf-8')
@@ -38,8 +39,7 @@ def fn(src, name):
 
 
 def node(code):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr
     return json.loads(r.stdout)
@@ -90,7 +90,7 @@ def test_every_sport_puts_its_favourites_first_and_listens_for_stars():
         page = (ROOT / 'src' / 'sports' / sport / 'pages' / 'page.html').read_text(encoding='utf-8')
         assert '{% include "accuracy.js" %}\n{% include "favs.js" %}\n' in page
         site = (ROOT / 'src' / 'sports' / sport / 'site.py').read_text(encoding='utf-8')
-        assert """.replace('{% include "favs.js" %}', FAVS_JS.read_text(encoding='utf-8'))""" in site
+        assert "'favs.js': FAVS_JS" in site
 
 
 def test_the_teams_pages_carry_a_star():
@@ -148,8 +148,7 @@ def yours(slate, favs, now):
 
 
 def node_ny(code):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8', env={**os.environ, 'TZ': 'America/New_York'})
     assert r.returncode == 0, r.stderr
     return json.loads(r.stdout)

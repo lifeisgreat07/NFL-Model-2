@@ -32,10 +32,19 @@ def test_too_few_games_never_flags():
 
 def test_a_clearly_worse_season_flags_and_a_matching_one_does_not():
     assert drift.flags([0.70] * 150, SPEC) is True
-    v = SPEC['baseline']['value']
-    # A season that averages the baseline, with spread. (A constant column of
+    # Stage 95 item 31: the look at 100 picks is held to the backtest's own figure at 100, not the
+    # whole-season one (which sits below it, so a season "slightly worse" than the whole-season
+    # figure would be better than the look's and could not tell the bound from the mean).
+    v = drift.look_value(SPEC, 'baseline', 100)
+    assert v != SPEC['baseline']['value']
+    # A season that averages the look's baseline, with spread. (A constant column of
     # exactly the baseline can sit one float ulp above it after averaging.)
     assert drift.flags([v - 0.2, v + 0.2] * 75, SPEC) is False
+    # Slightly worse than the look's baseline on average, but not significantly: the
+    # mean is above it and the bound is not, so only the bound decides.
+    slightly = [v - 0.19, v + 0.21] * 75
+    assert sum(slightly[:100]) / 100 > v
+    assert drift.flags(slightly, SPEC) is False
 
 
 def test_the_bound_is_one_sided_and_seeded():

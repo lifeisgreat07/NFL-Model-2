@@ -1,0 +1,504 @@
+{
+  "season": 2026,
+  "week": 9,
+  "read_at": "2026-11-08T21:47:41Z",
+  "sources": {
+    "injuries": "nflverse injury report, via nflreadpy.load_injuries",
+    "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
+    "depth_chart_snapshot": "2026-11-08T14:14:26Z"
+  },
+  "teams": {
+    "BAL": {
+      "qb": {
+        "name": "Joe Fagnano",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Jaylinn Hawkins",
+          "position": "S",
+          "injury": "Knee"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "JAX": {
+      "qb": {
+        "name": "Trevor Lawrence",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 2
+    },
+    "ATL": {
+      "qb": {
+        "name": "Michael Penix Jr.",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 2
+    },
+    "CIN": {
+      "qb": {
+        "name": "Joe Burrow",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "CAR": {
+      "qb": {
+        "name": "Bryce Young",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Bobby Okereke",
+          "position": "LB",
+          "injury": "Foot"
+        },
+        {
+          "name": "Damien Lewis",
+          "position": "G",
+          "injury": "Knee"
+        },
+        {
+          "name": "Jaelan Phillips",
+          "position": "LB",
+          "injury": "Hamstring"
+        },
+        {
+          "name": "Will Lee III",
+          "position": "CB",
+          "injury": "Hamstring"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "DEN": {
+      "qb": {
+        "name": "Bo Nix",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Brandon Jones",
+          "position": "S",
+          "injury": "Hamstring"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "IND": {
+      "qb": {
+        "name": "Daniel Jones",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "A.J. Haulcy",
+          "position": "S",
+          "injury": "Ankle"
+        },
+        {
+          "name": "Akeem Davis-Gaither",
+          "position": "LB",
+          "injury": "Knee"
+        },
+        {
+          "name": "Justin Walley",
+          "position": "CB",
+          "injury": "Knee"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "DAL": {
+      "qb": {
+        "name": "Dak Prescott",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 3
+    },
+    "KC": {
+      "qb": {
+        "name": "Patrick Mahomes",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Mansoor Delane",
+          "position": "CB",
+          "injury": "Shoulder"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "NYJ": {
+      "qb": {
+        "name": "Geno Smith",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Garrett Wilson",
+          "position": "WR",
+          "injury": "Concussion"
+        },
+        {
+          "name": "Trevin Wallace",
+          "position": "LB",
+          "injury": "Groin"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "MIA": {
+      "qb": {
+        "name": "Malik Willis",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "DET": {
+      "qb": {
+        "name": "Jared Goff",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "D.J. Reed",
+          "position": "CB",
+          "injury": "Hip"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "NO": {
+      "qb": {
+        "name": "Tyler Shough",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 2
+    },
+    "CLE": {
+      "qb": {
+        "name": "Shedeur Sanders",
+        "basis": "announced",
+        "changed_from": "D.Watson"
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Maliek Collins",
+          "position": "DT",
+          "injury": "Elbow"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "PHI": {
+      "qb": {
+        "name": "Joe Milton III",
+        "basis": "announced",
+        "changed_from": "T.McKee"
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "DeVonta Smith",
+          "position": "WR",
+          "injury": "Hamstring"
+        },
+        {
+          "name": "Jihaad Campbell",
+          "position": "LB",
+          "injury": "Hamstring"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "NYG": {
+      "qb": {
+        "name": "J.J. McCarthy",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [
+        {
+          "name": "Cam Skattebo",
+          "position": "RB",
+          "injury": "Hamstring"
+        }
+      ],
+      "questionable_starters": 0
+    },
+    "WAS": {
+      "qb": {
+        "name": "Jayden Daniels",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "LA": {
+      "qb": {
+        "name": "Matthew Stafford",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 2
+    },
+    "LAC": {
+      "qb": {
+        "name": "Justin Herbert",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "HOU": {
+      "qb": {
+        "name": "C.J. Stroud",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Reed Blankenship",
+          "position": "S",
+          "injury": "Concussion"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "SF": {
+      "qb": {
+        "name": "Brock Purdy",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Mike Evans",
+          "position": "WR",
+          "injury": "Ribs"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "LV": {
+      "qb": {
+        "name": "Kirk Cousins",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "NE": {
+      "qb": {
+        "name": "Drake Maye",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "A.J. Brown",
+          "position": "WR",
+          "injury": "Ankle"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 4
+    },
+    "GB": {
+      "qb": {
+        "name": "Jordan Love",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Sean Rhyan",
+          "position": "C",
+          "injury": "Ankle"
+        },
+        {
+          "name": "Travis Glover",
+          "position": "G",
+          "injury": "Knee"
+        },
+        {
+          "name": "Zaire Franklin",
+          "position": "LB",
+          "injury": "Shin"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "SEA": {
+      "qb": {
+        "name": "Drew Lock",
+        "basis": "announced",
+        "changed_from": "S.Darnold"
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Charles Cross",
+          "position": "T",
+          "injury": "Ankle"
+        },
+        {
+          "name": "Leonard Williams",
+          "position": "DT",
+          "injury": "Stinger"
+        },
+        {
+          "name": "Sam Darnold",
+          "position": "QB",
+          "injury": "Quadricep"
+        },
+        {
+          "name": "Uchenna Nwosu",
+          "position": "LB",
+          "injury": "Ankle"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "ARI": {
+      "qb": {
+        "name": "Gardner Minshew",
+        "basis": "announced",
+        "changed_from": "J.Brissett"
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 3
+    },
+    "CHI": {
+      "qb": {
+        "name": "Caleb Williams",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "TB": {
+      "qb": {
+        "name": "Baker Mayfield",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Yaya Diaby",
+          "position": "LB",
+          "injury": "Knee"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "MIN": {
+      "qb": {
+        "name": "Kyler Murray",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Kyler Murray",
+          "position": "QB",
+          "injury": "Hamstring"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "BUF": {
+      "qb": {
+        "name": "Josh Allen",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 2
+    }
+  }
+}

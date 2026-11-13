@@ -20,6 +20,8 @@ from pathlib import Path
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.js_source import function_source
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
@@ -44,16 +46,9 @@ def template():
     return TEMPLATE.read_text(encoding='utf-8')
 
 
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
-
-
 @pytest.fixture(scope='module')
 def split():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     t = template()
     band = re.search(r'const CARD_EVEN_BAND = [\d.]+;', t)
     assert band, 'CARD_EVEN_BAND is not findable -- re-anchor this guard'

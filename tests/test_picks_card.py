@@ -26,6 +26,7 @@ from pathlib import Path
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
@@ -40,8 +41,7 @@ def source():
 
 @pytest.fixture(scope='module')
 def built():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, str(HARNESS)], capture_output=True, text=True,
                        encoding='utf-8', errors='replace')
     assert r.returncode == 0, f'harness failed:\n{r.stderr}'
@@ -112,7 +112,7 @@ def test_the_pick_button_is_a_logo_above_the_abbreviation(built):
     assert built['buttonUnpicked'] == (
         '<button class="pick-btn " data-team="NE">'
         '<img class="pick-logo" src="LOGO:NE" alt="" loading="lazy" referrerpolicy="no-referrer" '
-        'onerror="this.style.display=\'none\'">'
+        'data-hide-on-error>'
         '<span class="pick-abbr">NE</span>'
         '</button>')
 
@@ -128,7 +128,7 @@ def test_a_logo_that_fails_to_load_leaves_a_usable_button(source, built):
     """The images come from a third party. If that host is unreachable the
     tile has to remain pickable rather than showing a broken-image glyph,
     which is why the abbreviation is real text and not part of the picture."""
-    assert "onerror=\"this.style.display='none'\"" in built['buttonUnpicked']
+    assert "data-hide-on-error" in built['buttonUnpicked']
 
 
 def test_only_the_chosen_team_carries_the_selected_class(built):

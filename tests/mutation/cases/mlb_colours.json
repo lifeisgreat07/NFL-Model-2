@@ -1,0 +1,41 @@
+{
+  "target": "src/sports/mlb/colours.py",
+  "tests": "tests/test_mlb_colours.py",
+  "cases": [
+    {
+      "id": "mlb-colours-navy-kept",
+      "why": "the Yankees' navy goes back to the official #003087, which all but vanishes on the dark card.",
+      "find": "'147': '#0054ED'",
+      "replace": "'147': '#003087'",
+      "expect_caught_by": "test_every_colour_stands_out_on_the_dark_theme"
+    },
+    {
+      "id": "mlb-colours-figure-stale",
+      "why": "the quoted figure for drawn pairs under 15 drifts from what the palette measures.",
+      "find": "DRAWN_UNDER_15 = 45",
+      "replace": "DRAWN_UNDER_15 = 44",
+      "expect_caught_by": "test_the_drawn_figures_match_the_docstring"
+    },
+    {
+      "id": "mlb-colours-club-missing",
+      "why": "a club loses its colour, so its bars fall back to whatever the page guesses.",
+      "find": "'158': '#FFC52F',\n}",
+      "replace": "}",
+      "expect_caught_by": "test_every_club_has_exactly_one_colour_in_hex"
+    },
+    {
+      "id": "mlb-colours-listed-figure-stale",
+      "why": "the quoted figure for listed pairs under 5 drifts from what the palette measures.",
+      "find": "PAIRS_UNDER_5 = 49",
+      "replace": "PAIRS_UNDER_5 = 48",
+      "expect_caught_by": "test_the_quoted_separation_figures_are_what_the_palette_measures"
+    },
+    {
+      "id": "mlb-colours-logo-code-shared",
+      "why": "two clubs share a logo code, so the Athletics' games show another club's logo.",
+      "find": "'133': 'ath',",
+      "replace": "'133': 'atl',",
+      "expect_caught_by": "test_logos_come_from_espns_files_for_both_themes_one_code_per_club"
+    }
+  ]
+}

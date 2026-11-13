@@ -21,9 +21,11 @@ demand. A test that runs the suite from inside the suite does not terminate.
 
 Exits non-zero if anything mechanical is wrong, so it can gate a wrap-up.
 """
+import json
 import re
 import subprocess
 import sys
+from collections import Counter
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -32,6 +34,18 @@ DOC = REPO / 'CLAUDE.md'
 
 #: The line in CLAUDE.md that states the suite size.
 COUNT_RE = re.compile(r'Suite:\s*\*\*([0-9,]+)\s+passing\*\*')
+
+#: Each test file's kind (Stage 96 item 51, audit 7 T5): the corpus's per-case
+#: checks, behavioural tests of src/ alone, tests that read src/ beside
+#: workflows or docs, page JavaScript, and tests of workflows, docs and the
+#: tests themselves. Until then the split was two-way (Stage 86 item 4), and
+#: 'behavioural' counted a test of a workflow's wording like a test of the model.
+CLASSES_MAP = REPO / 'tests' / 'suite_classes.json'
+CLASSES = ('corpus checks', 'isolated behavioural', 'mixed', 'template/JS', 'workflow/docs/tests-of-tests')
+
+#: The sentence beside the figure that splits it, as split_sentence writes it.
+SPLIT_RE = re.compile(r'The split \(Stage 96 item 51[^)]*\):\s*'
+                      + r',\s*'.join(rf'([0-9,]+)\s+{re.escape(c)}' for c in CLASSES))
 
 
 class Check:
@@ -90,8 +104,75 @@ def check_suite_count() -> Check:
                      f'CLAUDE.md says {claimed} passing, a real run gives {actual}. '
                      'Fix the file before the next session inherits '
                      'it.')
-    return Check('suite count', True,
-                 f'CLAUDE.md and a real run both say {actual}')
+    collected = subprocess.run(
+        [sys.executable, '-B', '-m', 'pytest', '--collect-only', '-q'],
+        cwd=REPO, capture_output=True, text=True,
+    )
+    return check_split(text, actual, per_file(collected.stdout), load_classes())
+
+
+def parse_collected(stdout: str) -> int | None:
+    """N from pytest's 'N tests collected' (or 'N test collected'), else None."""
+    m = re.search(r'\b(\d+) tests? collected\b', stdout)
+    return int(m.group(1)) if m else None
+
+
+def per_file(stdout: str) -> Counter[str]:
+    """Tests collected per file, from `pytest --collect-only -q`'s node ids."""
+    return Counter(line.split('::', 1)[0].replace('\\', '/') for line in stdout.splitlines() if '::' in line)
+
+
+def load_classes(path: Path | None = None) -> dict[str, str]:
+    """{test file: class} from tests/suite_classes.json."""
+    files: dict[str, str] = json.loads((path or CLASSES_MAP).read_text(encoding='utf-8'))['files']
+    return files
+
+
+def split_sentence(by_class: dict[str, int]) -> str:
+    """The sentence CLAUDE.md carries beside the figure."""
+    return ('The split (Stage 96 item 51, by `tests/suite_classes.json`): '
+            + ', '.join(f'{by_class.get(c, 0)} {c}' for c in CLASSES) + '.')
+
+
+def classify(counts: Counter[str], classes: dict[str, str]) -> tuple[dict[str, int], list[str], list[str]]:
+    """(tests per class, collected files the map misses, mapped files no longer collected)."""
+    missing = sorted(f for f in counts if f not in classes)
+    stale = sorted(f for f in classes if f not in counts)
+    by_class = {c: 0 for c in CLASSES}
+    for f, n in counts.items():
+        if f in classes:
+            by_class[classes[f]] = by_class.get(classes[f], 0) + n
+    return by_class, missing, stale
+
+
+def check_split(text: str, actual: int, counts: Counter[str], classes: dict[str, str]) -> Check:
+    """The split printed beside the figure must be a real one too (Stage 86
+    item 4, five-way since Stage 96 item 51): every collected test file
+    has a class in tests/suite_classes.json, and CLAUDE.md's sentence is the
+    one split_sentence writes from this collection."""
+    if not counts:
+        return Check('suite count', False, 'could not collect the suite, so the split cannot be checked')
+    by_class, missing, stale = classify(counts, classes)
+    if missing or stale:
+        return Check('suite count', False,
+                     (f'tests/suite_classes.json misses {len(missing)} test file(s): {missing[:10]}. ' if missing else '')
+                     + (f'It names {len(stale)} file(s) no longer collected: {stale[:10]}. ' if stale else '')
+                     + 'Give each file its class before the split can be checked.')
+    bad = sorted({c for c in classes.values() if c not in CLASSES})
+    if bad:
+        return Check('suite count', False, f'tests/suite_classes.json uses unknown classes: {bad}')
+    if sum(by_class.values()) != actual:
+        return Check('suite count', False,
+                     f'{sum(by_class.values())} tests collected but {actual} passed; '
+                     'a skip or a deselection makes the split differ from the figure')
+    want = split_sentence(by_class)
+    m = SPLIT_RE.search(text)
+    said = tuple(int(g.replace(',', '')) for g in m.groups()) if m else None
+    if said != tuple(by_class[c] for c in CLASSES):
+        return Check('suite count', False,
+                     f'CLAUDE.md says {actual} passing but its split is '
+                     f"{'missing' if m is None else 'stale'}; the sentence beside it must read:\n{want}")
+    return Check('suite count', True, f'CLAUDE.md and a real run both say {actual}: ' + want)
 
 
 def check_tree_clean() -> Check:
@@ -224,6 +305,17 @@ BY_HAND = [
 
 
 def main() -> int:
+    if sys.argv[1:] == ['--suite-line']:
+        # Stage 96 item 51: the split sentence for CLAUDE.md, from a collection, without a run.
+        out = subprocess.run([sys.executable, '-B', '-m', 'pytest', '--collect-only', '-q'],
+                             cwd=REPO, capture_output=True, text=True).stdout
+        by_class, missing, stale = classify(per_file(out), load_classes())
+        if missing or stale:
+            print(f'tests/suite_classes.json misses {missing} and names uncollected {stale}')
+            return 1
+        print(f'Suite: **{sum(by_class.values())} passing** (collected; confirm with a run)')
+        print(split_sentence(by_class))
+        return 0
     checks = [
         check_branch_state(),
         check_tree_clean(),

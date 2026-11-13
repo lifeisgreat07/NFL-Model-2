@@ -39,8 +39,9 @@ from typing import Any
 
 import pandas as pd
 
-from src.core.page_comments import strip_page_comments
+from src.core import page_render
 from src.core.page_fill import font_faces_css, safe_json
+from src.site import track_record
 
 ROOT = Path(__file__).resolve().parents[2]
 TEMPLATE = Path(__file__).resolve().parent / 'home'
@@ -70,7 +71,7 @@ def nfl_kickoff(game: Json) -> str | None:
     if not day or not clock:
         return None
     local = pd.Timestamp(f'{day} {clock}').tz_localize('America/New_York')
-    return local.tz_convert('UTC').strftime('%Y-%m-%dT%H:%M:%SZ')
+    return str(local.tz_convert('UTC').strftime('%Y-%m-%dT%H:%M:%SZ'))
 
 
 def nfl_facts(root: Path = ROOT) -> dict[str, Any]:
@@ -245,25 +246,15 @@ def facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
     # sport pages print theirs (Stage 77 item 30, the 2026-10-13 audit's H2).
     built = (now or datetime.now(UTC)).strftime('%Y-%m-%dT%H:%M:%SZ')
     return {'nfl': nfl_facts(root), 'nhl': nhl_facts(root, now), 'nba': nba_facts(root, now), 'built_utc': built,
-            'slate': slate(root, now)}
+            'slate': slate(root, now), 'track': track_record.track_record(root)}
 
 
 
 
 def render(data: dict[str, Any], font_faces: str = '') -> str:
-    page = (TEMPLATE / 'page.html').read_text(encoding='utf-8')
-    html = (page.replace('{% include "styles.css" %}', SHARED_STYLES.read_text(encoding='utf-8'))
-                .replace('{% include "home.css" %}', (TEMPLATE / 'home.css').read_text(encoding='utf-8'))
-                .replace('{% include "home.js" %}', (TEMPLATE / 'home.js').read_text(encoding='utf-8')))
-    # Comments stay in the templates for whoever reads them; the page a
-    # visitor downloads does not carry them (src/core/page_comments.py,
-    # Stage 68 item 19). Stripped before the fills, so no data is lexed.
-    html = strip_page_comments(html)
-    html = html.replace('__FONT_FACES__', font_faces).replace('__HOME_JSON__', safe_json(data))
-    left = sorted(set(re.findall(r'__[A-Z0-9_]+__', html)) | ({'{% include'} if '{% include' in html else set()))
-    if left:
-        raise ValueError(f'unfilled placeholders: {left}')
-    return html
+    """The page, by the renderer every page shares (Stage 87 item 3, src/core/page_render.py)."""
+    return page_render.finish(page_render.assemble(TEMPLATE, {'styles.css': SHARED_STYLES}),
+                              {'__FONT_FACES__': font_faces, '__HOME_JSON__': safe_json(data)})
 
 
 

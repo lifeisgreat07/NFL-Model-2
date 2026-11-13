@@ -19,6 +19,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.optional import in_ci
+
 REPO = Path(__file__).resolve().parents[1]
 PAGE = (REPO / 'src' / 'site' / 'home' / 'page.html').read_text(encoding='utf-8')
 JS = (REPO / 'src' / 'site' / 'home' / 'home.js').read_text(encoding='utf-8')
@@ -37,7 +39,7 @@ def test_the_header_has_the_three_marks_the_wordmark_the_pills_and_a_theme_butto
     assert '<span class="home-marks" aria-hidden="true">' in h, 'the marks repeat the name; a reader skips them'
     assert '<span class="home-wordmark">Sporta<span class="wm-accent">lytics</span></span>' in h
     assert re.search(r'<nav class="sport-switch home-switch" aria-label="Sports">.*?aria-current="page">Home</a>', h, re.S)
-    assert '<button type="button" class="home-theme" aria-label="Switch to the light theme">' in h
+    assert '<button type="button" id="theme-toggle" class="home-theme" aria-label="Switch to the light theme">' in h
 
 
 def test_the_page_says_what_the_site_does_before_anything_else():
@@ -47,9 +49,11 @@ def test_the_page_says_what_the_site_does_before_anything_else():
     assert main.index('home-title') < main.index('id="home-score"') < main.index('id="home-cards"')
 
 
-def test_how_it_works_has_three_steps_in_order():
+def test_how_it_works_has_its_steps_in_order():
+    """Option A's three steps, six since Stage 90 item 2 (tests/test_home_how.py holds their links)."""
     steps = re.findall(r'<li><span class="home-step-n" aria-hidden="true">(\d)</span><span><b>(.*?)</b>', PAGE)
-    assert steps == [('1', 'Picked before the game'), ('2', 'Locked in public'), ('3', 'Graded after')]
+    assert steps == [('1', 'From public data'), ('2', 'A rating for every team'), ('3', 'A chance for every game'),
+                     ('4', 'Locked in public'), ('5', 'Graded after'), ('6', 'Checked by agents')]
 
 
 def test_new_here_asks_option_cs_three_questions_closed():
@@ -73,10 +77,35 @@ def test_the_footer_links_reach_real_pages():
 
 
 def test_the_theme_button_shares_every_page_s_key():
-    block = re.search(r"\(function\(\)\{\n  const btn = document\.querySelector\('\.home-theme'\);.*?\}\)\(\);", JS, re.S)
+    block = re.search(r"\(function\(\)\{\n  const btn = document\.[^;\n]+;.*?\}\)\(\);", JS, re.S)
     assert block, 'the theme button is not wired'
     assert "localStorage.setItem('site:theme'" in block.group(0)
     assert "localStorage.getItem('site:theme')" in PAGE, 'the page no longer reads the same key on load'
+
+
+def test_the_theme_lookup_finds_the_theme_button_and_not_the_search_button():
+    """home.js's lookup, resolved against the page's buttons in order, must land on
+    the sun-and-moon button. The search button shares its class, so a class lookup
+    lands on search instead (the desktop bug of 2026-11-11). A browser check presses
+    it too (tests/browser/check_theme.py); this holds the same thing without one."""
+    lookup = re.search(r"\(function\(\)\{\n  const btn = (document\.[^;\n]+);", JS).group(1)
+    buttons = re.findall(r'<button\b([^>]*)>(.*?)</button>', header(), re.S)
+    by_id = re.fullmatch(r"document\.getElementById\('([\w-]+)'\)", lookup)
+    by_sel = re.fullmatch(r"document\.querySelector\('([.#])([\w-]+)'\)", lookup)
+    assert by_id or by_sel, f'a lookup this test cannot resolve: {lookup}'
+
+    def matches(attrs):
+        if by_id:
+            return re.search(rf'\bid="{by_id.group(1)}"', attrs)
+        if by_sel.group(1) == '#':
+            return re.search(rf'\bid="{by_sel.group(2)}"', attrs)
+        cls = re.search(r'\bclass="([^"]*)"', attrs)
+        return cls and by_sel.group(2) in cls.group(1).split()
+    found = [(attrs, inner) for attrs, inner in buttons if matches(attrs)]
+    assert found, f'{lookup} finds no button on the page'
+    attrs, inner = found[0]
+    assert 'data-palette-open' not in attrs, f'{lookup} finds the search button first'
+    assert 'icon-sun' in inner, f'{lookup} finds a button without the theme icons'
 
 
 def function_source(name):
@@ -97,7 +126,7 @@ def scoreboard(home):
     return subprocess.run([NODE, '-e', js], capture_output=True, encoding='utf-8', check=True).stdout.split('|')
 
 
-@pytest.mark.skipif(not NODE, reason='node not available')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not available')
 def test_the_scoreboard_counts_each_sports_graded_games():
     nfl, nhl = scoreboard({'nfl': {'built': True, 'record': {'won': 39, 'lost': 25}},
                            'nhl': {'built': True, 'record': {'won': 1, 'lost': 0}}})
@@ -105,7 +134,7 @@ def test_the_scoreboard_counts_each_sports_graded_games():
     assert 'after 1 game<' in nhl
 
 
-@pytest.mark.skipif(not NODE, reason='node not available')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not available')
 def test_the_scoreboard_says_so_when_nothing_is_graded_or_built():
     nfl, nhl = scoreboard({'nfl': {'built': True, 'record': {'won': 0, 'lost': 0}}, 'nhl': {'built': False}})
     assert 'no graded games yet' in nfl

@@ -16,10 +16,11 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from src.core.template_parts import APP_SCRIPT
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 ACC = (ROOT / 'src' / 'core' / 'accuracy.js').read_text(encoding='utf-8')
 GEN = (ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py').read_text(encoding='utf-8')
 NODE = shutil.which('node')
@@ -32,8 +33,7 @@ def fn(src, name):
 
 
 def node(code):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr
     return json.loads(r.stdout)

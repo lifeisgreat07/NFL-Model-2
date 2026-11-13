@@ -1,0 +1,105 @@
+{
+ "game_id": "2026020282",
+ "season": 2026,
+ "slate": "2026-11-08",
+ "start_utc": "2026-11-09T01:00:00Z",
+ "home": "ANA",
+ "away": "PIT",
+ "model_a": 0.5166,
+ "model_b": 0.536,
+ "pick": "ANA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.302566,
+  "shot_matchup": -0.02391,
+  "goalie_matchup_2000": 0.000146
+ },
+ "market": {
+  "game_id": "2026020282",
+  "start_utc": "2026-11-09T01:00:00Z",
+  "home": "ANA",
+  "away": "PIT",
+  "book": "DraftKings",
+  "home_price": -120.0,
+  "away_price": 100.0,
+  "home_prob": 0.5217,
+  "read_utc": "2026-11-08T21:01:35Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476316,
+   "name": "Laurent Brossoit",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8481668,
+   "name": "Arturs Silovs",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-08",
+  "read_utc": "2026-11-08T21:01:35Z",
+  "home": [
+   {
+    "name": "A.J. Greer",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ian Moore",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Poehling",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Troy Terry",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Bryan Rust",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elmer Soderblom",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Graves",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Trevor van Riemsdyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-08T21:01:35Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-07",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14679,
+  "training_games_priced": 7650,
+  "training_ids_sha256": "84c5ef57bbc45dcddd275a2b7078320bd7d818fe96d1b6e090e0022b6e803a4f"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "c01b9f6238479e13e9d2ece7d13b2c7944df1eb2"
+}

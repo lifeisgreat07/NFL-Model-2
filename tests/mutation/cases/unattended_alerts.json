@@ -1,0 +1,29 @@
+{
+  "target": ".github/workflows/deploy-pages.yml",
+  "tests": "tests/test_alerts.py",
+  "cases": [
+    {
+      "id": "pages-deploy-fails-silently",
+      "why": "the deploy job's alert runs only on success, so a site that built and did not deploy stays on its last version with nothing said",
+      "find": "      - name: Raise an alert\n        if: failure()\n        env:\n          GH_TOKEN: ${{ github.token }}\n          GH_REPO: ${{ github.repository }}\n        run: |\n          printf 'The site built but did not deploy;",
+      "replace": "      - name: Raise an alert\n        if: success()\n        env:\n          GH_TOKEN: ${{ github.token }}\n          GH_REPO: ${{ github.repository }}\n        run: |\n          printf 'The site built but did not deploy;",
+      "expect_caught_by": "test_every_job_of_the_pages_deploy_alerts"
+    },
+    {
+      "id": "override-watch-fails-silently",
+      "target": ".github/workflows/nfl-override-watch.yml",
+      "why": "the watch fails and raises nothing, so the override waiting before the lock is the silence weeks 7 and 8 already paid for",
+      "find": "      - name: Raise an alert\n        if: failure()\n",
+      "replace": "      - name: Raise an alert\n        if: cancelled()\n",
+      "expect_caught_by": "test_every_unattended_workflow_opens_an_issue_when_it_fails"
+    },
+    {
+      "id": "unattended-class-loses-workflow-run",
+      "target": "tests/test_alerts.py",
+      "why": "the scan stops counting workflow_run writers, so the Pages deploy could drop its alert with the guard still green",
+      "find": "                  and (re.search(r'(?m)^  (schedule|workflow_run):', p.read_text(encoding='utf-8'))\n",
+      "replace": "                  and (re.search(r'(?m)^  (schedule):', p.read_text(encoding='utf-8'))\n",
+      "expect_caught_by": "test_a_silent_workflow_run_writer_is_in_the_class_and_is_caught"
+    }
+  ]
+}

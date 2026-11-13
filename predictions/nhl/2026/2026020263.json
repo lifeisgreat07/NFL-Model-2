@@ -1,0 +1,110 @@
+{
+ "game_id": "2026020263",
+ "season": 2026,
+ "slate": "2026-11-06",
+ "start_utc": "2026-11-07T01:00:00Z",
+ "home": "MIN",
+ "away": "SJS",
+ "model_a": 0.7384,
+ "model_b": 0.7204,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 1.478103,
+  "shot_matchup": 5.32163,
+  "goalie_matchup_2000": 0.007554
+ },
+ "market": {
+  "game_id": "2026020263",
+  "start_utc": "2026-11-07T01:00:00Z",
+  "home": "MIN",
+  "away": "SJS",
+  "book": "DraftKings",
+  "home_price": -285.0,
+  "away_price": 230.0,
+  "home_prob": 0.7095,
+  "read_utc": "2026-11-06T21:01:24Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482661,
+   "name": "Jesper Wallstedt",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/WildJoeRadio/status/2118743595977163244?a=lDpo7B3FvB7jKM5Xmro&s=20"
+  },
+  "away": {
+   "player_id": 8482137,
+   "name": "Yaroslav Askarov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Sheng_Peng/status/2118766801584865596?a=HQijgK40TbHLrEtt-v4&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-06",
+  "read_utc": "2026-11-06T21:01:24Z",
+  "home": [
+   {
+    "name": "Brock Faber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Gustavsson",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jared Spurgeon",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marcus Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexander Wennberg",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Igor Chernyshov",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-06T21:01:24Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-05",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14664,
+  "training_games_priced": 7637,
+  "training_ids_sha256": "ad453411881130839d2d80f7226341252d309e2b208ca590c90650df6ab0aa0b"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "1fc72ce91b7c3e155669a2af3d89673a9a0b7fac"
+}

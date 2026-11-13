@@ -1,0 +1,79 @@
+{
+ "game_id": "401909288",
+ "season": 2026,
+ "slate": "2026-11-06",
+ "start_utc": "2026-11-07T00:00:00Z",
+ "home": "CHA",
+ "away": "BOS",
+ "model_a": 0.2834,
+ "model_b": 0.2368,
+ "pick": "BOS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7525,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": -6.067197,
+  "efficiency_matchup": -6.030936,
+  "availability_matchup": -0.247476
+ },
+ "market": {
+  "game_id": "401909288",
+  "home": "CHA",
+  "away": "BOS",
+  "start_utc": "2026-11-07T00:00:00Z",
+  "read_utc": "2026-11-06T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 312.0,
+  "away_price": -396.0,
+  "home_prob": 0.2331
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-06T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "3032979",
+    "name": "Dennis Schroder",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066218",
+    "name": "Grant Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061575",
+    "name": "Kon Knueppel",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433249",
+    "name": "Moussa Diabate",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4433188",
+    "name": "Devin Carter",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-06T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-05",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14181,
+  "training_games_priced": 14140,
+  "training_ids_sha256": "5ba09b265ad27c14c359a5f56ef377cd914c93c31e27f1d7b022f6f3c89db8ea"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "95fbe74f196629144b73020fc235786939a40563"
+}

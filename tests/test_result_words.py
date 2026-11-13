@@ -16,9 +16,12 @@ from pathlib import Path
 
 import pytest
 
+from src.core.template_parts import APP_SCRIPT
+from tests.page_script import day_script
+
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = {
-    'nfl': ROOT / 'src' / 'dashboard' / 'app.js',
+    'nfl': APP_SCRIPT,
     'nhl': ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js',
     'nba': ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js',
 }
@@ -45,14 +48,14 @@ OLD = re.compile(r"""(['"`>])(Right|Wrong|right|wrong)(['"`<])""")
 
 @pytest.mark.parametrize('sport', SOURCES)
 def test_every_result_label_says_correct_or_missed(sport):
-    src = SOURCES[sport].read_text(encoding='utf-8')
+    src = (day_script(sport) if sport in ('nhl', 'nba') else SOURCES[sport].read_text(encoding='utf-8'))
     for line in LABELS[sport]:
         assert line in src, f'{sport}: {line.strip()[:60]}'
 
 
 @pytest.mark.parametrize('sport', SOURCES)
 def test_no_label_says_right_or_wrong(sport):
-    src = SOURCES[sport].read_text(encoding='utf-8')
+    src = (day_script(sport) if sport in ('nhl', 'nba') else SOURCES[sport].read_text(encoding='utf-8'))
     # class names and data values ('right', 'wrong' as a result code) are not labels
     hits = [m.group(0) for m in OLD.finditer(src)
             if not re.search(r"(cls: |result === |class=\"[^\"]*$|\.result\s*===\s*)$", src[max(0, m.start() - 40):m.start() + 1])]

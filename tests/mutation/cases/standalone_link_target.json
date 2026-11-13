@@ -35,7 +35,7 @@
     },
     {
       "id": "one-logo-image-sends-its-referrer",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_team.js",
       "tests": "tests/test_outbound_hygiene.py",
       "why": "one of the four logo images drops referrerpolicy -- the ordinary result of adding a fifth by copying an old one -- and ESPN is told which page asked (Stage 30 item 9).",
       "find": "<img class=\"dive-logo\" src=\"${teamLogo(team)}\" alt=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer\"",

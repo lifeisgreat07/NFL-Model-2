@@ -1,0 +1,90 @@
+{
+ "game_id": "2026020280",
+ "season": 2026,
+ "slate": "2026-11-08",
+ "start_utc": "2026-11-08T23:00:00Z",
+ "home": "WPG",
+ "away": "TBL",
+ "model_a": 0.3923,
+ "model_b": 0.4369,
+ "pick": "TBL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.103521,
+  "shot_matchup": -3.687881,
+  "goalie_matchup_2000": -0.003355
+ },
+ "market": {
+  "game_id": "2026020280",
+  "start_utc": "2026-11-08T23:00:00Z",
+  "home": "WPG",
+  "away": "TBL",
+  "book": "DraftKings",
+  "home_price": 124.0,
+  "away_price": -148.0,
+  "home_prob": 0.4279,
+  "read_utc": "2026-11-08T21:01:35Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479973,
+   "name": "Stuart Skinner",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/MitchellClinton/status/2119435918264418724"
+  },
+  "away": {
+   "player_id": 8476883,
+   "name": "Andrei Vasilevskiy",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-08",
+  "read_utc": "2026-11-08T21:01:35Z",
+  "home": [
+   {
+    "name": "Elias Salomonsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Josh Morrissey",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Bjugstad",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Vladislav Namestnikov",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Yanni Gourde",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-08T21:01:35Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-07",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14679,
+  "training_games_priced": 7650,
+  "training_ids_sha256": "84c5ef57bbc45dcddd275a2b7078320bd7d818fe96d1b6e090e0022b6e803a4f"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "c01b9f6238479e13e9d2ece7d13b2c7944df1eb2"
+}

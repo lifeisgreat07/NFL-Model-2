@@ -4,6 +4,7 @@
  "cases": [
   {
    "id": "pdf-none-silent",
+   "target": "src/dashboard/app_board.js",
    "why": "the Print / PDF link vanishes again with nothing in its place (Stage 77 item 27, N2).",
    "find": "      pdfNone.hidden = hasPdf;\n",
    "replace": "      pdfNone.hidden = true;\n",
@@ -11,6 +12,7 @@
   },
   {
    "id": "pdf-none-preview-generic",
+   "target": "src/dashboard/app_board.js",
    "why": "a preview week gives the generic sentence instead of saying the PDF comes at the lock.",
    "find": "  return weekData && weekData.preview\n",
    "replace": "  return false\n",

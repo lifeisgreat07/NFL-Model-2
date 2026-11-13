@@ -22,9 +22,8 @@ import struct
 import subprocess
 from pathlib import Path
 
-import pytest
-
 from src.site import build
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 SW = (ROOT / 'src' / 'site' / 'sw.js').read_text(encoding='utf-8')
@@ -35,8 +34,7 @@ NODE = shutil.which('node')
 
 
 def node(code):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr
     return json.loads(r.stdout)
@@ -220,5 +218,7 @@ def test_a_page_without_the_manifest_link_gets_nothing(tmp_path):
 
 def test_the_site_build_adds_it_last():
     src = Path(build.__file__).read_text(encoding='utf-8')
-    assert '    add_expand(out)\n    add_offline(out)\n    return results' in src, \
+    # Stage 88 item 5: the CSP pass comes just before it, and inject_offline
+    # re-hardens each page it adds its script to, so the hash is of the pages as published.
+    assert '    add_expand(out)\n    add_csp(out)\n    add_offline(out)\n    return results' in src, \
         'last, so the worker is named for the pages as published'

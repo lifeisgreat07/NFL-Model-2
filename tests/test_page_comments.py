@@ -31,6 +31,7 @@ ROOT = Path(__file__).resolve().parents[1]
 from src.core import page_comments as pc
 from src.core.template_parts import read_template
 from src.sports.nfl import generate_dashboard as gd
+from tests.optional import require_tool
 
 TEMPLATE = read_template()
 NODE = shutil.which('node')
@@ -146,8 +147,7 @@ def test_no_comment_is_left_outside_scripts(stripped):
 
 
 def test_every_script_on_the_stripped_template_compiles(stripped):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     found = re.findall(r'<script\b([^>]*)>(.*?)</script>', stripped, re.S)
     # The structured data (Stage 47 item 12) is JSON, not script: it must
     # still parse as JSON after stripping, which also proves no "//" inside
@@ -205,10 +205,11 @@ def test_the_line_check_can_fail():
 
 def test_the_build_strips_the_template_before_filling_it():
     src = (ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py').read_text(encoding='utf-8')
-    read = src.index('template = read_template()')
-    strip = src.index('template = strip_page_comments(template)')
-    fill = src.index("html = template.replace(")
-    assert read < strip < fill
+    # The NFL's template is finished by the renderer every page shares (Stage 87 item 3), which strips the
+    # comments and only then fills the placeholders.
+    assert 'html = page_render.finish(read_template(), fills)' in src
+    core = (ROOT / 'src' / 'core' / 'page_render.py').read_text(encoding='utf-8')
+    assert 'fill(strip_page_comments(template), fills)' in core
 
 
 def test_the_page_carries_only_the_agent_log_it_reads():
@@ -216,7 +217,10 @@ def test_the_page_carries_only_the_agent_log_it_reads():
     assert gd.agent_log_for_page(log) == {'generated_utc': 't', 'summary': {'audits': 3}}
     assert gd.agent_log_for_page(None) is None
     reads = set(re.findall(r'agentLog\.(\w+)', TEMPLATE))
-    assert reads <= {'generated_utc', 'summary'}, f'the page reads {reads} from the agent log'
+    assert reads <= {'generated_utc', 'summary', 'recent'}, f'the page reads {reads} from the agent log'
+    # Stage 90 item 3: the agents' latest outputs reach the page, and the per-audit rows still do not.
+    log['recent'] = [{'agent': 'Booth'}]
+    assert gd.agent_log_for_page(log) == {'generated_utc': 't', 'summary': {'audits': 3}, 'recent': [{'agent': 'Booth'}]}
 
 
 def test_every_data_fill_is_compact():
@@ -231,5 +235,5 @@ def test_every_other_page_is_stripped_before_its_fills(rel):
     stylesheet's 58 KB of comments that the NFL's build strips. Each now
     strips its assembled template, and before any data is filled in."""
     src = (Path(__file__).resolve().parents[1] / rel).read_text(encoding='utf-8')
-    strip = src.index('html = strip_page_comments(html)')
-    assert strip < src.index("html = html.replace('__FONT_FACES__'"), rel
+    # Each now finishes through the renderer every page shares (Stage 87 item 3), which strips before it fills.
+    assert 'page_render.finish(page_render.assemble(' in src, rel

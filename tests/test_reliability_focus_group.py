@@ -21,6 +21,7 @@ import subprocess
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -97,8 +98,7 @@ def source():
 
 @pytest.fixture(scope='module')
 def run(source):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     fn = re.search(r'function initReliabilityDiagram\(\)\{.*?\n\}\n', source, re.S)
     assert fn, 'initReliabilityDiagram is gone -- re-anchor this guard'
     js = HARNESS + fn.group(0) + '\ninitReliabilityDiagram();\n' + DRIVE

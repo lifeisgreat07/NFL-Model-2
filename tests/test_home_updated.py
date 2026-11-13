@@ -18,9 +18,8 @@ import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
 
-import pytest
-
 from src.site import home
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'site' / 'home' / 'home.js').read_text(encoding='utf-8')
@@ -29,8 +28,7 @@ NODE = shutil.which('node')
 
 
 def node(code, tz=None):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     env = {**os.environ, 'TZ': tz} if tz else None
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8', env=env)
     assert r.returncode == 0, r.stderr

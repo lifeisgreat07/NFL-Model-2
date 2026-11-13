@@ -27,14 +27,17 @@ from pathlib import Path
 
 import pytest
 
+from src.core.template_parts import APP_SCRIPT
 from src.site import build
+from tests.optional import require_tool
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 PREFS = (ROOT / 'src' / 'core' / 'prefs.js').read_text(encoding='utf-8')
 SHEET = (ROOT / 'src' / 'core' / 'sheet.js').read_text(encoding='utf-8')
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
-NHL = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
-NBA = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
+NHL = day_script('nhl')
+NBA = day_script('nba')
 CSS = (ROOT / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8')
 NODE = shutil.which('node')
 STORE = ("function store(seed){ const m = Object.assign({}, seed); return {getItem: k => k in m ? m[k] : null,"
@@ -48,8 +51,7 @@ def fn(src, name):
 
 
 def node(code, tz='America/New_York'):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8', env={**os.environ, 'TZ': tz})
     assert r.returncode == 0, r.stderr
     return json.loads(r.stdout)
@@ -120,7 +122,7 @@ def test_the_day_sports_print_a_start_in_the_chosen_zone(src, name):
     page = (ROOT / 'src' / 'sports' / name / 'pages' / 'page.html').read_text(encoding='utf-8')
     assert '{% include "favs.js" %}\n{% include "prefs.js" %}\n' in page
     site = (ROOT / 'src' / 'sports' / name / 'site.py').read_text(encoding='utf-8')
-    assert """.replace('{% include "prefs.js" %}', PREFS_JS.read_text(encoding='utf-8'))""" in site
+    assert "'prefs.js': PREFS_JS" in site
 
 
 # ---------- the keys ----------
@@ -206,4 +208,4 @@ def test_the_build_puts_the_sheet_on_a_page_once(tmp_path):
     other = tmp_path / 'o.html'
     other.write_text('<body>none</body>', encoding='utf-8')
     assert not build.inject_sheet(other, block)
-    assert '    add_sheet(out)\n    add_scores(out)\n    add_share(out)\n    add_expand(out)\n    add_offline(out)\n    return results' in Path(build.__file__).read_text(encoding='utf-8')
+    assert '    add_sheet(out)\n    add_scores(out)\n    add_share(out)\n    add_expand(out)\n    add_csp(out)\n    add_offline(out)\n    return results' in Path(build.__file__).read_text(encoding='utf-8')

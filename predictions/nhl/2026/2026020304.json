@@ -1,0 +1,74 @@
+{
+ "game_id": "2026020304",
+ "season": 2026,
+ "slate": "2026-11-12",
+ "start_utc": "2026-11-13T00:00:00Z",
+ "home": "CBJ",
+ "away": "TBL",
+ "model_a": 0.4386,
+ "model_b": 0.5174,
+ "pick": "CBJ",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.935284,
+  "shot_matchup": -2.348465,
+  "goalie_matchup_2000": 0.00059
+ },
+ "market": {
+  "game_id": "2026020304",
+  "start_utc": "2026-11-13T00:00:00Z",
+  "home": "CBJ",
+  "away": "TBL",
+  "book": "DraftKings",
+  "home_price": -105.0,
+  "away_price": -115.0,
+  "home_prob": 0.4892,
+  "read_utc": "2026-11-12T21:01:40Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482982,
+   "name": "Jet Greaves",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Aportzline/status/2120914157566623947?a=ulRAIWvIXb1CIBRWlZg&s=20"
+  },
+  "away": {
+   "player_id": 8483710,
+   "name": "Dennis Hildeby",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-12",
+  "read_utc": "2026-11-12T21:01:40Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Brayden Point",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Erik Cernak",
+    "position": "D",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-12T21:01:40Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-11",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14701,
+  "training_games_priced": 7671,
+  "training_ids_sha256": "c8c07a2cc9351fe6197e6c08024568a81c2008d523afe37e93eddaf835c879e7"
+ },
+ "code_sha256": "767e6e57557445fab36ffa13c9889025ac8bc7cd1914f030aef830e6758b86a2",
+ "code_commit": "5dccc89f827c11a6d36ecca34950c6f6076cef8d"
+}

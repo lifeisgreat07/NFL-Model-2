@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "missing-version-history-reads-as-not-yet",
+      "target": "src/dashboard/app_pages.js",
       "why": "the changelog's no-data branch uses the calm 'waiting' kind, so a build that lost its version list looks like a page that simply has nothing yet -- the flattering reading of a broken page.",
       "find": "stateHtml('missing', 'No version history in this build'",
       "replace": "stateHtml('waiting', 'No version history in this build'",
@@ -11,8 +12,9 @@
     },
     {
       "id": "filtered-state-loses-its-undo",
+      "target": "src/dashboard/app_board.js",
       "why": "the Week Board filter hides every game and the page says so with no way back but finding the filter row again -- a dead end the state exists to prevent.",
-      "find": "      {label: 'Show all games', onclick: \"document.querySelector('#filter-row [data-filter=all]').click()\"});",
+      "find": "      {label: 'Show all games', act: 'show-all-games'});",
       "replace": "      null);",
       "expect_caught_by": "test_a_filtered_state_offers_its_undo"
     },
@@ -34,6 +36,7 @@
     },
     {
       "id": "page-starts-fetching-without-a-loading-state",
+      "target": "src/dashboard/app_controls.js",
       "why": "the page loads something after it is built, and there is still no loading state -- the premise the Page states comment rests on stops being true.",
       "find": "const STATE_KINDS = [",
       "replace": "fetch('data/agent_log.json');\nconst STATE_KINDS = [",

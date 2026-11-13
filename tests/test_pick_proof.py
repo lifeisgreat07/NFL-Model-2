@@ -42,13 +42,24 @@ def test_a_shallow_clone_or_a_git_failure_gives_nothing(tmp_path):
     assert proof(tmp_path, tmp_path, broken) == {}
 
 
-def test_this_repository_proves_its_first_nhl_picks():
-    if shutil.which('git') is None or proof(ROOT / 'predictions' / 'nhl' / '2026') == {}:
+@pytest.mark.parametrize('sport', ('nhl', 'nba'))
+def test_every_committed_pick_entered_history_before_its_start_and_never_changed(sport):
+    """Stage 96 item 52, the parity table's lock-proof row: the NFL's weeks
+    are held by tests/test_lock_proof.py; this holds every NHL and NBA pick
+    file in the repository's own history. Each was added by a commit made
+    before the start its own file records (not the schedule's, which a
+    postponed game leaves), and no later commit touched it. Skipped where
+    there is no history to read (a shallow clone, no git)."""
+    folder = ROOT / 'predictions' / sport / '2026'
+    if shutil.which('git') is None or proof(folder) == {}:
         pytest.skip('no git history here')
-    out = proof(ROOT / 'predictions' / 'nhl' / '2026')
-    sched = json.loads((ROOT / 'results' / 'nhl' / 'schedule_2026.json').read_text(encoding='utf-8'))
-    start = {str(g['game_id']): g['start_utc'] for g in sched['games']}
-    assert out and all(v['committed'] < start[k] for k, v in out.items() if k in start)
+    out = proof(folder)
+    files = sorted(folder.glob('*.json'))
+    assert files and {p.stem for p in files} <= set(out), 'a committed pick git cannot place'
+    for p in files:
+        start = json.loads(p.read_text(encoding='utf-8'))['start_utc']
+        assert out[p.stem]['committed'] < start, f'{sport} {p.stem} entered history at or after its start'
+        assert out[p.stem]['changes'] == 0, f'{sport} {p.stem} was changed after it was saved'
 
 
 @pytest.mark.parametrize('sport', ('nhl', 'nba'))
@@ -59,5 +70,8 @@ def test_the_page_and_the_grades_carry_it(sport):
     assert re.search(r'\$\{proofLine\(g, p, (DATA|BD)\.proof\)\}', js)
     assert "before ? 'before the start' : '<b>after the start</b>'" in js
     assert "if(!pr || !/^[0-9a-f]{40}$/.test(pr.sha)) return '';" in js
+    # The grades come from the day sports' shared grade (Stage 87 item 2).
     daily = (ROOT / 'src' / 'sports' / sport / 'daily.py').read_text(encoding='utf-8')
-    assert "'saved_utc': pick.get('saved_utc')})" in daily
+    assert 'from src.core.day_picks import grade as grade' in daily or 'day_picks.grade(' in daily
+    shared = (ROOT / 'src' / 'core' / 'day_picks.py').read_text(encoding='utf-8')
+    assert "'saved_utc': pick.get('saved_utc')})" in shared

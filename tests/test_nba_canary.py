@@ -77,6 +77,21 @@ def test_injuries_are_parsed_strictly():
     assert canary.check_injuries(state(s, {'injuries': INJ_OK})) == '1 players listed, 1 Out'
 
 
+def test_a_row_the_daily_run_would_leave_out_still_fails_the_canary():
+    """Stage 83 item 5: the daily run picks that team's games without
+    availability; the canary still fails, so a new status reaches Mark."""
+    s = sched(('1', 'ORL', 'ATL', 'scheduled', '2026-10-21 23:00'))
+    bad = {'injuries': [{'injuries': INJ_OK['injuries'][0]['injuries'] + [{'status': 'Rest', 'athlete': {
+        'displayName': 'B', 'links': [{'href': 'https://www.espn.com/nba/player/_/id/12/b'}],
+        'team': {'abbreviation': 'ATL'}}}]}]}
+    try:
+        canary.check_injuries(state(s, {'injuries': bad}))
+    except ValueError as exc:
+        assert "rows not read: ATL: B: unknown status 'Rest'" in str(exc)
+    else:
+        raise AssertionError('an unreadable row passed the canary')
+
+
 def test_kalshi_with_no_quoted_game_is_noted_not_failed():
     assert canary.check_kalshi(state(pages={'kalshi': {'markets': []}})).startswith('0 games quoted')
 

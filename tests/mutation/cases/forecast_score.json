@@ -19,8 +19,8 @@
     {
       "id": "forecast-score-games-not-paired",
       "why": "a game only some forecasts priced is scored for those that did, so the three scores are averages over different games and the forecast missing a hard game looks better for missing it.",
-      "find": "        if any(not isinstance(p, (int, float)) for p in probs):\n            continue\n        for (name, _), p in zip(FORECAST_SOURCES, probs):\n",
-      "replace": "        for (name, _), p in zip(FORECAST_SOURCES, probs):\n            if not isinstance(p, (int, float)):\n                continue\n",
+      "find": "        if len(probs) != len(raw):\n            continue\n        for (name, _), p in zip(FORECAST_SOURCES, probs):\n",
+      "replace": "        for (name, _), p in zip(FORECAST_SOURCES, probs):\n",
       "expect_caught_by": "test_all_three_are_scored_over_the_same_games"
     },
     {
@@ -46,7 +46,7 @@
     },
     {
       "id": "forecast-score-renders-with-no-score",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the page draws the block before 50 games are graded, and a null score throws inside it, taking the rest of Season Accuracy with it.",
       "find": "function forecastScoreHtml(s){\n  if(!s) return '';\n",
       "replace": "function forecastScoreHtml(s){\n",
@@ -54,7 +54,7 @@
     },
     {
       "id": "forecast-score-ranked-worst-first",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the table leads with the worst score, the opposite of the 'lower is better' sentence above it.",
       "find": "].sort((a, b) => a.score - b.score);",
       "replace": "].sort((a, b) => b.score - a.score);",
@@ -62,7 +62,7 @@
     },
     {
       "id": "forecast-score-never-drawn",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the function exists and passes its own tests, but Season Accuracy never calls it -- the score is computed every week and shown nowhere.",
       "find": "  el.innerHTML = cardsHtml + forecastScoreHtml(accuracy.forecast_score) + cumulativeChartHtml",
       "replace": "  el.innerHTML = cardsHtml + cumulativeChartHtml",

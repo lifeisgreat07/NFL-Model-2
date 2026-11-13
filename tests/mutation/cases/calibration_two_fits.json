@@ -1,0 +1,22 @@
+{
+  "target": "src/sports/nba/pages/nba.js",
+  "tests": "tests/test_calibration_two_fits.py",
+  "cases": [
+    {
+      "id": "nba-page-calls-the-calibration-one-fit",
+      "why": "the NBA page prints an intercept and a slope side by side with nothing saying they come from two fits",
+      "find": "They are two fits, not one: the intercept is fitted with the slope held at 1 (calibration in the large), and the slope is fitted with an intercept of its own. ",
+      "replace": "",
+      "expect_caught_by": "test_each_page_says_the_pair_is_two_fits",
+      "target": "src/core/day_board.js"
+    },
+    {
+      "id": "forward-file-drops-the-fits-note",
+      "target": "src/core/forward_test.py",
+      "why": "the forward-test file carries the pair without saying how it was fitted",
+      "find": "'level': level, 'fits': FITS}\n",
+      "replace": "'level': level}\n",
+      "expect_caught_by": "test_the_intercept_and_the_slope_are_two_fits_and_the_file_says_so"
+    }
+  ]
+}

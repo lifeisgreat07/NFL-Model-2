@@ -16,18 +16,18 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from src.core.template_parts import APP_SCRIPT
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 BODY = (ROOT / 'src' / 'dashboard' / 'body.html').read_text(encoding='utf-8')
 CSS = (ROOT / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8')
 NODE = shutil.which('node')
 
 
 def pdf_none(weeks):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     fn = re.search(r'function pdfNoneText\(weekData\)\{.*?\n\}\n', APP, re.S)
     assert fn, 'pdfNoneText is not findable -- re-anchor this guard'
     r = subprocess.run([NODE, '-e', fn.group(0) + 'console.log(JSON.stringify(%s.map(pdfNoneText)));' % json.dumps(weeks)],

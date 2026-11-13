@@ -11,6 +11,7 @@
     },
     {
       "id": "nba-rat-home-term-penalised",
+      "target": "src/core/day_ratings.py",
       "why": "the ridge penalty falls on the home term too, so the home edge shrinks with lambda, against the registration.",
       "find": "    penalty[0] = 0.0",
       "replace": "    penalty[0] = alpha",

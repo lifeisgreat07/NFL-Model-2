@@ -15,20 +15,23 @@ Run with: pytest tests/test_share_card.py -v
 """
 import inspect
 import json
-import re
 import shutil
 import subprocess
 from pathlib import Path
 
 import pytest
 
+from src.core.template_parts import APP_SCRIPT
 from src.site import build
+from tests.js_source import function_source
+from tests.optional import require_tool
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'core' / 'share_card.js').read_text(encoding='utf-8')
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
-NHL = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
-NBA = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
+NHL = day_script('nhl')
+NBA = day_script('nba')
 NODE = shutil.which('node')
 
 CARD = {'sport': 'NFL', 'away': 'SEA', 'home': 'DEN', 'colours': ['#69BE28', '#FB4F14'], 'lead': 'Model B', 'team': 'SEA',
@@ -39,8 +42,7 @@ CARD = {'sport': 'NFL', 'away': 'SEA', 'home': 'DEN', 'colours': ['#69BE28', '#F
 
 
 def node(code):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr
     return json.loads(r.stdout)
@@ -48,12 +50,6 @@ def node(code):
 
 def pure():
     return JS[:JS.index('(function(){')]
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 RECORDER = r"""

@@ -50,7 +50,7 @@ def test_the_sport_scripts_share_one_escape(sport):
 @pytest.mark.parametrize('sport', ('nhl', 'nba'))
 def test_the_build_fills_the_include(sport):
     src = (ROOT / BUILDS[sport]).read_text(encoding='utf-8')
-    assert """.replace('{% include "escape.js" %}', ESCAPE_JS.read_text(encoding='utf-8'))""" in src
+    assert "'escape.js': ESCAPE_JS" in src
     assert page_fill.ESCAPE_JS.read_text(encoding='utf-8').count('function escapeHtml(') == 1
 
 

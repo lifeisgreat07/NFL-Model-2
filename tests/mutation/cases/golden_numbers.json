@@ -1,0 +1,22 @@
+{
+  "target": "src/sports/nhl/backtest.py",
+  "tests": "tests/test_golden_numbers.py",
+  "cases": [
+    {
+      "id": "nhl-estimator-regularised-harder",
+      "target": "src/core/day_backtest.py",
+      "why": "the logistic regression's C moves from the registered 1.0, a change no property test sees because every probability still points the right way",
+      "find": "    return make_pipeline(StandardScaler(), LogisticRegression(C=1.0, l1_ratio=0.0, max_iter=1000))\n",
+      "replace": "    return make_pipeline(StandardScaler(), LogisticRegression(C=0.05, l1_ratio=0.0, max_iter=1000))\n",
+      "expect_caught_by": "test_model_a_scores_its_golden_numbers"
+    },
+    {
+      "id": "nba-efficiency-matchup-reshaped",
+      "target": "src/sports/nba/ratings.py",
+      "why": "the efficiency matchup is reshaped (halved and cubed), keeping its sign, so only a fixed number shows the model now scores differently",
+      "find": "                'efficiency_matchup': self.efficiency.get(home, 0.0) - self.efficiency.get(away, 0.0)}\n",
+      "replace": "                'efficiency_matchup': 0.5 * (self.efficiency.get(home, 0.0) - self.efficiency.get(away, 0.0)) ** 3}\n",
+      "expect_caught_by": "test_model_a_scores_its_golden_numbers"
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+ "game_id": "2026020287",
+ "season": 2026,
+ "slate": "2026-11-10",
+ "start_utc": "2026-11-11T00:00:00Z",
+ "home": "MTL",
+ "away": "MIN",
+ "model_a": 0.471,
+ "model_b": 0.4526,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.301411,
+  "shot_matchup": -3.054264,
+  "goalie_matchup_2000": -0.001599
+ },
+ "market": {
+  "game_id": "2026020287",
+  "start_utc": "2026-11-11T00:00:00Z",
+  "home": "MTL",
+  "away": "MIN",
+  "book": "DraftKings",
+  "home_price": 105.0,
+  "away_price": -125.0,
+  "home_prob": 0.4675,
+  "read_utc": "2026-11-10T21:01:41Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8484170,
+   "name": "Jacob Fowler",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/TSN1200/status/2120177543676313966?a=PUSH0k_VRNZBSF5ok_w&s=20"
+  },
+  "away": {
+   "player_id": 8482661,
+   "name": "Jesper Wallstedt",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/RussoHockey/status/2120243688714457283"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-10",
+  "read_utc": "2026-11-10T21:01:41Z",
+  "home": [
+   {
+    "name": "Bryce Pickford",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ivan Demidov",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jake Evans",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Lucas Condotta",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mike Matheson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Sam Montembeault",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Brock Faber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Gustavsson",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Michael McCarron",
+    "position": "C",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-10T21:01:41Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-09",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14688,
+  "training_games_priced": 7658,
+  "training_ids_sha256": "67c2a3f54dca9c05f30bb71fd6316bb529cadeced0fe5493a26bb356539ac2e0"
+ },
+ "code_sha256": "63f42334834f3d3baf7bade876c1fc04c6ec848289eec884d0b8cd14ff7c67ef",
+ "code_commit": "d62c944bd017dec7cb3d76833aa97ac8ad6bd145"
+}

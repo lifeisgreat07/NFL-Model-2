@@ -25,14 +25,14 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
-
 from src.core.template_parts import JOINED_TEMPLATE
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
 
 from src.sports.nfl import generate_dashboard as gd
+from tests.js_source import function_source
+from tests.optional import require_tool
 
 NODE = shutil.which('node')
 FUNCTIONS = ('gradedTagHtml', 'pickBadge', 'diveResultHtml', 'diveSummaryHtml')
@@ -42,15 +42,8 @@ def template():
     return TEMPLATE.read_text(encoding='utf-8')
 
 
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
-
-
 def run(expr):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = ''.join(function_source(template(), f) for f in FUNCTIONS) + \
         f'\nprocess.stdout.write(JSON.stringify({expr}));'
     r = subprocess.run([NODE, '-e', js], capture_output=True, encoding='utf-8')

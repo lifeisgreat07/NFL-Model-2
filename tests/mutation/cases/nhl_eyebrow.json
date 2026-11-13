@@ -14,14 +14,16 @@
    "why": "the week after this one reads Coming Up, so the board never says Next Week.",
    "find": "  if(week === dayIso(next)) return 'Next Week';\n",
    "replace": "",
-   "expect_caught_by": "test_the_eyebrow_says_which_week_it_is"
+   "expect_caught_by": "test_the_eyebrow_says_which_week_it_is",
+   "target": "src/core/day_board.js"
   },
   {
    "id": "nhl-eyebrow-past-reads-coming",
    "why": "a past week reads Coming Up.",
    "find": "  return week > thisWeek ? 'Coming Up' : 'Earlier';\n",
    "replace": "  return 'Coming Up';\n",
-   "expect_caught_by": "test_the_eyebrow_says_which_week_it_is"
+   "expect_caught_by": "test_the_eyebrow_says_which_week_it_is",
+   "target": "src/core/day_board.js"
   },
   {
    "id": "nhl-eyebrow-check-unwired",

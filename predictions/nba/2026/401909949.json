@@ -1,0 +1,64 @@
+{
+ "game_id": "401909949",
+ "season": 2026,
+ "slate": "2026-11-08",
+ "start_utc": "2026-11-09T01:00:00Z",
+ "home": "MIL",
+ "away": "BOS",
+ "model_a": 0.2058,
+ "model_b": 0.1511,
+ "pick": "BOS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": -11.530248,
+  "efficiency_matchup": -11.504027,
+  "availability_matchup": 0.0
+ },
+ "market": {
+  "game_id": "401909949",
+  "home": "MIL",
+  "away": "BOS",
+  "start_utc": "2026-11-09T01:00:00Z",
+  "read_utc": "2026-11-08T21:31:31Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 527.0,
+  "away_price": -740.0,
+  "home_prob": 0.1533
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-08T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4277843",
+    "name": "Gary Trent Jr.",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4351852",
+    "name": "Mitchell Robinson",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-08T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-07",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14197,
+  "training_games_priced": 14156,
+  "training_ids_sha256": "d16e1b05cf3e9a0b549ab3a5cb8b23752915c3bbde7d7f62805361a56cbeac65"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "646d105833d86e5e561f9e7510eaf67d1d2c8e4d"
+}

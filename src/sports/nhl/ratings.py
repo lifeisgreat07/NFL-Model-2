@@ -30,6 +30,9 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 
+from src.core.day_ratings import ridge_ratings as ridge_ratings
+from src.core.day_ratings import weights as weights
+
 #: Older club -> the current club whose history it is (the registration's
 #: team identity). Vegas and Seattle need no entry: they start with none.
 FRANCHISE = {'ATL': 'WPG', 'PHX': 'UTA', 'ARI': 'UTA'}
@@ -53,32 +56,6 @@ def prepare(games: pd.DataFrame) -> pd.DataFrame:
     g['shot_margin'] = g['home_sog'] - g['away_sog']
     g['home_win'] = (g['home_score'] > g['away_score']).astype(int)
     return g.sort_values(['day', 'game_id'], kind='stable').reset_index(drop=True)
-
-
-def weights(days: pd.Series, day: pd.Timestamp, half_life: float) -> npt.NDArray[np.float64]:
-    age = (day - days).dt.days.to_numpy(dtype=float)
-    out: npt.NDArray[np.float64] = np.power(0.5, age / half_life)
-    return out
-
-
-def ridge_ratings(train: pd.DataFrame, value: str, w: npt.NDArray[np.float64],
-                  alpha: float = RIDGE) -> tuple[float, dict[str, float]]:
-    """(home edge, rating per team) from a weighted ridge fit of
-    `value = edge + r[home] - r[away]`, penalising the ratings only."""
-    teams = sorted(set(train['home']) | set(train['away']))
-    idx = {t: i + 1 for i, t in enumerate(teams)}
-    n, k = len(train), len(teams) + 1
-    x = np.zeros((n, k))
-    x[:, 0] = 1.0
-    rows = np.arange(n)
-    x[rows, train['home'].map(idx).to_numpy()] = 1.0
-    x[rows, train['away'].map(idx).to_numpy()] = -1.0
-    y = train[value].to_numpy(dtype=float)
-    xtw = x.T * w
-    penalty = np.full(k, alpha)
-    penalty[0] = 0.0
-    beta = np.linalg.solve(xtw @ x + np.diag(penalty), xtw @ y)
-    return float(beta[0]), {t: float(beta[i]) for t, i in idx.items()}
 
 
 def goalie_terms(train: pd.DataFrame, w: npt.NDArray[np.float64]) -> pd.DataFrame:
@@ -124,8 +101,8 @@ class DayRatings:
 def day_ratings(train: pd.DataFrame, day: pd.Timestamp, half_life: float) -> DayRatings:
     """The ratings before `day`, from `train` (games that ended before it)."""
     w = weights(train['day'], day, half_life)
-    _, goal = ridge_ratings(train, 'goal_margin', w)
-    _, shot = ridge_ratings(train, 'shot_margin', w)
+    _, goal = ridge_ratings(train, 'goal_margin', w, RIDGE)
+    _, shot = ridge_ratings(train, 'shot_margin', w, RIDGE)
     return DayRatings(goal, shot, goalie_terms(train, w))
 
 

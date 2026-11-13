@@ -12,6 +12,7 @@
     },
     {
       "id": "more-sheet-close-leaves-it-reachable",
+      "target": "src/dashboard/app_controls.js",
       "why": "closing the sheet no longer makes it inert again, so the first open-and-close on a phone puts the hidden buttons back in the Tab order and the screen reader's list for the rest of the visit.",
       "find": "  sheet.inert = !open;",
       "replace": "  sheet.inert = false;",
@@ -19,6 +20,7 @@
     },
     {
       "id": "more-sheet-toggled-around-the-one-function",
+      "target": "src/dashboard/app_controls.js",
       "why": "the More button toggles the class directly again, as it did before, so the sheet slides open while still inert -- visible, and not one of its buttons can be reached or pressed.",
       "find": "    setMoreSheetOpen(!document.getElementById('bnav-more-sheet').classList.contains('open'));",
       "replace": "    document.getElementById('bnav-more-sheet').classList.toggle('open');",

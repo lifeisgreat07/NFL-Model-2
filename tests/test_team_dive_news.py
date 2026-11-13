@@ -11,12 +11,9 @@ over each case rather than read.
 Run with: pytest tests/test_team_dive_news.py -v
 """
 import json
-import re
 import shutil
 import subprocess
 from pathlib import Path
-
-import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
 
@@ -24,20 +21,15 @@ ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
 
 from src.sports.nfl import generate_dashboard as gd
+from tests.js_source import function_source
+from tests.optional import require_tool
 
 NODE = shutil.which('node')
 READ = '2026-09-28T02:00:00Z'   # Sunday 22:00 in New York, Monday in UTC
 
 
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
-
-
 def run_js(body):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = TEMPLATE.read_text(encoding='utf-8')
     js = ''.join(function_source(src, n) for n in
                  ('escapeHtml', 'newsWeekKey', 'newsDate', 'teamNewsItems', 'renderTeamNews')) + body

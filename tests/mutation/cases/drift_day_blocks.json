@@ -1,0 +1,35 @@
+{
+  "target": "src/core/day_drift.py",
+  "tests": "tests/test_drift_day_blocks.py",
+  "cases": [
+    {
+      "id": "day-blocks-ignored",
+      "why": "the days are taken and dropped, so games on one day are drawn as if independent again (audit 7, M4)",
+      "find": "    if days is None:\n        idx = rng.integers(0, len(arr), size=(rule['n_resamples'], len(arr)))\n",
+      "replace": "    if True:\n        idx = rng.integers(0, len(arr), size=(rule['n_resamples'], len(arr)))\n",
+      "expect_caught_by": "test_with_days_it_draws_whole_days_by_hand"
+    },
+    {
+      "id": "day-blocks-mean-of-day-means",
+      "why": "a resample averages the days' means, so a light night counts as much as a full slate",
+      "find": "    means = sums[idx].sum(axis=1) / counts[idx].sum(axis=1)\n",
+      "replace": "    means = (sums / counts)[idx].mean(axis=1)\n",
+      "expect_caught_by": "test_with_days_it_draws_whole_days_by_hand"
+    },
+    {
+      "id": "day-blocks-keep-dropped-rows-days",
+      "why": "a game that decides nothing keeps its day, so every later loss is paired with the wrong day",
+      "find": "    return [d for r, d in zip(rows, days, strict=True) if r[0] is not None and r[1] in (0, 1)]\n",
+      "replace": "    return list(days)\n",
+      "expect_caught_by": "test_the_days_kept_are_the_rows_kept"
+    },
+    {
+      "id": "nhl-drift-look-without-days",
+      "target": "src/sports/nhl/drift.py",
+      "why": "the NHL's looks drop the days they are given",
+      "find": "        bound = lower_bound(losses[:n], rule, rule['per_look_level'], days[:n] if days is not None else None)\n",
+      "replace": "        bound = lower_bound(losses[:n], rule, rule['per_look_level'])\n",
+      "expect_caught_by": "test_each_look_resamples_its_own_picks_days"
+    }
+  ]
+}

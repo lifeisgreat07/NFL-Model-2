@@ -4,6 +4,7 @@
  "cases": [
   {
    "id": "compare-on-phones",
+   "target": "src/dashboard/app_board.js",
    "why": "the table is drawn on a phone, where it does not fit (Stage 80 item 55, F9).",
    "find": "function tableView(){ return boardView === 'table' && window.matchMedia(TABLE_MIN).matches; }",
    "replace": "function tableView(){ return boardView === 'table'; }",
@@ -11,6 +12,7 @@
   },
   {
    "id": "compare-raw-chance",
+   "target": "src/dashboard/app_board.js",
    "why": "a column prints the home side's chance for every game, not the side each model picks.",
    "find": "const cell = (g, key) => { const s = cardSide(g[COMPARE_PROB[key]], g); return s ? cardSideText(s) : '—'; };",
    "replace": "const cell = (g, key) => g[COMPARE_PROB[key]] === null || g[COMPARE_PROB[key]] === undefined ? '—' : `${g.home} ${Math.round(g[COMPARE_PROB[key]])}%`;",
@@ -18,6 +20,7 @@
   },
   {
    "id": "compare-weakest-first",
+   "target": "src/dashboard/app_board.js",
    "why": "a chance column sorts weakest first.",
    "find": "const dir = (up ? 1 : -1) * (sort.dir === -1 ? 1 : -1);",
    "replace": "const dir = (up ? 1 : 1) * (sort.dir === -1 ? 1 : -1);",
@@ -25,6 +28,7 @@
   },
   {
    "id": "compare-ignores-board-order",
+   "target": "src/dashboard/app_board.js",
    "why": "the table sorts itself before a column is chosen.",
    "find": "  if(!sort.key) return games;\n",
    "replace": "  if(!sort.key) sort = {key: 'game', dir: -1};\n",
@@ -32,6 +36,7 @@
   },
   {
    "id": "compare-silent-sort",
+   "target": "src/dashboard/app_board.js",
    "why": "no header says how the table is sorted.",
    "find": "aria-sort=\"${compareSortState(key, sort, boardSort)}\"",
    "replace": "aria-sort=\"none\"",
@@ -39,6 +44,7 @@
   },
   {
    "id": "compare-unfiltered",
+   "target": "src/dashboard/app_board.js",
    "why": "the table shows the whole week under a filter.",
    "find": "grid.innerHTML = compareTableHtml(sorted, compareSort,",
    "replace": "grid.innerHTML = compareTableHtml(gamesList, compareSort,",
@@ -46,6 +52,7 @@
   },
   {
    "id": "compare-not-kept",
+   "target": "src/dashboard/app_board.js",
    "why": "the choice of view is forgotten on the next visit.",
    "find": "    try{ localStorage.setItem(VIEW_KEY, boardView); }catch(e2){}\n",
    "replace": "",
@@ -53,6 +60,7 @@
   },
   {
    "id": "compare-focus-lost",
+   "target": "src/dashboard/app_board.js",
    "why": "sorting a column throws the keyboard focus away.",
    "find": "    if(again) again.focus();\n",
    "replace": "",

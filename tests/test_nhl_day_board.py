@@ -22,6 +22,9 @@ from pathlib import Path
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.js_source import function_source
+from tests.optional import require_tool
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = ROOT / 'src' / 'sports' / 'nhl' / 'pages'
@@ -33,13 +36,7 @@ FUNCTIONS = ('dayDate', 'dayIso', 'weekDays', 'defaultDay', 'lockRunFor', 'winne
 
 
 def source():
-    return JS.read_text(encoding='utf-8')
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
+    return day_script('nhl')
 
 
 def const_line(src, name):
@@ -49,8 +46,7 @@ def const_line(src, name):
 
 
 def run_node(body):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = source()
     # No pick saved yet here, so beforeLaunch is false: these rows read as
     # the launched board's (tests/test_nhl_before_launch.py covers the rest).

@@ -59,19 +59,20 @@ def runs(workflow):
     return out
 
 
-TYPES = 'python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py src/core src/site src/sports/nhl src/sports/nba'
+TYPES = 'python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py src/sports/nfl/generate_dashboard.py src/sports/nfl/generate_picks_pdf.py'
+STRICT_TYPES = 'python -m mypy --strict --ignore-missing-imports src/core src/site src/sports/nhl src/sports/nba src/sports/mlb'
 AGENT_TYPES = 'python -m mypy --strict --ignore-missing-imports --follow-imports=silent src/agents'
 
 
 def test_lint_is_what_run_tests_runs():
-    assert commands('lint') == ['ruff check .', TYPES, AGENT_TYPES]
+    assert commands('lint') == ['ruff check .', TYPES, STRICT_TYPES, AGENT_TYPES]
     wf = runs('run-tests.yml')
-    assert 'ruff check .' in wf and TYPES in wf and AGENT_TYPES in wf
-    assert wf.index('ruff check .') < wf.index(TYPES) < wf.index(AGENT_TYPES)
+    assert 'ruff check .' in wf and TYPES in wf and STRICT_TYPES in wf and AGENT_TYPES in wf
+    assert wf.index('ruff check .') < wf.index(TYPES) < wf.index(STRICT_TYPES) < wf.index(AGENT_TYPES)
 
 
 def test_check_is_lint_then_the_suite():
-    assert commands('check') == ['ruff check .', TYPES, AGENT_TYPES, commands('test')[0]]
+    assert commands('check') == ['ruff check .', TYPES, STRICT_TYPES, AGENT_TYPES, commands('test')[0]]
 
 
 def test_mypy_is_pinned_like_ruff():
@@ -115,14 +116,20 @@ def test_ci_and_the_suite_line_still_run_the_slow_tests():
 
 def test_the_slow_marker_is_registered_and_used():
     """An unregistered marker is only a warning; registering it keeps a typo
-    like `@pytest.mark.slwo` from silently running in `quick`. The marked
-    tests are the five whole daily runs, the suite's slowest."""
+    like `@pytest.mark.slwo` from silently running in `quick`. Which tests are
+    marked is a policy, not a count (Stage 96 item 49; audit 7, T12 and T13):
+    tests/slow_policy.py says what makes a test slow, and every test is marked
+    if and only if it does one of those things."""
+    from tests import slow_policy
     toml = (ROOT / 'pyproject.toml').read_text(encoding='utf-8')
     assert re.search(r'(?m)^markers = \["slow: ', toml)
-    marked = {p.name: p.read_text(encoding='utf-8').count('@pytest.mark.slow')
-              for p in (ROOT / 'tests').glob('test_*.py')}
-    assert marked['test_daily_end_to_end.py'] == 2
-    assert marked['test_nhl_sources_down.py'] == 3
+    assert slow_policy.violations(ROOT / 'tests') == []
+    classified = slow_policy.classify(ROOT / 'tests')
+    for kind in slow_policy.KINDS:
+        assert any(kind in kinds for _, _, _, kinds in classified), f'no test does {kind}: the pattern has gone stale'
+    ops = (ROOT / 'docs' / 'operations.md').read_text(encoding='utf-8')  # from the README, Stage 89 item 5
+    assert ('the suite without the tests marked `slow`: those that drive a whole daily run, re-derive a saved '
+            'pick over the whole history, or draw a paired bootstrap') in ' '.join(ops.split())
 
 
 def test_build_is_what_the_pages_workflow_runs():
@@ -213,5 +220,5 @@ def test_an_unknown_task_is_refused_and_no_task_lists_them(capsys):
 
 
 def test_the_readme_points_at_it():
-    text = (ROOT / 'README.md').read_text(encoding='utf-8')
-    assert 'python tasks.py' in text, "README's Running the tests does not mention tasks.py"
+    text = (ROOT / 'docs' / 'operations.md').read_text(encoding='utf-8')  # from the README, Stage 89 item 5
+    assert 'python tasks.py' in text, "docs/operations.md's Running the tests does not mention tasks.py"

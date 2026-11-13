@@ -28,11 +28,14 @@ from pathlib import Path
 
 import pytest
 
+from src.core.template_parts import APP_SCRIPT
 from src.site import build
+from tests.js_source import function_source
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 SCORES = (ROOT / 'src' / 'core' / 'scores.js').read_text(encoding='utf-8')
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 NHL = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
 NBA = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
 CSS = (ROOT / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8')
@@ -40,8 +43,7 @@ NODE = shutil.which('node')
 
 
 def node(code):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr
     return json.loads(r.stdout)
@@ -50,12 +52,6 @@ def node(code):
 def pure():
     """scores.js's functions and constants, without the part that needs a page."""
     return SCORES[:SCORES.index('(function(){')]
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 def event(eid, away, home, as_, hs, state, name='STATUS_IN_PROGRESS', period=3, clock='4:12', short='4:12 - 3rd'):

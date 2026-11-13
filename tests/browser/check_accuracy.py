@@ -1,7 +1,7 @@
 """The NHL and the NBA draw the race, the trend and the calibration diagram (Stage 79 item 46, the 2026-10-13 UI/UX audit's L5 and B4).
 
-This opens the NHL's sample page on Accuracy and the NBA page on Checking
-the AI's work, at 390 and 1440 px, dark and light, and fails unless each
+This opens the NHL's sample page on Accuracy and the NBA page on Season
+Accuracy (Checking the AI's work until Stage 104 item 1), at 390 and 1440 px, dark and light, and fails unless each
 shows the scoreboard with its three forecasts and both charts, no script
 error is thrown, no chart text is under 11 px, and every chart stays inside
 its own box. On the NHL (graded picks) the diagram has a dot; on the NBA
@@ -24,6 +24,7 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from page_edit import rehash
 from pre_opening import pre_opening
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -41,7 +42,7 @@ async def check_pages(nhl, nba):
     report = []
     async with async_playwright() as p:
         browser = await p.chromium.launch()
-        for sport, path, page_id in (('NHL', nhl, 'accuracy'), ('NBA', nba, 'reliability')):
+        for sport, path, page_id in (('NHL', nhl, 'accuracy'), ('NBA', nba, 'accuracy')):
             for theme in ('dark', 'light'):
                 for width in (390, 1440):
                     where = f'[{sport} {theme} {width}]'
@@ -87,7 +88,7 @@ def self_test(tmp):
     if html.count(CALL) != 1:
         return [f'self-test: the NHL page holds {html.count(CALL)} calls, expected 1']
     bad = tmp / 'acc-nhl-old.html'
-    bad.write_text(html.replace(CALL, ''), encoding='utf-8')
+    bad.write_text(rehash(html.replace(CALL, '')), encoding='utf-8')
     problems = [f'self-test: the real pages should be clean: {r}' for r in asyncio.run(check_pages(nhl, nba))]
     if not any(r.startswith('[NHL') and 'scoreboard rows' in r for r in asyncio.run(check_pages(bad, nba))):
         problems.append('self-test: the NHL page without the component was not reported')

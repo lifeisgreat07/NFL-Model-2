@@ -12,9 +12,8 @@ import re
 import shutil
 import subprocess
 
-import pytest
-
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -25,8 +24,7 @@ def src():
 
 
 def run(expr):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     s = src()
     js = re.search(r'const ESPN_CODE = \{.*?\n\};\n', s, re.S).group(0)
     for name in ('teamLogo', 'diveTeamHtml'):
@@ -43,13 +41,13 @@ def test_the_page_names_its_team_with_logo_and_full_name():
     html = run('diveTeamHtml("KC", "Kansas City Chiefs")')
     assert html == ('<div class="dive-team"><img class="dive-logo" '
                     'src="https://a.espncdn.com/i/teamlogos/nfl/500/kc.png" alt="" loading="lazy" referrerpolicy="no-referrer" '
-                    'onerror="this.style.display=\'none\'"><span class="dive-team-name">Kansas City Chiefs</span></div>')
+                    'data-hide-on-error><span class="dive-team-name">Kansas City Chiefs</span></div>')
 
 
 def test_the_logo_is_decorative_and_a_missing_one_leaves_the_name():
     html = run('diveTeamHtml("KC", "Kansas City Chiefs")')
     img = re.search(r'<img [^>]*>', html).group(0)
-    assert ' alt=""' in img and 'onerror="this.style.display=\'none\'"' in img
+    assert ' alt=""' in img and 'data-hide-on-error' in img
 
 
 def test_a_team_with_no_name_on_file_shows_its_abbreviation():

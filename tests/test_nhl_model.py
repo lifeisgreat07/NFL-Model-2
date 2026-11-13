@@ -63,7 +63,7 @@ def test_a_game_one_half_life_ago_weighs_a_half():
 
 def test_the_ridge_ranks_the_strong_team_first_and_finds_the_home_edge():
     g = ratings.prepare(synthetic(days=120))
-    edge, r = ratings.ridge_ratings(g, 'goal_margin', np.ones(len(g)))
+    edge, r = ratings.ridge_ratings(g, 'goal_margin', np.ones(len(g)), ratings.RIDGE)
     assert max(r, key=r.get) == 'TOR' and min(r, key=r.get) == 'SEA'
     assert edge > 0
 

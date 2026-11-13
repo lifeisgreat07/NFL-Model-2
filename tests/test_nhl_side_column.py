@@ -4,6 +4,8 @@ Run with: pytest tests/test_nhl_side_column.py -v
 """
 from pathlib import Path
 
+from tests.page_script import day_script
+
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = ROOT / 'src' / 'sports' / 'nhl' / 'pages'
 
@@ -18,8 +20,8 @@ def test_the_column_is_beside_the_board_and_only_at_1280():
 
 
 def test_it_follows_the_selected_day():
-    js = (PAGES / 'nhl.js').read_text(encoding='utf-8')
-    board = js[js.index('function renderBoard('):js.index('function stepWeek(')]
+    js = day_script('nhl')
+    board = js[js.index('function renderBoard('):js.index('\nfunction ', js.index('function renderBoard('))]
     assert 'side.innerHTML = sideHtml(currentDay, byDay);' in board
     side = js[js.index('function sideHtml('):js.index('const ALL_BY_DAY')]
     for part in ('goalieText(g.away, gl.away)', "p.result === 'correct' || p.result === 'wrong'", 'odds(t.playoff_pct)',

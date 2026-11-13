@@ -31,6 +31,9 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 from pre_opening import pre_opening
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # tests/browser, when imported from elsewhere
+from page_edit import rehash
+
 ROOT = Path(__file__).resolve().parents[2]
 CLOCK = '2026-10-13T17:00:00Z'
 #: The first weeks of the season, which hold opening night's 3 PM game;
@@ -119,15 +122,15 @@ def self_test(tmp):
         return [f'self-test: the page holds {html.count(RULE)} tip rules, expected 1']
     problems = [f'self-test: the real page should be clean: {r}' for r in asyncio.run(check_page(page))]
     hour = tmp / 'tip-nba-hour-rule.html'
-    hour.write_text(html.replace(RULE, HOUR_RULE), encoding='utf-8')
+    hour.write_text(rehash(html.replace(RULE, HOUR_RULE)), encoding='utf-8')
     if not any('reads "time TBD"' in r for r in asyncio.run(check_page(hour))):
         problems.append('self-test: the page with the hour rule back, hiding a set 3 PM time, was not reported')
     flagged_html, gid = flag_first_game(html)
     flagged = tmp / 'tip-nba-flagged.html'
-    flagged.write_text(flagged_html, encoding='utf-8')
+    flagged.write_text(rehash(flagged_html), encoding='utf-8')
     problems += [f'self-test: the flagged page should be clean: {r}' for r in asyncio.run(check_page(flagged))]
     printed = tmp / 'tip-nba-flag-ignored.html'
-    printed.write_text(flagged_html.replace(RULE, "  return Boolean(g.start);\n"), encoding='utf-8')
+    printed.write_text(rehash(flagged_html.replace(RULE, "  return Boolean(g.start);\n")), encoding='utf-8')
     if not any(f'game {gid} ' in r for r in asyncio.run(check_page(printed))):
         problems.append(f'self-test: game {gid}, flagged not set, printed a time and was not reported')
     return problems

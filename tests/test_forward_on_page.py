@@ -18,6 +18,8 @@ import pandas as pd
 import pytest
 
 from src.core import forward_test as ft
+from tests.optional import in_ci
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = {'nhl': ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js',
@@ -26,10 +28,14 @@ NODE = shutil.which('node')
 
 
 def function(sport):
-    js = PAGES[sport].read_text(encoding='utf-8').replace('\r\n', '\n')
-    m = re.search(r'function forwardHtml\(f, sport\)\{.*?\n\}\n', js, re.S)
-    assert m, f'forwardHtml is not findable in {sport}.js -- re-anchor this guard'
-    return m.group(0)
+    """forwardHtml and the calibrationTable it calls (Stage 84 item 5)."""
+    js = day_script(sport).replace('\r\n', '\n')
+    out = []
+    for name in ('forwardHtml', 'calibrationTable'):
+        m = re.search(rf'function {name}\(f, sport(, level)?\)\{{.*?\n\}}\n', js, re.S)
+        assert m, f'{name} is not findable in {sport}.js -- re-anchor this guard'
+        out.append(m.group(0))
+    return ''.join(out)
 
 
 def render(sport, f):
@@ -59,7 +65,7 @@ def test_both_pages_carry_the_same_function():
     assert function('nhl') == function('nba')
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 @pytest.mark.parametrize('sport', ['nhl', 'nba'])
 def test_every_figure_in_the_file_is_on_the_page(sport):
     f = a_file(sport)
@@ -72,14 +78,18 @@ def test_every_figure_in_the_file_is_on_the_page(sport):
                 str(s['games']), f"{s['log_loss']:.4f}", f"{s['brier']:.4f}", f"{s['accuracy'] * 100:.1f}%")), html)
         assert row, f'{name}: its scores are not a row on the page'
     for name, c in f['comparisons'].items():
+        # Stage 95 item 37: under 20 game days the game-level interval is printed under it.
+        few = c.get('few_days')
+        games = (f'<br><span class="forward-games">games [{signed(few["game_low"])}, {signed(few["game_high"])}]</span>'
+                 if few else '')
         cells = (f'<td class="num">{c["games"]}</td><td class="num">{c["days"]}</td>'
-                 f'<td class="num">{signed(c["diff"])}</td><td class="num">[{signed(c["low"])}, {signed(c["high"])}]</td>')
+                 f'<td class="num">{signed(c["diff"])}</td><td class="num">[{signed(c["low"])}, {signed(c["high"])}]{games}</td>')
         assert cells in html, f'{name}: {cells}'
     assert f"{f['interval_rule']['level'] * 100:.2f}% interval" in html
     assert f'class="{sport}-lede"' in html and f'metrics-table {sport}-table' in html
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 def test_nothing_graded_says_so_and_a_thin_comparison_says_why():
     assert 'nothing to score' in render('nhl', None)
     assert 'nothing to score' in render('nhl', {'graded_picks': 0})
@@ -88,7 +98,7 @@ def test_nothing_graded_says_so_and_a_thin_comparison_says_why():
     assert '<td colspan="2">too few games to resample</td>' in render('nba', f)
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 def test_the_page_judges_nothing():
     html = render('nba', a_file())
     assert not re.search(r'ACCEPT|REJECT|INCONCLUSIVE|significant', html)
@@ -97,7 +107,7 @@ def test_the_page_judges_nothing():
 
 @pytest.mark.parametrize('sport, data', [('nhl', 'DATA'), ('nba', 'BD')])
 def test_the_checks_page_renders_it_from_the_file_the_build_passes(sport, data):
-    js = PAGES[sport].read_text(encoding='utf-8')
+    js = day_script(sport)
     body = re.search(r'function renderReliability\(\)\{.*?\n\}\n', js, re.S).group(0)
     assert '<h2 class="section-title">The forward test so far</h2>' in body
     assert f"${{forwardHtml({data}.forward, '{sport}')}}" in body

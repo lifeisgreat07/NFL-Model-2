@@ -8,10 +8,11 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from src.core.template_parts import APP_SCRIPT
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 CSS = (ROOT / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8').replace('\r\n', '\n')
 BODY = (ROOT / 'src' / 'dashboard' / 'body.html').read_text(encoding='utf-8')
 NODE = shutil.which('node')
@@ -40,8 +41,7 @@ def test_rows_and_buttons_are_for_phones_only():
 
 
 def row(g):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = ("const CARD_EVEN_BAND = 2;\n"
           "function escapeHtml(s){ return String(s ?? '').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c])); }\n"
           # Times in Eastern, the default (Stage 80 item 57's setting is tests/test_settings_sheet.py's).

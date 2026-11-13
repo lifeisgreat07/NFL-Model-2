@@ -11,6 +11,9 @@ from pathlib import Path
 
 import pytest
 
+from tests.optional import require_tool
+from tests.page_script import day_script
+
 ROOT = Path(__file__).resolve().parents[1]
 ROUTES = ROOT / 'src' / 'core' / 'routes.js'
 NODE = shutil.which('node')
@@ -21,11 +24,11 @@ def test_each_sport_installs_the_shared_routes(sport):
     page = (ROOT / 'src' / 'sports' / sport / 'pages' / 'page.html').read_text(encoding='utf-8').replace('\r\n', '\n')
     # Since Stage 79 item 46 the shared accuracy component sits between them,
     # and since Stage 80 item 53 the favourite teams after it.
-    assert '{% include "escape.js" %}\n{% include "routes.js" %}\n{% include "accuracy.js" %}\n{% include "favs.js" %}\n{% include "prefs.js" %}\n' + f'{{% include "{sport}.js" %}}' in page
-    js = (ROOT / 'src' / 'sports' / sport / 'pages' / f'{sport}.js').read_text(encoding='utf-8')
+    assert '{% include "escape.js" %}\n{% include "routes.js" %}\n{% include "accuracy.js" %}\n{% include "favs.js" %}\n{% include "prefs.js" %}\n{% include "day_board.js" %}\n' + f'{{% include "{sport}.js" %}}' in page
+    js = day_script(sport)
     assert js.count('replaceRoute = installRoutes(showPage, {') == 1 and 'function installRoutes' not in js
     site = (ROOT / 'src' / 'sports' / sport / 'site.py').read_text(encoding='utf-8')
-    assert """.replace('{% include "routes.js" %}', ROUTES_JS.read_text(encoding='utf-8'))""" in site
+    assert "'routes.js': ROUTES_JS" in site
 
 
 def test_home_links_to_every_sports_methodology():
@@ -35,8 +38,7 @@ def test_home_links_to_every_sports_methodology():
 
 
 def run(hash_, clicks=()):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = """
 const listeners = {}; const shown = []; const pushed = [];
 const pages = ['board', 'method', 'modellab'].map(n => ({id: 'page-' + n}));
@@ -77,8 +79,7 @@ KNOWN = {'pages': ['board', 'teams', 'method'], 'days': ['2026-10-12', '2026-10-
 
 def pure(calls):
     """parseHash and routeHash under node, one result per call."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = ROUTES.read_text(encoding='utf-8') + """
 console.log(JSON.stringify(%s.map(([f, a, b]) => f === 'parse' ? parseHash(a, b) : routeHash(a))));
 """ % json.dumps(calls)
@@ -109,8 +110,7 @@ def routed(hash_, steps):
     """installRoutes with a sport's argument under node. `steps` are
     ['tap', page], ['set', page, value] (a chip or a club, then replace),
     ['route', page] (a data-route button), ['click-elsewhere'], or ['pop', hash]. Returns what was shown, applied, pushed and replaced."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = """
 const listeners = {}; const shown = []; const applied = []; const pushed = []; const replaced = [];
 const pages = ['board', 'teams', 'method'].map(n => ({id: 'page-' + n}));
@@ -174,7 +174,7 @@ def test_back_to_the_bare_address_puts_the_board_back_as_it_opened():
 
 @pytest.mark.parametrize('sport', ('nhl', 'nba'))
 def test_a_day_chip_and_a_week_step_write_the_day(sport):
-    js = (ROOT / 'src' / 'sports' / sport / 'pages' / f'{sport}.js').read_text(encoding='utf-8')
+    js = day_script(sport)
     chip = js.index(f"document.querySelectorAll('.{sport}-day-chip').forEach(btn => btn.addEventListener('click'")
     assert "    renderBoard();\n    replaceRoute('board');\n" in js[chip:chip + 300]
     step = js.index('function stepWeek(by){')
@@ -184,7 +184,7 @@ def test_a_day_chip_and_a_week_step_write_the_day(sport):
 
 
 def test_the_nhl_club_select_writes_the_club():
-    js = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
+    js = day_script('nhl')
     change = js.index("select.addEventListener('change', () => {")
     assert "      renderTeams();\n      replaceRoute('teams');\n" in js[change:change + 300]
     assert "teams: Object.keys(DATA.teams)" in js
@@ -214,5 +214,5 @@ def test_the_router_listens_on_the_document_not_per_button():
 
 
 def test_the_nba_backtest_button_names_its_route():
-    js = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
+    js = day_script('nba')
     assert '<button type="button" class="nba-to-lab" data-route="modellab">' in js

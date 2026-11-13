@@ -32,3 +32,5 @@ each under its size limit.
 | New items before the 2026-10-08 lock | Stages 45 to 49 | `docs/history/08-before-the-lock.md` |
 | More sports, NHL then NBA; then the site and the NBA; the Fable audit; the 2026-10-13 UI/UX audit | Stages 50 to 68, 75 to 80 | `docs/history/09-more-sports.md` |
 | The 2026-11-02 review | Stages 81 to 90 | `docs/history/10-review-2026-11-02.md` |
+| Audit 7, executed (2026-11-04) | Stages 91 to 96 | `docs/history/11-audit7-2026-11-04.md` |
+| League logos, MLB, March Madness and the NBA page (2026-11-11) | Stages 97 to 104 | `docs/history/12-mlb-and-more-2026-11-11.md` |

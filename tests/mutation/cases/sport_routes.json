@@ -97,7 +97,7 @@
   },
   {
    "id": "routes-nba-week-silent",
-   "target": "src/sports/nba/pages/nba.js",
+   "target": "src/core/day_board.js",
    "why": "an NBA week step leaves the address on last week's day.",
    "find": "  currentWeek = WEEK_KEYS[i];\n  renderBoard();\n  replaceRoute('board');\n}",
    "replace": "  currentWeek = WEEK_KEYS[i];\n  renderBoard();\n}",

@@ -1,0 +1,94 @@
+{
+ "game_id": "401909953",
+ "season": 2026,
+ "slate": "2026-11-09",
+ "start_utc": "2026-11-10T00:00:00Z",
+ "home": "CHA",
+ "away": "CLE",
+ "model_a": 0.3684,
+ "model_b": 0.2589,
+ "pick": "CLE",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7482,
+  "away": 0.8622
+ },
+ "features": {
+  "point_matchup": -4.769564,
+  "efficiency_matchup": -4.595782,
+  "availability_matchup": -0.114075
+ },
+ "market": {
+  "game_id": "401909953",
+  "home": "CHA",
+  "away": "CLE",
+  "start_utc": "2026-11-10T00:00:00Z",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 270.0,
+  "away_price": -337.0,
+  "home_prob": 0.2595
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4433287",
+    "name": "Brandon Miller",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3032979",
+    "name": "Dennis Schroder",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066218",
+    "name": "Grant Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061575",
+    "name": "Kon Knueppel",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433249",
+    "name": "Moussa Diabate",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4066328",
+    "name": "Jarrett Allen",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4683747",
+    "name": "Jaylon Tyson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066757",
+    "name": "Sam Merrill",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-09T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-08",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14204,
+  "training_games_priced": 14163,
+  "training_ids_sha256": "cbd7e79131cab3304f423eb50380cc91fa0af2897888c3dca6300de5a4d855c5"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "ace58c2e9314021a54dc4920257b608143441210"
+}

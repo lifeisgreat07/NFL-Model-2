@@ -1,0 +1,74 @@
+{
+ "game_id": "401909940",
+ "season": 2026,
+ "slate": "2026-11-07",
+ "start_utc": "2026-11-08T01:00:00Z",
+ "home": "CLE",
+ "away": "NY",
+ "model_a": 0.4207,
+ "model_b": 0.3448,
+ "pick": "NY",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7677,
+  "away": 0.885
+ },
+ "features": {
+  "point_matchup": -3.045019,
+  "efficiency_matchup": -3.200468,
+  "availability_matchup": -0.117393
+ },
+ "market": {
+  "game_id": "401909940",
+  "home": "CLE",
+  "away": "NY",
+  "start_utc": "2026-11-08T01:00:00Z",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 179.0,
+  "away_price": -216.0,
+  "home_prob": 0.344
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4066328",
+    "name": "Jarrett Allen",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4683747",
+    "name": "Jaylon Tyson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066757",
+    "name": "Sam Merrill",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3062679",
+    "name": "Josh Hart",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-07T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-06",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14190,
+  "training_games_priced": 14149,
+  "training_ids_sha256": "fb78c7f86a745c40190fb3c55cb6e4a3f0decfcb11d700a10a6ea0ce720038ae"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "cb3867668d2eef31db63aeacf5c08bc4b94e0af7"
+}

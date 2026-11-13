@@ -52,7 +52,8 @@ def test_main_prints_the_line_the_alert_reads(sport, tmp_path):
     assert re.match(r'^MISSED PICKS:', line), 'the workflow greps for this prefix'
     assert DAILY[sport].missed_line(('101',), tmp_path) is None
     src = Path(DAILY[sport].__file__).read_text(encoding='utf-8')
-    assert 'lost = missed_line(decision.started, folder)\n    if lost:\n        print(lost)\n' in src
+    assert ('lost = missed_line(sorted(set(decision.started) | set(recently_started(sched, now))), folder)\n'
+            '    if lost:\n        print(lost)\n') in src
 
 
 @pytest.mark.parametrize('sport', DAILY)
@@ -98,6 +99,11 @@ def test_main_reads_the_schedule_and_the_threshold(tmp_path, monkeypatch, capsys
     monkeypatch.setenv('GITHUB_EVENT_NAME', 'schedule')
     monkeypatch.setenv('CRON_SCHEDULE', '0 21 * * *')
     monkeypatch.delenv('GITHUB_STEP_SUMMARY', raising=False)
+    # On a runner GITHUB_ACTIONS is true, and a scheduled nhl-daily.yml line is
+    # recorded under data/nhl/ (Stage 93 item 19): this test is about the line.
+    monkeypatch.delenv('GITHUB_ACTIONS', raising=False)
+    monkeypatch.chdir(tmp_path)
     assert sd.main([str(wf)], now=datetime(2026, 10, 10, 22, 5, tzinfo=UTC)) == 0
+    assert not (tmp_path / 'data').exists()
     out = capsys.readouterr().out
     assert '::warning title=Late start::Start delay: 1h 05m' in out and 'Warned at 1 hours.' in out

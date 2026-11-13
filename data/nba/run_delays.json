@@ -1,0 +1,92 @@
+[
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-05T16:00:00Z",
+  "started": "2026-11-05T21:39:26Z",
+  "delay_minutes": 339
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-05T21:30:00Z",
+  "started": "2026-11-06T01:43:55Z",
+  "delay_minutes": 253
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-06T16:00:00Z",
+  "started": "2026-11-06T21:08:38Z",
+  "delay_minutes": 308
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-06T21:30:00Z",
+  "started": "2026-11-07T01:04:20Z",
+  "delay_minutes": 214
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-07T16:00:00Z",
+  "started": "2026-11-07T19:42:38Z",
+  "delay_minutes": 222
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-07T21:30:00Z",
+  "started": "2026-11-08T00:52:19Z",
+  "delay_minutes": 202
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-08T16:00:00Z",
+  "started": "2026-11-08T20:01:44Z",
+  "delay_minutes": 241
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-08T21:30:00Z",
+  "started": "2026-11-09T01:08:34Z",
+  "delay_minutes": 218
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-09T16:00:00Z",
+  "started": "2026-11-09T23:54:00Z",
+  "delay_minutes": 474
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-09T21:30:00Z",
+  "started": "2026-11-10T03:44:13Z",
+  "delay_minutes": 374
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-10T21:30:00Z",
+  "started": "2026-11-11T01:24:31Z",
+  "delay_minutes": 234
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-11T16:00:00Z",
+  "started": "2026-11-11T22:21:32Z",
+  "delay_minutes": 381
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-11T21:30:00Z",
+  "started": "2026-11-12T02:24:13Z",
+  "delay_minutes": 294
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-12T16:00:00Z",
+  "started": "2026-11-12T21:57:25Z",
+  "delay_minutes": 357
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-12T21:30:00Z",
+  "started": "2026-11-13T02:02:14Z",
+  "delay_minutes": 272
+ }
+]

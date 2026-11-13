@@ -1,0 +1,21 @@
+{
+  "target": "src/dashboard/body.html",
+  "tests": "tests/test_public_stage_numbers.py",
+  "cases": [
+    {
+      "id": "methodology-shows-a-stage-number-again",
+      "why": "the NFL methodology tells a reader the backtest was validated in Stage 9, a planning number that means nothing outside the project",
+      "find": "validated in August 2026 to match",
+      "replace": "validated 2026-08 (Stage 9) to match",
+      "expect_caught_by": "test_no_internal_stage_number_is_shown"
+    },
+    {
+      "id": "readme-shows-a-stage-number-again",
+      "target": "README.md",
+      "why": "the README's front matter cites an internal stage number again",
+      "find": "## Run it in three commands\n",
+      "replace": "## Run it in three commands (Stage 89 item 6)\n",
+      "expect_caught_by": "test_no_internal_stage_number_is_shown"
+    }
+  ]
+}

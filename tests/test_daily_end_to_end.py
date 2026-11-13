@@ -29,6 +29,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from tests.shared_tables import share_nba_tables, share_nhl_features
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -69,6 +71,7 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     season = 2026
     now = datetime(2026, 10, 10, 16, 30, tzinfo=UTC)
     sched = committed_schedule('nhl', season, now)
+    share_nhl_features(monkeypatch)
     monkeypatch.setattr(daily, 'PATHS', temp_paths(tmp_path, 'nhl'))
     monkeypatch.setattr(daily.nhl_schedule, 'load_schedule', lambda s, *a, **k: sched.copy())
     have = history.HISTORY / f'boxscores_{season}.csv'
@@ -97,9 +100,21 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
         assert rec['start_utc'] > rec['saved_utc']
     assert not [ln for ln in second.splitlines() if ln.startswith('saved ')]
     assert second.count('already saved ') == len(picks)
+    # Stage 95 item 36: v2's shadow beside every pick the run saved, never a pick itself, written once.
+    assert 'DEGRADED: v2 shadow' not in first, first[-2000:]
+    shadow = sorted((tmp_path / 'predictions' / f'{season}-v2').glob('*.json'))
+    assert [p.name for p in shadow] == [p.name for p in picks]
+    for p in shadow:
+        rec = json.loads(p.read_text(encoding='utf-8'))
+        assert 'pick' not in rec and rec['never_a_pick'] is True and rec['code'] == 'nhl-day-sport-v2'
+        assert rec['model_b'] is None and rec['price_used'] is False, 'no price in this test, so no Model B'
+        assert 0 < rec['model_a'] < 1 and rec['training_through'] < rec['slate']
+    assert f'v2 shadow: {len(picks)} saved' in first and 'v2 shadow: 0 saved' in second
     graded = json.loads((tmp_path / 'results' / f'graded_{season}.json').read_text(encoding='utf-8'))
     assert {r['game_id'] for r in graded} == {p.stem for p in picks}
-    assert (tmp_path / 'results' / f'drift_{season}.json').exists()
+    # Stage 85 item 1: the file says which registered looks were made and when the next is.
+    drift_file = json.loads((tmp_path / 'results' / f'drift_{season}.json').read_text(encoding='utf-8'))
+    assert drift_file['looks'] == [] and drift_file['next_look'] == 100, drift_file
     assert (tmp_path / 'results' / f'standings_{season}.json').exists()
 
 
@@ -107,6 +122,7 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
 def test_the_nba_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     from src.sports.nba import daily, history
 
+    share_nba_tables(monkeypatch)
     season = 2026
     now = datetime(2026, 10, 20, 16, 5, tzinfo=UTC)
     sched = committed_schedule('nba', season, now)
@@ -127,7 +143,31 @@ def test_the_nba_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
         assert rec['market_source'] is None and rec['pick'] in (rec['home'], rec['away'])
         assert rec['start_utc'] > rec['saved_utc']
     assert not [ln for ln in second.splitlines() if ln.startswith('saved ')]
+    # Stage 95 item 36: v2's shadow beside every pick the run saved, never a pick itself, written once.
+    assert 'DEGRADED: v2 shadow' not in first, first[-2000:]
+    shadow = sorted((tmp_path / 'predictions' / f'{season}-v2').glob('*.json'))
+    assert [p.name for p in shadow] == [p.name for p in picks]
+    for p in shadow:
+        rec = json.loads(p.read_text(encoding='utf-8'))
+        assert 'pick' not in rec and rec['never_a_pick'] is True and rec['code'] == 'nba-day-sport-v2'
+        assert rec['model_b'] is None and rec['price_used'] is False, 'no price in this test, so no Model B'
+        assert 0 < rec['model_a'] < 1 and rec['training_through'] < rec['slate']
+    assert f'v2 shadow: {len(picks)} saved' in first and 'v2 shadow: 0 saved' in second
     assert (tmp_path / 'results' / f'graded_{season}.json').exists()
+    # Stage 85 item 1: the file says which registered looks were made and when the next is.
+    drift_file = json.loads((tmp_path / 'results' / f'drift_{season}.json').read_text(encoding='utf-8'))
+    assert drift_file['looks'] == [] and drift_file['next_look'] == 100, drift_file
+    # Stage 104 item 3: the ratings the Power Ratings and Teams pages read, written every run.
+    rated = json.loads((tmp_path / 'results' / f'ratings_{season}.json').read_text(encoding='utf-8'))
+    assert rated['as_of'] == '2026-10-20' and len(rated['teams']) == len(set(sched['home']) | set(sched['away']))
+    points = [t['point'] for t in rated['teams']]
+    assert points == sorted(points, reverse=True) and len(set(points)) > 1, 'real ratings, best first'
+    # Stage 104 item 4: the standings odds, in a run that saved picks.
+    odds = json.loads((tmp_path / 'results' / f'standings_{season}.json').read_text(encoding='utf-8'))
+    assert len(odds['teams']) == 30 and odds['simulations'] == 10000
+    for conf in ('East', 'West'):
+        clubs = [t for t in odds['teams'] if t['conference'] == conf]
+        assert abs(sum(t['playoff_pct'] for t in clubs) - 8) < 1e-6, 'eight playoff places a conference'
 
 
 def test_a_game_after_the_moment_reads_as_not_yet_played():
@@ -164,3 +204,13 @@ def test_the_nba_page_inputs_write_every_field_plainly(tmp_path):
     assert doc['games'][1]['time_valid'] is None   # a row with no flag writes null, not a missing key
     out = page_inputs.write(tmp_path / 'a' / 'schedule_2026.json', doc)
     assert json.loads(out.read_text(encoding='utf-8')) == doc and not out.with_suffix('.tmp').exists()
+
+
+def test_the_nba_ratings_file_lists_every_club_best_first():
+    """Stage 104 item 3: a club with no rated games yet is listed at zero, not left out."""
+    from src.sports.nba import page_inputs, ratings
+    rated = ratings.DayRatings({'BOS': 3.21234, 'NY': -1.5, 'DET': 3.21234}, {'BOS': 4.0, 'NY': -2.0, 'DET': 2.5})
+    doc = page_inputs.ratings_json(rated, ['NY', 'BOS', 'DET', 'UTA', 'BOS'], '2026-11-11')
+    assert doc == {'as_of': '2026-11-11', 'teams': [
+        {'team': 'BOS', 'point': 3.2123, 'efficiency': 4.0}, {'team': 'DET', 'point': 3.2123, 'efficiency': 2.5},
+        {'team': 'UTA', 'point': 0.0, 'efficiency': 0.0}, {'team': 'NY', 'point': -1.5, 'efficiency': -2.0}]}

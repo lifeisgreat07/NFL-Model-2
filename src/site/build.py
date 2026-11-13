@@ -36,7 +36,10 @@ import urllib.error
 import urllib.request
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from pathlib import Path
+
+from src.core import csp
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -155,8 +158,35 @@ def live_copy(sport: str, live_url: str, fetcher: Fetcher) -> bytes | None:
     return body
 
 
+#: Stage 91 item 4 (audit 7, R14): a sport whose build failed keeps its live
+#: page, which is right for the site and wrong for a visitor, who would read
+#: yesterday's board as today's. The kept page says so, from the first build
+#: that could not replace it.
+STALE_MARK = 'data-site-stale'
+#: Inside <main>: before its first child, so the page's own grid is untouched
+#: (put straight under <body>, the line became a whole grid column, seen
+#: in a render on 2026-11-05). A page with no <main> takes it under <body>.
+_MAIN_OPEN = re.compile(r'<main\b[^>]*>')
+_BODY_OPEN = re.compile(r'<body\b[^>]*>')
+
+
+def mark_stale(body: bytes, since: str) -> bytes:
+    """The live page with a line saying it has not been rebuilt since `since`.
+    A page that already says so keeps its first date."""
+    html = body.decode('utf-8', 'replace')
+    if STALE_MARK in html:
+        return body
+    m = _MAIN_OPEN.search(html) or _BODY_OPEN.search(html)
+    if not m:
+        return body
+    note = (f'<p {STALE_MARK} role="status" style="margin:0 0 16px;padding:8px 16px;border-radius:6px;background:var(--surface-2);'
+            f'color:var(--text);border:1px solid var(--warn);font-size:14px">'
+            f'This page has not been rebuilt since {since} UTC, so it shows the board as it was then.</p>\n')
+    return (html[:m.end()] + '\n' + note + html[m.end():]).encode('utf-8')
+
+
 def build_sport(sport: str, out: Path, live_url: str | None,
-                runner: Runner = run, fetcher: Fetcher = fetch) -> SportResult:
+                runner: Runner = run, fetcher: Fetcher = fetch, now: datetime | None = None) -> SportResult:
     res = SportResult(sport)
     page = out / sport / 'index.html'
     page.parent.mkdir(parents=True, exist_ok=True)
@@ -183,7 +213,8 @@ def build_sport(sport: str, out: Path, live_url: str | None,
         body = live_copy(sport, live_url, fetcher)
         if body is not None:
             page.parent.mkdir(parents=True, exist_ok=True)
-            page.write_bytes(body)
+            stamp = (now or datetime.now(UTC)).strftime('%Y-%m-%d %H:%M')
+            page.write_bytes(mark_stale(body, stamp))
             res.kept_live = True
     return res
 
@@ -424,7 +455,10 @@ def inject_offline(page: Path, block: str) -> bool:
     if 'assets/site.webmanifest' not in html or '</body>' not in html:
         return False
     at = html.rindex('</body>')
-    page.write_text(html[:at] + block + html[at:], encoding='utf-8')
+    html = html[:at] + block + html[at:]
+    # Stage 88 item 5: this is the last script a page gains, so its CSP is
+    # recomputed here, before add_offline hashes the pages to name the worker.
+    page.write_text(csp.harden(html) if csp.CSP_RE.search(html) else html, encoding='utf-8')
     return True
 
 
@@ -503,6 +537,21 @@ def add_expand(out: Path) -> list[str]:
     return [p for p in (f'{s}/index.html' for s in SPORTS) if inject_expand(out / p, block)]
 
 
+def add_csp(out: Path) -> list[str]:
+    """Stage 88 item 5: after the injections, every page with a
+    Content-Security-Policy names the hashes of the inline scripts it now
+    holds (src/core/csp.py); add_offline, which runs next, re-hardens the
+    pages it adds its script to. A page that cannot be hardened fails the build."""
+    done = []
+    for page in sorted(out.rglob('*.html')):
+        html = page.read_text(encoding='utf-8')
+        if csp.CSP_RE.search(html) is None:
+            continue
+        page.write_text(csp.harden(html), encoding='utf-8')
+        done.append(page.relative_to(out).as_posix())
+    return done
+
+
 def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS,
                runner: Runner = run, fetcher: Fetcher = fetch) -> list[SportResult]:
     if out.exists():
@@ -517,6 +566,7 @@ def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS
     add_scores(out)
     add_share(out)
     add_expand(out)
+    add_csp(out)
     add_offline(out)
     return results
 

@@ -1,0 +1,79 @@
+{
+ "game_id": "401909963",
+ "season": 2026,
+ "slate": "2026-11-10",
+ "start_utc": "2026-11-11T02:00:00Z",
+ "home": "UTAH",
+ "away": "MIA",
+ "model_a": 0.2969,
+ "model_b": 0.2316,
+ "pick": "MIA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7875,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": -6.082991,
+  "efficiency_matchup": -5.793225,
+  "availability_matchup": -0.212526
+ },
+ "market": {
+  "game_id": "401909963",
+  "home": "UTAH",
+  "away": "MIA",
+  "start_utc": "2026-11-11T02:00:00Z",
+  "read_utc": "2026-11-10T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 319.0,
+  "away_price": -406.0,
+  "home_prob": 0.2293
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-10T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "4277961",
+    "name": "Jaren Jackson Jr.",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102530",
+    "name": "Jusuf Nurkic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433627",
+    "name": "Keyonte George",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066336",
+    "name": "Lauri Markkanen",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3032977",
+    "name": "Giannis Antetokounmpo",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-10T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-09",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14212,
+  "training_games_priced": 14171,
+  "training_ids_sha256": "8fd40e96564590a93eab58677f2113c5839abd77e7b6338e7d743d9d09805506"
+ },
+ "code_sha256": "a5069c9aa87cb8efefea4ccabac6798c95c7ab0946fc06295921ba91eb13fa9b",
+ "code_commit": "9ccb09a287f5ff6c76d6a457e7550bed9cf2cda9"
+}

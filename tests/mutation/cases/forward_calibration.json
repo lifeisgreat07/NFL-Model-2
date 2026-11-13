@@ -1,0 +1,35 @@
+{
+  "target": "src/core/forward_test.py",
+  "tests": "tests/test_forward_calibration.py",
+  "cases": [
+    {
+      "id": "calibration-slope-never-moves",
+      "why": "the slope fit updates only the intercept, so every model reports a slope of exactly 1, perfect by construction",
+      "find": "        b = b + (h00 * g1 - h01 * g0) / det\n",
+      "replace": "",
+      "expect_caught_by": "test_the_slope_fit_recovers_a_known_intercept_and_slope"
+    },
+    {
+      "id": "calibration-intercept-ignores-the-weights",
+      "why": "the bootstrap's day weights are dropped from the intercept fit, so every draw gives the same intercept and its interval collapses to a point",
+      "find": "        r = w * (y[None, :] - p)\n",
+      "replace": "        r = (y[None, :] - p) + 0 * w\n",
+      "expect_caught_by": "test_a_weighted_row_is_the_fit_on_those_games_repeated"
+    },
+    {
+      "id": "calibration-model-b-left-out",
+      "why": "only Model A's calibration is reported, so the model the board picks with goes unmeasured",
+      "find": "CALIBRATED = ('model_a', 'model_b')\n",
+      "replace": "CALIBRATED = ('model_a',)\n",
+      "expect_caught_by": "test_the_report_calibrates_a_and_b_on_the_games_each_has"
+    },
+    {
+      "id": "calibration-table-dropped-from-the-page",
+      "target": "src/core/day_board.js",
+      "why": "the NBA checks page stops showing the calibration figures the file carries",
+      "find": "reported, not judged: the season-end decision rule is registered on its own.</p>${calibrationTable(f, sport, level)}`;",
+      "replace": "reported, not judged: the season-end decision rule is registered on its own.</p>`;",
+      "expect_caught_by": "test_every_calibration_figure_in_the_file_is_on_the_page"
+    }
+  ]
+}

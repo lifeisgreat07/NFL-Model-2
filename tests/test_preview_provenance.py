@@ -13,16 +13,14 @@ import re
 import shutil
 import subprocess
 
-import pytest
-
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 NODE = shutil.which('node')
 
 
 def shown(week):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = JOINED_TEMPLATE.read_text(encoding='utf-8')
     fn = re.search(r'^function renderLockProof\(weekKey, weekData\)\{.*?\n\}\n', js, re.S | re.M)
     assert fn, 'renderLockProof is not findable -- re-anchor this guard'

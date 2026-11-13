@@ -28,15 +28,15 @@ import subprocess
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.js_source import function_source as js_source
+from tests.optional import require_tool
 
 NODE = shutil.which('node')
 SRC = JOINED_TEMPLATE.read_text(encoding='utf-8').replace('\r\n', '\n')
 
 
 def function_source(name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', SRC, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
+    return js_source(SRC, name)
 
 
 def insight_consts():
@@ -53,8 +53,7 @@ def game(away, home, a, b, mkt, kick='2026-10-11T17:00'):
 
 
 def run(js_body):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = (CONST_JS + '\n' + function_source('moversSentence') + function_source('boardInsights')
           + function_source('seasonTrend') + function_source('trendSvg')
           + 'function ratingScale(){ return 100; }\n' + function_source('fmtRating')

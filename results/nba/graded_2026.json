@@ -133,6 +133,69 @@
   "saved_utc": "2026-10-30T21:31:30Z"
  },
  {
+  "game_id": "401909287",
+  "pick": "ATL",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-06T21:31:31Z"
+ },
+ {
+  "game_id": "401909288",
+  "pick": "BOS",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-06T21:31:31Z"
+ },
+ {
+  "game_id": "401909289",
+  "pick": "PHI",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-06T21:31:31Z"
+ },
+ {
+  "game_id": "401909290",
+  "pick": "DAL",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-06T21:31:31Z"
+ },
+ {
+  "game_id": "401909291",
+  "pick": "OKC",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-06T21:31:31Z"
+ },
+ {
+  "game_id": "401909292",
+  "pick": "TOR",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-06T21:31:31Z"
+ },
+ {
+  "game_id": "401909293",
+  "pick": "MIN",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-06T21:31:31Z"
+ },
+ {
+  "game_id": "401909294",
+  "pick": "LAL",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-06T21:31:31Z"
+ },
+ {
+  "game_id": "401909295",
+  "pick": "SA",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-06T21:31:31Z"
+ },
+ {
   "game_id": "401909834",
   "pick": "ORL",
   "result": "wrong",
@@ -747,5 +810,411 @@
   "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-02T21:31:25Z"
+ },
+ {
+  "game_id": "401909922",
+  "pick": "DET",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909923",
+  "pick": "ATL",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909924",
+  "pick": "BOS",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909925",
+  "pick": "CHA",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909926",
+  "pick": "NY",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909927",
+  "pick": "MEM",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909928",
+  "pick": "NO",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909929",
+  "pick": "OKC",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909930",
+  "pick": "HOU",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909931",
+  "pick": "DEN",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909932",
+  "pick": "POR",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909933",
+  "pick": "SA",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909934",
+  "pick": "LAL",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909935",
+  "pick": "MIA",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909936",
+  "pick": "PHX",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-05T21:31:28Z"
+ },
+ {
+  "game_id": "401909937",
+  "pick": "GS",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-05T21:31:28Z"
+ },
+ {
+  "game_id": "401909938",
+  "pick": "DEN",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-07T16:01:38Z"
+ },
+ {
+  "game_id": "401909939",
+  "pick": "ATL",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-07T21:31:30Z"
+ },
+ {
+  "game_id": "401909940",
+  "pick": "NY",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-07T21:31:30Z"
+ },
+ {
+  "game_id": "401909941",
+  "pick": "OKC",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-07T21:31:30Z"
+ },
+ {
+  "game_id": "401909942",
+  "pick": "GS",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-07T21:31:30Z"
+ },
+ {
+  "game_id": "401909943",
+  "pick": "HOU",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-07T21:31:30Z"
+ },
+ {
+  "game_id": "401909944",
+  "pick": "SA",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-07T21:31:30Z"
+ },
+ {
+  "game_id": "401909945",
+  "pick": "PHI",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-08T16:01:40Z"
+ },
+ {
+  "game_id": "401909946",
+  "pick": "DET",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-08T21:31:31Z"
+ },
+ {
+  "game_id": "401909947",
+  "pick": "MIN",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-08T21:31:31Z"
+ },
+ {
+  "game_id": "401909948",
+  "pick": "DAL",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-08T21:31:31Z"
+ },
+ {
+  "game_id": "401909949",
+  "pick": "BOS",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-08T21:31:31Z"
+ },
+ {
+  "game_id": "401909950",
+  "pick": "NO",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-08T21:31:31Z"
+ },
+ {
+  "game_id": "401909951",
+  "pick": "MIA",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-08T21:31:31Z"
+ },
+ {
+  "game_id": "401909952",
+  "pick": "ATL",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-09T21:31:31Z"
+ },
+ {
+  "game_id": "401909953",
+  "pick": "CLE",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-09T21:31:31Z"
+ },
+ {
+  "game_id": "401909954",
+  "pick": "DET",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-09T21:31:31Z"
+ },
+ {
+  "game_id": "401909955",
+  "pick": "TOR",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-09T21:31:31Z"
+ },
+ {
+  "game_id": "401909956",
+  "pick": "DAL",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-09T21:31:31Z"
+ },
+ {
+  "game_id": "401909957",
+  "pick": "HOU",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-09T21:31:31Z"
+ },
+ {
+  "game_id": "401909958",
+  "pick": "SA",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-09T21:31:31Z"
+ },
+ {
+  "game_id": "401909959",
+  "pick": "GS",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-09T21:31:31Z"
+ },
+ {
+  "game_id": "401909960",
+  "pick": "NY",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-10T21:31:32Z"
+ },
+ {
+  "game_id": "401909961",
+  "pick": "BOS",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-10T21:31:32Z"
+ },
+ {
+  "game_id": "401909962",
+  "pick": "PHX",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-10T21:31:32Z"
+ },
+ {
+  "game_id": "401909963",
+  "pick": "MIA",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-10T21:31:32Z"
+ },
+ {
+  "game_id": "401909964",
+  "pick": "ORL",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-10T21:31:32Z"
+ },
+ {
+  "game_id": "401909965",
+  "pick": "OKC",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-10T21:31:32Z"
+ },
+ {
+  "game_id": "401909966",
+  "pick": "IND",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-11T21:31:34Z"
+ },
+ {
+  "game_id": "401909967",
+  "pick": "NY",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-11T21:31:34Z"
+ },
+ {
+  "game_id": "401909968",
+  "pick": "BOS",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-11T21:31:34Z"
+ },
+ {
+  "game_id": "401909969",
+  "pick": "SA",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-11T21:31:34Z"
+ },
+ {
+  "game_id": "401909970",
+  "pick": "DEN",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-11T21:31:34Z"
+ },
+ {
+  "game_id": "401909971",
+  "pick": "LAL",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-11T21:31:34Z"
+ },
+ {
+  "game_id": "401909972",
+  "pick": "NO",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-11T21:31:34Z"
+ },
+ {
+  "game_id": "401909973",
+  "pick": "ORL",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-11T21:31:34Z"
+ },
+ {
+  "game_id": "401909974",
+  "pick": "HOU",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-11T21:31:34Z"
+ },
+ {
+  "game_id": "401909975",
+  "pick": "POR",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-11T21:31:34Z"
+ },
+ {
+  "game_id": "401909976",
+  "pick": "PHI",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-12T21:31:34Z"
+ },
+ {
+  "game_id": "401909977",
+  "pick": "DET",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-12T21:31:34Z"
+ },
+ {
+  "game_id": "401909978",
+  "pick": "MIN",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-12T21:31:34Z"
+ },
+ {
+  "game_id": "401909979",
+  "pick": "PHX",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-12T21:31:34Z"
  }
 ]

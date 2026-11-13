@@ -12,12 +12,14 @@ Run with: pytest tests/test_nba_verdict_words.py -v
 import re
 from pathlib import Path
 
+from tests.page_script import day_script
+
 ROOT = Path(__file__).resolve().parents[1]
-JS = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
+JS = day_script('nba')
 
 
 def note():
-    return JS[JS.index('function preseasonHtml(){'):JS.index('function stateHtml(')]
+    return JS[JS.index('function preseasonHtml(){'):JS.index('\nfunction ', JS.index('function preseasonHtml(){'))]
 
 
 def test_the_note_says_the_verdict_in_plain_words():

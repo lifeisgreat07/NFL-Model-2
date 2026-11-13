@@ -1,0 +1,110 @@
+{
+ "game_id": "2026020275",
+ "season": 2026,
+ "slate": "2026-11-07",
+ "start_utc": "2026-11-08T02:00:00Z",
+ "home": "LAK",
+ "away": "PIT",
+ "model_a": 0.5211,
+ "model_b": 0.5342,
+ "pick": "LAK",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.1794,
+  "shot_matchup": -0.63006,
+  "goalie_matchup_2000": 0.000614
+ },
+ "market": {
+  "game_id": "2026020275",
+  "start_utc": "2026-11-08T02:00:00Z",
+  "home": "LAK",
+  "away": "PIT",
+  "book": "DraftKings",
+  "home_price": -122.0,
+  "away_price": 102.0,
+  "home_prob": 0.5261,
+  "read_utc": "2026-11-07T21:01:30Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475311,
+   "name": "Darcy Kuemper",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/LAKings/status/2119149641564627117?a=sp0MQbaGXgVLKOqqiWc&s=20"
+  },
+  "away": {
+   "player_id": 8483703,
+   "name": "Sergei Murashov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/PensInsideScoop/status/2119148745820393571?a=KlTVS1mLURNYW9ISw2c&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-07",
+  "read_utc": "2026-11-07T21:01:30Z",
+  "home": [
+   {
+    "name": "Alex Turcotte",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jakub Dvorak",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jan Jenik",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kevin Fiala",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mats Zuccarello",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Bryan Rust",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elmer Soderblom",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Graves",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Trevor van Riemsdyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-07T21:01:30Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-06",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14667,
+  "training_games_priced": 7640,
+  "training_ids_sha256": "e50bec1b74829f621892240e29c474ef1c71da1f86076cc92f2b102f6201e0fd"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "79cc89ef94dead8ffa06dd7c52724dc081bfeebe"
+}

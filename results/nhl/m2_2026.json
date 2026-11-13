@@ -1,0 +1,30 @@
+{
+ "measurement": "M2",
+ "registered": "experiments/nhl/stage56/registry.json",
+ "graded": 247,
+ "printed_from": 50,
+ "judged": false,
+ "starters": {
+  "sides": 494,
+  "projected_started": 473,
+  "games_both_started": 227,
+  "games_a_starter_differed": 20
+ },
+ "model_a": {
+  "log_loss_projected": 0.6453476972113755,
+  "log_loss_actual": 0.6455666844333916,
+  "actual_minus_projected": {
+   "games": 247,
+   "days": 38,
+   "diff": 0.00021898722201593937,
+   "low": -0.0007376766506944627,
+   "high": 0.0013719261683713126,
+   "level": 0.9833333333333333
+  }
+ },
+ "refit": {
+  "reproduced_saved_model_a": 220,
+  "of": 247,
+  "provenance_recorded": 221
+ }
+}

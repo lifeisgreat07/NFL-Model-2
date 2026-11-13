@@ -17,7 +17,6 @@ snapshot. These tests hold each step and execute the card line.
 Run with: pytest tests/test_neutral_site.py -v
 """
 import json
-import re
 import shutil
 import subprocess
 from datetime import UTC, datetime
@@ -29,14 +28,10 @@ from src.core.template_parts import JOINED_TEMPLATE
 from src.sports.nfl import generate_dashboard as gd
 from src.sports.nfl import weekend_refresh as wr
 from src.sports.nfl import weekly_update as wu
+from tests.js_source import function_source
+from tests.optional import require_tool
 
 NODE = shutil.which('node')
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 @pytest.mark.parametrize('location, expected', [
@@ -124,8 +119,7 @@ CASES = {
 
 @pytest.fixture(scope='module')
 def lines():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = JOINED_TEMPLATE.read_text(encoding='utf-8')
     js = (function_source(src, 'escapeHtml') + function_source(src, 'cardSiteLine')
           + f'\nconst C={json.dumps(CASES)};const o={{}};for(const k in C)o[k]=cardSiteLine(C[k]);'

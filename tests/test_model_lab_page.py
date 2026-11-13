@@ -48,7 +48,7 @@ def test_no_experiment_row_is_typed_into_the_template():
 
 def test_the_build_fills_the_placeholder():
     src = (ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py').read_text(encoding='utf-8')
-    assert "html.replace('__MODEL_LAB_ROWS__', render_model_lab_rows(model_lab_entries()))" in src
+    assert "'__MODEL_LAB_ROWS__': render_model_lab_rows(model_lab_entries())," in src
 
 
 def test_every_entry_is_a_row_in_order(entries, rows):
@@ -123,6 +123,16 @@ def test_a_row_says_which_step_its_figure_is_from(entries, rows):
     by_id = {e['id']: r for e, r in zip(entries, rows)}
     assert 'confirmation seasons 2024&ndash;2025' in by_id['H1'][1]
     assert 'validation screen 2022&ndash;2023; it did not go on to confirmation' in by_id['H2'][1]
+
+
+def test_a_registry_id_and_source_are_escaped():
+    """Stage 88 item 6. The id comes from a registry file as the title does,
+    and went into the row unescaped; a `<` in it would have opened a tag."""
+    e = {'stage': 'Stage 99', 'id': 'R<script>1', 'title': 'T', 'headline': None, 'reason': 'r',
+         'source': 'experiments/x<y>/registry.json'}
+    cell = gd._registered_result(e)
+    assert '<script>' not in cell and 'R&lt;script&gt;1' in cell
+    assert '<code>experiments/x&lt;y&gt;/registry.json</code>' in cell
 
 
 def test_a_deferred_question_shows_its_reason(entries, rows):

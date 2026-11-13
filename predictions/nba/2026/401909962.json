@@ -1,0 +1,84 @@
+{
+ "game_id": "401909962",
+ "season": 2026,
+ "slate": "2026-11-10",
+ "start_utc": "2026-11-11T02:00:00Z",
+ "home": "PHX",
+ "away": "LAC",
+ "model_a": 0.5345,
+ "model_b": 0.6084,
+ "pick": "PHX",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9633,
+  "away": 0.9391
+ },
+ "features": {
+  "point_matchup": -1.339854,
+  "efficiency_matchup": -1.376302,
+  "availability_matchup": 0.024156
+ },
+ "market": {
+  "game_id": "401909962",
+  "home": "PHX",
+  "away": "LAC",
+  "start_utc": "2026-11-11T02:00:00Z",
+  "read_utc": "2026-11-10T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -173.0,
+  "away_price": 145.0,
+  "home_prob": 0.6082
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-10T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "4701232",
+    "name": "Mark Williams",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "6580",
+    "name": "Bradley Beal",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3913176",
+    "name": "Brandon Ingram",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4845363",
+    "name": "Cam Christie",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4396818",
+    "name": "Jordan Miller",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5108024",
+    "name": "Yanic Konan Niederhauser",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-10T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-09",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14212,
+  "training_games_priced": 14171,
+  "training_ids_sha256": "8fd40e96564590a93eab58677f2113c5839abd77e7b6338e7d743d9d09805506"
+ },
+ "code_sha256": "a5069c9aa87cb8efefea4ccabac6798c95c7ab0946fc06295921ba91eb13fa9b",
+ "code_commit": "9ccb09a287f5ff6c76d6a457e7550bed9cf2cda9"
+}

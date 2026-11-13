@@ -26,6 +26,25 @@ and NBA each keep their own copies of the lock engine, grading and the
 drift check, and lifting those into the core waits until after the NBA's
 opening week (the 2026-10-09 audit's E16).
 
+**Amended 2026-11-05 (Stage 87 item 1).** The first piece of that lift: the
+29 page functions the NHL's and NBA's scripts carried byte for byte are one
+copy in `src/core/day_board.js`, which both pages include ahead of their own
+script, and `tests/test_day_board.py` fails if a copy comes back. The Python
+side (the lock engine, grading, drift) is Stage 87 item 2.
+
+**Amended 2026-11-09 (Stage 87 item 2).** The Python side: the backtest's
+walk-forward and scoring, the drift check's per-game loss, lower bound and next
+look, saving, naming and grading picks, and the rating fit are one copy in
+`src/core/day_backtest.py`, `day_drift.py`, `day_picks.py` and
+`day_ratings.py`, and `tests/test_core_python.py` fails if a copy comes back.
+Two that were not quite identical became one with a parameter: the ridge
+(the NHL passes its alpha) and the grade (the NBA's rows carry
+`market_source`). Not moved: the drift looks and flags, which differ on purpose
+(the NBA holds each look to its own picks' baselines, Stage 85 item 2), and
+the lock engine, whose run times are each sport's own.
+
+**Amended 2026-11-12 (Stage 97 item 7, Mark's plan of 2026-11-11).** "MLB not this year" no longer holds: MLB is the fourth sport, decided on its data before any model (`docs/mlb-data.md`: GO, the MLB Stats API read from a runner in #711) and built on the same core and rules through the winter, live from Opening Day 2027 (Stages 97 to 101, `docs/history/12-mlb-and-more-2026-11-11.md`).
+
 **Every sport runs the NFL's workflow.** The same page set; Model A (the sport
 alone) beside Model B (plus the market) and the market itself; a lock that
 saves picks once before the start and never rewrites them; grading of locked

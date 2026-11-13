@@ -13,11 +13,11 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
-
 from src.core.template_parts import JOINED_TEMPLATE
 from src.sports.nfl import generate_dashboard as gd
 from src.sports.nfl import recent_runs as rr
+from tests.js_source import function_source
+from tests.optional import require_tool
 
 REPO = Path(__file__).parent.parent
 WORKFLOWS = REPO / '.github' / 'workflows'
@@ -122,12 +122,6 @@ def test_a_file_is_read_as_written(tmp_path):
 
 # --- the page -------------------------------------------------------------------
 
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
-
-
 def const_block(src, name):
     m = re.search(r'^const ' + name + r' = .*?;\n', src, re.M | re.S)
     assert m, f'{name} is not findable -- re-anchor this guard'
@@ -137,8 +131,7 @@ def const_block(src, name):
 def render(payload):
     """renderRecentRuns() in node over the shipped template, with `payload`
     as recentRuns; returns the HTML it wrote."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = JOINED_TEMPLATE.read_text(encoding='utf-8')
     js = (const_block(src, 'STATE_KINDS') + function_source(src, 'stateHtml') +
           function_source(src, 'escapeHtml') + const_block(src, 'RUN_RESULTS') +

@@ -73,6 +73,8 @@ def test_each_home_card_draws_the_same_icon_as_the_page(sport):
 
 def test_the_card_puts_the_icon_beside_the_sport_name():
     js = HOME_JS.read_text(encoding='utf-8')
-    assert '<span class="home-sport">${icon(sport)}${esc(name)}</span>' in js
+    # Stage 102: the league's own mark leads, and our icon is its fallback, inside the same box.
+    assert '<span class="home-sport">${leagueMark(sport)}${esc(name)}</span>' in js
+    assert '<span class="lgm-own">${icon(sport)}</span>' in re.search(r'function leagueMark\(sport\)\{.*?\n\}', js, re.S).group(0)
     assert 'aria-hidden="true"' in re.search(r'function icon\(sport\)\{.*?\n\}', js, re.S).group(0), (
         'the icon repeats the name beside it, so a screen reader must skip it')

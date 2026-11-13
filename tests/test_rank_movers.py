@@ -27,6 +27,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 from src.core.template_parts import JOINED_TEMPLATE
 from src.sports.nfl import generate_dashboard as gd
+from tests.js_source import function_source
+from tests.optional import require_tool
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -123,24 +125,17 @@ def test_the_committed_ratings_are_the_latest_history_week():
     """The premise previous_ranks rests on, checked against the real files:
     the weekly run writes current_ratings.json and appends the same numbers
     to the season's history. If a run ever writes one and not the other, this
-    goes red rather than the page quietly comparing against the wrong week."""
+    goes red rather than the page quietly comparing against the wrong week.
+    Since Stage 86 item 5 the run that writes both makes the same check
+    (src/sports/nfl/ratings_snapshot.py); this is its check on the committed files."""
+    from src.sports.nfl import ratings_snapshot
     ratings = json.loads((REPO_ROOT / 'data' / 'nfl' / 'current_ratings.json').read_text(encoding='utf-8'))
     live = gd.load_latest_live_history()
     assert live, 'no data/nfl/team_history_<season>.json -- vacuity: nothing was checked'
-    latest = max(p['week'] for pts in live.values() for p in pts)
-    for r in ratings:
-        point = [p for p in live[r['team']] if p['week'] == latest]
-        assert point and abs(point[0]['net'] - r['net']) <= gd.SNAPSHOT_MATCH_TOL, (
-            f"{r['team']}: current rating {r['net']} is not week {latest}'s {point}")
+    assert ratings_snapshot.mismatches(ratings, live) == []
 
 
 # ---- the page half, executed in node over the real functions ----
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
-
 
 def t(name, change):
     return {'name': name, 'rank_change': change}
@@ -161,8 +156,7 @@ MOVES = {'up3': 3, 'down1': -1, 'still': 0, 'none': None}
 
 @pytest.fixture(scope='module')
 def page():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = TEMPLATE.read_text(encoding='utf-8')
     # Caught per case, so a case that throws fails its own test (CLAUDE.md:
     # a guard must fail on its own assertion, never through its fixture).

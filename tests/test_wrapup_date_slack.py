@@ -41,9 +41,21 @@ REPO = Path(__file__).resolve().parents[1]
 
 from src.agents import session_wrapup
 
-TODAY = date.today()
+# The check's clock is pinned (see fake_repo), so these dates are the check's
+# "today" too. Read from the real clock at import, they were not: a run that
+# reached this file after midnight compared yesterday's TODAY with the check's
+# new day and failed both [day0-True] cases (2026-11-04, s88f's suite).
+TODAY = date(2026, 11, 4)
 YESTERDAY = TODAY - timedelta(days=1)
 TOMORROW = TODAY + timedelta(days=1)
+
+
+class _PinnedDate(date):
+    """date, with today() fixed at TODAY for the module under test."""
+
+    @classmethod
+    def today(cls):
+        return TODAY
 
 
 @pytest.fixture
@@ -53,6 +65,7 @@ def fake_repo(tmp_path, monkeypatch):
     (tmp_path / 'docs').mkdir()
     (tmp_path / 'memory').mkdir()
     monkeypatch.setattr(session_wrapup, 'REPO', tmp_path)
+    monkeypatch.setattr(session_wrapup, 'date', _PinnedDate)
     return tmp_path
 
 

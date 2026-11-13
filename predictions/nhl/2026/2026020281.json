@@ -1,0 +1,100 @@
+{
+ "game_id": "2026020281",
+ "season": 2026,
+ "slate": "2026-11-08",
+ "start_utc": "2026-11-09T00:00:00Z",
+ "home": "CGY",
+ "away": "PHI",
+ "model_a": 0.5031,
+ "model_b": 0.4893,
+ "pick": "PHI",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.442618,
+  "shot_matchup": -0.569999,
+  "goalie_matchup_2000": 0.001178
+ },
+ "market": {
+  "game_id": "2026020281",
+  "start_utc": "2026-11-09T00:00:00Z",
+  "home": "CGY",
+  "away": "PHI",
+  "book": "DraftKings",
+  "home_price": -102.0,
+  "away_price": -118.0,
+  "home_prob": 0.4826,
+  "read_utc": "2026-11-08T21:01:35Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482445,
+   "name": "Devin Cooley",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/SteinbergYYC/status/2119450539633287310"
+  },
+  "away": {
+   "player_id": 8478435,
+   "name": "Dan Vladar",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/RyanNPike/status/2119160105686237250"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-08",
+  "read_utc": "2026-11-08T21:01:35Z",
+  "home": [
+   {
+    "name": "Brennan Othmann",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Connor Zary",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Jonathan Huberdeau",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kevin Bahl",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Samuel Honzek",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Nikita Grebenkin",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Ristolainen",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-08T21:01:35Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-07",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14679,
+  "training_games_priced": 7650,
+  "training_ids_sha256": "84c5ef57bbc45dcddd275a2b7078320bd7d818fe96d1b6e090e0022b6e803a4f"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "c01b9f6238479e13e9d2ece7d13b2c7944df1eb2"
+}

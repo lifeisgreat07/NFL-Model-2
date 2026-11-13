@@ -46,7 +46,7 @@
     },
     {
       "id": "cancelled-card-line-missing",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_board.js",
       "why": "the card has no line for the cancelled state, so a cancelled game's card says nothing at all about why it was never graded.",
       "find": "  if(g.status === 'cancelled') return 'Cancelled · not played, so not graded';\n",
       "replace": "",

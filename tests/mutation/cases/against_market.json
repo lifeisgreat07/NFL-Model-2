@@ -29,7 +29,7 @@
       "find": "calibHtml\n    + againstMarketHtml(accuracy.against_market);",
       "replace": "calibHtml;",
       "expect_caught_by": "test_season_accuracy_shows_it",
-      "target": "src/dashboard/app.js"
+      "target": "src/dashboard/app_accuracy.js"
     },
     {
       "id": "against-market-headline-rate",
@@ -37,7 +37,7 @@
       "find": "${r.right} of ${r.n} right <span",
       "replace": "${Math.round(100 * r.right / r.n)}% right <span",
       "expect_caught_by": "test_the_page_leads_each_row_with_its_interval_and_shows_no_bare_rate",
-      "target": "src/dashboard/app.js"
+      "target": "src/dashboard/app_accuracy.js"
     }
   ]
 }

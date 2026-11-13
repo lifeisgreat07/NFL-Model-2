@@ -16,16 +16,16 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from src.core.template_parts import APP_SCRIPT
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
-JS = ROOT / 'src' / 'dashboard' / 'app.js'
+JS = APP_SCRIPT
 NODE = shutil.which('node')
 
 
 def why_chance(cases):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = JS.read_text(encoding='utf-8')
     fn = re.search(r'function whyChance\(val, homePct, home, away\)\{.*?\n\}\n', js, re.S)
     assert fn, 'whyChance is not findable -- re-anchor this guard'

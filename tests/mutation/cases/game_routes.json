@@ -48,7 +48,7 @@
   },
   {
    "id": "game-route-nfl-unread",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_pages.js",
    "why": "the NFL reads #game/<key> as no route, and opens the latest week.",
    "find": "  if(head === 'game') return (known.games || []).includes(arg) ? {page:'board', week:arg.split('-')[0], game:arg} : {page:'board'};\n",
    "replace": "",
@@ -56,7 +56,7 @@
   },
   {
    "id": "game-route-nfl-not-opened",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_pages.js",
    "why": "the NFL opens the game's week but never its card.",
    "find": "  if(r.game) openGame(r.game);\n",
    "replace": "",
@@ -64,7 +64,7 @@
   },
   {
    "id": "game-route-nfl-filter-hides",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_pages.js",
    "why": "a filter that hides the game leaves the link opening nothing.",
    "find": "  if(!card && currentFilter !== 'all'){\n",
    "replace": "  if(false){\n",
@@ -72,7 +72,7 @@
   },
   {
    "id": "game-route-nfl-address-lost",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_pages.js",
    "why": "drawing the week rewrites the address to #board/<week>, so the link the reader arrived on is gone.",
    "find": "  if(!inSharedView() && location.pathname + location.search + location.hash !== want) history.replaceState(null, '', want);\n",
    "replace": "",
@@ -96,7 +96,7 @@
   },
   {
    "id": "game-route-nfl-row-hidden",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_pages.js",
    "why": "on a phone the link scrolls the card to the top and leaves the row that names the game above it, off screen.",
    "find": "  (phone ? row : card).scrollIntoView({block:'start'});\n",
    "replace": "  card.scrollIntoView({block:'start'});\n",

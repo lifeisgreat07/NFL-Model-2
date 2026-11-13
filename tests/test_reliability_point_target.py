@@ -22,6 +22,7 @@ import subprocess
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -36,8 +37,7 @@ def source():
 
 @pytest.fixture(scope='module')
 def radii(source):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     base = re.search(r'const REL_HALO_BASE_R = [^;]+;', source)
     fn = re.search(r'function relHaloRadius\(.*?\n\}\n', source, re.S)
     assert base and fn, 'relHaloRadius is not findable -- re-anchor this guard'
@@ -94,8 +94,7 @@ var document={getElementById:id=>id==='rel-tip'?tip:null, querySelectorAll:()=>[
 def halos(source):
     """The halos' r on mount (the chart 0 wide, as on a hidden page), after a
     resize to 350px, and after one to the full 470px."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     base = re.search(r'const REL_HALO_BASE_R = [^;]+;', source)
     radius = re.search(r'function relHaloRadius\(.*?\n\}\n', source, re.S)
     init = re.search(r'function initReliabilityDiagram\(\)\{.*?\n\}\n', source, re.S)

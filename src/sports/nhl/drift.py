@@ -8,17 +8,26 @@ Model A's log loss on Stage 56's confirmation seasons.
 
 A flag is a reason to look, not proof that something broke: the backtest
 knew each game's actual starter, and a live pick knows the projected one.
+
+Amended 2026-11-04 (Stage 85 item 1, `drift.amended_2026_11_04` in the
+registry): the rule above was tested at every daily run once 100 picks were
+graded. It now looks only at the checkpoints in the baseline file's rule,
+each at the per-look level that shares the 5% false-flag rate among them.
 """
 from __future__ import annotations
 
 import json
-import math
-from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
-import numpy as np
-
+from src.core.day_drift import kept_days as kept_days
+from src.core.day_drift import leak_direction as leak_direction
+from src.core.day_drift import leak_lines as leak_lines
+from src.core.day_drift import leaked_picks as leaked_picks
+from src.core.day_drift import look_value as look_value
+from src.core.day_drift import lower_bound as lower_bound
+from src.core.day_drift import next_look as next_look
+from src.core.day_drift import per_game_log_loss as per_game_log_loss
 from src.core.sport import sport_paths
 
 BASELINE = sport_paths('nhl').data / 'drift_baseline.json'
@@ -32,28 +41,34 @@ def baseline(path: Path = BASELINE) -> dict[str, Any]:
     return spec
 
 
-def per_game_log_loss(rows: Iterable[tuple[float | None, int | None]]) -> list[float]:
-    """Per-game log loss from (Model A's home probability, home won) pairs;
-    a game without both decides nothing."""
+def looks(losses: list[float], spec: dict[str, Any], days: list[str] | None = None) -> list[dict[str, Any]]:
+    """Every registered look the graded picks have reached (Stage 85 item 1).
+
+    The check looks only at the registered checkpoints, each on the first n
+    graded picks in the order their games started, at the per-look level:
+    the family's one-sided 95% shared over the looks (Bonferroni). A daily
+    look at 95% has a 5% false-flag chance each day, and every extra look
+    can only add to the season's."""
+    rule = spec['rule']
     out = []
-    for p, y in rows:
-        if p is None or y not in (0, 1):
-            continue
-        q = min(max(float(p), EPS), 1 - EPS)
-        out.append(-math.log(q) if y == 1 else -math.log(1 - q))
+    for n in rule['checkpoints']:
+        if len(losses) < n:
+            break
+        # Stage 95 item 32: whole game days resampled when the picks' days are given.
+        bound = lower_bound(losses[:n], rule, rule['per_look_level'], days[:n] if days is not None else None)
+        # Stage 95 item 31: held to the backtest over a season's first n games.
+        base = look_value(spec, 'baseline', n)
+        out.append({'games': n, 'lower_bound': bound, 'baseline': base, 'flagged': bool(bound > base)})
     return out
 
 
-def lower_bound(losses: list[float], rule: dict[str, Any]) -> float:
-    arr = np.asarray(losses, dtype=float)
-    rng = np.random.default_rng(rule['seed'])
-    idx = rng.integers(0, len(arr), size=(rule['n_resamples'], len(arr)))
-    return float(np.percentile(arr[idx].mean(axis=1), (1 - rule['one_sided_level']) * 100))
+def flags(losses: list[float], spec: dict[str, Any], days: list[str] | None = None) -> bool:
+    """True when any look so far has flagged: a flag stands for the season."""
+    return any(look['flagged'] for look in looks(losses, spec, days))
 
 
-def flags(losses: list[float], spec: dict[str, Any]) -> bool:
-    """True when the registered rule flags."""
-    rule = spec['rule']
-    if len(losses) < rule['min_games']:
-        return False
-    return bool(lower_bound(losses, rule) > spec['baseline']['value'])
+def spread_range() -> float | None:
+    """Stage 95 item 33: how far Model A's backtest seasons differ from each other
+    (experiments/nhl/stage56/results/model_a_by_season.json, `spread.range`)."""
+    path = sport_paths('nhl').experiments / 'stage56' / 'results' / 'model_a_by_season.json'
+    return float(json.loads(path.read_text(encoding='utf-8'))['spread']['range']) if path.exists() else None

@@ -21,6 +21,9 @@ import pandas as pd
 import pytest
 
 from src.sports.nba import lock
+from tests.js_source import function_source as js_source
+from tests.optional import require_tool
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js'
@@ -30,13 +33,11 @@ NODE = shutil.which('node')
 
 
 def source():
-    return ESCAPE_JS.read_text(encoding='utf-8') + JS.read_text(encoding='utf-8')
+    return ESCAPE_JS.read_text(encoding='utf-8') + day_script('nba')
 
 
 def function_source(src, name):
-    m = re.search(r'^function ' + name + r'\(.*?\n\}\n', src, re.S | re.M)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
+    return js_source(src, name, at_line_start=True)
 
 
 def const_line(src, name):
@@ -46,8 +47,7 @@ def const_line(src, name):
 
 
 def run_node(body):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = source()
     js = ("const ET = 'America/New_York';\nfunction startZone(){ return 'America/New_York'; }\nfunction startMark(){ return ' ET'; }\n"
           + ''.join(const_line(src, n) for n in ('LOCK_RUNS_UTC', 'LOCK_SLACK_MS', 'FMT_WHEN', 'FMT_HOUR'))

@@ -12,15 +12,17 @@ was given; where a game had no price, it says "no price" and why.
 What it reads, all under the NBA's folders (`src.core.sport.sport_paths`):
 
 - `predictions/nba/<season>/*.json`: the saved picks, one per game;
-- `results/nba/schedule_<season>.json`, `graded_<season>.json` and
-  `drift_<season>.json`: what the daily run writes. Absent before its
+- `results/nba/schedule_<season>.json`, `graded_<season>.json`,
+  `drift_<season>.json`, `ratings_<season>.json` and `standings_<season>.json`:
+  what the daily run writes. Absent before its
   first run, which the board says rather than failing the build;
 - `experiments/nba/stage65/registry.json`: the forward test's rules;
 - `experiments/nba/stage61/registry.json`: the seasons and the level;
 - `experiments/nba/stage61/results/confirmation.json` and `tuning.json`:
   the backtest's answers and its validation grid;
 - `data/nba/history/games_<season>.csv` and `market_<season>.csv`: how
-  many games each season holds and how many have a price.
+  many games each season holds and how many have a price;
+- `src/sports/nba/pages/changes.json`: the What's Changed page's entries.
 
 Missing backtest results stop the build: without them those pages have
 nothing true to say. The template is `src/sports/nba/pages/`; the shared stylesheet is the
@@ -38,10 +40,10 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from src.core import colour, pick_proof
-from src.core.page_comments import strip_page_comments
+from src.core import colour, page_render, pick_proof
 from src.core.page_fill import (
     ACCURACY_JS,
+    DAY_BOARD_JS,
     ESCAPE_JS,
     FAVS_JS,
     PREFS_JS,
@@ -137,6 +139,9 @@ def board(season: int) -> dict[str, Any]:
     """The live board's inputs: the season's games, the saved picks with
     their grades, the drift check, and the clubs' names and logos."""
     sched = _maybe(PATHS.results / f'schedule_{season}.json')
+    if sched is not None and not sched.get('games'):
+        # Stage 91 item 4 (audit 7, R2): an empty schedule would publish a board with no games and every grade gone.
+        raise ValueError(f'results/nba/schedule_{season}.json has no games; refusing to build a board from it')
     graded = {str(r['game_id']): r['result'] for r in _maybe(PATHS.results / f'graded_{season}.json') or []}
     picks: dict[str, dict[str, Any]] = {}
     folder = PATHS.predictions / str(season)
@@ -153,10 +158,18 @@ def board(season: int) -> dict[str, Any]:
         'teams': {abbr: {'name': name, 'logo': colours.logo(abbr, 'dark'), 'logo_light': colours.logo(abbr, 'light')}
                   for abbr, name in teams.NAMES.items()},
         'drift': _maybe(PATHS.results / f'drift_{season}.json'),
+        # Stage 104 item 3: the clubs' ratings, for Power Ratings and Teams.
+        'ratings': _maybe(PATHS.results / f'ratings_{season}.json'),
+        # Stage 104 item 4: the standings odds, play-in included.
+        'standings': _maybe(PATHS.results / f'standings_{season}.json'),
         # Stage 84 item 6: the registered rule, so the page can say where the check stands.
         'drift_rule': _maybe(PATHS.data / 'drift_baseline.json'),
+        # Stage 85 item 3: the baseline's season-to-season spread (src/sports/nba/season_spread.py).
+        'spread': _maybe(PATHS.experiments / 'stage61' / 'results' / 'model_a_by_season.json'),
         # Stage 84 item 2: the registered forward test (src/core/forward_test.py).
         'forward': _maybe(PATHS.results / f'forward_{season}.json'),
+        # Stage 84 item 4: Stage 61's M2 on the live season (src/sports/nba/m2.py).
+        'm2': _maybe(PATHS.results / f'm2_{season}.json'),
         'live': _read(PATHS.experiments / 'stage65' / 'registry.json')['forward_test'],
     }
 
@@ -174,6 +187,8 @@ def payload(now: datetime) -> dict[str, Any]:
         'backtest': _read(folder / 'results' / 'confirmation.json'),
         'tuning': _read(folder / 'results' / 'tuning.json'),
         'coverage': coverage(p['training_from_season'], p['confirmation_seasons'][-1]),
+        # Stage 104 item 2: the What's Changed page's entries, newest first.
+        'changes': json.loads((TEMPLATE / 'changes.json').read_text(encoding='utf-8')),
     }
 
 
@@ -181,27 +196,16 @@ def payload(now: datetime) -> dict[str, Any]:
 
 
 
+#: The parts page.html includes that live outside pages/: the shared stylesheet and the scripts the NHL and NBA
+#: share. Every other part is the file of that name in pages/.
+SHARED_PARTS = {'styles.css': SHARED_STYLES, 'escape.js': ESCAPE_JS, 'routes.js': ROUTES_JS,
+                'accuracy.js': ACCURACY_JS, 'favs.js': FAVS_JS, 'prefs.js': PREFS_JS, 'day_board.js': DAY_BOARD_JS}
+
+
 def render(data: dict[str, Any]) -> str:
-    page = (TEMPLATE / 'page.html').read_text(encoding='utf-8')
-    html = (page.replace('{% include "styles.css" %}', SHARED_STYLES.read_text(encoding='utf-8'))
-                .replace('{% include "nba.css" %}', (TEMPLATE / 'nba.css').read_text(encoding='utf-8'))
-                .replace('{% include "escape.js" %}', ESCAPE_JS.read_text(encoding='utf-8'))
-                .replace('{% include "routes.js" %}', ROUTES_JS.read_text(encoding='utf-8'))
-                .replace('{% include "accuracy.js" %}', ACCURACY_JS.read_text(encoding='utf-8'))
-                .replace('{% include "favs.js" %}', FAVS_JS.read_text(encoding='utf-8'))
-                .replace('{% include "prefs.js" %}', PREFS_JS.read_text(encoding='utf-8'))
-                .replace('{% include "body.html" %}', (TEMPLATE / 'body.html').read_text(encoding='utf-8'))
-                .replace('{% include "nba.js" %}', (TEMPLATE / 'nba.js').read_text(encoding='utf-8')))
-    # Comments stay in the templates for whoever reads them; the page a
-    # visitor downloads does not carry them (src/core/page_comments.py,
-    # Stage 68 item 19). Stripped before the fills, so no data is lexed.
-    html = strip_page_comments(html)
-    html = html.replace('__FONT_FACES__', font_faces_css())
-    html = html.replace('__NBA_JSON__', safe_json(data))
-    left = sorted({t for t in ('__FONT_FACES__', '__NBA_JSON__', '{% include') if t in html})
-    if left:
-        raise ValueError(f'unfilled placeholders: {left}')
-    return html
+    """The page, by the renderer every page shares (Stage 87 item 3, src/core/page_render.py)."""
+    return page_render.finish(page_render.assemble(TEMPLATE, SHARED_PARTS),
+                              {'__FONT_FACES__': font_faces_css(), '__NBA_JSON__': safe_json(data)})
 
 
 def main(argv: list[str] | None = None, now: datetime | None = None) -> int:

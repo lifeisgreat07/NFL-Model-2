@@ -5,8 +5,15 @@
     {
       "id": "type-check-drops-the-day-sports",
       "why": "the NHL's and NBA's code leaves the type check again",
-      "find": "         'src/core', 'src/site', 'src/sports/nhl', 'src/sports/nba']",
-      "replace": "         'src/core', 'src/site']",
+      "find": "STRICT_TYPES = [PY, '-m', 'mypy', '--strict', '--ignore-missing-imports', 'src/core', 'src/site',\n                'src/sports/nhl', 'src/sports/nba', 'src/sports/mlb']\n",
+      "replace": "STRICT_TYPES = [PY, '-m', 'mypy', '--strict', '--ignore-missing-imports', 'src/core', 'src/site']\n",
+      "expect_caught_by": "test_lint_is_what_run_tests_runs"
+    },
+    {
+      "id": "type-check-drops-mlb",
+      "why": "MLB's code is left out of the strict type check, so its probe and everything after it go unchecked",
+      "find": "                'src/sports/nhl', 'src/sports/nba', 'src/sports/mlb']\n",
+      "replace": "                'src/sports/nhl', 'src/sports/nba']\n",
       "expect_caught_by": "test_lint_is_what_run_tests_runs"
     }
   ]

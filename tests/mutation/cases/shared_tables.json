@@ -1,0 +1,41 @@
+{
+  "target": "tests/shared_tables.py",
+  "tests": "tests/test_shared_tables.py",
+  "cases": [
+    {
+      "id": "shared-table-key-ignores-content",
+      "why": "the key leaves out the games' content, so a test whose history differs is handed another test's table",
+      "find": "        key = (content_key(games), float(half_life), ks, first_day)\n",
+      "replace": "        key = (len(games), float(half_life), ks, first_day)\n",
+      "expect_caught_by": "test_any_difference_in_content_or_settings_is_computed_again"
+    },
+    {
+      "id": "shared-table-key-ignores-column-names",
+      "why": "the key leaves out the column names (which pandas' row hash does not read), so a frame with its columns renamed shares another frame's table",
+      "find": "    h.update(repr([(str(c), str(t)) for c, t in games.dtypes.items()]).encode())\n",
+      "replace": "",
+      "expect_caught_by": "test_any_difference_in_content_or_settings_is_computed_again"
+    },
+    {
+      "id": "shared-table-handed-out-itself",
+      "why": "every caller gets the remembered frame itself, so one test's edit changes the table the next test reads",
+      "find": "        return _TABLES[key].copy()\n",
+      "replace": "        return _TABLES[key]\n",
+      "expect_caught_by": "test_each_caller_gets_its_own_copy"
+    },
+    {
+      "id": "shared-nba-table-handed-out-itself",
+      "why": "the NBA tables are handed out themselves, so one test changing its copy changes the next test's input",
+      "find": "        return _TABLES[key].copy(deep=True)\n",
+      "replace": "        return _TABLES[key]\n",
+      "expect_caught_by": "test_the_nba_tables_are_remembered_on_every_argument"
+    },
+    {
+      "id": "shared-nba-table-ignores-keyword-arguments",
+      "why": "a keyword argument is left out of the key, so features over a different availability table is answered from memory",
+      "find": "               tuple(sorted((k, _part(v)) for k, v in kwargs.items())))\n",
+      "replace": "               ())\n",
+      "expect_caught_by": "test_the_nba_tables_are_remembered_on_every_argument"
+    }
+  ]
+}

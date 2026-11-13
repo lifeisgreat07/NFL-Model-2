@@ -1,0 +1,97 @@
+{
+  "target": "experiments/mlb/stage98/registry.json",
+  "tests": "tests/test_mlb_stage98_registry.py",
+  "cases": [
+    {
+      "id": "mlb98-m1-spends-a-slot",
+      "why": "a measurement starts spending a slot without the level moving, so the three questions are decided at an interval that no longer holds the family's error rate.",
+      "find": "\"title\": \"What the starting-pitcher term adds\",\n   \"question\": \"Model A against Model A without starter_matchup, refitted the same way, on 2025-2026.\",\n   \"spends_slot\": false,",
+      "replace": "\"title\": \"What the starting-pitcher term adds\",\n   \"question\": \"Model A against Model A without starter_matchup, refitted the same way, on 2025-2026.\",\n   \"spends_slot\": true,",
+      "expect_caught_by": "test_three_slots_and_the_level_they_set"
+    },
+    {
+      "id": "mlb98-budget-shrunk",
+      "why": "the budget drops to two while three questions spend slots, so each is tested at 97.5% instead of 98.33%.",
+      "find": "\"budget_m\": 3,",
+      "replace": "\"budget_m\": 2,",
+      "expect_caught_by": "test_three_slots_and_the_level_they_set"
+    },
+    {
+      "id": "mlb98-confirmation-moved",
+      "why": "the confirmation seasons move after registration, so the held-out test is no longer the one written down.",
+      "find": "\"confirmation_seasons\": [\n   2025,\n   2026\n  ],\n  ",
+      "replace": "\"confirmation_seasons\": [\n   2025,\n   2022\n  ],\n  ",
+      "expect_caught_by": "test_the_seasons_and_what_decides"
+    },
+    {
+      "id": "mlb98-grid-widened",
+      "why": "the tuning grid grows after registration, so the validation search is wider than the one written down.",
+      "find": "\"lambda\": [\n     1.0,\n     3.0,\n     10.0,\n     30.0\n    ",
+      "replace": "\"lambda\": [\n     0.3,\n     1.0,\n     3.0,\n     10.0,\n     30.0\n    ",
+      "expect_caught_by": "test_tuning_touches_only_the_validation_seasons"
+    },
+    {
+      "id": "mlb98-model-b-extra-feature",
+      "why": "Model B gains a feature the registration did not name, so H2 and H3 compare a different model.",
+      "find": "\"market_logit\"\n",
+      "replace": "\"market_logit\",\n\"bullpen_matchup\"\n",
+      "expect_caught_by": "test_model_b_is_model_a_plus_the_market_and_nothing_else"
+    },
+    {
+      "id": "mlb98-all-star-allowed",
+      "why": "All-Star games are let into the history, so exhibition results train and score the model.",
+      "find": "Spring training, exhibition and All-Star games are never used.",
+      "replace": "Spring training and exhibition games are never used.",
+      "expect_caught_by": "test_spring_training_exhibition_and_all_star_games_are_never_used"
+    },
+    {
+      "id": "mlb98-relisted-game-twice",
+      "why": "a postponed game listed again is kept on both days, so one game is scored twice.",
+      "find": "one row per gamePk, the last listing wins",
+      "replace": "one row per listing",
+      "expect_caught_by": "test_a_game_is_its_gamepk_and_a_relisted_game_counts_once"
+    },
+    {
+      "id": "mlb98-neutral-keeps-home-edge",
+      "why": "a game away from the home club's park keeps the fitted home edge, so a relocated game is forecast as a home game.",
+      "find": "its forecast gets no fitted home edge",
+      "replace": "its forecast keeps the fitted home edge",
+      "expect_caught_by": "test_a_neutral_site_game_gets_no_home_edge"
+    },
+    {
+      "id": "mlb98-starter-not-shrunk",
+      "why": "a starter's rate is no longer shrunk toward the league, so a pitcher with one bad start is rated on it alone.",
+      "find": "(weighted runs + 150 x the league's runs per out) / (weighted outs + 150) x 27",
+      "replace": "weighted runs / weighted outs x 27",
+      "expect_caught_by": "test_the_starter_term_reads_only_earlier_appearances_and_is_shrunk"
+    },
+    {
+      "id": "mlb98-live-price-allowed",
+      "why": "an in-game price is allowed as the market, so a price set after the start feeds Model B.",
+      "find": "A price from a provider marked live is never used. ",
+      "replace": "",
+      "expect_caught_by": "test_a_live_price_is_never_used"
+    },
+    {
+      "id": "mlb98-bootstrap-by-game",
+      "why": "the bootstrap resamples single games, so games of one day are treated as independent and the interval narrows.",
+      "find": "Paired, resampling whole game days (every game of an official date together)",
+      "replace": "Paired, resampling single games",
+      "expect_caught_by": "test_the_bootstrap_resamples_whole_game_days"
+    },
+    {
+      "id": "mlb98-unposted-season-used",
+      "why": "a season Retrosheet has not posted is used unchecked, so a confirmation season rests on one source.",
+      "find": " A season whose log Retrosheet has not posted is not used until it has.",
+      "replace": "",
+      "expect_caught_by": "test_the_fallback_is_checked_before_a_season_is_used"
+    },
+    {
+      "id": "mlb98-clubs-by-abbreviation",
+      "why": "clubs are keyed on their abbreviation, so a renamed club (OAK to ATH) splits into two.",
+      "find": "The Stats API's club id, which is stable through renames and moves.",
+      "replace": "The Stats API's club abbreviation.",
+      "expect_caught_by": "test_clubs_are_keyed_on_the_stats_api_id"
+    }
+  ]
+}

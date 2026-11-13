@@ -23,11 +23,12 @@ import subprocess
 from pathlib import Path
 
 import pandas as pd
-import pytest
 
 from src.site import home as home_py
 from src.sports.nba import page_inputs, site
 from src.sports.nba import schedule as nba
+from tests.optional import require_tool
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js'
@@ -67,9 +68,8 @@ def test_the_schedule_file_and_the_board_carry_it():
 
 
 def tip_set(games):
-    if not NODE:
-        pytest.skip('node not available')
-    js = JS.read_text(encoding='utf-8')
+    require_tool('node')
+    js = day_script('nba')
     fn = re.search(r'function tipSet\(g\)\{.*?\n\}\n', js, re.S)
     assert fn, 'tipSet is not findable -- re-anchor this guard'
     r = subprocess.run([NODE, '-e', fn.group(0) + 'console.log(JSON.stringify(%s.map(tipSet)));' % json.dumps(games)],
@@ -87,13 +87,13 @@ def test_only_espns_false_reads_tbd():
 
 
 def test_the_row_the_card_and_the_note_all_use_it():
-    js = JS.read_text(encoding='utf-8')
+    js = day_script('nba')
     row = js[js.index('function rowTime(g, p){'):]
     assert "  return tipSet(g) ? FMT_HOUR.format(new Date(g.start)) : 'time TBD';\n" in row[:300]
     label = js[js.index('function startLabel(g){'):]
     # " ET" is startMark()'s, the time-zone setting's (Stage 80 item 57).
     assert "return tipSet(g) ? `${day} · ${FMT_TIME.format(new Date(g.start))}${startMark()}` : `${day} · time TBD`;" in label[:300]
-    note = js[js.index('function preseasonHtml(){'):js.index('function stateHtml(')]
+    note = js[js.index('function preseasonHtml(){'):js.index('\nfunction ', js.index('function preseasonHtml(){'))]
     assert "tipSet(FIRST_GAME) ?" in note and 'its tip-off time still to be set' in note
     assert 'FMT_ET_WEEKDAY_HOUR' not in js, 'the hour rule is back'
 
@@ -118,8 +118,7 @@ def test_the_home_page_lists_the_unset_starts(tmp_path):
 
 def test_the_home_page_reads_them_the_same_way():
     """The home page printed opening night as "First tip-off Tue · time TBD"."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = HOME.read_text(encoding='utf-8')
     unset = re.search(r'^const UNSET_TIPS = .*$', js, re.M)
     fn = re.search(r'^function tipSet\(t\)\{.*\}$', js, re.M)

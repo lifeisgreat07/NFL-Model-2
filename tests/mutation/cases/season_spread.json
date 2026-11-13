@@ -1,0 +1,29 @@
+{
+  "target": "src/core/season_spread.py",
+  "tests": "tests/test_season_spread.py",
+  "cases": [
+    {
+      "id": "season-spread-pools-unweighted",
+      "why": "the confirmation seasons are pooled as a plain mean of two season figures, not over their games, so the check against the baseline compares the wrong number",
+      "find": "    pooled = float(sum(r['log_loss'] * r['games'] for r in conf)) / games\n",
+      "replace": "    pooled = sum(float(r['log_loss']) for r in conf) / len(conf)\n",
+      "expect_caught_by": "test_the_helper_scores_each_season_and_pools_the_confirmation_seasons"
+    },
+    {
+      "id": "spread-page-shows-confirmation-seasons-only",
+      "target": "src/core/day_board.js",
+      "why": "the page lists only the two seasons the baseline pools, hiding the validation seasons that show how far a season moves",
+      "find": "  const items = s.seasons.map(r => `${r.label} ${r.log_loss.toFixed(4)}`).join(', ');",
+      "replace": "  const items = s.seasons.filter(r => r.role === 'confirmation').map(r => `${r.label} ${r.log_loss.toFixed(4)}`).join(', ');",
+      "expect_caught_by": "test_every_season_in_the_file_is_on_the_page"
+    },
+    {
+      "id": "spread-file-not-passed-to-the-nba-page",
+      "target": "src/sports/nba/site.py",
+      "why": "the NBA build stops passing the spread file, so its checks page shows the baseline without it",
+      "find": "        'spread': _maybe(PATHS.experiments / 'stage61' / 'results' / 'model_a_by_season.json'),\n",
+      "replace": "",
+      "expect_caught_by": "test_the_checks_page_shows_it_under_the_drift_check"
+    }
+  ]
+}

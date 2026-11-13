@@ -30,11 +30,15 @@ from pathlib import Path
 
 import pytest
 
+from src.core.template_parts import APP_SCRIPT
+from tests.js_source import function_source
+from tests.optional import require_tool
+
 ROOT = Path(__file__).resolve().parents[1]
 CSS = (ROOT / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8')
 RULES = re.sub(r'\s+', '', CSS)
 HOME_CSS = re.sub(r'\s+', '', (ROOT / 'src' / 'site' / 'home' / 'home.css').read_text(encoding='utf-8'))
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 SPORT_JS = {'nhl': (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8'),
             'nba': (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')}
 SHEET = (ROOT / 'src' / 'core' / 'sheet.js').read_text(encoding='utf-8')
@@ -47,17 +51,10 @@ NODE = shutil.which('node')
 
 
 def node(code):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr
     return json.loads(r.stdout)
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 def print_block():
