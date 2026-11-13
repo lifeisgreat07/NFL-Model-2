@@ -39,6 +39,11 @@ jobs:
         with:
           python-version: '3.11'
 
+      # Stage 42 item 1: how late this run started, against its own cron line.
+      - name: Record the start delay
+        timeout-minutes: 10
+        run: python -m src.core.start_delay .github/workflows/ncaam-collect.yml
+
       - name: Install dependencies
         timeout-minutes: 10
         run: pip install --require-hashes -r requirements.lock
@@ -78,6 +83,17 @@ jobs:
           done
           echo "push refused three times"
           exit 1
+
+      - name: Close the alert if this run recovered
+        timeout-minutes: 10
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'Recovered: the run at %s succeeded.\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > recovered.md
+          python -m src.core.alerts --resolve --title "NCAAM: the results collector failed" --body-file recovered.md
 
       - name: Raise an alert on failure
         if: failure()
