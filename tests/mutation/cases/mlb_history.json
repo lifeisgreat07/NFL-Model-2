@@ -154,6 +154,60 @@
       "find": "    last = max(p['confirmation_seasons'])\n",
       "replace": "    last = min(p['confirmation_seasons'])\n",
       "expect_caught_by": "test_confirmation_reads_through_the_last_confirmation_season_and_so_waits_for_its_check"
+    },
+    {
+      "id": "mlb-suspended-dated-on-start",
+      "target": "src/sports/mlb/ratings.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "audit 8's B1 put back: a suspended game is dated on its start, so its result feeds the days before it was completed.",
+      "find": "    if 'start_utc' in g:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_a_suspended_game_is_dated_on_the_day_it_was_completed"
+    },
+    {
+      "id": "mlb-market-model-output-kept",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "AccuScore's model output is read as a market price.",
+      "find": "NOT_A_BOOK = {'accuscore'}\n",
+      "replace": "NOT_A_BOOK: set[str] = set()\n",
+      "expect_caught_by": "test_a_model_output_or_an_incoherent_price_is_not_a_market"
+    },
+    {
+      "id": "mlb-market-band-off",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "a price whose implied probabilities sum to 2.0 is read as a moneyline.",
+      "find": "PRICE_SUM = (1.00, 1.20)\n",
+      "replace": "PRICE_SUM = (0.0, 9.0)\n",
+      "expect_caught_by": "test_a_model_output_or_an_incoherent_price_is_not_a_market"
+    },
+    {
+      "id": "mlb-model-b-neutral-twice",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "audit 8's S1 put back: Model B loses its intercept on a neutral site, taking the home edge off twice.",
+      "find": "        if not needs_market:\n            z = np.where(neutral,",
+      "replace": "        if True:\n            z = np.where(neutral,",
+      "expect_caught_by": "test_on_a_neutral_site_model_b_keeps_its_intercept_and_model_a_does_not"
+    },
+    {
+      "id": "mlb-confirm-rerun-allowed",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "a second confirmation run overwrites the first.",
+      "find": "    if (RESULTS / 'confirmation.json').exists():\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_the_confirmation_runs_once_and_only_on_a_registered_setting"
+    },
+    {
+      "id": "mlb-confirm-off-grid",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "a setting outside the registered grid is confirmed.",
+      "find": "        raise SystemExit(f'tuning.json chose {chosen}, which is not in the registered grid')\n",
+      "replace": "        pass\n",
+      "expect_caught_by": "test_the_confirmation_runs_once_and_only_on_a_registered_setting"
     }
   ]
 }

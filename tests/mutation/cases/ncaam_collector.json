@@ -36,6 +36,42 @@
       "find": "                     'tournament_id': str(comp.get('tournamentId') or ''), 'note': note,",
       "replace": "                     'tournament_id': '', 'note': note,",
       "expect_caught_by": "test_a_tournament_game_keeps_its_id_note_and_neutral_site"
+    },
+    {
+      "id": "ncaam-tournament-board-unread",
+      "target": "src/sports/ncaam/collector.py",
+      "tests": "tests/test_ncaam_collector.py",
+      "why": "only the Division I board is read, so a tournament game only ESPN's tournament board lists (2017's First Four) is never stored.",
+      "find": "    for url in (SCOREBOARD, TOURNAMENT_BOARD):\n",
+      "replace": "    for url in (SCOREBOARD,):\n",
+      "expect_caught_by": "test_a_tournament_game_only_on_the_tournament_board_is_kept_and_a_game_on_both_is_one_row"
+    },
+    {
+      "id": "ncaam-bad-final-costs-the-day",
+      "target": "src/sports/ncaam/collector.py",
+      "tests": "tests/test_ncaam_collector.py",
+      "why": "audit 8's S5 put back: one unusable final stops the day, and its valid finals are never stored.",
+      "find": "        added += add(rows, folder)\n",
+      "replace": "        added += add([] if problems else rows, folder)\n",
+      "expect_caught_by": "test_one_unusable_final_does_not_cost_the_days_other_finals_and_stays_listed_until_stored"
+    },
+    {
+      "id": "ncaam-unread-forgotten",
+      "target": "src/sports/ncaam/collector.py",
+      "tests": "tests/test_ncaam_collector.py",
+      "why": "an unusable final is reported once and forgotten, so the alert closes with the game never stored.",
+      "find": "    if unread:\n        raise CollectorError(",
+      "replace": "    if False:\n        raise CollectorError(",
+      "expect_caught_by": "test_one_unusable_final_does_not_cost_the_days_other_finals_and_stays_listed_until_stored"
+    },
+    {
+      "id": "ncaam-unread-never-cleared",
+      "target": "src/sports/ncaam/collector.py",
+      "tests": "tests/test_ncaam_collector.py",
+      "why": "a game stored later stays listed, so the run fails for ever.",
+      "find": "    unread = {gid: v for gid, v in sorted(unread.items()) if gid not in have}\n",
+      "replace": "    unread = dict(sorted(unread.items()))\n",
+      "expect_caught_by": "test_one_unusable_final_does_not_cost_the_days_other_finals_and_stays_listed_until_stored"
     }
   ]
 }

@@ -62,15 +62,39 @@ def test_a_stored_game_is_never_written_twice(tmp_path):
     assert list(stored['game_id']) == ['1', '2', '7'] and stored.loc[0, 'home_score'] == '70'
 
 
-def test_the_run_reads_one_scoreboard_a_day_and_defaults_to_the_last_three(tmp_path, monkeypatch):
+def test_the_run_reads_both_boards_for_each_of_the_last_three_days(tmp_path, monkeypatch):
     asked = []
 
     def get(url):
-        asked.append(url.split('dates=')[1][:8])
-        return json.dumps({'events': [event(url.split('dates=')[1][:8])]}).encode()
-    monkeypatch.setattr(c, 'HISTORY', tmp_path)
-    monkeypatch.setattr(c, 'collect', lambda days, now, get, folder=tmp_path, pause=0: c.add(
-        [r for d in days for r in c.finals(json.loads(get(c.SCOREBOARD.format(day=d.strftime('%Y%m%d')))), d, now)],
-        folder))
+        day, group = url.split('dates=')[1][:8], url.split('groups=')[1].split('&')[0]
+        asked.append((day, group))
+        return json.dumps({'events': [event(day)]}).encode()
+    real = c.collect
+    monkeypatch.setattr(c, 'collect', lambda days, now, get: real(days, now, get, folder=tmp_path, pause=0))
     assert c.main([], now=NOW, get=get) == 0
-    assert asked == ['20261110', '20261111', '20261112']
+    assert asked == [(d, g) for d in ('20261110', '20261111', '20261112') for g in ('50', '100')]
+    assert list(c.stored(tmp_path / 'games_2026.csv')['game_id']) == ['20261110', '20261111', '20261112']
+
+
+def test_a_tournament_game_only_on_the_tournament_board_is_kept_and_a_game_on_both_is_one_row():
+    boards = {'50': {'events': [event('1')]},
+              '100': {'events': [event('1'), event('9', tournament='22', note='East Region - First Four')]}}
+    board = c.day_board(date(2017, 3, 14), lambda url: json.dumps(boards[url.split('groups=')[1][:3].rstrip('&')]).encode())
+    assert sorted(e['id'] for e in board['events']) == ['1', '9']
+
+
+def test_one_unusable_final_does_not_cost_the_days_other_finals_and_stays_listed_until_stored(tmp_path):
+    folder = tmp_path / 'history'
+    bad_day = {'events': [event('4', hs='60', as_='60'), event('6'), event('7')]}
+    with pytest.raises(c.CollectorError, match=r'1 final\(s\) not stored, listed in unread.json: game 4'):
+        c.collect([date(2026, 11, 12)], NOW, lambda url: json.dumps(bad_day).encode(), folder, pause=0)
+    assert sorted(c.stored(folder / 'games_2026.csv')['game_id']) == ['6', '7']
+    unread = json.loads((tmp_path / 'unread.json').read_text(encoding='utf-8'))
+    assert unread['4']['day'] == '2026-11-12' and 'game 4' in unread['4']['reason']
+    # A later run that never reads the day again still fails while the game is listed.
+    with pytest.raises(c.CollectorError, match='game 4'):
+        c.collect([date(2026, 11, 20)], NOW, lambda url: json.dumps({'events': []}).encode(), folder, pause=0)
+    # Once ESPN gives the game a winner and it is stored, the list empties and the run passes.
+    fixed = {'events': [event('4', hs='61', as_='60')]}
+    assert c.collect([date(2026, 11, 12)], NOW, lambda url: json.dumps(fixed).encode(), folder, pause=0) == 1
+    assert json.loads((tmp_path / 'unread.json').read_text(encoding='utf-8')) == {}
