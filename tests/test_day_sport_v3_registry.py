@@ -51,3 +51,9 @@ def test_it_discloses_that_its_evidence_is_from_training_seasons_only(sport):
     text = ' '.join(reg(sport)['disclosures'])
     assert 'training seasons only' in text and 'no validation, confirmation, forward-test' in text
     assert 'only the plain flag is registered' in text
+
+
+@pytest.mark.parametrize('sport', ['nba', 'nhl'])
+def test_on_a_neutral_site_model_b_keeps_its_intercept(sport):
+    m = reg(sport)['protocol']['models']
+    assert "Model A's forecast loses the fitted intercept" in m and "Model B's loses nothing" in m

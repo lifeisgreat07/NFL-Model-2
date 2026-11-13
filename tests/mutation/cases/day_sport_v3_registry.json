@@ -37,6 +37,15 @@
       "find": " or v2's decision.",
       "replace": ".",
       "expect_caught_by": "test_it_is_a_shadow_beside_v2_that_changes_nothing_registered"
+    },
+    {
+      "id": "v3-model-b-neutral-twice",
+      "target": "experiments/nba/stage105_v3/registry.json",
+      "tests": "tests/test_day_sport_v3_registry.py",
+      "why": "Model B is again given v2's neutral rule, which removes the home edge twice.",
+      "find": "Model B's loses nothing",
+      "replace": "Model B's loses it too",
+      "expect_caught_by": "test_on_a_neutral_site_model_b_keeps_its_intercept"
     }
   ]
 }

@@ -7,7 +7,7 @@
   "experiments/nba/stage95_v2/registry.json"
  ],
  "protocol": {
-  "models": "v3's Model A is v2's Model A with the changes below added as features (or, for the star weighting, in place of v2's availability term); v3's Model B is v3's Model A plus the market term, as v2's. Same estimator, refit rule, neutral-site rule, history and price rules as v2.",
+  "models": "v3's Model A is v2's Model A with the changes below added as features (or, for the star weighting, in place of v2's availability term); v3's Model B is v3's Model A plus the market term, as v2's. Same estimator, refit rule, history and price rules as v2. Neutral site: Model A's forecast loses the fitted intercept, as v2's; Model B's loses nothing, because its market price already carries the site (audit 8, finding S1: with standardised features the pipeline intercept is not the home edge, and for Model B removing it takes the home edge off twice).",
   "tuning": "H_days and lambda (and, for the NHL, K_shots) are v2's tuned values, not re-tuned: v3 adds parameter-free features only."
  },
  "changes": {
