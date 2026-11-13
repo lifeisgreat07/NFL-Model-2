@@ -43,7 +43,7 @@
       "target": "src/sports/mlb/schedule.py",
       "tests": "tests/test_mlb_schedule.py",
       "why": "a tied final is accepted, so a game with no winner is graded as an away win.",
-      "find": "        elif hs == as_:\n            out.append(f'game {gid}: final with a tied score {hs}-{as_}')\n",
+      "find": "        elif hs == as_ and not g.get('isTie'):\n            out.append(f'game {gid}: final with a tied score {hs}-{as_} and no isTie')\n",
       "replace": "",
       "expect_caught_by": "test_a_tied_or_scoreless_final_stops_the_load"
     },
@@ -91,6 +91,15 @@
       "find": "            errors.append(f'{name} raised {type(exc).__name__}: {exc}')\n            notes.append(f'{name}: FAILED\\n\\n```\\n{traceback.format_exc(limit=3)}```')\n",
       "replace": "            errors.append(f'{name} raised {type(exc).__name__}: {exc}')\n            notes.append(f'{name}: FAILED\\n\\n```\\n{traceback.format_exc(limit=3)}```')\n            break\n",
       "expect_caught_by": "test_a_step_that_raises_is_recorded_and_the_rest_still_run"
+    },
+    {
+      "id": "mlb-sched-tie-scored",
+      "target": "src/sports/mlb/schedule.py",
+      "tests": "tests/test_mlb_schedule.py",
+      "why": "an official tie is scored as an away win, so a game nobody won counts against the home club.",
+      "find": " and hs != as_ else None,",
+      "replace": " else None,",
+      "expect_caught_by": "test_an_official_tie_is_final_with_no_winner"
     }
   ]
 }
