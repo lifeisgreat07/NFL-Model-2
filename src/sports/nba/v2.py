@@ -119,14 +119,17 @@ def short_boxes(minutes: pd.DataFrame) -> set[tuple[str, str]]:
 
 
 def availability_table(games: pd.DataFrame, minutes: pd.DataFrame, half_life: float,
-                       unusable: AbstractSet[tuple[str, str]] = frozenset()) -> pd.Series:
+                       unusable: AbstractSet[tuple[str, str]] = frozenset(), power: float = 1.0) -> pd.Series:
     """Item 24: availability_matchup for every game, indexed by game_id.
 
     As `ratings.availability_table`, each team's games are walked in date order with each player's weighted
     minutes carried forward and decayed by 0.5^(days / H). What differs is who is counted as available: the
     players who appeared (minutes above zero) in the team's previous game, not in the game itself. A box in
     `unusable` adds nothing to the carried minutes, and the game after it has availability 1.0 (nobody is known
-    to be out)."""
+    to be out).
+
+    `power` weights each player by his expected minutes raised to it: 1, v2's own rule, is the minutes themselves;
+    v3's star weighting (experiments/nba/stage105_v3) is 2."""
     m = minutes.copy()
     m['game_id'] = m['game_id'].astype(str)
     m['player_id'] = m['player_id'].astype(str)
@@ -146,7 +149,7 @@ def availability_table(games: pd.DataFrame, minutes: pd.DataFrame, half_life: fl
                 carried = {p: v * decay for p, v in carried.items()}
                 weight_sum *= decay
             last = day
-            expected = {p: v / weight_sum for p, v in carried.items()} if weight_sum else {}
+            expected = {p: (v / weight_sum) ** power for p, v in carried.items()} if weight_sum else {}
             avail[(gid, team)] = 1.0 if previous is None else ratings.availability(expected, previous)
             rows = by_game_team.get((gid, team))
             if rows is None or (gid, team) in unusable:
