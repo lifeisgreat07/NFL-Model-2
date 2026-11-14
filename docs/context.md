@@ -76,8 +76,6 @@ hand**: `require_tool('node')`; **every mutation case names its real file**.
   `GITHUB_ACTIONS=true` (#661). Such a test chdirs to its tmp folder and pins the runner variables; reproduce with
   `GITHUB_ACTIONS=true` set on the PC.
 - **One process per worktree**: mutation cases run while that worktree's suite runs fail the suite.
-- **A shadow's records sit beside the picks with the same file names** (`predictions/<sport>/2026-v2/`): anything that
-  finds a pick by `*/<id>.json` must keep season folders only (#739; `test_like_for_like` already did).
 - **Scout reads any "N passed" in a body as the whole suite's count, "N test" in a commit message as a suite count,
   and `--durations=0 tests/test_x.py` as 0 for that file**: say "all N of their tests pass", keep counts out of commits,
   put flags after the files.
