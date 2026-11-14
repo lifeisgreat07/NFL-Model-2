@@ -2836,11 +2836,11 @@
    "time_valid": true
   },
   {
-   "game_id": "401910015",
+   "game_id": "401910016",
    "slate": "2026-11-18",
-   "start_utc": "2026-11-19T02:00:00Z",
-   "home": "DEN",
-   "away": "BOS",
+   "start_utc": "2026-11-19T01:00:00Z",
+   "home": "DAL",
+   "away": "GS",
    "status": "scheduled",
    "game_type": "regular",
    "home_score": null,
@@ -2849,11 +2849,11 @@
    "time_valid": true
   },
   {
-   "game_id": "401910016",
+   "game_id": "401910015",
    "slate": "2026-11-18",
    "start_utc": "2026-11-19T02:30:00Z",
-   "home": "DAL",
-   "away": "GS",
+   "home": "DEN",
+   "away": "BOS",
    "status": "scheduled",
    "game_type": "regular",
    "home_score": null,
