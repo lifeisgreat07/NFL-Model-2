@@ -1,0 +1,38 @@
+"""The NHL's v3 (experiments/nhl/stage105_v3/registry.json): v2 plus the back-to-back flag, as a shadow.
+
+`b2b_matchup` = (1 if the away team played a game on the previous date, else 0) minus (the same for the home team),
+on the league's game dates, from the schedule only. A team's first game of a season is 0: the day before it holds
+no game of that team.
+
+Everything else is v2's (src/sports/nhl/v2.py): the history and its item 29 rules, the ratings, the tuned H and K
+(not re-tuned), the estimator and refit rule. Neutral site: Model A's forecast loses the fitted intercept, as v2's;
+Model B's keeps it, because its market price already carries the site (audit 8, finding S1).
+"""
+from __future__ import annotations
+
+import pandas as pd
+
+from src.core.sport import sport_paths
+
+PATHS = sport_paths('nhl')
+FOLDER = PATHS.experiments / 'stage105_v3'
+REGISTRY = FOLDER / 'registry.json'
+B2B = 'b2b_matchup'
+
+
+def played_days(games: pd.DataFrame) -> set[tuple[str, pd.Timestamp]]:
+    """(club, date) for every club in every game of `games` (columns `day`, `home`, `away`)."""
+    days = pd.to_datetime(games['day']).dt.normalize()
+    return {(str(t), d) for col in ('home', 'away') for t, d in zip(games[col], days)}
+
+
+def b2b_matchup(rows: pd.DataFrame, played: set[tuple[str, pd.Timestamp]]) -> pd.Series:
+    """The away club's back-to-back flag minus the home club's, for each row (columns `day`, `home`, `away`)."""
+    before = pd.to_datetime(rows['day']).dt.normalize() - pd.Timedelta(days=1)
+    away = [int((str(t), d) in played) for t, d in zip(rows['away'], before)]
+    home = [int((str(t), d) in played) for t, d in zip(rows['home'], before)]
+    return pd.Series([a - h for a, h in zip(away, home)], index=rows.index, name=B2B, dtype=float)
+
+
+def model_a_columns(v2_columns: list[str]) -> list[str]:
+    return [*v2_columns, B2B]
