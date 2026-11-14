@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-13 (session 1112c-1113: #721 to #737, less the closed #723, #727 and #733)
+Last updated: 2026-11-13 (session 1112c-1113: #721 to #741, less the closed #723, #727, #733 and #738)
 
 ---
 
@@ -28,7 +28,7 @@ src/sports/nba and src/sports/mlb pass `mypy --strict`; **a new test file needs 
 branches adding lines beside each other conflict there, so merge main before opening; **no test skips on a missing node by
 hand**: `require_tool('node')`; **every mutation case names its real file**.
 
-**Single next action:** merge the v3 shadow writers (s105n NHL, s105b NBA, one Booth at a time), then Stage 103 item 2's registration (NCAAM, before any result) and Stage 100 (MLB pages).
+**Single next action:** check that `predictions/nhl/2026-v3` and `predictions/nba/2026-v3` hold a record beside each pick saved since #740 / #741; then Stage 103 item 2's registration (NCAAM, before any result).
 
 **The order of work (Mark, 2026-11-11, 2026-11-13):** the v2 shadow (done) and v3 (registered #732, writers open); 97-101 (MLB); 103. **Audit 8** (Fable 5.2, run by Mark 2026-11-13) is answered: B1, B2, S1-S6 merged (#735, #736, #737, #734). Stages 102 and 104, Stage 95 items 31 to 35, Stages 97 and 98 are done.
 
@@ -37,7 +37,7 @@ hand**: `require_tool('node')`; **every mutation case names its real file**.
 | What | State | Waiting on |
 |---|---|---|
 | v2 shadow, forward test | Writers live (#721, #722); saves only the picks its own run saved (#736, audit 8 B2; NHL 2026020307 and 2026020308 excluded); Model B keeps its intercept on a neutral site and Kalshi prices pass item 29 (#737) | Decided once after the 2026 regular season |
-| v3 shadow (Stage 105) | Registered (#732): b2b_matchup both sports, NBA star-weighted availability (p = 2) | The writers s105n (NHL) and s105b (NBA): prepped, then Booth one at a time |
+| v3 shadow (Stage 105) | Registered (#732): b2b_matchup both sports, NBA star-weighted availability (p = 2); writers live (#740 NHL, #741 NBA: Booth timed out twice on #741, Mark chose to merge) | Decided once after the 2026 regular season |
 | MLB Stage 99 (model and backtest) | History 2010-2026 and tuning (#728), market (#729), confirmation code (#730), audit 8 fixes (#735: completion dating, re-tuned H 120 / lambda 10 / K 150; no AccuScore; once-only confirm) | Retrosheet's 2026 log, then `python -m src.sports.mlb.backtest confirm`, once |
 | NCAAM Stage 103 | Collector (#726, #734: both boards, unread.json, rows_only_grow); history 2014-15 to 2025-26 and seeds (#731); opening day added on main | Item 2's registration before any result; hoopR fallback probe; items 3-4 by March |
 | MLB canary workflow, probables timing | Canary module only | Stage 101's daily run; probables timing measured in spring training 2027 |
@@ -76,6 +76,8 @@ hand**: `require_tool('node')`; **every mutation case names its real file**.
   `GITHUB_ACTIONS=true` (#661). Such a test chdirs to its tmp folder and pins the runner variables; reproduce with
   `GITHUB_ACTIONS=true` set on the PC.
 - **One process per worktree**: mutation cases run while that worktree's suite runs fail the suite.
+- **A shadow's records sit beside the picks with the same file names** (`predictions/<sport>/2026-v2/`): anything that
+  finds a pick by `*/<id>.json` must keep season folders only (#739; `test_like_for_like` already did).
 - **Scout reads any "N passed" in a body as the whole suite's count, "N test" in a commit message as a suite count,
   and `--durations=0 tests/test_x.py` as 0 for that file**: say "all N of their tests pass", keep counts out of commits,
   put flags after the files.
