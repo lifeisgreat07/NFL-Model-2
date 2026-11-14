@@ -145,5 +145,19 @@
     "home": "NYG",
     "away": "WAS",
     "spread_line": 1.5
+  },
+  {
+    "captured_date": "2026-11-14",
+    "captured_utc": "2026-11-14T05:17:45Z",
+    "home": "GB",
+    "away": "MIN",
+    "spread_line": 2.5
+  },
+  {
+    "captured_date": "2026-11-14",
+    "captured_utc": "2026-11-14T05:17:45Z",
+    "home": "DAL",
+    "away": "SF",
+    "spread_line": -4.5
   }
 ]

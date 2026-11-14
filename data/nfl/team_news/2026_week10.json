@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 10,
-  "read_at": "2026-11-13T13:07:32Z",
+  "read_at": "2026-11-14T05:17:47Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-11-13T07:02:06Z"
+    "depth_chart_snapshot": "2026-11-13T15:17:47Z"
   },
   "teams": {
     "NYG": {
@@ -62,7 +62,7 @@
         }
       ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 5
     },
     "ATL": {
       "qb": {

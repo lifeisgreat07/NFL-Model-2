@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 10,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-13T05:17:27Z",
+  "read_at": "2026-11-14T05:17:43Z",
   "games": [
     {
       "away": "WAS",
@@ -50,7 +50,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 3.0,
+      "spread_line": 2.5,
       "neutral_site": false,
       "venue": "Lambeau Field"
     },
@@ -120,7 +120,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -3.5,
+      "spread_line": -4.5,
       "neutral_site": false,
       "venue": "AT&T Stadium"
     },
