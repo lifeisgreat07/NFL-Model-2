@@ -1,0 +1,89 @@
+{
+ "game_id": "401909984",
+ "season": 2026,
+ "slate": "2026-11-14",
+ "start_utc": "2026-11-15T01:00:00Z",
+ "home": "MIN",
+ "away": "CHI",
+ "model_a": 0.8258,
+ "model_b": 0.8818,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.845,
+  "away": 0.9519
+ },
+ "features": {
+  "point_matchup": 10.118153,
+  "efficiency_matchup": 9.621796,
+  "availability_matchup": -0.106964
+ },
+ "market": {
+  "game_id": "401909984",
+  "home": "MIN",
+  "away": "CHI",
+  "start_utc": "2026-11-15T01:00:00Z",
+  "read_utc": "2026-11-14T21:31:20Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -1080.0,
+  "away_price": 690.0,
+  "home_prob": 0.8785
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-14T21:31:20Z",
+  "home": [
+   {
+    "athlete_id": "4594268",
+    "name": "Anthony Edwards",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3934673",
+    "name": "Donte DiVincenzo",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5095151",
+    "name": "Caleb Wilson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4397189",
+    "name": "Jalen Smith",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4278067",
+    "name": "Nic Claxton",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "2595516",
+    "name": "Norman Powell",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5105555",
+    "name": "Tobe Awaka",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-14T21:31:20Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14241,
+  "training_games_priced": 14200,
+  "training_ids_sha256": "c2e7a557e4b7cd5d00decd35822aa62bdf0a40b15ce9f3258faf6e05e080fe59"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "b116baa965eaec762ff575196cb708feb7812033"
+}

@@ -1,0 +1,114 @@
+{
+ "game_id": "401909981",
+ "season": 2026,
+ "slate": "2026-11-14",
+ "start_utc": "2026-11-15T00:30:00Z",
+ "home": "CLE",
+ "away": "DAL",
+ "model_a": 0.642,
+ "model_b": 0.3546,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7901,
+  "away": 0.9887
+ },
+ "features": {
+  "point_matchup": 4.144416,
+  "efficiency_matchup": 3.884778,
+  "availability_matchup": -0.198607
+ },
+ "market": {
+  "game_id": "401909981",
+  "home": "CLE",
+  "away": "DAL",
+  "start_utc": "2026-11-15T00:30:00Z",
+  "read_utc": "2026-11-14T21:31:20Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 170.0,
+  "away_price": -204.0,
+  "home_prob": 0.3556
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-14T21:31:20Z",
+  "home": [
+   {
+    "athlete_id": "3908809",
+    "name": "Donovan Mitchell",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4432158",
+    "name": "Evan Mobley",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3992",
+    "name": "James Harden",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4066328",
+    "name": "Jarrett Allen",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5106268",
+    "name": "Nae'Qwan Tomlin",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4576087",
+    "name": "Peyton Watson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4066757",
+    "name": "Sam Merrill",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4683688",
+    "name": "Dereck Lively II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432582",
+    "name": "Max Christie",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4873153",
+    "name": "Morez Johnson Jr.",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5279129",
+    "name": "Sergio de Larrea",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5148538",
+    "name": "Tarik Biberovic",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-14T21:31:20Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14241,
+  "training_games_priced": 14200,
+  "training_ids_sha256": "c2e7a557e4b7cd5d00decd35822aa62bdf0a40b15ce9f3258faf6e05e080fe59"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "b116baa965eaec762ff575196cb708feb7812033"
+}

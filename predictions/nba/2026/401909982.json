@@ -1,0 +1,84 @@
+{
+ "game_id": "401909982",
+ "season": 2026,
+ "slate": "2026-11-14",
+ "start_utc": "2026-11-15T01:00:00Z",
+ "home": "MIA",
+ "away": "DET",
+ "model_a": 0.4242,
+ "model_b": 0.3862,
+ "pick": "DET",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.9191
+ },
+ "features": {
+  "point_matchup": -5.056811,
+  "efficiency_matchup": -5.016233,
+  "availability_matchup": 0.080868
+ },
+ "market": {
+  "game_id": "401909982",
+  "home": "MIA",
+  "away": "DET",
+  "start_utc": "2026-11-15T01:00:00Z",
+  "read_utc": "2026-11-14T21:31:20Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 146.0,
+  "away_price": -173.0,
+  "home_prob": 0.3908
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-14T21:31:20Z",
+  "home": [
+   {
+    "athlete_id": "3032977",
+    "name": "Giannis Antetokounmpo",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6475",
+    "name": "Klay Thompson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4601025",
+    "name": "Pelle Larsson",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4395702",
+    "name": "Isaiah Joe",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433621",
+    "name": "Jalen Duren",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5037878",
+    "name": "Ugonna Onyenso",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-14T21:31:20Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14241,
+  "training_games_priced": 14200,
+  "training_ids_sha256": "c2e7a557e4b7cd5d00decd35822aa62bdf0a40b15ce9f3258faf6e05e080fe59"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "b116baa965eaec762ff575196cb708feb7812033"
+}

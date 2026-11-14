@@ -1,0 +1,94 @@
+{
+ "game_id": "401909983",
+ "season": 2026,
+ "slate": "2026-11-14",
+ "start_utc": "2026-11-15T01:00:00Z",
+ "home": "MEM",
+ "away": "BKN",
+ "model_a": 0.7006,
+ "model_b": 0.5325,
+ "pick": "MEM",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9063,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": 4.824324,
+  "efficiency_matchup": 4.785428,
+  "availability_matchup": -0.093735
+ },
+ "market": {
+  "game_id": "401909983",
+  "home": "MEM",
+  "away": "BKN",
+  "start_utc": "2026-11-15T01:00:00Z",
+  "read_utc": "2026-11-14T21:31:20Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 106.0,
+  "home_prob": 0.5337
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-14T21:31:20Z",
+  "home": [
+   {
+    "athlete_id": "2991070",
+    "name": "Jerami Grant",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4593016",
+    "name": "Quinten Post",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105462",
+    "name": "Richie Saunders",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431785",
+    "name": "Scotty Pippen Jr.",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065733",
+    "name": "Ty Jerome",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4600663",
+    "name": "Zach Edey",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5101761",
+    "name": "Mikel Brown Jr.",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5279130",
+    "name": "Nolan Traore",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-14T21:31:20Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14241,
+  "training_games_priced": 14200,
+  "training_ids_sha256": "c2e7a557e4b7cd5d00decd35822aa62bdf0a40b15ce9f3258faf6e05e080fe59"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "b116baa965eaec762ff575196cb708feb7812033"
+}
