@@ -1,0 +1,36 @@
+{
+ "game_id": "2026020321",
+ "season": 2026,
+ "slate": "2026-11-14",
+ "start_utc": "2026-11-14T18:00:00Z",
+ "home": "CAR",
+ "away": "SEA",
+ "model_a": 0.7685,
+ "model_b": null,
+ "neutral_site": true,
+ "price_used": false,
+ "price_note": "no price",
+ "features": {
+  "goal_matchup": 1.664341,
+  "shot_matchup": 12.805581
+ },
+ "goalies": {
+  "home": 8481611,
+  "away": 8478916,
+  "used": false
+ },
+ "market": null,
+ "saved_utc": "2026-11-14T14:01:39Z",
+ "code": "nhl-day-sport-v2",
+ "registry": "experiments/nhl/stage95_v2/registry.json",
+ "H_days": 120.0,
+ "K_shots": null,
+ "never_a_pick": true,
+ "training_through": "2026-11-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14714,
+  "training_games_priced": 7674,
+  "training_ids_sha256": "eb01b6a679eb0a811fa57656ea7a370f2f7c99a829634eeff72f0f593882975b"
+ }
+}

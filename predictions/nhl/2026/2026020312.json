@@ -1,0 +1,84 @@
+{
+ "game_id": "2026020312",
+ "season": 2026,
+ "slate": "2026-11-14",
+ "start_utc": "2026-11-14T20:30:00Z",
+ "home": "CHI",
+ "away": "WPG",
+ "model_a": 0.3977,
+ "model_b": null,
+ "pick": "WPG",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": -1.036326,
+  "shot_matchup": -5.111888,
+  "goalie_matchup_2000": 0.000753
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8481519,
+   "name": "Spencer Knight",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8479973,
+   "name": "Stuart Skinner",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-13",
+  "read_utc": "2026-11-14T14:01:39Z",
+  "home": [
+   {
+    "name": "Bowen Byram",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Dylan DeMelo",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elias Salomonsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Isak Rosen",
+    "position": "RW",
+    "status": "Out"
+   },
+   {
+    "name": "Nick Bjugstad",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Vladislav Namestnikov",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-14T14:01:39Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14714,
+  "training_games_priced": 7683,
+  "training_ids_sha256": "eb01b6a679eb0a811fa57656ea7a370f2f7c99a829634eeff72f0f593882975b"
+ },
+ "code_sha256": "4528af22924440016c9d318f7ee1db0801f013554721500105f24460f06fe3b2",
+ "code_commit": "09b530e4a190afec70daae4421ed6087b00ece21"
+}
