@@ -1,0 +1,105 @@
+{
+ "game_id": "2026020322",
+ "season": 2026,
+ "slate": "2026-11-14",
+ "start_utc": "2026-11-15T01:00:00Z",
+ "home": "DAL",
+ "away": "BUF",
+ "model_a": 0.5605,
+ "model_b": 0.5476,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.246727,
+  "shot_matchup": 0.147005,
+  "goalie_matchup_2000": -0.000269
+ },
+ "market": {
+  "game_id": "2026020322",
+  "start_utc": "2026-11-15T01:00:00Z",
+  "home": "DAL",
+  "away": "BUF",
+  "book": "DraftKings",
+  "home_price": -135.0,
+  "away_price": 114.0,
+  "home_prob": 0.5514,
+  "read_utc": "2026-11-14T21:01:39Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479979,
+   "name": "Jake Oettinger",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/BrienRea/status/2121653855192526982"
+  },
+  "away": {
+   "player_id": 8479312,
+   "name": "Alex Lyon",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://www.audacy.com/wgr550/sports/sabres/sabres-looking-to-break-a-three-game-losing-streak"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-14",
+  "read_utc": "2026-11-14T21:01:39Z",
+  "home": [
+   {
+    "name": "Kyle Capobianco",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lian Bichsel",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Duchene",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Miro Heiskanen",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Oskar Back",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Justin Danforth",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Konsta Helenius",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Grzelcyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-14T21:01:39Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14714,
+  "training_games_priced": 7683,
+  "training_ids_sha256": "eb01b6a679eb0a811fa57656ea7a370f2f7c99a829634eeff72f0f593882975b"
+ },
+ "code_sha256": "4528af22924440016c9d318f7ee1db0801f013554721500105f24460f06fe3b2",
+ "code_commit": "d18ca1f834524a9ececb02a44360d7026158968a"
+}

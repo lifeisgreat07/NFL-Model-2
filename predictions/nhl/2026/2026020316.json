@@ -1,0 +1,95 @@
+{
+ "game_id": "2026020316",
+ "season": 2026,
+ "slate": "2026-11-14",
+ "start_utc": "2026-11-15T00:00:00Z",
+ "home": "TBL",
+ "away": "DET",
+ "model_a": 0.6371,
+ "model_b": 0.6603,
+ "pick": "TBL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 1.109822,
+  "shot_matchup": 1.141309,
+  "goalie_matchup_2000": -0.000703
+ },
+ "market": {
+  "game_id": "2026020316",
+  "start_utc": "2026-11-15T00:00:00Z",
+  "home": "TBL",
+  "away": "DET",
+  "book": "DraftKings",
+  "home_price": -225.0,
+  "away_price": 185.0,
+  "home_prob": 0.6636,
+  "read_utc": "2026-11-14T21:01:39Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476883,
+   "name": "Andrei Vasilevskiy",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/BenjaminJReport/status/2121630392255980000"
+  },
+  "away": {
+   "player_id": 8480193,
+   "name": "Daniil Tarasov",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/HeleneStJames/status/2121322083703558607?a=myC5Pitzwrc5xNQBRVY&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-14",
+  "read_utc": "2026-11-14T21:01:39Z",
+  "home": [
+   {
+    "name": "Anthony Cirelli",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Brayden Point",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Erik Cernak",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Albert Johansson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Dylan Larkin",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Simon Edvinsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-14T21:01:39Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14714,
+  "training_games_priced": 7683,
+  "training_ids_sha256": "eb01b6a679eb0a811fa57656ea7a370f2f7c99a829634eeff72f0f593882975b"
+ },
+ "code_sha256": "4528af22924440016c9d318f7ee1db0801f013554721500105f24460f06fe3b2",
+ "code_commit": "d18ca1f834524a9ececb02a44360d7026158968a"
+}

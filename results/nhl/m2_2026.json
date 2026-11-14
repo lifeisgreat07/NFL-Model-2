@@ -11,14 +11,14 @@
   "games_a_starter_differed": 20
  },
  "model_a": {
-  "log_loss_projected": 0.6491534181948244,
+  "log_loss_projected": 0.6491534181948245,
   "log_loss_actual": 0.649362259290724,
   "actual_minus_projected": {
    "games": 259,
    "days": 39,
-   "diff": 0.00020884109589937438,
+   "diff": 0.00020884109589937075,
    "low": -0.0006522523391811233,
-   "high": 0.0012140184632420394,
+   "high": 0.0012140184632420386,
    "level": 0.9833333333333333
   }
  },

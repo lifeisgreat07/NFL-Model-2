@@ -1,0 +1,41 @@
+{
+ "game_id": "2026020325",
+ "season": 2026,
+ "slate": "2026-11-14",
+ "start_utc": "2026-11-15T03:00:00Z",
+ "home": "LAK",
+ "away": "CGY",
+ "model_a": 0.5969,
+ "model_b": 0.6315,
+ "neutral_site": false,
+ "price_used": true,
+ "price_note": null,
+ "features": {
+  "goal_matchup": 0.2881,
+  "shot_matchup": 2.680835
+ },
+ "goalies": {
+  "home": 8476341,
+  "away": 8481692,
+  "used": false
+ },
+ "market": {
+  "home_price": -175.0,
+  "away_price": 145.0,
+  "home_prob": 0.6092,
+  "read_utc": "2026-11-14T21:01:39Z"
+ },
+ "saved_utc": "2026-11-14T21:01:39Z",
+ "code": "nhl-day-sport-v2",
+ "registry": "experiments/nhl/stage95_v2/registry.json",
+ "H_days": 120.0,
+ "K_shots": null,
+ "never_a_pick": true,
+ "training_through": "2026-11-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14714,
+  "training_games_priced": 7674,
+  "training_ids_sha256": "eb01b6a679eb0a811fa57656ea7a370f2f7c99a829634eeff72f0f593882975b"
+ }
+}

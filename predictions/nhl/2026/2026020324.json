@@ -1,0 +1,100 @@
+{
+ "game_id": "2026020324",
+ "season": 2026,
+ "slate": "2026-11-14",
+ "start_utc": "2026-11-15T03:00:00Z",
+ "home": "ANA",
+ "away": "NYI",
+ "model_a": 0.5314,
+ "model_b": 0.4913,
+ "pick": "NYI",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.103199,
+  "shot_matchup": 1.472775,
+  "goalie_matchup_2000": -0.004207
+ },
+ "market": {
+  "game_id": "2026020324",
+  "start_utc": "2026-11-15T03:00:00Z",
+  "home": "ANA",
+  "away": "NYI",
+  "book": "DraftKings",
+  "home_price": -108.0,
+  "away_price": -112.0,
+  "home_prob": 0.4957,
+  "read_utc": "2026-11-14T21:01:39Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480843,
+   "name": "Lukas Dostal",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8473575,
+   "name": "Semyon Varlamov",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/AGrossNewsday/status/2121685759107514753"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-14",
+  "read_utc": "2026-11-14T21:01:39Z",
+  "home": [
+   {
+    "name": "A.J. Greer",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ian Moore",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Poehling",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexander Romanov",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Calum Ritchie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jean-Gabriel Pageau",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Mathew Barzal",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-14T21:01:39Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14714,
+  "training_games_priced": 7683,
+  "training_ids_sha256": "eb01b6a679eb0a811fa57656ea7a370f2f7c99a829634eeff72f0f593882975b"
+ },
+ "code_sha256": "4528af22924440016c9d318f7ee1db0801f013554721500105f24460f06fe3b2",
+ "code_commit": "d18ca1f834524a9ececb02a44360d7026158968a"
+}

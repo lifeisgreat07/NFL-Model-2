@@ -1,0 +1,95 @@
+{
+ "game_id": "2026020320",
+ "season": 2026,
+ "slate": "2026-11-14",
+ "start_utc": "2026-11-15T00:00:00Z",
+ "home": "STL",
+ "away": "FLA",
+ "model_a": 0.5292,
+ "model_b": 0.4871,
+ "pick": "FLA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.054639,
+  "shot_matchup": -3.607579,
+  "goalie_matchup_2000": 0.006553
+ },
+ "market": {
+  "game_id": "2026020320",
+  "start_utc": "2026-11-15T00:00:00Z",
+  "home": "STL",
+  "away": "FLA",
+  "book": "DraftKings",
+  "home_price": -112.0,
+  "away_price": -108.0,
+  "home_prob": 0.5043,
+  "read_utc": "2026-11-14T21:01:39Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480981,
+   "name": "Joel Hofer",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/jprutherford/status/2121650586638487943"
+  },
+  "away": {
+   "player_id": 8474593,
+   "name": "Jacob Markstrom",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/FlaPanthers/status/2121642308105900156"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-14",
+  "read_utc": "2026-11-14T21:01:39Z",
+  "home": [
+   {
+    "name": "Dillon Dube",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Torey Krug",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Tucker",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-14T21:01:39Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14714,
+  "training_games_priced": 7683,
+  "training_ids_sha256": "eb01b6a679eb0a811fa57656ea7a370f2f7c99a829634eeff72f0f593882975b"
+ },
+ "code_sha256": "4528af22924440016c9d318f7ee1db0801f013554721500105f24460f06fe3b2",
+ "code_commit": "d18ca1f834524a9ececb02a44360d7026158968a"
+}
