@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-11-14T00:35:05Z",
+  "generated_utc": "2026-11-14T03:10:12Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
     "audits_total": 777,
@@ -13728,6 +13728,13 @@
   ],
   "recent": [
     {
+      "agent": "Scout",
+      "pr": null,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43545573288",
+      "when": "2026-11-14T02:18:36Z",
+      "says": "found nothing to fix in the description"
+    },
+    {
       "agent": "Booth",
       "pr": 740,
       "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/740#issuecomment-6868397117",
@@ -13831,13 +13838,6 @@
       "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/733#issuecomment-6860935950",
       "when": "2026-11-13T18:04:14Z",
       "says": "SAFE TO MERGE: 5 of 6 claims confirmed, 0 wrong, 1 unverifiable"
-    },
-    {
-      "agent": "Scout",
-      "pr": null,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43475862504",
-      "when": "2026-11-13T17:45:04Z",
-      "says": "found nothing to fix in the description"
     }
   ]
 }
