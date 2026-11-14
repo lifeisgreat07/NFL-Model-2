@@ -272,6 +272,7 @@
   "tests/test_nhl_standings.py": "isolated behavioural",
   "tests/test_nhl_v2.py": "isolated behavioural",
   "tests/test_nhl_v2_shadow.py": "isolated behavioural",
+  "tests/test_nhl_v3.py": "isolated behavioural",
   "tests/test_nhl_workflows.py": "workflow/docs/tests-of-tests",
   "tests/test_nightly_browser_checks.py": "workflow/docs/tests-of-tests",
   "tests/test_nightly_mutation.py": "workflow/docs/tests-of-tests",
