@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 10,
-  "read_at": "2026-11-14T05:17:47Z",
+  "read_at": "2026-11-14T12:09:55Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-11-13T15:17:47Z"
+    "depth_chart_snapshot": "2026-11-14T07:01:50Z"
   },
   "teams": {
     "NYG": {
@@ -45,7 +45,7 @@
         }
       ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "NE": {
       "qb": {
@@ -72,8 +72,14 @@
       },
       "injury_report": "published",
       "out": [],
-      "doubtful": [],
-      "questionable_starters": 0
+      "doubtful": [
+        {
+          "name": "Divine Deablo",
+          "position": "LB",
+          "injury": "Forearm"
+        }
+      ],
+      "questionable_starters": 2
     },
     "KC": {
       "qb": {
@@ -82,9 +88,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Jaylon Moore",
+          "position": "T",
+          "injury": "Ankle"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "CLE": {
       "qb": {
@@ -93,9 +105,20 @@
         "changed_from": "S.Sanders"
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Michael Burton",
+          "position": "FB",
+          "injury": "Calf"
+        },
+        {
+          "name": "Ronnie Hickman Jr.",
+          "position": "S",
+          "injury": "Concussion"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "HOU": {
       "qb": {
@@ -104,9 +127,25 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Azeez Al-Shaair",
+          "position": "LB",
+          "injury": "Groin"
+        },
+        {
+          "name": "Danielle Hunter",
+          "position": "DE",
+          "injury": "Hamstring"
+        },
+        {
+          "name": "Keylan Rutledge",
+          "position": "G",
+          "injury": "Neck"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "GB": {
       "qb": {
@@ -115,9 +154,26 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
-      "doubtful": [],
-      "questionable_starters": 0
+      "out": [
+        {
+          "name": "Josh Jacobs",
+          "position": "RB",
+          "injury": "Finger"
+        },
+        {
+          "name": "Sean Rhyan",
+          "position": "C",
+          "injury": "Ankle"
+        }
+      ],
+      "doubtful": [
+        {
+          "name": "Zaire Franklin",
+          "position": "LB",
+          "injury": "Shin"
+        }
+      ],
+      "questionable_starters": 4
     },
     "MIN": {
       "qb": {
@@ -126,9 +182,20 @@
         "changed_from": "C.Wentz"
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Blake Cashman",
+          "position": "LB",
+          "injury": "Concussion"
+        },
+        {
+          "name": "T.J. Hockenson",
+          "position": "TE",
+          "injury": "Wrist"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "IND": {
       "qb": {
@@ -137,7 +204,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Akeem Davis-Gaither",
+          "position": "LB",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -148,7 +221,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Aaron Brewer",
+          "position": "C",
+          "injury": "Concussion"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -159,9 +238,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Taliese Fuaga",
+          "position": "T",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "CAR": {
       "qb": {
@@ -170,9 +255,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Bobby Okereke",
+          "position": "LB",
+          "injury": "Foot"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "NYJ": {
       "qb": {
@@ -181,9 +272,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Trevin Wallace",
+          "position": "LB",
+          "injury": "Groin"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "BUF": {
       "qb": {
@@ -193,8 +290,14 @@
       },
       "injury_report": "published",
       "out": [],
-      "doubtful": [],
-      "questionable_starters": 0
+      "doubtful": [
+        {
+          "name": "Spencer Brown",
+          "position": "T",
+          "injury": "Ankle"
+        }
+      ],
+      "questionable_starters": 1
     },
     "TEN": {
       "qb": {
@@ -203,7 +306,33 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Anthony Hill Jr.",
+          "position": "LB",
+          "injury": "Neck"
+        },
+        {
+          "name": "Carnell Tate",
+          "position": "WR",
+          "injury": "Shoulder"
+        },
+        {
+          "name": "Cody Barton",
+          "position": "LB",
+          "injury": "Concussion"
+        },
+        {
+          "name": "Peter Skoronski",
+          "position": "G",
+          "injury": "Hamstring"
+        },
+        {
+          "name": "Tommy Townsend",
+          "position": "P",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -214,9 +343,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Jessie Bates",
+          "position": "S",
+          "injury": "Not injury related - resting player"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "ARI": {
       "qb": {
@@ -225,9 +360,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Hjalte Froholdt",
+          "position": "C",
+          "injury": "Concussion"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 4
     },
     "LA": {
       "qb": {
@@ -238,7 +379,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 3
     },
     "LV": {
       "qb": {
@@ -258,7 +399,28 @@
         "changed_from": "D.Lock"
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Charles Cross",
+          "position": "T",
+          "injury": "Ankle"
+        },
+        {
+          "name": "Leonard Williams",
+          "position": "DT",
+          "injury": "Stinger"
+        },
+        {
+          "name": "Quenton Nelson",
+          "position": "G",
+          "injury": "Knee"
+        },
+        {
+          "name": "Sam Darnold",
+          "position": "QB",
+          "injury": "Ribs"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -269,9 +431,25 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Donovan Ezeiruaku",
+          "position": "LB",
+          "injury": "Ankle"
+        },
+        {
+          "name": "Jake Ferguson",
+          "position": "TE",
+          "injury": "Knee"
+        },
+        {
+          "name": "P.J. Locke",
+          "position": "S",
+          "injury": "Concussion"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "SF": {
       "qb": {
@@ -280,9 +458,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Mike Evans",
+          "position": "WR",
+          "injury": "Achilles"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 5
     },
     "CIN": {
       "qb": {
