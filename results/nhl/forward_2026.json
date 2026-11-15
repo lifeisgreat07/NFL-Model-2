@@ -2,14 +2,14 @@
  "sport": "nhl",
  "season": 2026,
  "registered": "experiments/nhl/stage58/registry.json",
- "graded_picks": 260,
+ "graded_picks": 261,
  "through": "2026-11-14",
  "scores": {
   "model_a": {
-   "games": 260,
-   "log_loss": 0.6475209429480471,
-   "brier": 0.22832759807692307,
-   "accuracy": 0.6192307692307693
+   "games": 261,
+   "log_loss": 0.6469825470705928,
+   "brier": 0.22805877697318008,
+   "accuracy": 0.6206896551724138
   },
   "model_b": {
    "games": 234,
@@ -24,10 +24,10 @@
    "accuracy": 0.6196581196581197
   },
   "base_rate": {
-   "games": 260,
-   "log_loss": 0.6884276618025664,
-   "brier": 0.24764339733682164,
-   "accuracy": 0.55
+   "games": 261,
+   "log_loss": 0.688753843566834,
+   "brier": 0.2478061633710042,
+   "accuracy": 0.5478927203065134
   }
  },
  "by_market_source": {
@@ -64,11 +64,11 @@
  },
  "comparisons": {
   "model_a_minus_base_rate": {
-   "games": 260,
+   "games": 261,
    "days": 40,
-   "diff": -0.04090671885451931,
-   "low": -0.06946800056717573,
-   "high": -0.012002158191271685,
+   "diff": -0.04177129649624116,
+   "low": -0.07087380708129087,
+   "high": -0.012444745465586344,
    "level": 0.9833333333333333
   },
   "model_b_minus_model_a": {
@@ -90,20 +90,20 @@
  },
  "calibration": {
   "model_a": {
-   "games": 260,
+   "games": 261,
    "days": 40,
    "level": 0.9833333333333333,
    "fits": "two: the intercept with the slope held at 1 (calibration in the large), the slope with an intercept of its own",
    "intercept": {
-    "value": 0.08324902462088991,
-    "low": -0.17153362942310701,
-    "high": 0.357590985514145,
+    "value": 0.0764612682788463,
+    "low": -0.179182849458397,
+    "high": 0.34669330447939994,
     "draws_unfit": 0
    },
    "slope": {
-    "value": 1.4041665443501161,
-    "low": 0.7967238737032128,
-    "high": 2.155917535488525,
+    "value": 1.4226332810049547,
+    "low": 0.8020616157326563,
+    "high": 2.1853204346603525,
     "draws_unfit": 0
    }
   },
