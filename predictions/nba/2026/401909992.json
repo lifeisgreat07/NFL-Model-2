@@ -1,0 +1,94 @@
+{
+ "game_id": "401909992",
+ "season": 2026,
+ "slate": "2026-11-15",
+ "start_utc": "2026-11-16T01:00:00Z",
+ "home": "MIL",
+ "away": "ATL",
+ "model_a": 0.3419,
+ "model_b": 0.2621,
+ "pick": "ATL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9555,
+  "away": 0.9161
+ },
+ "features": {
+  "point_matchup": -7.027685,
+  "efficiency_matchup": -7.084707,
+  "availability_matchup": 0.039472
+ },
+ "market": {
+  "game_id": "401909992",
+  "home": "MIL",
+  "away": "ATL",
+  "start_utc": "2026-11-16T01:00:00Z",
+  "read_utc": "2026-11-15T21:31:27Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 261.0,
+  "away_price": -324.0,
+  "home_prob": 0.2661
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-15T21:31:27Z",
+  "home": [
+   {
+    "athlete_id": "4997526",
+    "name": "Ousmane Dieng",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4591725",
+    "name": "Ryan Rollins",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4873201",
+    "name": "Asa Newell",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105571",
+    "name": "Henri Veesaar",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3146557",
+    "name": "Jock Landale",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4585618",
+    "name": "Keshon Gilbert",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5149077",
+    "name": "Kingston Flemings",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4712863",
+    "name": "Mouhamed Gueye",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-15T21:31:27Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-14",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14246,
+  "training_games_priced": 14205,
+  "training_ids_sha256": "5faed0394e0a701a8e4ccd9a4273467dae8db86e2ad317aa76e6cd7a963361ef"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "b608582126e3eaf54986532ecb99f9db534f48a9"
+}

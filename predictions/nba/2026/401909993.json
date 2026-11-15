@@ -1,0 +1,99 @@
+{
+ "game_id": "401909993",
+ "season": 2026,
+ "slate": "2026-11-15",
+ "start_utc": "2026-11-16T02:00:00Z",
+ "home": "SAC",
+ "away": "OKC",
+ "model_a": 0.1971,
+ "model_b": 0.2027,
+ "pick": "OKC",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9426,
+  "away": 0.7535
+ },
+ "features": {
+  "point_matchup": -14.020899,
+  "efficiency_matchup": -13.601337,
+  "availability_matchup": 0.189131
+ },
+ "market": {
+  "game_id": "401909993",
+  "home": "SAC",
+  "away": "OKC",
+  "start_utc": "2026-11-16T02:00:00Z",
+  "read_utc": "2026-11-15T21:31:27Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 361.0,
+  "away_price": -468.0,
+  "home_prob": 0.2084
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-15T21:31:27Z",
+  "home": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431679",
+    "name": "Precious Achiuwa",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4900671",
+    "name": "Ajay Mitchell",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4683692",
+    "name": "Cason Wallace",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433255",
+    "name": "Chet Holmgren",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4593803",
+    "name": "Jalen Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432823",
+    "name": "Jaylin Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061603",
+    "name": "Thomas Sorber",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-15T21:31:27Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-14",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14246,
+  "training_games_priced": 14205,
+  "training_ids_sha256": "5faed0394e0a701a8e4ccd9a4273467dae8db86e2ad317aa76e6cd7a963361ef"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "b608582126e3eaf54986532ecb99f9db534f48a9"
+}

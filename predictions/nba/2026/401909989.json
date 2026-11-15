@@ -1,0 +1,88 @@
+{
+ "game_id": "401909989",
+ "season": 2026,
+ "slate": "2026-11-15",
+ "start_utc": "2026-11-15T23:00:00Z",
+ "home": "BOS",
+ "away": "DAL",
+ "model_a": 0.8469,
+ "model_b": 0.8707,
+ "pick": "BOS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.8497
+ },
+ "features": {
+  "point_matchup": 8.368323,
+  "efficiency_matchup": 8.310949,
+  "availability_matchup": 0.150265
+ },
+ "market": {
+  "game_id": "401909989",
+  "home": "BOS",
+  "away": "DAL",
+  "start_utc": "2026-11-15T23:00:00Z",
+  "read_utc": "2026-11-15T21:31:27Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -980.0,
+  "away_price": 650.0,
+  "home_prob": 0.8719
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-15T21:31:27Z",
+  "home": [],
+  "away": [
+   {
+    "athlete_id": "4278049",
+    "name": "Daniel Gafford",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4683688",
+    "name": "Dereck Lively II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6442",
+    "name": "Kyrie Irving",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432582",
+    "name": "Max Christie",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4593125",
+    "name": "Santi Aldama",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5279129",
+    "name": "Sergio de Larrea",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5148538",
+    "name": "Tarik Biberovic",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-15T21:31:27Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-14",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14246,
+  "training_games_priced": 14205,
+  "training_ids_sha256": "5faed0394e0a701a8e4ccd9a4273467dae8db86e2ad317aa76e6cd7a963361ef"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "b608582126e3eaf54986532ecb99f9db534f48a9"
+}

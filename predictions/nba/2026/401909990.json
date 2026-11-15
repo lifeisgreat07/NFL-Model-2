@@ -1,0 +1,73 @@
+{
+ "game_id": "401909990",
+ "season": 2026,
+ "slate": "2026-11-15",
+ "start_utc": "2026-11-15T23:00:00Z",
+ "home": "TOR",
+ "away": "NY",
+ "model_a": 0.3573,
+ "model_b": 0.3814,
+ "pick": "NY",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8755,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": -4.71571,
+  "efficiency_matchup": -5.123109,
+  "availability_matchup": -0.124531
+ },
+ "market": {
+  "game_id": "401909990",
+  "home": "TOR",
+  "away": "NY",
+  "start_utc": "2026-11-15T23:00:00Z",
+  "read_utc": "2026-11-15T21:31:27Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 154.0,
+  "away_price": -184.0,
+  "home_prob": 0.378
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-15T21:31:27Z",
+  "home": [
+   {
+    "athlete_id": "6450",
+    "name": "Kawhi Leonard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4411057",
+    "name": "Kevin McCullar Jr.",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4432586",
+    "name": "Nate Bittle",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433134",
+    "name": "Scottie Barnes",
+    "status": "Out"
+   }
+  ],
+  "away": []
+ },
+ "saved_utc": "2026-11-15T21:31:27Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-14",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14246,
+  "training_games_priced": 14205,
+  "training_ids_sha256": "5faed0394e0a701a8e4ccd9a4273467dae8db86e2ad317aa76e6cd7a963361ef"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "b608582126e3eaf54986532ecb99f9db534f48a9"
+}
