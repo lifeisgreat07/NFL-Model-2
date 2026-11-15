@@ -1,0 +1,100 @@
+{
+ "game_id": "2026020327",
+ "season": 2026,
+ "slate": "2026-11-15",
+ "start_utc": "2026-11-16T01:00:00Z",
+ "home": "DAL",
+ "away": "FLA",
+ "model_a": 0.5558,
+ "model_b": 0.5311,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.270502,
+  "shot_matchup": -1.37879,
+  "goalie_matchup_2000": 0.002574
+ },
+ "market": {
+  "game_id": "2026020327",
+  "start_utc": "2026-11-16T01:00:00Z",
+  "home": "DAL",
+  "away": "FLA",
+  "book": "DraftKings",
+  "home_price": -130.0,
+  "away_price": 110.0,
+  "home_prob": 0.5427,
+  "read_utc": "2026-11-15T21:01:39Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479193,
+   "name": "Casey DeSmith",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8481033,
+   "name": "Akira Schmid",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-15",
+  "read_utc": "2026-11-15T21:01:39Z",
+  "home": [
+   {
+    "name": "Kyle Capobianco",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lian Bichsel",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Miro Heiskanen",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Oskar Back",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-15T21:01:39Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-14",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14728,
+  "training_games_priced": 7696,
+  "training_ids_sha256": "cf5b4b695df7aaf8aff0e1280bc277cf38826b63001f8df41e3ca3459f93dc2f"
+ },
+ "code_sha256": "4528af22924440016c9d318f7ee1db0801f013554721500105f24460f06fe3b2",
+ "code_commit": "09a0440dc8784357be636598abc39e57b18bd42c"
+}
