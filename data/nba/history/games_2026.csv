@@ -187,3 +187,4 @@ game_id,season,slate,game_type,neutral_site,home,away,home_score,away_score,home
 401909982,2026,2026-11-14,regular,False,MIA,DET,137,117,87,40,13,14,97,32,22,14,104.34,espn
 401909983,2026,2026-11-14,regular,False,MEM,BKN,129,110,87,29,13,14,93,17,19,16,99.12,espn
 401909984,2026,2026-11-14,regular,False,MIN,CHI,106,117,91,28,12,15,90,18,12,19,105.62,espn
+401909985,2026,2026-11-15,regular,False,PHI,IND,131,124,85,25,6,13,91,23,8,10,103.06,espn
