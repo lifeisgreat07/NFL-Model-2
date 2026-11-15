@@ -1,0 +1,79 @@
+{
+ "game_id": "401909986",
+ "season": 2026,
+ "slate": "2026-11-15",
+ "start_utc": "2026-11-15T21:00:00Z",
+ "home": "PHX",
+ "away": "LAL",
+ "model_a": 0.4811,
+ "model_b": 0.4232,
+ "pick": "LAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9658,
+  "away": 0.8902
+ },
+ "features": {
+  "point_matchup": -3.373906,
+  "efficiency_matchup": -3.380289,
+  "availability_matchup": 0.075519
+ },
+ "market": {
+  "game_id": "401909986",
+  "home": "PHX",
+  "away": "LAL",
+  "start_utc": "2026-11-15T21:00:00Z",
+  "read_utc": "2026-11-15T16:01:42Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 124.0,
+  "away_price": -148.0,
+  "home_prob": 0.4279
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-15T16:01:42Z",
+  "home": [
+   {
+    "athlete_id": "4431695",
+    "name": "Drew Timme",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4701232",
+    "name": "Mark Williams",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5060631",
+    "name": "Adou Thiero",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4066457",
+    "name": "Austin Reaves",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4277811",
+    "name": "Collin Sexton",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-15T16:01:42Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-14",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14246,
+  "training_games_priced": 14205,
+  "training_ids_sha256": "5faed0394e0a701a8e4ccd9a4273467dae8db86e2ad317aa76e6cd7a963361ef"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "4aae96f31c5786f349b43375a090912a015bc956"
+}

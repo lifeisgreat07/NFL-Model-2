@@ -1283,36 +1283,64 @@
  {
   "game_id": "401909980",
   "pick": "DEN",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-14T21:31:20Z"
  },
  {
   "game_id": "401909981",
   "pick": "DAL",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-11-14T21:31:20Z"
  },
  {
   "game_id": "401909982",
   "pick": "DET",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-11-14T21:31:20Z"
  },
  {
   "game_id": "401909983",
   "pick": "MEM",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-14T21:31:20Z"
  },
  {
   "game_id": "401909984",
   "pick": "MIN",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-11-14T21:31:20Z"
+ },
+ {
+  "game_id": "401909985",
+  "pick": "PHI",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-15T16:01:42Z"
+ },
+ {
+  "game_id": "401909986",
+  "pick": "LAL",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-15T16:01:42Z"
+ },
+ {
+  "game_id": "401909987",
+  "pick": "CHA",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-15T16:01:42Z"
+ },
+ {
+  "game_id": "401909988",
+  "pick": "SA",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-15T16:01:42Z"
  }
 ]

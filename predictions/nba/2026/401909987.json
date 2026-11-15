@@ -1,0 +1,84 @@
+{
+ "game_id": "401909987",
+ "season": 2026,
+ "slate": "2026-11-15",
+ "start_utc": "2026-11-15T21:30:00Z",
+ "home": "LAC",
+ "away": "CHA",
+ "model_a": 0.6475,
+ "model_b": 0.4855,
+ "pick": "CHA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9434,
+  "away": 0.8946
+ },
+ "features": {
+  "point_matchup": 1.69327,
+  "efficiency_matchup": 1.647707,
+  "availability_matchup": 0.048792
+ },
+ "market": {
+  "game_id": "401909987",
+  "home": "LAC",
+  "away": "CHA",
+  "start_utc": "2026-11-15T21:30:00Z",
+  "read_utc": "2026-11-15T16:01:42Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -105.0,
+  "away_price": -113.0,
+  "home_prob": 0.4912
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-15T16:01:42Z",
+  "home": [
+   {
+    "athlete_id": "6580",
+    "name": "Bradley Beal",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3913176",
+    "name": "Brandon Ingram",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4396818",
+    "name": "Jordan Miller",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5108024",
+    "name": "Yanic Konan Niederhauser",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3032979",
+    "name": "Dennis Schroder",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061575",
+    "name": "Kon Knueppel",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-15T16:01:42Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-14",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14246,
+  "training_games_priced": 14205,
+  "training_ids_sha256": "5faed0394e0a701a8e4ccd9a4273467dae8db86e2ad317aa76e6cd7a963361ef"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "4aae96f31c5786f349b43375a090912a015bc956"
+}
