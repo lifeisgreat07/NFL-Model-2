@@ -1,6 +1,23 @@
 [
+ {"date": "2026-11-11", "title": "The drift check compares like with like, a day at a time",
+  "text": "Each of the drift check's five looks is now held to the backtest's log loss over as many games into a season, not to its whole-season figure, and its bootstrap resamples whole game days, because games on one night share that night's news and prices (experiments/nhl/stage58/registry.json, drift.amended_2026_11_11 and drift.amended_2026_11_11_days).",
+  "amendments": ["2026-11-11 drift"]},
+ {"date": "2026-11-05", "title": "Two disclosures about the market",
+  "text": "The registration now says that every priced pick saved before this date came from a Model B fitted on earlier seasons only, and that the live market is the price when the pick is saved while the backtest's is the closing price. No rule or pick changed (experiments/nhl/stage58/registry.json).",
+  "amendments": ["2026-11-05 disclosures"]},
+ {"date": "2026-11-04", "title": "The drift check looks five times a season",
+  "text": "Instead of testing every graded pick at every run, the check looks at 100, 200, 400, 800 and 1,200 graded picks, each at one-sided 99%, the season's 95% shared among the five looks (experiments/nhl/stage58/registry.json, drift.amended_2026_11_04).",
+  "amendments": ["2026-11-04 drift"]},
+ {"date": "2026-11-04", "title": "Model B learns from this season's priced games",
+  "text": "Each of this season's final games now enters Model B's training with the price the daily runs recorded before it started. Model A does not read the price and is unchanged. Picks saved before this date stay as saved (experiments/nhl/stage58/registry.json).",
+  "amendments": ["2026-11-04 models"]},
+ {"date": "2026-11-03", "title": "Models fitted only on earlier days",
+  "text": "Each run now refits the models on games played strictly before the day being picked, as the backtest does. Before this, a run after the day's first games had fitted on them before picking that day's later ones. A saved pick is never rewritten, so the picks affected stay as saved and are listed in the registration. The registration also now says when, and by which rule, the season's verdict is taken (experiments/nhl/stage58/registry.json).",
+  "amendments": ["2026-11-03 deviation", "2026-11-03 forward_test.decision"]},
  {"date": "2026-10-06", "title": "The NHL's picks go live",
-  "text": "The daily run (14:00 and 21:00 UTC) saves each game's pick by the last run before puck drop, with the projected goalies and the market price at that moment, and grades it once the game is final. The forward test and its drift check were registered first (experiments/nhl/stage58/registry.json)."},
+  "text": "The daily run (14:00 and 21:00 UTC) saves each game's pick by the last run before puck drop, with the projected goalies and the market price at that moment, and grades it once the game is final. The forward test and its drift check were registered first (experiments/nhl/stage58/registry.json).",
+  "amendments": []},
  {"date": "2026-10-05", "title": "Model A and Model B, registered and backtested",
-  "text": "Model A reads three differences between the clubs: goal ratings, shot ratings and starting goalies. Model B adds the market. Both were registered before either was fitted (experiments/nhl/stage56/registry.json), tuned on 2022-23 and 2023-24 and answered once on 2024-25 and 2025-26: Model A beats the base rate; Model B against Model A, and against the market, are inconclusive."}
+  "text": "Model A reads three differences between the clubs: goal ratings, shot ratings and starting goalies. Model B adds the market. Both were registered before either was fitted (experiments/nhl/stage56/registry.json), tuned on 2022-23 and 2023-24 and answered once on 2024-25 and 2025-26: Model A beats the base rate; Model B against Model A, and against the market, are inconclusive.",
+  "amendments": []}
 ]

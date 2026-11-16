@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/nhl/pages/changes.json",
+  "tests": "tests/test_whats_changed_complete.py",
+  "cases": [
+    {
+      "id": "nhl-whats-changed-drops-an-amendment",
+      "why": "an amendment falls off the NHL's What's Changed page while the page still claims every change, as it did until audit 9.",
+      "find": "\"amendments\": [\"2026-11-05 disclosures\"]",
+      "replace": "\"amendments\": []",
+      "expect_caught_by": "test_every_amendment_is_on_the_page_and_the_page_names_no_other"
+    },
+    {
+      "id": "nhl-whats-changed-misdates-an-amendment",
+      "why": "an entry names an amendment from another day, so the page dates a change wrongly.",
+      "find": "\"amendments\": [\"2026-11-04 models\"]",
+      "replace": "\"amendments\": [\"2026-11-05 disclosures\", \"2026-11-04 models\"]",
+      "expect_caught_by": "test_every_amendment_is_on_the_page_and_the_page_names_no_other"
+    }
+  ]
+}

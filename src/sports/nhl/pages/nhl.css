@@ -112,3 +112,5 @@ html[data-density="compact"] .nhl-row{min-height:40px;}
   .nhl-row{display:none !important;}
   .nhl-row-detail{display:block !important;}
 }
+/* Audit 9 D10: the interval glyph sits at the right of its right-aligned cell, as on the NBA's Model Lab. */
+.nhl-table td.num .lab-ci{margin-left:auto;}
