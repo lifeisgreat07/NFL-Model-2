@@ -56,4 +56,12 @@ def test_once_games_finish_it_counts_them_and_names_the_next_start():
 
 def test_when_every_game_is_over_it_says_so():
     out = day_status([[t, 'final'] for t in TONIGHT], '2026-10-14T03:30:00Z')   # 11:30 PM Eastern
-    assert out['status']['text'] == '3 games tonight · all final' and out['rows'][1] == ['First puck drop', '7:00 PM']
+    assert out['status']['text'] == '3 games tonight · all final' and out['rows'][1] == ['Tonight', 'All final']
+
+
+def test_once_every_game_has_started_it_names_no_start_that_has_passed():
+    """Audit 9 D16: "First puck drop 7:00 PM" stayed on the card all evening once all three had started."""
+    games = [[TONIGHT[0], 'final'], [TONIGHT[1], 'in_progress'], [TONIGHT[2], 'scheduled']]
+    out = day_status(games, '2026-10-14T02:30:00Z')   # 10:30 PM Eastern, the last game under way
+    assert out['rows'][1] == ['Tonight', 'All under way']
+    assert 'puck drop' not in json.dumps(out['rows'])
