@@ -343,8 +343,10 @@ function rowGame(g){
   const has = g.status === 'final' && g.hs !== null && g.hs !== undefined && g.as !== null && g.as !== undefined;
   const team = (abbr, score) => {
     const text = has ? `${abbr} ${score}` : abbr;
-    return abbr === won ? `<b>${text}</b>` : text;
+    return `<span class="nhl-row-team">${abbr === won ? `<b>${text}</b>` : text}</span>`;
   };
+  /* A team and its score never split; on a phone the game wraps at the @ rather than losing the home score to an
+     ellipsis, as the NBA's does (audit 9 D12). */
   return `${team(g.away, g.as)} <span class="at-symbol">@</span> ${team(g.home, g.hs)}`;
 }
 /* Stage 77 item 35 (L6): a day with no games names the next day that has

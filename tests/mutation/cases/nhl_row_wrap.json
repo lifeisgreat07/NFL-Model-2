@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/nhl/pages/nhl.css",
+  "tests": "tests/test_nhl_row_wrap.py",
+  "cases": [
+    {
+      "id": "nhl-row-game-cut-on-a-phone",
+      "why": "the NHL's game cell keeps its ellipsis on a phone, so a final game loses its home score, as audit 9 found.",
+      "find": "  .nhl-row-game{white-space:normal; overflow:visible;}\n",
+      "replace": "",
+      "expect_caught_by": "test_on_a_phone_the_game_wraps_and_the_result_column_grows_on_both_sports"
+    },
+    {
+      "id": "nhl-row-team-splits",
+      "why": "a team and its score may split across lines, so a wrapped game reads TOR on one line and its score on the next.",
+      "find": ".nhl-row-team{white-space:nowrap;}",
+      "replace": ".nhl-row-team{}",
+      "expect_caught_by": "test_a_team_and_its_score_never_split"
+    }
+  ]
+}
