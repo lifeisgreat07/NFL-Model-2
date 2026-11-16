@@ -1,0 +1,43 @@
+{
+  "target": "src/sports/nfl/generate_dashboard.py",
+  "tests": "tests/test_model_lab_rows_fold.py",
+  "cases": [
+    {
+      "id": "lab-fold-opens-by-default",
+      "why": "the Details fold starts open, so every row is the full sentence again and the page is as long as before",
+      "find": "f'<details class=\"disclosure lab-more\"><summary>Details</summary>'",
+      "replace": "f'<details class=\"disclosure lab-more\" open><summary>Details</summary>'",
+      "expect_caught_by": "test_the_fold_starts_closed"
+    },
+    {
+      "id": "lab-fold-drops-the-figure",
+      "why": "the figure and interval line goes, so a folded row shows only the glyph and a reader must open every row to read a number",
+      "find": "<span class=\"lab-brief\">{brief}</span>'",
+      "replace": "<span class=\"lab-brief\"></span>'",
+      "expect_caught_by": "test_a_row_with_a_figure_shows_it_and_folds_the_sentence"
+    },
+    {
+      "id": "lab-fold-loses-the-source",
+      "why": "the source line is left out of the folded cell, so a registered answer no longer says which registry file it comes from",
+      "find": "f'<div class=\"lab-more-body\">{body}{source}</div></details>'",
+      "replace": "f'<div class=\"lab-more-body\">{body}</div></details>'",
+      "expect_caught_by": "test_a_row_with_a_figure_shows_it_and_folds_the_sentence"
+    },
+    {
+      "id": "lab-deferred-loses-its-source",
+      "tests": "tests/test_model_lab_rows_fold.py",
+      "why": "a deferred row loses its source line, so the reason it was deferred has no registry behind it",
+      "find": "    return f\"{body}{source}\"\n",
+      "replace": "    return body\n",
+      "expect_caught_by": "test_a_deferred_row_keeps_its_reason_and_source_in_view"
+    },
+    {
+      "id": "lab-details-target-small",
+      "target": "src/dashboard/styles.css",
+      "why": "the Details summary loses its 44 px height, so on a phone it is a 16 px line to tap (audit 9 D18)",
+      "find": "min-height:44px; font-size:var(--fs-12); color:var(--text-2);}",
+      "replace": "font-size:var(--fs-12); color:var(--text-2);}",
+      "expect_caught_by": "test_the_details_target_is_large_enough_to_tap"
+    }
+  ]
+}
