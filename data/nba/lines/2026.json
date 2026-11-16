@@ -3010,5 +3010,17 @@
   "home_price": 361.0,
   "away_price": -468.0,
   "home_prob": 0.2084
+ },
+ {
+  "game_id": "401909993",
+  "home": "SAC",
+  "away": "OKC",
+  "start_utc": "2026-11-16T02:00:00Z",
+  "read_utc": "2026-11-16T01:19:38Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 443.0,
+  "away_price": -597.0,
+  "home_prob": 0.177
  }
 ]
