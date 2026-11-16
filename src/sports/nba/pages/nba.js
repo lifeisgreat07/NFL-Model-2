@@ -534,29 +534,6 @@ document.addEventListener('keydown', e => {
 });
 
 /* ---------- model lab ---------- */
-/* Stage 79 item 51 (the 2026-10-13 audit's B4): the NBA's decisions read as
-   the NFL Model Lab's do, a neutral pill, and each interval is drawn against
-   zero with the NFL's glyph (generate_dashboard.interval_glyph, Stage 18):
-   one frame per row with zero at its centre, the interval and its ends, and
-   a dot at the difference, on the row's own scale. */
-function plainSigned(x){
-  let places = 4;
-  while(places < 8 && x !== 0 && Number(Math.abs(x).toFixed(places)) === 0) places++;
-  return `${x < 0 ? '−' : '+'}${Math.abs(x).toFixed(places)}`;
-}
-function intervalGlyph(d, lo, hi){
-  const width = 96, height = 14, pad = 5, mid = height / 2;
-  const span = Math.max(Math.abs(lo), Math.abs(hi), Math.abs(d)) || 1;
-  const x = v => Math.round((pad + (v + span) / (2 * span) * (width - 2 * pad)) * 10) / 10;
-  const label = `${plainSigned(d)}, interval ${plainSigned(lo)} to ${plainSigned(hi)}, ${lo <= 0 && 0 <= hi ? 'includes zero' : 'excludes zero'}`;
-  return `<svg class="lab-ci" role="img" aria-label="${label}" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">`
-    + `<rect class="lab-ci-frame" x="0.5" y="0.5" width="${width - 1}" height="${height - 1}" rx="3"/>`
-    + `<line class="lab-ci-zero" x1="${x(0)}" y1="0" x2="${x(0)}" y2="${height}"/>`
-    + `<line class="lab-ci-range" x1="${x(lo)}" y1="${mid}" x2="${x(hi)}" y2="${mid}"/>`
-    + `<line class="lab-ci-range" x1="${x(lo)}" y1="${mid - 4}" x2="${x(lo)}" y2="${mid + 4}"/>`
-    + `<line class="lab-ci-range" x1="${x(hi)}" y1="${mid - 4}" x2="${x(hi)}" y2="${mid + 4}"/>`
-    + `<circle class="lab-ci-point" cx="${x(d)}" cy="${mid}" r="3"/></svg>`;
-}
 function renderModelLab(){
   const rows = Object.entries(Q).map(([id, q]) => `<tr><th scope="row">${id}</th><td>${QUESTION[id] || ''}</td><td class="num">${signed(q.diff, 4)}</td><td class="num"><span class="lab-lead">${intervalGlyph(q.diff, q.low, q.high)}</span>[${signed(q.low, 4)}, ${signed(q.high, 4)}]</td><td>${q.label ? `<span class="lab-tags"><span class="conf-tag tag-neutral">${escapeHtml(q.label)}</span></span>` : 'a measurement'}</td></tr>`).join('');
   const chosen = DATA.tuning.chosen;
@@ -565,7 +542,7 @@ function renderModelLab(){
   document.getElementById('modellab-body').innerHTML = `
     <p class="nba-lede">Registered before any NBA model was fitted (<code>experiments/nba/stage61/registry.json</code>), tuned on ${VALIDATE} (H = ${B.H_days} days, ridge strength ${B.lambda}), and answered once on ${CONFIRM}. A difference below zero means the first model forecast better. Each interval is a paired bootstrap of whole game days at ${pct(Q.H1.level, 2)}; a result counts only when the interval excludes zero.</p>
     <div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">The backtest's questions</caption>
-    <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Label</th></tr></thead>
+    <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Decision</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
     <h2 class="section-title">Scores on ${CONFIRM}</h2>
     ${heldOutTable(B.scores, FORECASTS, 'nba')}

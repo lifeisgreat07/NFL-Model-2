@@ -1,0 +1,27 @@
+{
+ "target": "src/sports/nhl/pages/nhl.js",
+ "tests": "tests/test_nba_lab_glyph.py",
+ "cases": [
+  {
+   "id": "nhl-lab-bold-label",
+   "why": "the NHL's decisions go back to bold text where the NBA and the NFL show a pill, as before audit 9.",
+   "find": "<span class=\"lab-tags\"><span class=\"conf-tag tag-neutral\">${escapeHtml(q.label)}</span></span>",
+   "replace": "<b>${q.label}</b>",
+   "expect_caught_by": "test_each_question_shows_the_glyph_and_its_decision_as_a_pill"
+  },
+  {
+   "id": "nhl-lab-glyph-dropped",
+   "why": "the NHL's intervals are bare figures again.",
+   "find": "<span class=\"lab-lead\">${intervalGlyph(q.diff, q.low, q.high)}</span>",
+   "replace": "",
+   "expect_caught_by": "test_each_question_shows_the_glyph_and_its_decision_as_a_pill"
+  },
+  {
+   "id": "nhl-lab-column-headed-label",
+   "why": "the NHL's decision column is headed Label again where the NFL's says Decision.",
+   "find": "<th scope=\"col\" class=\"num\">Interval</th><th scope=\"col\">Decision</th>",
+   "replace": "<th scope=\"col\" class=\"num\">Interval</th><th scope=\"col\">Label</th>",
+   "expect_caught_by": "test_every_model_labs_decision_column_is_headed_decision"
+  }
+ ]
+}
