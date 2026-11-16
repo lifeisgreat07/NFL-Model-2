@@ -1,0 +1,132 @@
+"""The March Madness tuning and the fallback check (Stage 103 item 2), on tables built by hand.
+
+Run with: pytest tests/test_ncaam_backtest.py -v
+"""
+import io
+import json
+
+import numpy as np
+import pandas as pd
+import pytest
+
+from src.sports.ncaam import backtest as b
+from src.sports.ncaam import fallback as f
+from src.sports.ncaam.collector import CollectorError
+
+
+def curve_table(days=6, per_day=30, seed=1):
+    rng = np.random.default_rng(seed)
+    rows = []
+    for d in range(days):
+        for i in range(per_day):
+            x = float(rng.normal(0, 9))
+            rows.append({'game_id': f'{d}-{i}', 'day': pd.Timestamp('2021-01-01') + pd.Timedelta(days=d), 'walk': x,
+                         'home_win': int(rng.random() < 1 / (1 + np.exp(-0.15 * x)))})
+    return pd.DataFrame(rows)
+
+
+def test_the_first_day_has_no_earlier_row_and_is_not_forecast():
+    t = curve_table()
+    p = b.walk_forward(t)
+    assert not [g for g in p.index if g.startswith('0-')]
+    assert len(p) == len(t) - 30 and p.between(0, 1).all()
+
+
+def test_a_days_curve_is_fitted_only_on_earlier_days():
+    t = curve_table()
+    flipped = t.copy()
+    last = flipped['day'] == flipped['day'].max()
+    flipped.loc[last, 'home_win'] = 1 - flipped.loc[last, 'home_win']
+    assert b.walk_forward(t).equals(b.walk_forward(flipped))
+    early = t.copy()
+    first = early['day'] == early['day'].min()
+    early.loc[first, 'home_win'] = 1 - early.loc[first, 'home_win']
+    assert not b.walk_forward(t).equals(b.walk_forward(early)), 'an earlier day does move it'
+
+
+def test_tuning_searches_the_whole_grid_and_a_tie_goes_to_the_earlier_entry(monkeypatch):
+    reg = b.registry()
+    seen = []
+    monkeypatch.setattr(b.ratings, 'margins', lambda games, h, lam: seen.append((h, lam)) or (h, lam))
+    monkeypatch.setattr(b, 'walk_forward', lambda table: table)
+    loss = {(60, 3.0): 0.5, (120, 10.0): 0.5}
+    monkeypatch.setattr(b, 'scores', lambda p, table: {'games': 1, 'log_loss': loss.get(p, 0.6)})
+    out = b.tune(pd.DataFrame({'season': [2014, 2015]}), reg)
+    grid = reg['models']['model_a']['grid']
+    assert seen == [(h, lam) for h in grid['H_days'] for lam in grid['lambda']] and len(out['grid']) == 16
+    assert out['chosen'] == {'H_days': 60, 'lambda': 3.0} and out['seasons'] == [2014, 2015]
+
+
+def test_the_validation_seasons_are_the_registered_tournaments_seasons():
+    assert b.validation_seasons(b.registry()) == [2014, 2015, 2016, 2017, 2018]
+
+
+def test_a_season_that_has_not_passed_the_fallback_check_is_not_used(tmp_path):
+    assert b.checked_seasons(tmp_path) == set()
+    (tmp_path / 'checks.json').write_text(json.dumps({'2014': {'checked': True}, '2015': {'checked': False}}),
+                                          encoding='utf-8')
+    assert b.checked_seasons(tmp_path) == {2014}
+    with pytest.raises(CollectorError, match=r'not used: \[2015\]'):
+        b.load_history(2014, 2015, tmp_path)
+
+
+def test_every_registered_season_has_passed_the_check_and_each_entry_counts_its_own_file():
+    p = b.registry()['protocol']
+    doc = json.loads((b.HISTORY / 'checks.json').read_text(encoding='utf-8'))
+    for t in p['validation_tournaments'] + p['confirmation_tournaments']:
+        entry = doc[str(t - 1)]
+        stored_rows = len(pd.read_csv(b.HISTORY / f'games_{t - 1}.csv', dtype=str))
+        assert entry['checked'] is True and entry['stored'] == stored_rows, t
+        assert entry['scores_equal'] / entry['stored'] >= 0.99 and entry['needed'] == 0.99
+    assert doc['2019']['checked'] is True, '2019-20 has no tournament but its games fit the curve'
+
+
+def test_the_tuning_is_written_once(tmp_path, monkeypatch):
+    monkeypatch.setattr(b, 'RESULTS', tmp_path)
+    monkeypatch.setattr(b, 'load_history', lambda first, last: None)
+    monkeypatch.setattr(b, 'tune', lambda games, reg: pytest.fail('the tuning ran over a result already on file'))
+    (tmp_path / 'tuning.json').write_text('{}', encoding='utf-8')
+    with pytest.raises(SystemExit, match='run once and never rewritten'):
+        b.main([])
+
+
+def stored(n=200, tournament=('5', '6')):
+    return pd.DataFrame({'game_id': [str(i) for i in range(n)], 'home_score': '70', 'away_score': '60',
+                         'tournament_id': ['22' if str(i) in tournament else '' for i in range(n)]})
+
+
+def hoopr(frame, drop=(), change=()):
+    out = pd.DataFrame({'id': frame['game_id'].astype(int), 'home_score': 70, 'away_score': 60})
+    out.loc[out['id'].astype(str).isin(change), 'home_score'] = 71
+    return out[~out['id'].astype(str).isin(drop)]
+
+
+def test_the_fallback_counts_games_with_both_scores_equal_and_names_tournament_games_that_fail():
+    s = stored()
+    entry = f.compare(s, hoopr(s, drop=('5',), change=('6', '7')))
+    assert (entry['stored'], entry['in_fallback'], entry['scores_equal']) == (200, 199, 197)
+    assert entry['share'] == 0.985 and entry['checked'] is False
+    assert entry['tournament_games_named'] == [{'game_id': '5', 'problem': 'missing'},
+                                               {'game_id': '6', 'problem': 'scores differ'}]
+
+
+def test_ninety_nine_in_a_hundred_passes_and_a_listed_twice_game_counts_once():
+    s = stored()
+    other = hoopr(s, drop=('0', '1'))
+    entry = f.compare(s, pd.concat([other, other.iloc[:10]]))
+    assert entry['scores_equal'] == 198 and entry['checked'] is True and entry['tournament_games_named'] == []
+
+
+def test_the_check_reads_the_file_named_for_the_year_the_season_ends(tmp_path):
+    s = stored(20)
+    s.to_csv(tmp_path / 'games_2024.csv', index=False)
+    asked = []
+
+    def get(url):
+        asked.append(url)
+        buf = io.BytesIO()
+        hoopr(s).to_parquet(buf)
+        return buf.getvalue()
+
+    entry = f.check(2024, get, tmp_path)
+    assert asked == [f.HOOPR.format(year=2025)] and 'mbb_schedule_2025' in entry['source'] and entry['checked']
