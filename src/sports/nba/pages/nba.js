@@ -680,10 +680,7 @@ function renderAccuracy(){
   el.innerHTML = `<p class="nba-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the game had a price when it was saved, Model A&#39;s otherwise. This is a small sample that grows every game day, so the record alone says little: the forward test is judged on log loss, not on picks right. See Checking the AI&#39;s work.</p>
     ${accuracyHtml(accGames(graded))}
     ${calibrationHtml(graded)}
-    <h2 class="section-title">Every graded pick</h2>
-    <div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">Graded picks</caption>
-    <thead><tr><th scope="col">Date</th><th scope="col">Game</th><th scope="col">Pick</th><th scope="col">Model</th><th scope="col">Result</th></tr></thead>
-    <tbody>${list.map(x => `<tr><td>${FMT_MONTHDAY.format(dayDate(x.g.day))}</td><td>${escapeHtml(x.g.away)} at ${escapeHtml(x.g.home)}</td><td>${escapeHtml(x.p.pick)}</td><td>${x.p.by === 'model_b' ? 'Model B' : 'Model A'}</td><td><span class="graded-tag ${x.p.result === 'correct' ? 'correct' : 'incorrect'}">${x.p.result === 'correct' ? 'Correct' : 'Missed'}</span></td></tr>`).join('')}</tbody></table></div>`;
+    ${gradedListHtml(list, 'nba')}`;
 }
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `

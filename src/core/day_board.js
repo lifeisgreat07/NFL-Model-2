@@ -176,6 +176,36 @@ function accGames(graded){
     home: winnerOf(g) === g.home, c: pickChance(p, g), right: p.result === 'correct'}));
 }
 
+/* Audit 9 D8: Season Accuracy's "Every graded pick" was one table of every graded pick, 273 rows on the NHL by
+   mid-November and a row more each game; by spring it would pass a thousand on a phone, and nothing below it could
+   be reached in practice. The last seven game days show; every other graded pick is one tap below, and every one
+   of them is a CSV download, as the NFL's page offers. Nothing is left out. `list` is newest first. */
+const GRADED_RECENT_DAYS = 7;
+function gradedRow(x){
+  return `<tr><td>${FMT_MONTHDAY.format(dayDate(x.g.day))}</td><td>${escapeHtml(x.g.away)} at ${escapeHtml(x.g.home)}</td><td>${escapeHtml(x.p.pick)}</td><td>${x.p.by === 'model_b' ? 'Model B' : 'Model A'}</td><td><span class="graded-tag ${x.p.result === 'correct' ? 'correct' : 'incorrect'}">${x.p.result === 'correct' ? 'Correct' : 'Missed'}</span></td></tr>`;
+}
+function gradedCsv(list){
+  const cell = v => /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v);
+  const rows = list.map(x => [x.g.day, x.g.away, x.g.home, x.p.pick, x.p.by === 'model_b' ? 'Model B' : 'Model A',
+                              x.p.result === 'correct' ? 'Correct' : 'Missed'].map(cell).join(','));
+  return ['date,away,home,pick,model,result', ...rows].join('\n') + '\n';
+}
+function gradedListHtml(list, sport){
+  const days = [...new Set(list.map(x => x.g.day))].slice(0, GRADED_RECENT_DAYS);
+  const recent = list.filter(x => days.includes(x.g.day)), older = list.filter(x => !days.includes(x.g.day));
+  const table = (rows, caption) => `<div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">${caption}</caption>
+    <thead><tr><th scope="col">Date</th><th scope="col">Game</th><th scope="col">Pick</th><th scope="col">Model</th><th scope="col">Result</th></tr></thead>
+    <tbody>${rows.map(gradedRow).join('')}</tbody></table></div>`;
+  const csv = `<a class="btn btn-link graded-csv" download="${sport}-graded-picks.csv" href="data:text/csv;charset=utf-8,${encodeURIComponent(gradedCsv(list))}">Every graded pick (CSV)</a>`;
+  const said = older.length
+    ? `The last ${days.length} game days below, ${recent.length} of the ${list.length} graded picks; the other ${older.length} are one tap further down.`
+    : `All ${list.length} graded picks.`;
+  return `<h2 class="section-title">Every graded pick</h2>
+    <p class="${sport}-lede">${said} ${csv}</p>
+    ${table(recent, older.length ? 'Graded picks, the last game days' : 'Graded picks')}
+    ${older.length ? `<details class="disclosure graded-more"><summary>Show the other ${older.length} graded picks</summary>${table(older, 'Graded picks, earlier days')}</details>` : ''}`;
+}
+
 /* Stage 84 item 7 (the 2026-11-02 review): the held-out seasons' scores with
    the registered Brier column (tests/test_heldout_table.py). */
 function heldOutTable(scores, names, sport){

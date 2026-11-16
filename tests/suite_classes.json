@@ -247,6 +247,7 @@
   "tests/test_nhl_browser_sample.py": "workflow/docs/tests-of-tests",
   "tests/test_nhl_canary.py": "isolated behavioural",
   "tests/test_nhl_colours.py": "isolated behavioural",
+  "tests/test_graded_fold.py": "template/JS",
   "tests/test_nhl_daily.py": "isolated behavioural",
   "tests/test_nhl_data_probe.py": "mixed",
   "tests/test_nhl_day_board.py": "template/JS",

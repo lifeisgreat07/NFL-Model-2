@@ -592,10 +592,7 @@ function renderAccuracy(){
   el.innerHTML = `<p class="nhl-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the market had a price when it was saved, Model A&#39;s otherwise. The forward test is judged on log loss once 100 games are graded; see Checking the AI&#39;s work.</p>
     ${accuracyHtml(accGames(graded))}
     ${calibrationHtml(graded)}
-    <h2 class="section-title">Every graded pick</h2>
-    <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">Graded picks</caption>
-    <thead><tr><th scope="col">Date</th><th scope="col">Game</th><th scope="col">Pick</th><th scope="col">Model</th><th scope="col">Result</th></tr></thead>
-    <tbody>${list.map(x => `<tr><td>${FMT_MONTHDAY.format(dayDate(x.g.day))}</td><td>${x.g.away} at ${x.g.home}</td><td>${x.p.pick}</td><td>${x.p.by === 'model_b' ? 'Model B' : 'Model A'}</td><td><span class="graded-tag ${x.p.result === 'correct' ? 'correct' : 'incorrect'}">${x.p.result === 'correct' ? 'Correct' : 'Missed'}</span></td></tr>`).join('')}</tbody></table></div>`;
+    ${gradedListHtml(list, 'nhl')}`;
 }
 
 /* ---------- teams ---------- */
