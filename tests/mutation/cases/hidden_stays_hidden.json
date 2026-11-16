@@ -1,0 +1,13 @@
+{
+  "target": "src/dashboard/styles.css",
+  "tests": "tests/test_hidden_stays_hidden.py",
+  "cases": [
+    {
+      "id": "worth-a-look-box-drawn-while-hidden",
+      "why": "the hidden box loses its rule, so an empty titled box is drawn above the picks whenever a week has nothing worth a look.",
+      "find": "  .board-insights[hidden]{display:none;}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_hidden_box_has_a_rule_that_hides_it_after_the_rule_that_draws_it"
+    }
+  ]
+}
