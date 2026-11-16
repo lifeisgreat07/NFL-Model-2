@@ -1,0 +1,20 @@
+{
+  "target": "experiments/ncaam/stage103/results/confirmation.json",
+  "tests": "tests/test_ncaam_confirm.py",
+  "cases": [
+    {
+      "id": "ncaam-confirmation-label-edited",
+      "why": "H1's label is edited by hand to one its interval does not give, so the bracket page would report a verdict the run did not reach.",
+      "find": "\"label\": \"INCONCLUSIVE\"\n  },\n  \"H2\"",
+      "replace": "\"label\": \"ACCEPT\"\n  },\n  \"H2\"",
+      "expect_caught_by": "test_the_confirmation_on_file_is_the_registered_run_and_its_labels_follow_their_intervals"
+    },
+    {
+      "id": "ncaam-confirmation-setting-edited",
+      "why": "the file claims a setting the tuning did not choose.",
+      "find": "\"H_days\": 120,",
+      "replace": "\"H_days\": 60,",
+      "expect_caught_by": "test_the_confirmation_on_file_is_the_registered_run_and_its_labels_follow_their_intervals"
+    }
+  ]
+}
