@@ -81,6 +81,23 @@ def test_every_registered_season_has_passed_the_check_and_each_entry_counts_its_
     assert doc['2019']['checked'] is True, '2019-20 has no tournament but its games fit the curve'
 
 
+def test_the_tuning_on_file_is_the_registered_grid_on_the_registered_games_and_chose_its_lowest_log_loss():
+    reg = b.registry()
+    doc = json.loads((b.FOLDER / 'results' / 'tuning.json').read_text(encoding='utf-8'))
+    grid = reg['models']['model_a']['grid']
+    assert [(r['H_days'], r['lambda']) for r in doc['grid']] == [(h, lam) for h in grid['H_days']
+                                                                 for lam in grid['lambda']]
+    assert doc['seasons'] == b.validation_seasons(reg)
+    best = min(doc['grid'], key=lambda r: r['log_loss'])  # min keeps the first of equals
+    assert doc['chosen'] == {'H_days': best['H_days'], 'lambda': best['lambda']}
+    # Every entry scored the validation seasons' games from 1 January on, less the first curve day (the amendment).
+    games = b.ratings.load(min(doc['seasons']), max(doc['seasons']))
+    rows = games[games['day'] >= games['season'].map(b.ratings.curve_start)]
+    scored = int((rows['day'] > rows['day'].min()).sum())
+    assert {r['games'] for r in doc['grid']} == {scored}
+    assert all(0.4 < r['log_loss'] < 0.7 and 0.5 < r['accuracy'] < 0.9 for r in doc['grid'])
+
+
 def test_the_tuning_is_written_once(tmp_path, monkeypatch):
     monkeypatch.setattr(b, 'RESULTS', tmp_path)
     monkeypatch.setattr(b, 'load_history', lambda first, last: None)
