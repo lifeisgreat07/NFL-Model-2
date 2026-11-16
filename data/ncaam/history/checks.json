@@ -1,0 +1,131 @@
+{
+ "2014": {
+  "stored": 5932,
+  "in_fallback": 5932,
+  "scores_equal": 5932,
+  "share": 1.0,
+  "needed": 0.99,
+  "checked": true,
+  "tournament_games_named": [],
+  "source": "https://raw.githubusercontent.com/sportsdataverse/hoopR-mbb-data/main/mbb/schedules/parquet/mbb_schedule_2015.parquet"
+ },
+ "2015": {
+  "stored": 5951,
+  "in_fallback": 5893,
+  "scores_equal": 5893,
+  "share": 0.990254,
+  "needed": 0.99,
+  "checked": true,
+  "tournament_games_named": [],
+  "source": "https://raw.githubusercontent.com/sportsdataverse/hoopR-mbb-data/main/mbb/schedules/parquet/mbb_schedule_2016.parquet"
+ },
+ "2016": {
+  "stored": 5966,
+  "in_fallback": 5960,
+  "scores_equal": 5960,
+  "share": 0.998994,
+  "needed": 0.99,
+  "checked": true,
+  "tournament_games_named": [
+   {
+    "game_id": "400946453",
+    "problem": "missing"
+   },
+   {
+    "game_id": "400946444",
+    "problem": "missing"
+   }
+  ],
+  "source": "https://raw.githubusercontent.com/sportsdataverse/hoopR-mbb-data/main/mbb/schedules/parquet/mbb_schedule_2017.parquet"
+ },
+ "2017": {
+  "stored": 6003,
+  "in_fallback": 6003,
+  "scores_equal": 6003,
+  "share": 1.0,
+  "needed": 0.99,
+  "checked": true,
+  "tournament_games_named": [],
+  "source": "https://raw.githubusercontent.com/sportsdataverse/hoopR-mbb-data/main/mbb/schedules/parquet/mbb_schedule_2018.parquet"
+ },
+ "2018": {
+  "stored": 6049,
+  "in_fallback": 6049,
+  "scores_equal": 6049,
+  "share": 1.0,
+  "needed": 0.99,
+  "checked": true,
+  "tournament_games_named": [],
+  "source": "https://raw.githubusercontent.com/sportsdataverse/hoopR-mbb-data/main/mbb/schedules/parquet/mbb_schedule_2019.parquet"
+ },
+ "2019": {
+  "stored": 5767,
+  "in_fallback": 5767,
+  "scores_equal": 5767,
+  "share": 1.0,
+  "needed": 0.99,
+  "checked": true,
+  "tournament_games_named": [],
+  "source": "https://raw.githubusercontent.com/sportsdataverse/hoopR-mbb-data/main/mbb/schedules/parquet/mbb_schedule_2020.parquet"
+ },
+ "2020": {
+  "stored": 4285,
+  "in_fallback": 4285,
+  "scores_equal": 4285,
+  "share": 1.0,
+  "needed": 0.99,
+  "checked": true,
+  "tournament_games_named": [],
+  "source": "https://raw.githubusercontent.com/sportsdataverse/hoopR-mbb-data/main/mbb/schedules/parquet/mbb_schedule_2021.parquet"
+ },
+ "2021": {
+  "stored": 5976,
+  "in_fallback": 5976,
+  "scores_equal": 5973,
+  "share": 0.999498,
+  "needed": 0.99,
+  "checked": true,
+  "tournament_games_named": [],
+  "source": "https://raw.githubusercontent.com/sportsdataverse/hoopR-mbb-data/main/mbb/schedules/parquet/mbb_schedule_2022.parquet"
+ },
+ "2022": {
+  "stored": 6228,
+  "in_fallback": 6228,
+  "scores_equal": 6228,
+  "share": 1.0,
+  "needed": 0.99,
+  "checked": true,
+  "tournament_games_named": [],
+  "source": "https://raw.githubusercontent.com/sportsdataverse/hoopR-mbb-data/main/mbb/schedules/parquet/mbb_schedule_2023.parquet"
+ },
+ "2023": {
+  "stored": 6243,
+  "in_fallback": 6243,
+  "scores_equal": 6243,
+  "share": 1.0,
+  "needed": 0.99,
+  "checked": true,
+  "tournament_games_named": [],
+  "source": "https://raw.githubusercontent.com/sportsdataverse/hoopR-mbb-data/main/mbb/schedules/parquet/mbb_schedule_2024.parquet"
+ },
+ "2024": {
+  "stored": 6292,
+  "in_fallback": 6292,
+  "scores_equal": 6292,
+  "share": 1.0,
+  "needed": 0.99,
+  "checked": true,
+  "tournament_games_named": [],
+  "source": "https://raw.githubusercontent.com/sportsdataverse/hoopR-mbb-data/main/mbb/schedules/parquet/mbb_schedule_2025.parquet"
+ },
+ "2025": {
+  "stored": 6300,
+  "in_fallback": 6300,
+  "scores_equal": 6300,
+  "share": 1.0,
+  "needed": 0.99,
+  "checked": true,
+  "tournament_games_named": [],
+  "source": "https://raw.githubusercontent.com/sportsdataverse/hoopR-mbb-data/main/mbb/schedules/parquet/mbb_schedule_2026.parquet"
+ }
+}

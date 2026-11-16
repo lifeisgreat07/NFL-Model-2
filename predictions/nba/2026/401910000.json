@@ -1,0 +1,109 @@
+{
+ "game_id": "401910000",
+ "season": 2026,
+ "slate": "2026-11-16",
+ "start_utc": "2026-11-17T01:00:00Z",
+ "home": "NO",
+ "away": "GS",
+ "model_a": 0.327,
+ "model_b": 0.4085,
+ "pick": "GS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7832,
+  "away": 0.8209
+ },
+ "features": {
+  "point_matchup": -6.737334,
+  "efficiency_matchup": -6.722383,
+  "availability_matchup": -0.037749
+ },
+ "market": {
+  "game_id": "401910000",
+  "home": "NO",
+  "away": "GS",
+  "start_utc": "2026-11-17T01:00:00Z",
+  "read_utc": "2026-11-16T21:31:41Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 136.0,
+  "away_price": -161.0,
+  "home_prob": 0.4072
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-16T21:31:41Z",
+  "home": [
+   {
+    "athlete_id": "4683634",
+    "name": "Bennedict Mathurin",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4576086",
+    "name": "Bryce McGowens",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3907497",
+    "name": "Dejounte Murray",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431675",
+    "name": "Trendon Watford",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4397688",
+    "name": "Trey Murphy III",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4397040",
+    "name": "Brandon Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4997536",
+    "name": "Gui Santos",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6430",
+    "name": "Jimmy Butler III",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102531",
+    "name": "Kristaps Porzingis",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432171",
+    "name": "Moses Moody",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3975",
+    "name": "Stephen Curry",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-16T21:31:41Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-15",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14255,
+  "training_games_priced": 14214,
+  "training_ids_sha256": "df8c1e762d2ab5c34254d467ed948687bacf751cedf030cf6ebbdc5f2e578683"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "83eb02b898bd5855746fc83f0a3d4d2b1e708915"
+}

@@ -32,10 +32,17 @@
     },
     {
       "id": "run-tests-loses-its-timeout",
-      "why": "the job has no timeout-minutes, so a hung test holds a runner for GitHub's six-hour default instead of failing in twenty minutes",
-      "find": "    timeout-minutes: 20",
+      "why": "the job has no timeout-minutes, so a hung test holds a runner for GitHub's six-hour default instead of failing in thirty-five minutes",
+      "find": "    timeout-minutes: 35",
       "replace": "    # no timeout",
       "expect_caught_by": "test_it_has_a_timeout"
+    },
+    {
+      "id": "run-tests-timeout-back-to-twenty",
+      "why": "the job's timeout goes back to twenty minutes, under what the suite now takes on a hosted runner, so main and every pull request are cancelled with no test failing",
+      "find": "    timeout-minutes: 35",
+      "replace": "    timeout-minutes: 20",
+      "expect_caught_by": "test_the_timeout_leaves_room_for_the_suite"
     }
   ]
 }

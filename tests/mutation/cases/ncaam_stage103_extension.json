@@ -1,0 +1,20 @@
+{
+  "target": "experiments/ncaam/stage103/results/tuning_extension.json",
+  "tests": "tests/test_ncaam_backtest.py",
+  "cases": [
+    {
+      "id": "ncaam-extension-choice-edited",
+      "why": "the extension's chosen setting is edited by hand to one the search did not prefer, so the confirmation runs on a setting no result supports.",
+      "find": "\"chosen\": {\n  \"H_days\": 120,\n  \"lambda\": 0.1",
+      "replace": "\"chosen\": {\n  \"H_days\": null,\n  \"lambda\": 0.1",
+      "expect_caught_by": "test_the_extension_on_file_keeps_the_tuning_and_adds_only_the_amendments_entries"
+    },
+    {
+      "id": "ncaam-extension-seasons-edited",
+      "why": "the file claims a season the tuning was not registered to read.",
+      "find": "  2017,\n  2018\n ],",
+      "replace": "  2017,\n  2018,\n  2019\n ],",
+      "expect_caught_by": "test_the_extension_on_file_keeps_the_tuning_and_adds_only_the_amendments_entries"
+    }
+  ]
+}

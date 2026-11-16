@@ -1,0 +1,34 @@
+{
+  "target": "src/sports/ncaam/fallback.py",
+  "tests": "tests/test_ncaam_backtest.py",
+  "cases": [
+    {
+      "id": "ncaam-fallback-loosened",
+      "why": "a season passes with one final in ten missing or different.",
+      "find": "NEEDED = 0.99",
+      "replace": "NEEDED = 0.9",
+      "expect_caught_by": "test_the_fallback_counts_games_with_both_scores_equal_and_names_tournament_games_that_fail"
+    },
+    {
+      "id": "ncaam-fallback-counts-presence",
+      "why": "a game counts as agreeing because the fallback lists it, whatever score it gives.",
+      "find": "agreeing = set(both['game_id'][equal])",
+      "replace": "agreeing = set(both['game_id'])",
+      "expect_caught_by": "test_the_fallback_counts_games_with_both_scores_equal_and_names_tournament_games_that_fail"
+    },
+    {
+      "id": "ncaam-fallback-differing-tournament-game-unnamed",
+      "why": "a tournament game the fallback scores differently is not named, only a missing one.",
+      "find": "for gid in tournament['game_id'] if gid not in agreeing]",
+      "replace": "for gid in tournament['game_id'] if gid not in o.index]",
+      "expect_caught_by": "test_the_fallback_counts_games_with_both_scores_equal_and_names_tournament_games_that_fail"
+    },
+    {
+      "id": "ncaam-fallback-reads-the-wrong-year",
+      "why": "the season is compared with hoopR's file for the season before, which holds none of its games.",
+      "find": "get(HOOPR.format(year=season + 1))",
+      "replace": "get(HOOPR.format(year=season))",
+      "expect_caught_by": "test_the_check_reads_the_file_named_for_the_year_the_season_ends"
+    }
+  ]
+}
