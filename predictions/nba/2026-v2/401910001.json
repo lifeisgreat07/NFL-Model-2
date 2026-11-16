@@ -1,0 +1,39 @@
+{
+ "game_id": "401910001",
+ "season": 2026,
+ "slate": "2026-11-16",
+ "start_utc": "2026-11-17T02:00:00Z",
+ "home": "DEN",
+ "away": "PHX",
+ "model_a": 0.6742,
+ "model_b": 0.7642,
+ "neutral_site": false,
+ "market_source": "espn",
+ "price_used": true,
+ "price_note": null,
+ "features": {
+  "point_matchup": 3.332231,
+  "efficiency_matchup": 3.294449,
+  "availability_matchup": -0.051027
+ },
+ "market": {
+  "source": "espn",
+  "home_price": -408.0,
+  "away_price": 320.0,
+  "home_prob": 0.7713,
+  "read_utc": "2026-11-16T21:31:41Z"
+ },
+ "saved_utc": "2026-11-16T21:31:41Z",
+ "code": "nba-day-sport-v2",
+ "registry": "experiments/nba/stage95_v2/registry.json",
+ "H_days": 120.0,
+ "lambda": 10.0,
+ "never_a_pick": true,
+ "training_through": "2026-11-15",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14250,
+  "training_games_priced": 14202,
+  "training_ids_sha256": "d5b81dabe191b71c9479c2871778c6e1e31a342058673f205e6b3af18bdf9600"
+ }
+}
