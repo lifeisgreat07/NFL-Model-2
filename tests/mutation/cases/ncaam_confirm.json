@@ -1,0 +1,83 @@
+{
+  "target": "src/sports/ncaam/backtest.py",
+  "tests": "tests/test_ncaam_confirm.py",
+  "cases": [
+    {
+      "id": "ncaam-confirm-forecast-from-the-walk",
+      "why": "a tournament game is forecast from its walk-forward margin, so later rounds know the earlier rounds.",
+      "find": "ratings.prob(coef, mine['lock'].to_numpy(float))",
+      "replace": "ratings.prob(coef, mine['walk'].to_numpy(float))",
+      "expect_caught_by": "test_a_tournament_game_is_forecast_from_its_locked_margin_never_its_walk"
+    },
+    {
+      "id": "ncaam-confirm-curve-sees-its-tournament",
+      "why": "the curve is fitted on the tournament it forecasts.",
+      "find": "rows = table[table['day'] < mine['day'].min()]",
+      "replace": "rows = table[table['day'] <= mine['day'].max()]",
+      "expect_caught_by": "test_a_tournaments_curve_and_seed_model_never_see_its_own_games"
+    },
+    {
+      "id": "ncaam-confirm-seed-model-sees-its-tournament",
+      "why": "the seed model learns from the tournament it forecasts, so the baseline has seen the answers.",
+      "find": "earlier = games[games['season'] < t - 1]",
+      "replace": "earlier = games[games['season'] <= t - 1]",
+      "expect_caught_by": "test_a_tournaments_curve_and_seed_model_never_see_its_own_games"
+    },
+    {
+      "id": "ncaam-confirm-seed-difference-reversed",
+      "why": "the seed difference is the home seed minus the away seed, the registered sign reversed.",
+      "find": "'seed_difference': (away - home).astype(float)})",
+      "replace": "'seed_difference': (home - away).astype(float)})",
+      "expect_caught_by": "test_the_seeds_are_read_as_the_away_seed_minus_the_home_seed"
+    },
+    {
+      "id": "ncaam-confirm-level-loosened",
+      "why": "the intervals are drawn at 95%, not the level two slots set.",
+      "find": "level = round(1 - p['alpha'] / p['budget_m'], 4)",
+      "replace": "level = 0.95",
+      "expect_caught_by": "test_the_confirmation_answers_the_registered_questions_at_the_registered_level"
+    },
+    {
+      "id": "ncaam-confirm-measurement-labelled",
+      "why": "a measurement is given a decision label it was never registered to have.",
+      "find": "        if hid != 'M1':\n",
+      "replace": "        if True:\n",
+      "expect_caught_by": "test_the_confirmation_answers_the_registered_questions_at_the_registered_level"
+    },
+    {
+      "id": "ncaam-confirm-run-again",
+      "why": "the confirmation runs over a result already on file, so it can be repeated until it reads well.",
+      "find": "    if (RESULTS / 'confirmation.json').exists():\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_the_confirmation_is_written_once"
+    },
+    {
+      "id": "ncaam-confirm-off-grid-setting",
+      "why": "a setting that is not in the registered grid is confirmed.",
+      "find": "    if chosen['H_days'] not in grid['H_days'] or chosen['lambda'] not in grid['lambda']:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_a_setting_outside_the_registered_grid_is_refused"
+    },
+    {
+      "id": "ncaam-confirm-unclassified-provider-ignored",
+      "why": "a provider nobody classified is passed over in silence, so the market shrinks without an amendment.",
+      "find": "    if unclassified:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_a_missing_market_file_and_an_unclassified_provider_are_refused"
+    },
+    {
+      "id": "ncaam-confirm-equal-seeds-in-m2",
+      "why": "games between equal seeds are counted for the higher seed's accuracy, where there is none.",
+      "find": "unequal = unequal[unequal['home_seed'] != unequal['away_seed']].set_index('game_id')",
+      "replace": "unequal = unequal.set_index('game_id')",
+      "expect_caught_by": "test_m2_counts_winners_only_on_games_between_different_seeds"
+    },
+    {
+      "id": "ncaam-confirm-seed-changed",
+      "why": "the bootstrap's seed is not the registered one, so the interval cannot be reproduced from the registration.",
+      "find": "SEED = 20261115",
+      "replace": "SEED = 20261116",
+      "expect_caught_by": "test_the_interval_is_the_registered_bootstrap"
+    }
+  ]
+}

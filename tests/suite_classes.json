@@ -236,6 +236,7 @@
   "tests/test_nba_workflows.py": "workflow/docs/tests-of-tests",
   "tests/test_ncaam_backtest.py": "isolated behavioural",
   "tests/test_ncaam_collector.py": "isolated behavioural",
+  "tests/test_ncaam_confirm.py": "isolated behavioural",
   "tests/test_ncaam_market.py": "isolated behavioural",
   "tests/test_ncaam_ratings.py": "isolated behavioural",
   "tests/test_ncaam_seeds.py": "isolated behavioural",
