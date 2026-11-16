@@ -8,6 +8,8 @@ forecast from before its first game (the lock), by Model A and by the seed model
 and with the market: H1, H2, M1 and M2.
 
 Run by hand: python -m src.sports.ncaam.backtest            (tuning; writes results/tuning.json once)
+             python -m src.sports.ncaam.backtest extend     (the second amendment's eight entries;
+                                                             writes results/tuning_extension.json once)
              python -m src.sports.ncaam.backtest confirm    (confirmation; writes results/confirmation.json once)
 """
 from __future__ import annotations
@@ -30,6 +32,7 @@ PATHS = sport_paths('ncaam')
 FOLDER = PATHS.experiments / 'stage103'
 REGISTRY = FOLDER / 'registry.json'
 RESULTS = FOLDER / 'results'
+EXTENSION = 'tuning_extension.json'
 #: The registered bootstrap seed (protocol.bootstrap).
 SEED = 20261115
 
@@ -77,20 +80,51 @@ def scores(p: pd.Series, table: pd.DataFrame) -> dict[str, float]:
             'brier': float(((q - y) ** 2).mean()), 'accuracy': float(((q > 0.5) == (y == 1)).mean())}
 
 
-def tune(games: pd.DataFrame, reg: dict[str, Any]) -> dict[str, Any]:
+def grid_entries(reg: dict[str, Any]) -> list[tuple[Any, Any]]:
+    """The registered grid's (H, lambda) pairs, H first, in the order the registry lists them."""
+    grid = reg['models']['model_a']['grid']
+    return [(h, lam) for h in grid['H_days'] for lam in grid['lambda']]
+
+
+def extension_entries(reg: dict[str, Any]) -> list[tuple[Any, Any]]:
+    """The second amendment's pairs: every registered H with each added lambda, none of them already in the grid."""
+    ext = reg['models']['model_a'].get('grid_extension') or {}
+    known = set(grid_entries(reg))
+    hs = reg['models']['model_a']['grid']['H_days']
+    return [(h, lam) for h in hs for lam in ext.get('lambda', []) if (h, lam) not in known]
+
+
+def tune(games: pd.DataFrame, reg: dict[str, Any],
+         entries: Sequence[tuple[Any, Any]] | None = None) -> dict[str, Any]:
     """Every grid entry's scores on `games` (the validation seasons), and the entry with the lowest log loss,
     ties to the earlier entry."""
-    grid = reg['models']['model_a']['grid']
     results = []
-    for h in grid['H_days']:
-        for lam in grid['lambda']:
-            table = ratings.margins(games, h, lam)
-            s = scores(walk_forward(table), table)
-            results.append({'H_days': h, 'lambda': lam, **s})
-            print(f'H={h} lambda={lam}: log loss {s["log_loss"]:.5f} over {s["games"]} games', flush=True)
+    for h, lam in (grid_entries(reg) if entries is None else entries):
+        table = ratings.margins(games, h, lam)
+        s = scores(walk_forward(table), table)
+        results.append({'H_days': h, 'lambda': lam, **s})
+        print(f'H={h} lambda={lam}: log loss {s["log_loss"]:.5f} over {s["games"]} games', flush=True)
     best = min(results, key=lambda r: r['log_loss'])  # min keeps the first of equals
     return {'seasons': sorted(int(s) for s in games['season'].unique()), 'grid': results,
             'chosen': {'H_days': best['H_days'], 'lambda': best['lambda']}}
+
+
+def extend(games: pd.DataFrame, reg: dict[str, Any], done: dict[str, Any]) -> dict[str, Any]:
+    """The second amendment: score only the added entries, list them after the tuning's own (copied unchanged),
+    and choose the lowest log loss of all, ties to the earlier entry, so a tie keeps the registered one."""
+    new = tune(games, reg, extension_entries(reg))
+    rows = list(done['grid']) + new['grid']
+    best = min(rows, key=lambda r: r['log_loss'])  # min keeps the first of equals
+    return {'seasons': new['seasons'], 'grid': rows, 'amendment': 'models.model_a.grid, 2026-11-16',
+            'chosen': {'H_days': best['H_days'], 'lambda': best['lambda']}}
+
+
+def chosen(folder: Path | None = None) -> dict[str, Any]:
+    """The setting the confirmation uses: the extension's choice once it is on file, else the tuning's."""
+    folder = RESULTS if folder is None else folder
+    path = folder / EXTENSION if (folder / EXTENSION).exists() else folder / 'tuning.json'
+    picked: dict[str, Any] = json.loads(path.read_text(encoding='utf-8'))['chosen']
+    return picked
 
 
 def validation_seasons(reg: dict[str, Any]) -> list[int]:
@@ -213,10 +247,12 @@ def main_confirm() -> int:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
+    if args == ['extend']:
+        return main_extend()
     if args == ['confirm']:
         return main_confirm()
     if args:
-        raise SystemExit('usage: python -m src.sports.ncaam.backtest [confirm]')
+        raise SystemExit('usage: python -m src.sports.ncaam.backtest [extend | confirm]')
     if (RESULTS / 'tuning.json').exists():
         raise SystemExit('results/tuning.json exists: the tuning is run once and never rewritten')
     reg = registry()
@@ -227,6 +263,24 @@ def main(argv: Sequence[str] | None = None) -> int:
     RESULTS.mkdir(parents=True, exist_ok=True)
     (RESULTS / 'tuning.json').write_text(json.dumps(tuning, indent=1) + '\n', encoding='utf-8')
     print(f"chosen: H {tuning['chosen']['H_days']}, lambda {tuning['chosen']['lambda']}")
+    return 0
+
+
+def main_extend() -> int:
+    if not (RESULTS / 'tuning.json').exists():
+        raise SystemExit('results/tuning.json is missing: the extension adds to the tuning, so run that first')
+    if (RESULTS / EXTENSION).exists():
+        raise SystemExit(f'results/{EXTENSION} exists: the extension is run once and never rewritten')
+    reg = registry()
+    if not extension_entries(reg):
+        raise SystemExit('the registry adds no entry to the grid')
+    done = json.loads((RESULTS / 'tuning.json').read_text(encoding='utf-8'))
+    seasons = validation_seasons(reg)
+    if done['seasons'] != seasons or [(r['H_days'], r['lambda']) for r in done['grid']] != grid_entries(reg):
+        raise SystemExit('results/tuning.json is not the registered grid on the validation seasons')
+    out = extend(load_history(min(seasons), max(seasons)), reg, done)
+    (RESULTS / EXTENSION).write_text(json.dumps(out, indent=1) + '\n', encoding='utf-8')
+    print(f"chosen: H {out['chosen']['H_days']}, lambda {out['chosen']['lambda']}")
     return 0
 
 
