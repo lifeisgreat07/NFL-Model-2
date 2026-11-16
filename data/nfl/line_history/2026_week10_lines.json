@@ -187,5 +187,12 @@
     "home": "DAL",
     "away": "SF",
     "spread_line": -3.5
+  },
+  {
+    "captured_date": "2026-11-16",
+    "captured_utc": "2026-11-16T01:25:44Z",
+    "home": "CIN",
+    "away": "PIT",
+    "spread_line": 4.5
   }
 ]
