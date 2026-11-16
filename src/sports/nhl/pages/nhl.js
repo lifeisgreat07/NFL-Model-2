@@ -660,11 +660,11 @@ const QUESTION = {
 function renderModelLab(){
   const b = DATA.backtest, el = document.getElementById('modellab-body');
   if(!b){ el.innerHTML = stateHtml('waiting', 'No backtest results', ''); return; }
-  const rows = Object.entries(b.questions).map(([id, q]) => `<tr><th scope="row">${id}</th><td>${QUESTION[id] || ''}</td><td class="num">${signed(q.diff, 4)}</td><td class="num">[${signed(q.low, 4)}, ${signed(q.high, 4)}]</td><td>${q.label ? `<b>${q.label}</b>` : 'a measurement'}</td></tr>`).join('');
+  const rows = Object.entries(b.questions).map(([id, q]) => `<tr><th scope="row">${id}</th><td>${QUESTION[id] || ''}</td><td class="num">${signed(q.diff, 4)}</td><td class="num"><span class="lab-lead">${intervalGlyph(q.diff, q.low, q.high)}</span>[${signed(q.low, 4)}, ${signed(q.high, 4)}]</td><td>${q.label ? `<span class="lab-tags"><span class="conf-tag tag-neutral">${escapeHtml(q.label)}</span></span>` : 'a measurement'}</td></tr>`).join('');
   const s = b.scores;
   el.innerHTML = `<p class="nhl-lede">Registered before any NHL model was fitted (<code>experiments/nhl/stage56/registry.json</code>), tuned on 2022-23 and 2023-24 (H = ${b.H_days} days, K = ${Number(b.K_shots).toLocaleString('en-US')} shots), and answered once on 2024-25 and 2025-26. A difference below zero means the first model forecast better. Each interval is a paired day-block bootstrap at ${pct(b.questions.H1.level, 2)}; a result counts only when the interval excludes zero.</p>
     <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">The backtest's questions</caption>
-    <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Label</th></tr></thead>
+    <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Decision</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
     <h2 class="section-title">Scores on the held-out seasons</h2>
     ${heldOutTable(s, [['Model A', 'model_a'], ['Base rate', 'base_rate'], ['Model B', 'model_b'], ['Market', 'market']], 'nhl')}
