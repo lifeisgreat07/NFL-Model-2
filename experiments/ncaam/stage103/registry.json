@@ -102,6 +102,13 @@
      10.0,
      30.0
     ]
+   },
+   "grid_extension": {
+    "lambda": [
+     0.1,
+     0.3
+    ],
+    "rule": "Added by the second amendment. Each H in the grid is tried with each lambda here, on the validation seasons by the same rule as the grid. The grid's sixteen scores are copied unchanged from results/tuning.json, the eight new ones are listed after them, and the lowest log loss of all twenty-four is chosen, ties to the earlier entry, so a tie keeps the registered one. Written once, to results/tuning_extension.json. If lambda 0.1 is chosen the grid is not widened again: that edge is kept and named."
    }
   },
   "seed_model": {
@@ -166,6 +173,14 @@
    "before_any_result": true,
    "seen": "Written while the tuning code was being written and tested on tables built by hand, before it had run on any stored season: no rating, curve or log loss had been computed.",
    "change": "The history's first curve day (the first game day from 1 January 2015) has no earlier curve row, so no curve can be fitted for it: its games are not forecast and not scored in the tuning. As registered there was no rule for it."
+  },
+  {
+   "date": "2026-11-16",
+   "by": "Claude, with Mark's approval of 2026-11-16",
+   "entry": "models.model_a.grid",
+   "before_any_result": false,
+   "seen": "results/tuning.json, the tuning on the validation seasons: the lowest log loss (0.56210) was at lambda 1.0, the grid's smallest, and for every H the log loss fell as lambda fell; H none, the grid's other edge, was also the best H. No confirmation tournament had been scored, and no confirmation season's rating or forecast had been computed.",
+   "change": "lambda gains 0.1 and 0.3 for every H (models.model_a.grid_extension), so the search can reach a minimum inside the grid rather than at its edge. This is decided after seeing the tuning's scores, so it is a second look at the validation seasons, and it is named as one: the eight new entries are scored on the same seasons by the same rule, and the confirmation tournaments stay unseen until the chosen setting is fixed. H is not widened: H none weighs every game the same, the end of the range rather than a step short of it."
   }
  ],
  "disclosures": [
