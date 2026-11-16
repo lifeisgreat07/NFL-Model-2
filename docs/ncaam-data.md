@@ -84,6 +84,10 @@ carries a two-way moneyline was read; no price was set against a result.
   price. The 2025 and 2026 tournaments list one book for most games. 29 book prices of the 2021 tournament have an
   implied sum outside 1.00 to 1.20 and are not used; each of its games keeps at least three books.
 
+The feed was then read once for the 2021 to 2026 tournaments (`python -m src.sports.ncaam.market 2020 2025`,
+2026-11-16) and stored as read, every provider included, in `data/ncaam/history/market_<season>.csv`. The
+registration's rules are applied when a file is read, so every one of the 401 games has a market.
+
 ## 6. Not known yet
 
 - Whether hoopR's file and ESPN's odds feed can be read from a runner.
