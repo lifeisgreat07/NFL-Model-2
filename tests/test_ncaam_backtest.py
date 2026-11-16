@@ -126,6 +126,19 @@ def test_the_extension_scores_only_the_added_entries_and_a_tie_keeps_the_registe
     assert tied['chosen'] == {'H_days': done['grid'][5]['H_days'], 'lambda': done['grid'][5]['lambda']}
 
 
+def test_the_extension_on_file_keeps_the_tuning_and_adds_only_the_amendments_entries():
+    reg = b.registry()
+    tuning = json.loads((b.FOLDER / 'results' / 'tuning.json').read_text(encoding='utf-8'))
+    doc = json.loads((b.FOLDER / 'results' / b.EXTENSION).read_text(encoding='utf-8'))
+    assert doc['grid'][:16] == tuning['grid'], 'the registered sixteen are copied unchanged'
+    assert [(r['H_days'], r['lambda']) for r in doc['grid'][16:]] == b.extension_entries(reg)
+    assert doc['seasons'] == tuning['seasons'] == b.validation_seasons(reg)
+    assert {r['games'] for r in doc['grid']} == {tuning['grid'][0]['games']}
+    best = min(doc['grid'], key=lambda r: r['log_loss'])  # min keeps the first of equals
+    assert doc['chosen'] == {'H_days': best['H_days'], 'lambda': best['lambda']} == b.chosen()
+    assert all(0.4 < r['log_loss'] < 0.7 and 0.5 < r['accuracy'] < 0.9 for r in doc['grid'])
+
+
 def test_the_confirmation_uses_the_extensions_choice_once_it_is_on_file(tmp_path):
     (tmp_path / 'tuning.json').write_text(json.dumps({'chosen': {'H_days': None, 'lambda': 1.0}}), encoding='utf-8')
     assert b.chosen(tmp_path) == {'H_days': None, 'lambda': 1.0}
