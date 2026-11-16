@@ -56,3 +56,11 @@ def test_it_installs_node():
 def test_it_has_a_timeout():
     m = re.search(r'timeout-minutes:\s*(\d+)', text())
     assert m and int(m.group(1)) > 0, 'no timeout-minutes on the test job'
+
+
+def test_the_timeout_leaves_room_for_the_suite():
+    """The suite took 17-20 minutes on a hosted runner by 2026-11-16, and main's run was cancelled at 20.3
+    with nothing failing. Under 30 minutes the gate goes red for the clock, not the code."""
+    m = re.search(r'timeout-minutes:\s*(\d+)', text())
+    assert m and 30 <= int(m.group(1)) <= 60, (
+        f'timeout-minutes {m and m.group(1)}: the suite needs about 20 minutes, so allow 30 to 60')
