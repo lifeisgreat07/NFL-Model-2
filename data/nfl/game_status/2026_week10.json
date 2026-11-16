@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 10,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-16T01:25:42Z",
+  "read_at": "2026-11-16T05:37:39Z",
   "games": [
     {
       "away": "WAS",
@@ -127,9 +127,9 @@
     {
       "away": "PIT",
       "home": "CIN",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 18,
+      "home_score": 38,
       "spread_line": 4.5,
       "neutral_site": false,
       "venue": "Paycor Stadium"
