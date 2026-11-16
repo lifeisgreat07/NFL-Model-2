@@ -182,7 +182,9 @@ def test_whats_changed_is_dated_newest_first_and_reaches_the_page(nhl_root: Path
 def test_every_registration_whats_changed_names_exists_and_says_what_its_results_say() -> None:
     root = Path(site.__file__).resolve().parents[3]
     for c in CHANGES:
-        for path in re.findall(r'experiments/nfl/\S+?\.json', c['text']):
+        # experiments/nhl: until audit 9 this read experiments/nfl, which the NHL's entries never name, so it
+        # checked nothing.
+        for path in re.findall(r'experiments/nhl/\S+?\.json', c['text']):
             assert (root / path).exists(), path
     backtest = next(c for c in CHANGES if 'stage56' in c['text'])
     labels = json.loads((root / 'experiments/nhl/stage56/results/confirmation.json').read_text(encoding='utf-8'))

@@ -1,0 +1,89 @@
+{
+ "game_id": "401909998",
+ "season": 2026,
+ "slate": "2026-11-16",
+ "start_utc": "2026-11-17T00:30:00Z",
+ "home": "MIA",
+ "away": "HOU",
+ "model_a": 0.4338,
+ "model_b": 0.4539,
+ "pick": "HOU",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.9256
+ },
+ "features": {
+  "point_matchup": -4.676036,
+  "efficiency_matchup": -4.696765,
+  "availability_matchup": 0.074405
+ },
+ "market": {
+  "game_id": "401909998",
+  "home": "MIA",
+  "away": "HOU",
+  "start_utc": "2026-11-17T00:30:00Z",
+  "read_utc": "2026-11-16T21:31:41Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 110.0,
+  "away_price": -130.0,
+  "home_prob": 0.4573
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-16T21:31:41Z",
+  "home": [
+   {
+    "athlete_id": "4997528",
+    "name": "Nikola Jovic",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4601025",
+    "name": "Pelle Larsson",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4684740",
+    "name": "Amen Thompson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3102529",
+    "name": "Clint Capela",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105553",
+    "name": "Julian Phillips",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "2990992",
+    "name": "Marcus Smart",
+    "status": "Suspension"
+   },
+   {
+    "athlete_id": "2991235",
+    "name": "Steven Adams",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-16T21:31:41Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-15",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14255,
+  "training_games_priced": 14214,
+  "training_ids_sha256": "df8c1e762d2ab5c34254d467ed948687bacf751cedf030cf6ebbdc5f2e578683"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "83eb02b898bd5855746fc83f0a3d4d2b1e708915"
+}

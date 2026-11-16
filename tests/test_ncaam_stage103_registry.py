@@ -150,5 +150,21 @@ def test_it_was_registered_before_any_result_exists():
     reg = registry()
     if not (FOLDER / 'results').exists():
         assert all('result' not in h and 'label' not in h for h in reg['hypotheses'])
-        assert reg['amendments'] == []
     assert reg['registered'] == '2026-11-15'
+    # Two amendments. The first, written with the tuning code and before it ran on a stored season: the first
+    # curve day. The second, after the tuning's scores, which says so: lambda 0.1 and 0.3 added.
+    first, second = reg['amendments']
+    assert (first['entry'], first['date'], first['before_any_result']) == ('protocol.tuning', '2026-11-16', True)
+    assert 'not forecast and not scored in the tuning' in first['change']
+    assert 'before it had run on any stored season' in first['seen']
+    assert (second['entry'], second['before_any_result']) == ('models.model_a.grid', False)
+    assert 'No confirmation tournament had been scored' in second['seen']
+    assert 'second look at the validation seasons' in second['change']
+
+
+def test_the_grid_extension_adds_only_smaller_lambdas_and_keeps_a_tie_with_the_registered_entry():
+    m = registry()['models']['model_a']
+    assert m['grid_extension']['lambda'] == [0.1, 0.3]
+    assert not set(m['grid_extension']['lambda']) & set(m['grid']['lambda'])
+    assert 'ties to the earlier entry, so a tie keeps the registered one' in m['grid_extension']['rule']
+    assert 'the grid is not widened again' in m['grid_extension']['rule']
