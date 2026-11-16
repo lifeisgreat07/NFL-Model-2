@@ -38,6 +38,7 @@ SCORES = (ROOT / 'src' / 'core' / 'scores.js').read_text(encoding='utf-8')
 APP = APP_SCRIPT.read_text(encoding='utf-8')
 NHL = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
 NBA = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
+DAY_BOARD = (ROOT / 'src' / 'core' / 'day_board.js').read_text(encoding='utf-8')
 CSS = (ROOT / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8')
 NODE = shutil.which('node')
 
@@ -315,7 +316,7 @@ def test_the_build_tries_the_three_sport_pages_only(tmp_path):
 def test_a_watched_rows_last_word_has_a_slot_for_espns_and_an_unwatched_row_is_as_before(name, src):
     """Audit 9 D2. A saved pick's row gets the result slot, a row with no pick the unpicked one; the word the
     build wrote stays in .score-off, shown until ESPN answers."""
-    cell = function_source(src, 'resultCell')
+    cell = function_source(DAY_BOARD, 'resultCell')   # shared, as tests/test_day_board.py requires
     r = {'text': 'Locked', 'cls': 'locked'}
     got = node(cell + 'console.log(JSON.stringify([' + ', '.join(
         f'resultCell({m}, {json.dumps(p)}, {json.dumps(r)})' for m, p in (

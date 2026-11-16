@@ -281,6 +281,13 @@ function driftLooks(rule){
   return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many, resampling whole game days, is above the backtest&#39;s ${base}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
 }
 
+/* A row's last word, and on a row that src/core/scores.js watches, the word it puts in its place once ESPN has the
+   game: Live or Grading for a saved pick, No pick for a game without one (audit 9 D2). */
+function resultCell(marked, p, r){
+  if(!marked) return r.text;
+  return `<span class="score-off">${r.text}</span><span class="score-on" data-score-slot="${p ? 'result' : 'unpicked'}"></span>`;
+}
+
 function setMoreSheetOpen(open){
   const sheet = document.getElementById('bnav-more-sheet');
   if(!sheet) return;
