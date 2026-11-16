@@ -1,0 +1,89 @@
+{
+ "game_id": "401909999",
+ "season": 2026,
+ "slate": "2026-11-16",
+ "start_utc": "2026-11-17T01:00:00Z",
+ "home": "MIN",
+ "away": "POR",
+ "model_a": 0.5984,
+ "model_b": 0.5538,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8076,
+  "away": 0.9132
+ },
+ "features": {
+  "point_matchup": 1.857818,
+  "efficiency_matchup": 1.686434,
+  "availability_matchup": -0.10559
+ },
+ "market": {
+  "game_id": "401909999",
+  "home": "MIN",
+  "away": "POR",
+  "start_utc": "2026-11-17T01:00:00Z",
+  "read_utc": "2026-11-16T21:31:41Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -135.0,
+  "away_price": 114.0,
+  "home_prob": 0.5514
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-16T21:31:41Z",
+  "home": [
+   {
+    "athlete_id": "4594268",
+    "name": "Anthony Edwards",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3934673",
+    "name": "Donte DiVincenzo",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432247",
+    "name": "Jaylen Clark",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4706557",
+    "name": "Chris Youngblood",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4279888",
+    "name": "Ja Morant",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4914336",
+    "name": "Shaedon Sharpe",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4578893",
+    "name": "Vit Krejci",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-16T21:31:41Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-15",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14255,
+  "training_games_priced": 14214,
+  "training_ids_sha256": "df8c1e762d2ab5c34254d467ed948687bacf751cedf030cf6ebbdc5f2e578683"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "83eb02b898bd5855746fc83f0a3d4d2b1e708915"
+}

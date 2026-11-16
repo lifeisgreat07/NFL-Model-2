@@ -102,6 +102,13 @@
      10.0,
      30.0
     ]
+   },
+   "grid_extension": {
+    "lambda": [
+     0.1,
+     0.3
+    ],
+    "rule": "Added by the second amendment. Each H in the grid is tried with each lambda here, on the validation seasons by the same rule as the grid. The grid's sixteen scores are copied unchanged from results/tuning.json, the eight new ones are listed after them, and the lowest log loss of all twenty-four is chosen, ties to the earlier entry, so a tie keeps the registered one. Written once, to results/tuning_extension.json. If lambda 0.1 is chosen the grid is not widened again: that edge is kept and named."
    }
   },
   "seed_model": {
@@ -158,7 +165,24 @@
   "lock": "One lock between Selection Sunday and the First Four's first game in 2027: the ratings, the curve and a forecast for every pair of clubs in the field are saved once and never rewritten.",
   "scoring": "Each game played is scored on the saved forecast for the two clubs that met. Reported beside the confirmation figures; 67 games decide nothing on their own."
  },
- "amendments": [],
+ "amendments": [
+  {
+   "date": "2026-11-16",
+   "by": "Claude, under Mark's delegation of 2026-10-05",
+   "entry": "protocol.tuning",
+   "before_any_result": true,
+   "seen": "Written while the tuning code was being written and tested on tables built by hand, before it had run on any stored season: no rating, curve or log loss had been computed.",
+   "change": "The history's first curve day (the first game day from 1 January 2015) has no earlier curve row, so no curve can be fitted for it: its games are not forecast and not scored in the tuning. As registered there was no rule for it."
+  },
+  {
+   "date": "2026-11-16",
+   "by": "Claude, with Mark's approval of 2026-11-16",
+   "entry": "models.model_a.grid",
+   "before_any_result": false,
+   "seen": "results/tuning.json, the tuning on the validation seasons: the lowest log loss (0.56210) was at lambda 1.0, the grid's smallest, and for every H the log loss fell as lambda fell; H none, the grid's other edge, was also the best H. No confirmation tournament had been scored, and no confirmation season's rating or forecast had been computed.",
+   "change": "lambda gains 0.1 and 0.3 for every H (models.model_a.grid_extension), so the search can reach a minimum inside the grid rather than at its edge. This is decided after seeing the tuning's scores, so it is a second look at the validation seasons, and it is named as one: the eight new entries are scored on the same seasons by the same rule, and the confirmation tournaments stay unseen until the chosen setting is fixed. H is not widened: H none weighs every game the same, the end of the range rather than a step short of it."
+  }
+ ],
  "disclosures": [
   "Before this registration the data was probed (docs/ncaam-data.md): finals per season, the seeds check, hoopR's agreement with the stored history game by game, and which providers ESPN's odds feed lists for each tournament game and whether each lists a two-way moneyline. No price was set against a result, and no rating, curve, seed win rate or log loss had been computed on any season.",
   "The 2015 to 2026 tournaments are public history, and the author knows them in outline: better seeds usually win, and a 16 seed beat a 1 seed in 2018 and in 2023. No setting here was chosen from the stored games' results.",
