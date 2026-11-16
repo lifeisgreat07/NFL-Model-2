@@ -1,11 +1,47 @@
 [
  {
+  "page": "nfl",
+  "label": "head",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "nfl-390x844-light-head.png",
+  "bytes": 132168,
+  "parked": 3
+ },
+ {
+  "page": "nfl",
+  "label": "head",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "nfl-390x844-dark-head.png",
+  "bytes": 132415,
+  "parked": 3
+ },
+ {
+  "page": "nfl",
+  "label": "head",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "nfl-1440x900-light-head.png",
+  "bytes": 656357,
+  "parked": 4
+ },
+ {
+  "page": "nfl",
+  "label": "head",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "nfl-1440x900-dark-head.png",
+  "bytes": 666019,
+  "parked": 4
+ },
+ {
   "page": "nhl",
   "label": "head",
   "viewport": "390x844",
   "theme": "light",
   "file": "nhl-390x844-light-head.png",
-  "bytes": 55052,
+  "bytes": 55079,
   "parked": 3
  },
  {
@@ -14,7 +50,7 @@
   "viewport": "390x844",
   "theme": "dark",
   "file": "nhl-390x844-dark-head.png",
-  "bytes": 56445,
+  "bytes": 56446,
   "parked": 3
  },
  {
@@ -23,7 +59,7 @@
   "viewport": "1440x900",
   "theme": "light",
   "file": "nhl-1440x900-light-head.png",
-  "bytes": 148765,
+  "bytes": 148940,
   "parked": 4
  },
  {
@@ -32,7 +68,7 @@
   "viewport": "1440x900",
   "theme": "dark",
   "file": "nhl-1440x900-dark-head.png",
-  "bytes": 149490,
+  "bytes": 149685,
   "parked": 4
  },
  {
@@ -41,7 +77,7 @@
   "viewport": "390x844",
   "theme": "light",
   "file": "nba-390x844-light-head.png",
-  "bytes": 84774,
+  "bytes": 84898,
   "parked": 3
  },
  {
@@ -50,7 +86,7 @@
   "viewport": "390x844",
   "theme": "dark",
   "file": "nba-390x844-dark-head.png",
-  "bytes": 85690,
+  "bytes": 85818,
   "parked": 3
  },
  {
@@ -59,7 +95,7 @@
   "viewport": "1440x900",
   "theme": "light",
   "file": "nba-1440x900-light-head.png",
-  "bytes": 220606,
+  "bytes": 220850,
   "parked": 4
  },
  {
@@ -68,7 +104,7 @@
   "viewport": "1440x900",
   "theme": "dark",
   "file": "nba-1440x900-dark-head.png",
-  "bytes": 222152,
+  "bytes": 222456,
   "parked": 4
  }
 ]
