@@ -150,5 +150,9 @@ def test_it_was_registered_before_any_result_exists():
     reg = registry()
     if not (FOLDER / 'results').exists():
         assert all('result' not in h and 'label' not in h for h in reg['hypotheses'])
-        assert reg['amendments'] == []
     assert reg['registered'] == '2026-11-15'
+    # One amendment, written with the tuning code and before it ran on a stored season: the first curve day.
+    [first] = reg['amendments']
+    assert (first['entry'], first['date'], first['before_any_result']) == ('protocol.tuning', '2026-11-16', True)
+    assert 'not forecast and not scored in the tuning' in first['change']
+    assert 'before it had run on any stored season' in first['seen']
