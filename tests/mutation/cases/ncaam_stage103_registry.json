@@ -1,0 +1,146 @@
+{
+  "target": "experiments/ncaam/stage103/registry.json",
+  "tests": "tests/test_ncaam_stage103_registry.py",
+  "cases": [
+    {
+      "id": "ncaam103-m1-spends-a-slot",
+      "why": "a measurement starts spending a slot without the level moving, so the two questions are decided at an interval that no longer holds the family's error rate.",
+      "find": "\"spends_slot\": false,\n   \"consequence\": \"Reported. It decides nothing.\"",
+      "replace": "\"spends_slot\": true,\n   \"consequence\": \"Reported. It decides nothing.\"",
+      "expect_caught_by": "test_two_slots_and_the_level_they_set"
+    },
+    {
+      "id": "ncaam103-budget-grown",
+      "why": "the budget grows to three while two questions spend slots, so the printed level and the registered one part.",
+      "find": "\"budget_m\": 2,",
+      "replace": "\"budget_m\": 3,",
+      "expect_caught_by": "test_two_slots_and_the_level_they_set"
+    },
+    {
+      "id": "ncaam103-confirmation-moved",
+      "why": "a validation tournament moves into the confirmation set after registration, so the held-out test includes games the settings were tuned on.",
+      "find": "\"confirmation_tournaments\": [\n   2021,",
+      "replace": "\"confirmation_tournaments\": [\n   2019,\n   2021,",
+      "expect_caught_by": "test_the_tournaments_and_what_decides"
+    },
+    {
+      "id": "ncaam103-count-drifts",
+      "why": "the sample size the expected verdict argues from no longer matches the stored tournaments.",
+      "find": "401 games, and the committee",
+      "replace": "410 games, and the committee",
+      "expect_caught_by": "test_every_registered_tournament_has_its_seeds_and_the_counts_argued_from_are_the_files"
+    },
+    {
+      "id": "ncaam103-later-round-updated",
+      "why": "a later round is forecast with the earlier rounds played, so the backtest describes a model with more information than the locked bracket has.",
+      "find": " A later round is never forecast with an earlier round's result.",
+      "replace": "",
+      "expect_caught_by": "test_a_tournament_is_forecast_from_before_its_first_game"
+    },
+    {
+      "id": "ncaam103-intercept-returns",
+      "why": "Model A gains an intercept, so the club ESPN happens to list as home, usually the better seed, gets an edge at a neutral site.",
+      "find": "no intercept and no scaling, on expected_margin alone",
+      "replace": "an intercept and a StandardScaler, on expected_margin alone",
+      "expect_caught_by": "test_a_forecast_does_not_depend_on_which_club_is_listed_home"
+    },
+    {
+      "id": "ncaam103-tournament-home-edge",
+      "why": "a tournament game ESPN fails to flag as neutral keeps a home edge nobody has.",
+      "find": " An NCAA tournament game is forecast as neutral whatever the flag says.",
+      "replace": "",
+      "expect_caught_by": "test_a_forecast_does_not_depend_on_which_club_is_listed_home"
+    },
+    {
+      "id": "ncaam103-regular-season-scored",
+      "why": "regular-season games become scored rows, so thousands of easy games drown the tournament the questions are about.",
+      "find": "No regular-season or conference-tournament game is ever a scored row",
+      "replace": "Regular-season games are scored rows too",
+      "expect_caught_by": "test_only_tournament_games_are_scored"
+    },
+    {
+      "id": "ncaam103-bootstrap-by-game",
+      "why": "the bootstrap resamples single games, so games of one day are treated as independent and the interval narrows.",
+      "find": "Paired, resampling whole game days (every tournament game of a US Eastern date together)",
+      "replace": "Paired, resampling single games",
+      "expect_caught_by": "test_the_bootstrap_resamples_whole_game_days"
+    },
+    {
+      "id": "ncaam103-tuned-on-every-season",
+      "why": "the grid is searched on every season, so the confirmation tournaments' seasons choose the settings they are then scored with.",
+      "find": "searched on the validation seasons only (2014-15 to 2018-19)",
+      "replace": "searched on every season",
+      "expect_caught_by": "test_tuning_touches_only_the_validation_seasons"
+    },
+    {
+      "id": "ncaam103-grid-widened",
+      "why": "the tuning grid grows after registration, so the validation search is wider than the one written down.",
+      "find": "\"lambda\": [\n     1.0,",
+      "replace": "\"lambda\": [\n     0.3,\n     1.0,",
+      "expect_caught_by": "test_tuning_touches_only_the_validation_seasons"
+    },
+    {
+      "id": "ncaam103-unrated-club-guessed",
+      "why": "a club with no earlier game is no longer rated 0, so its rating is whatever the code falls into.",
+      "find": " A club with no earlier game that season is rated 0.",
+      "replace": "",
+      "expect_caught_by": "test_the_ratings_read_only_the_seasons_earlier_games"
+    },
+    {
+      "id": "ncaam103-seed-model-reads-ahead",
+      "why": "the seed model trains on the tournament it forecasts, so the baseline Model A must beat has seen the answers.",
+      "find": "strictly before the tournament being forecast",
+      "replace": "including the tournament being forecast",
+      "expect_caught_by": "test_the_seed_model_learns_only_from_earlier_tournaments_in_the_history"
+    },
+    {
+      "id": "ncaam103-live-price-allowed",
+      "why": "an in-game price is allowed as the market, so a price set after the tip feeds the comparison.",
+      "find": " A provider whose name contains 'live' is never used.",
+      "replace": "",
+      "expect_caught_by": "test_the_market_is_books_only_and_never_a_live_price"
+    },
+    {
+      "id": "ncaam103-model-counted-as-a-book",
+      "why": "AccuScore's projection leaves the not-a-book list, so a model's output can be read as a market price.",
+      "find": "\"Sportradar Internal Odds(ISE)\",\n   \"accuscore\",",
+      "replace": "\"Sportradar Internal Odds(ISE)\",",
+      "expect_caught_by": "test_the_market_is_books_only_and_never_a_live_price"
+    },
+    {
+      "id": "ncaam103-unknown-provider-used",
+      "why": "a provider nobody has classified is used at once, so a new projection feed in 2027 becomes the market.",
+      "find": " A provider name in neither list is not used until an amendment says which it is.",
+      "replace": "",
+      "expect_caught_by": "test_the_market_is_books_only_and_never_a_live_price"
+    },
+    {
+      "id": "ncaam103-market-feature-added",
+      "why": "Model A gains the market as a feature the registration ruled out, so H2 compares the market with itself.",
+      "find": "\"features\": [\n    \"expected_margin\"\n   ],",
+      "replace": "\"features\": [\n    \"expected_margin\",\n    \"market_logit\"\n   ],",
+      "expect_caught_by": "test_no_model_reads_the_market"
+    },
+    {
+      "id": "ncaam103-fallback-loosened",
+      "why": "the fallback check passes a season with one final in ten missing or different.",
+      "find": "at least 99% of the stored finals",
+      "replace": "at least 90% of the stored finals",
+      "expect_caught_by": "test_the_fallback_is_checked_before_a_season_is_used"
+    },
+    {
+      "id": "ncaam103-reject-ignored",
+      "why": "losing to the seeds no longer changes anything, so the bracket is made by ratings shown to be worse than the seeds.",
+      "find": "REJECT: the bracket's forecasts come from the seed model",
+      "replace": "REJECT: Model A still makes the bracket",
+      "expect_caught_by": "test_losing_to_the_seeds_changes_what_makes_the_bracket"
+    },
+    {
+      "id": "ncaam103-amended-in-silence",
+      "why": "the registration date moves with no amendment, so a rewrite after results reads as the original.",
+      "find": "\"registered\": \"2026-11-15\",",
+      "replace": "\"registered\": \"2026-12-01\",",
+      "expect_caught_by": "test_it_was_registered_before_any_result_exists"
+    }
+  ]
+}
