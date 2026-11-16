@@ -661,6 +661,8 @@ function m2Html(m){
 /* ---------- season accuracy (Stage 104 item 1) ----------
    The NHL's page (src/sports/nhl/pages/nhl.js), on the NBA's graded picks: the
    record, the shared accuracy component, calibration and every graded pick.
+   Audit 9 (D7, M3 option A, 2026-11-16): the forward test sits here, under
+   the record it is judged instead of, not on Checking the AI's work.
    Until 2026-11-11 the record sat inside Checking the AI's work, and the NBA
    had no Season Accuracy page, which read as a scoreboard left off. */
 function renderAccuracy(){
@@ -677,7 +679,9 @@ function renderAccuracy(){
   }
   const right = graded.filter(x => x.p.result === 'correct').length;
   const list = graded.slice().sort((a, b) => (b.g.start || '').localeCompare(a.g.start || ''));
-  el.innerHTML = `<p class="nba-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the game had a price when it was saved, Model A&#39;s otherwise. This is a small sample that grows every game day, so the record alone says little: the forward test is judged on log loss, not on picks right. See Checking the AI&#39;s work.</p>
+  el.innerHTML = `<p class="nba-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the game had a price when it was saved, Model A&#39;s otherwise. This is a small sample that grows every game day, so the record alone says little: the forward test, next, is judged on log loss, not on picks right.</p>
+    <h2 class="section-title">The forward test so far</h2>
+    ${forwardHtml(BD.forward, 'nba')}
     ${accuracyHtml(accGames(graded))}
     ${calibrationHtml(graded)}
     <h2 class="section-title">Every graded pick</h2>
@@ -691,8 +695,7 @@ function renderReliability(){
     <p class="nba-lede">${driftStatus(BD.drift, BD.drift_rule)}</p>
     ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class="nba-lede">The rule is registered in <code>experiments/nba/stage65/registry.json</code>, amended on 2026-11-04, 2026-11-05 and 2026-11-11: ${driftLooks(BD.drift_rule)}</p>` : ''}
     ${spreadHtml(BD.spread, 'nba')}
-    <h2 class="section-title">The forward test so far</h2>
-    ${forwardHtml(BD.forward, 'nba')}
+    <p class="nba-lede">The forward test, the live picks scored against the market and the base rate, is on <a href="#accuracy">Season Accuracy</a>, beside the record it is judged instead of.</p>
     <h2 class="section-title">The injury report against who played</h2>
     ${m2Html(BD.m2)}
     <p class="nba-lede"><b>The drift check leans toward flagging.</b> Its baseline was measured with each game's actual players, from the box score: knowing who played lowered the backtest's log loss by ${(-Q.M1.diff).toFixed(3)} (M1). A live pick knows only the injury report before tip-off, so live log loss is expected to run up to about that much worse for a reason that is not drift, and the check may flag sooner than a like-for-like comparison would. The registration says so (<code>experiments/nba/stage65/registry.json</code>), and M2 measures the gap once there are live games.</p>
