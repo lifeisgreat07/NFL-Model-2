@@ -1,0 +1,69 @@
+{
+ "game_id": "401910001",
+ "season": 2026,
+ "slate": "2026-11-16",
+ "start_utc": "2026-11-17T02:00:00Z",
+ "home": "DEN",
+ "away": "PHX",
+ "model_a": 0.6852,
+ "model_b": 0.7734,
+ "pick": "DEN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9701,
+  "away": 0.9669
+ },
+ "features": {
+  "point_matchup": 3.332231,
+  "efficiency_matchup": 3.294449,
+  "availability_matchup": 0.003176
+ },
+ "market": {
+  "game_id": "401910001",
+  "home": "DEN",
+  "away": "PHX",
+  "start_utc": "2026-11-17T02:00:00Z",
+  "read_utc": "2026-11-16T21:31:41Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -408.0,
+  "away_price": 320.0,
+  "home_prob": 0.7713
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-16T21:31:41Z",
+  "home": [
+   {
+    "athlete_id": "4432181",
+    "name": "Julian Strawther",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4701232",
+    "name": "Mark Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4888725",
+    "name": "Ryan Dunn",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-16T21:31:41Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-15",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14255,
+  "training_games_priced": 14214,
+  "training_ids_sha256": "df8c1e762d2ab5c34254d467ed948687bacf751cedf030cf6ebbdc5f2e578683"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "83eb02b898bd5855746fc83f0a3d4d2b1e708915"
+}
