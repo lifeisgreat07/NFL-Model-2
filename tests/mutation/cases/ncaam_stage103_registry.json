@@ -136,6 +136,13 @@
       "expect_caught_by": "test_losing_to_the_seeds_changes_what_makes_the_bracket"
     },
     {
+      "id": "ncaam103-first-day-scored-on-nothing",
+      "why": "the amendment's rule is reversed, so the history's first curve day is scored with a curve fitted on no game.",
+      "find": "its games are not forecast and not scored in the tuning",
+      "replace": "its games are forecast at 0.5 and scored in the tuning",
+      "expect_caught_by": "test_it_was_registered_before_any_result_exists"
+    },
+    {
       "id": "ncaam103-amended-in-silence",
       "why": "the registration date moves with no amendment, so a rewrite after results reads as the original.",
       "find": "\"registered\": \"2026-11-15\",",

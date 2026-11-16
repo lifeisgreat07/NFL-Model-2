@@ -158,7 +158,16 @@
   "lock": "One lock between Selection Sunday and the First Four's first game in 2027: the ratings, the curve and a forecast for every pair of clubs in the field are saved once and never rewritten.",
   "scoring": "Each game played is scored on the saved forecast for the two clubs that met. Reported beside the confirmation figures; 67 games decide nothing on their own."
  },
- "amendments": [],
+ "amendments": [
+  {
+   "date": "2026-11-16",
+   "by": "Claude, under Mark's delegation of 2026-10-05",
+   "entry": "protocol.tuning",
+   "before_any_result": true,
+   "seen": "Written while the tuning code was being written and tested on tables built by hand, before it had run on any stored season: no rating, curve or log loss had been computed.",
+   "change": "The history's first curve day (the first game day from 1 January 2015) has no earlier curve row, so no curve can be fitted for it: its games are not forecast and not scored in the tuning. As registered there was no rule for it."
+  }
+ ],
  "disclosures": [
   "Before this registration the data was probed (docs/ncaam-data.md): finals per season, the seeds check, hoopR's agreement with the stored history game by game, and which providers ESPN's odds feed lists for each tournament game and whether each lists a two-way moneyline. No price was set against a result, and no rating, curve, seed win rate or log loss had been computed on any season.",
   "The 2015 to 2026 tournaments are public history, and the author knows them in outline: better seeds usually win, and a 16 seed beat a 1 seed in 2018 and in 2023. No setting here was chosen from the stored games' results.",
