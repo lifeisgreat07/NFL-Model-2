@@ -220,6 +220,16 @@ jobs:
         timeout-minutes: 30
         run: python tests/browser/check_switcher_fit.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
 
+      # Audit 9 D1: every sidebar control can be reached in a laptop-sized
+      # window (1366x657, 1280x720), with the foot pinned.
+      - name: Prove the sidebar reach check can fail
+        timeout-minutes: 30
+        run: python tests/browser/check_sidebar_reach.py --self-test --tmp "$RUNNER_TEMP/reach"
+
+      - name: Check every sidebar control can be reached in a laptop window
+        timeout-minutes: 30
+        run: python tests/browser/check_sidebar_reach.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
+
       # Stage 79 item 46: the NHL's Accuracy and the NBA's Checking the AI's
       # work draw the race, the trend and the calibration diagram.
       - name: Prove the accuracy check can fail

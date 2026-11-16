@@ -240,6 +240,7 @@
   "tests/test_ncaam_ratings.py": "isolated behavioural",
   "tests/test_ncaam_seeds.py": "isolated behavioural",
   "tests/test_neutral_site.py": "template/JS",
+  "tests/test_sidebar_scroll.py": "template/JS",
   "tests/test_neutral_site_rule.py": "isolated behavioural",
   "tests/test_nfl_flag_legend.py": "template/JS",
   "tests/test_nfl_options_pdf.py": "template/JS",
