@@ -1,0 +1,179 @@
+{
+ "family": "ncaam-stage103",
+ "registered": "2026-11-15",
+ "approved_by": "Claude, under Mark's delegation of 2026-10-05 ('Handle the decisions going forward until I say so') and his Stage 103 plan of 2026-11-11 (a registration before any result, against the higher seed and, if a free archive exists, the market), asked for by him on 2026-11-15; before any NCAAM rating, model or seed win rate was fitted, counted or scored.",
+ "protocol": {
+  "outcome": "home_win: the club ESPN lists as home wins, overtime included. Every NCAA tournament game is at a neutral site and the listing is ESPN's, so every forecast here must be one minus itself when the two clubs are swapped: no model has an intercept, and every feature changes sign with the listing.",
+  "scored_games": "The NCAA men's tournament's games (ESPN's tournamentId 22), the First Four included. A game declared a no-contest is never scored. No regular-season or conference-tournament game is ever a scored row: the season's games are the ratings' input only.",
+  "rating_games": "Every final in the season's stored history (data/ncaam/history/games_<season>.csv), whatever the opponent's division. `season` is the year a season starts; a tournament is named by the year it is played, the season plus one.",
+  "game_key": "ESPN's event id, one row per id.",
+  "neutral_site": "ESPN's neutralSite flag on the game. A neutral game gets no home edge. An NCAA tournament game is forecast as neutral whatever the flag says.",
+  "training_from_season": 2014,
+  "validation_tournaments": [
+   2015,
+   2016,
+   2017,
+   2018,
+   2019
+  ],
+  "confirmation_tournaments": [
+   2021,
+   2022,
+   2023,
+   2024,
+   2025,
+   2026
+  ],
+  "forward_tournament": 2027,
+  "lock": "A tournament's forecasts are frozen before its first game, as the live bracket's will be: the ratings, the fitted curve and the seed model use only games that ended before the Eastern date of the tournament's first game (the First Four's first day), and every game of that tournament, the title game included, is forecast from them. A later round is never forecast with an earlier round's result.",
+  "primary_metric": "log_loss",
+  "secondary_metric": "brier",
+  "accuracy": "Reported, never decides.",
+  "alpha": 0.05,
+  "budget_m": 2,
+  "budget_rule": "H1 and H2 are the confirmatory slots. A slot is spent by reaching a decision, whatever the outcome. Each confirmatory interval is at level 1 - alpha/budget_m (97.5%). M1 and M2 are measurements and spend nothing.",
+  "bootstrap": "Paired, resampling whole game days (every tournament game of a US Eastern date together), 5,000 resamples, seed 20261115.",
+  "tuning": "The grid below is searched on the validation seasons only (2014-15 to 2018-19), by Model A's log loss over all their games from 1 January on, pooled, walking forward a game day at a time: each day's games are forecast from ratings and a curve fitted on games strictly before that day. The lowest log loss wins, ties to the earlier entry. The chosen values are then fixed for the confirmation tournaments and the forward test. No tournament is scored under the lock rule during tuning.",
+  "model_lab": "Each question gets a Model Lab row when it is answered, whatever it shows."
+ },
+ "data": {
+  "results": "ESPN's men's college scoreboard, read by the NCAAM collector from the Division I board and the NCAA tournament's board (docs/ncaam-data.md): each game's id, Eastern date, clubs, final score, neutral flag, tournament id and note.",
+  "fallback_check": "SportsDataverse's hoopR men's college schedule file is the checked fallback. Before a season is used, its stored finals are compared with hoopR's by ESPN event id: at least 99% of the stored finals must be in hoopR's file with both scores equal, and every NCAA tournament game that is missing there or differs is named. hoopR mirrors ESPN, so this check guards against a dropped or garbled game, not against ESPN itself.",
+  "seeds": "data/ncaam/history/seeds_<season>.csv, written and checked by the seeds module: in an NCAA tournament game a club's curatedRank on ESPN's scoreboard is its seed. The higher seed is the club with the smaller seed number; a game between equal seeds (a First Four game) has none.",
+  "market": "Two-way home-win probability with the margin taken out evenly, from the moneylines ESPN's odds feed lists for the game: for each book the closing price where ESPN gives one, the listed price otherwise; a book's price whose two implied probabilities sum outside 1.00-1.20 is not used; the game's market is the median of the books' home-win probabilities. A provider whose name contains 'live' is never used. A provider in not_books is a model or an aggregate, not a book, and is never used. A provider name in neither list is not used until an amendment says which it is.",
+  "books": [
+   "5Dimes.eu",
+   "BETNOW.eu",
+   "BETONLINE.ag",
+   "BOVADA.lv",
+   "BetUS.COM",
+   "BetfairSportsbook",
+   "Caesar's",
+   "Caesars (New Jersey)",
+   "Caesars Sportsbook",
+   "Caesars Sportsbook (Colorado)",
+   "Caesars Sportsbook (New Jersey)",
+   "Caesars Sportsbook (Pennsylvania)",
+   "Caesars Sportsbook (Tennessee)",
+   "CG Technology",
+   "DraftKings",
+   "ESPN BET",
+   "MGM",
+   "PinnacleSports.com",
+   "PointsBet",
+   "SportsBetting.ag",
+   "SportsInteraction.com",
+   "Sportsbook.com",
+   "SugarHouse",
+   "Titanbets",
+   "Unibet",
+   "Westgate",
+   "Wynn"
+  ],
+  "not_books": [
+   "Fantasy911.com",
+   "Opening",
+   "Sportradar Internal Odds(ISE)",
+   "accuscore",
+   "consensus",
+   "numberfire",
+   "teamrankings"
+  ],
+  "club_identity": "ESPN's team id as the scoreboard gave it for that season. Ratings are fitted one season at a time, so no table follows a club from one season to the next."
+ },
+ "models": {
+  "model_a": {
+   "features": [
+    "expected_margin"
+   ],
+   "estimator": "Logistic regression, L2, C=1.0, no intercept and no scaling, on expected_margin alone, so a game's forecast is one minus its forecast with the clubs swapped.",
+   "expected_margin": "Home rating minus away rating, plus the fitted home edge when the game is not neutral. Each club's rating and the home edge come from a recency-weighted ridge regression of the point margin (home minus away) of the same season's games strictly before the day being forecast, on club indicators with a home term (zero for a neutral game). Weight 0.5^(days ago / H); H none weighs every game the same. Ridge strength lambda on the club terms only. A club with no earlier game that season is rated 0.",
+   "curve_rows": "The curve is fitted on every game from 1 January on of every season from 2014-15, strictly before the day being forecast (under the lock, before the tournament's first game), each with the expected_margin its own season's earlier games gave it at the chosen settings.",
+   "grid": {
+    "H_days": [
+     30,
+     60,
+     120,
+     null
+    ],
+    "lambda": [
+     1.0,
+     3.0,
+     10.0,
+     30.0
+    ]
+   }
+  },
+  "seed_model": {
+   "features": [
+    "seed_difference"
+   ],
+   "estimator": "As Model A: no intercept, no scaling.",
+   "seed_difference": "The away club's seed minus the home club's, so a higher value favours home. A game between equal seeds is forecast at exactly 0.5.",
+   "rows": "Every NCAA tournament game in the history from the 2015 tournament on, strictly before the tournament being forecast. Nothing from outside the stored history is used."
+  },
+  "higher_seed": "The pick 'the higher seed wins', scored on accuracy only, over games between different seeds.",
+  "market": "The market's home-win probability itself, not refitted."
+ },
+ "prerequisite": "The market history for the confirmation tournaments read once from ESPN's odds feed and stored by the backtest's own code, and each season checked against hoopR as fallback_check says, so a re-run reads the same inputs.",
+ "hypotheses": [
+  {
+   "id": "H1",
+   "kind": "hypothesis",
+   "title": "Model A against the seeds",
+   "question": "Do ratings from the season's games forecast tournament games better than the two seeds alone?",
+   "spends_slot": true,
+   "decision_rule": "On the 2021 to 2026 tournaments, all games: ACCEPT if the 97.5% day-block paired-bootstrap interval on (Model A - seed model) log loss lies entirely below 0; REJECT if entirely above; otherwise INCONCLUSIVE.",
+   "expected": "INCONCLUSIVE, most likely: 401 games, and the committee seeds from much the same results the ratings read.",
+   "consequence": "REJECT: the bracket's forecasts come from the seed model, and the page says the ratings lost to the seeds. ACCEPT or INCONCLUSIVE: Model A makes the bracket, and the page prints the verdict beside it."
+  },
+  {
+   "id": "H2",
+   "kind": "hypothesis",
+   "title": "Model A against the market",
+   "question": "Does Model A forecast tournament games better than the market alone?",
+   "spends_slot": true,
+   "decision_rule": "On the 2021 to 2026 tournaments, all games with a market price: ACCEPT if the 97.5% interval on (Model A - market) log loss lies entirely below 0; REJECT if entirely above; otherwise INCONCLUSIVE.",
+   "expected": "INCONCLUSIVE or REJECT. The market also prices each later round days after the lock, with the earlier rounds played.",
+   "consequence": "Printed on the bracket page whatever it is. It changes no forecast."
+  },
+  {
+   "id": "M1",
+   "kind": "measurement",
+   "title": "The market against the seeds",
+   "question": "Market minus seed model, log loss, on the 2021 to 2026 tournaments' priced games, with its interval.",
+   "spends_slot": false,
+   "consequence": "Reported. It decides nothing."
+  },
+  {
+   "id": "M2",
+   "kind": "measurement",
+   "title": "How often each picks the winner",
+   "question": "Accuracy of Model A's favourite, the market's favourite and 'the higher seed wins' on the 2021 to 2026 tournaments' games between different seeds.",
+   "spends_slot": false,
+   "consequence": "Reported beside the log loss. Accuracy never decides."
+  }
+ ],
+ "forward_test": {
+  "lock": "One lock between Selection Sunday and the First Four's first game in 2027: the ratings, the curve and a forecast for every pair of clubs in the field are saved once and never rewritten.",
+  "scoring": "Each game played is scored on the saved forecast for the two clubs that met. Reported beside the confirmation figures; 67 games decide nothing on their own."
+ },
+ "amendments": [],
+ "disclosures": [
+  "Before this registration the data was probed (docs/ncaam-data.md): finals per season, the seeds check, hoopR's agreement with the stored history game by game, and which providers ESPN's odds feed lists for each tournament game and whether each lists a two-way moneyline. No price was set against a result, and no rating, curve, seed win rate or log loss had been computed on any season.",
+  "The 2015 to 2026 tournaments are public history, and the author knows them in outline: better seeds usually win, and a 16 seed beat a 1 seed in 2018 and in 2023. No setting here was chosen from the stored games' results.",
+  "Chosen without data, as declared rules: the curve's rows start on 1 January, when most clubs have a dozen games behind their rating; the two grids; five validation seasons and six confirmation tournaments.",
+  "A small sample. 401 confirmation games in about 70 game days; INCONCLUSIVE is the expected verdict on H1 and the page will say so.",
+  "The market is not on the model's footing: a later round's price is set after the earlier rounds, days after the lock. For the 2021 and 2022 tournaments ESPN gives no closing price, only the listed one. In the 2025 and 2026 tournaments one book is listed for most games, so the median is that book's price.",
+  "No box scores are collected, so there is no possession or efficiency term, and nothing about who is injured or how far a club travels.",
+  "2019-20 has no tournament; its games still fit the curve. 2020-21 is a short season (4,285 finals) whose tournament was played entirely in Indiana, with one first-round game a no-contest.",
+  "LIU Brooklyn carries ESPN team id 6446 in the stored history to 2018-19 and a different id in hoopR's file; the fallback check therefore compares event ids and scores, not club ids.",
+  "This is the first NCAAM registration, written by Claude under delegation rather than approved by Mark question by question as the NFL's were."
+ ],
+ "not_in_this_registration": [
+  "A model that reads the market (a Model B or a blend): about 67 priced games a year cannot fit one honestly.",
+  "Possessions and efficiency, a cap on blowout margins, a carry-over from the season before, injuries, travel.",
+  "The bracket simulation and the filled-in bracket (item 3), the bracket page (item 4), the women's tournament.",
+  "The spread and the total."
+ ]
+}
