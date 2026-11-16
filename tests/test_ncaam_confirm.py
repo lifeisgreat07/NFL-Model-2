@@ -205,3 +205,25 @@ def test_the_seeds_are_read_as_the_away_seed_minus_the_home_seed(tmp_path):
                                              encoding='utf-8')
     s = b.seeds([2019, 2020], tmp_path)
     assert list(s['game_id']) == ['7', '8'] and list(s['seed_difference']) == [15.0, 0.0]
+
+
+def test_the_confirmation_on_file_is_the_registered_run_and_its_labels_follow_their_intervals():
+    """results/confirmation.json, written once by `python -m src.sports.ncaam.backtest confirm` on 2026-11-16."""
+    reg = b.registry()
+    doc = json.loads((b.FOLDER / 'results' / 'confirmation.json').read_text(encoding='utf-8'))
+    p = reg['protocol']
+    assert doc['tournaments'] == p['confirmation_tournaments']
+    assert {'H_days': doc['H_days'], 'lambda': doc['lambda']} == b.chosen(), 'the setting the tuning chose'
+    level = round(1 - p['alpha'] / p['budget_m'], 4)
+    assert set(doc['questions']) == {'H1', 'H2', 'M1', 'M2'}
+    assert {s['games'] for s in doc['scores'].values()} == {401}, 'every tournament game, forecast by all three'
+    for hid in ('H1', 'H2', 'M1'):
+        q = doc['questions'][hid]
+        assert q['level'] == level and q['low'] <= q['diff'] <= q['high'], hid
+        assert q['games'] == 401, hid
+        if hid != 'M1':
+            assert q['label'] == b.label({'low': q['low'], 'high': q['high'], 'diff': q['diff']}), hid
+        else:
+            assert 'label' not in q, 'M1 is a measurement'
+    assert 'label' not in doc['questions']['M2']
+
