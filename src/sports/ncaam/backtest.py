@@ -213,17 +213,17 @@ def confirm(games: pd.DataFrame, prices: pd.DataFrame, seeded: pd.DataFrame, reg
 
 
 def main_confirm() -> int:
-    """The confirmation, once: a result on file is never overwritten, the setting must be an entry of the
-    registered grid, every confirmation season needs its market file, and every provider in those files must be
+    """The confirmation, once: a result on file is never overwritten, the setting is the tuning's choice (the
+    second amendment's, once its extension is on file: chosen()) and must be an entry of the registered grid or of
+    that extension, every confirmation season needs its market file, and every provider in those files must be
     classified by the registration."""
     reg = registry()
     p = reg['protocol']
     if (RESULTS / 'confirmation.json').exists():
         raise SystemExit('results/confirmation.json exists: the confirmation is run once and never rewritten')
-    chosen = json.loads((RESULTS / 'tuning.json').read_text(encoding='utf-8'))['chosen']
-    grid = reg['models']['model_a']['grid']
-    if chosen['H_days'] not in grid['H_days'] or chosen['lambda'] not in grid['lambda']:
-        raise SystemExit(f'tuning.json chose {chosen}, which is not in the registered grid')
+    setting = chosen()
+    if (setting['H_days'], setting['lambda']) not in grid_entries(reg) + extension_entries(reg):
+        raise SystemExit(f'the tuning chose {setting}, which is not in the registered grid or its extension')
     seasons = [t - 1 for t in p['confirmation_tournaments']]
     try:
         prices, unclassified = market.load(seasons, reg['data']['books'], reg['data']['not_books'])
@@ -233,7 +233,7 @@ def main_confirm() -> int:
         raise SystemExit(f'providers the registration does not classify, so an amendment is needed: {unclassified}')
     games = load_history(p['training_from_season'], max(seasons))
     seeded = seeds(range(p['training_from_season'], max(seasons) + 1))
-    result = confirm(games, prices, seeded, reg, chosen)
+    result = confirm(games, prices, seeded, reg, setting)
     (RESULTS / 'confirmation.json').write_text(json.dumps(result, indent=1) + '\n', encoding='utf-8')
     for hid, q in result['questions'].items():
         if hid == 'M2':

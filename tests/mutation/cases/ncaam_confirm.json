@@ -53,8 +53,8 @@
     },
     {
       "id": "ncaam-confirm-off-grid-setting",
-      "why": "a setting that is not in the registered grid is confirmed.",
-      "find": "    if chosen['H_days'] not in grid['H_days'] or chosen['lambda'] not in grid['lambda']:\n",
+      "why": "a setting that is in neither the registered grid nor its extension is confirmed.",
+      "find": "    if (setting['H_days'], setting['lambda']) not in grid_entries(reg) + extension_entries(reg):\n",
       "replace": "    if False:\n",
       "expect_caught_by": "test_a_setting_outside_the_registered_grid_is_refused"
     },
@@ -78,6 +78,13 @@
       "find": "SEED = 20261115",
       "replace": "SEED = 20261116",
       "expect_caught_by": "test_the_interval_is_the_registered_bootstrap"
+    },
+    {
+      "id": "ncaam-confirm-ignores-the-extension",
+      "why": "the confirmation reads the first tuning's choice, though the second amendment's extension chose another",
+      "find": "    setting = chosen()\n",
+      "replace": "    setting = json.loads((RESULTS / 'tuning.json').read_text(encoding='utf-8'))['chosen']\n",
+      "expect_caught_by": "test_the_extensions_choice_is_the_one_confirmed"
     }
   ]
 }

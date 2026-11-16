@@ -156,8 +156,24 @@ def test_the_confirmation_is_written_once(monkeypatch, tmp_path):
 
 
 def test_a_setting_outside_the_registered_grid_is_refused(monkeypatch, tmp_path):
-    with pytest.raises(SystemExit, match='not in the registered grid'):
-        run_confirm(monkeypatch, tmp_path, chosen={'H_days': None, 'lambda': 0.3})
+    with pytest.raises(SystemExit, match='not in the registered grid or its extension'):
+        run_confirm(monkeypatch, tmp_path, chosen={'H_days': None, 'lambda': 0.05})
+
+
+def test_the_extensions_choice_is_the_one_confirmed(monkeypatch, tmp_path):
+    """Once results/tuning_extension.json is on file (the second amendment), its choice is confirmed, and a
+    lambda the extension added is an entry like any other."""
+    seen = {}
+    (tmp_path / b.EXTENSION).write_text(json.dumps({'chosen': {'H_days': 120, 'lambda': 0.1}}), encoding='utf-8')
+    monkeypatch.setattr(b, 'load_history', lambda first, last: pd.DataFrame())
+    monkeypatch.setattr(b, 'seeds', lambda seasons: pd.DataFrame())
+    monkeypatch.setattr(b, 'confirm', lambda games, prices, seeded, reg, setting: seen.update(setting) or
+                        {'questions': {}})
+    monkeypatch.setattr(b, 'RESULTS', tmp_path)
+    (tmp_path / 'tuning.json').write_text(json.dumps({'chosen': {'H_days': None, 'lambda': 1.0}}), encoding='utf-8')
+    monkeypatch.setattr(b.market, 'load', lambda seasons, books, not_books: (pd.DataFrame(), []))
+    assert b.main(['confirm']) == 0
+    assert seen == {'H_days': 120, 'lambda': 0.1}
 
 
 def test_a_missing_market_file_and_an_unclassified_provider_are_refused(monkeypatch, tmp_path):
