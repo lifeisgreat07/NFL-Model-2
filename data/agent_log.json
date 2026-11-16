@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-11-16T19:27:46Z",
+  "generated_utc": "2026-11-16T20:38:05Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 780,
+    "audits_total": 781,
     "audits_superseded": 143,
-    "pull_requests_audited": 637,
+    "pull_requests_audited": 638,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 4706,
+    "claims_checked": 4713,
     "discrepancies_found": 36,
-    "unverifiable": 506,
+    "unverifiable": 507,
     "pull_requests_with_a_discrepancy": 25,
     "reports_disagreeing_with_themselves": 44
   },
@@ -13781,9 +13781,54 @@
         "prose says Unverifiable: 2, block has 1"
       ],
       "superseded": false
+    },
+    {
+      "pr": 750,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/750#issuecomment-6928019746",
+      "posted_utc": "2026-11-16T20:15:21Z",
+      "head": "6ae21de",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 7,
+      "confirmed": 6,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
     }
   ],
   "recent": [
+    {
+      "agent": "Booth",
+      "pr": 750,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/750#issuecomment-6928019746",
+      "when": "2026-11-16T20:15:21Z",
+      "says": "NEEDS HUMAN REVIEW: 6 of 7 claims confirmed, 0 wrong, 1 unverifiable"
+    },
+    {
+      "agent": "Scout",
+      "pr": null,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43946833006",
+      "when": "2026-11-16T20:09:37Z",
+      "says": "found nothing to fix in the description"
+    },
+    {
+      "agent": "Scout",
+      "pr": 683,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43940207466",
+      "when": "2026-11-16T19:31:26Z",
+      "says": "found the description needs fixing before an audit"
+    },
+    {
+      "agent": "Scout",
+      "pr": 683,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43939758579",
+      "when": "2026-11-16T19:28:52Z",
+      "says": "found the description needs fixing before an audit"
+    },
     {
       "agent": "Booth",
       "pr": 748,
@@ -13807,7 +13852,7 @@
     },
     {
       "agent": "Scout",
-      "pr": 745,
+      "pr": null,
       "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43925141658",
       "when": "2026-11-16T18:05:24Z",
       "says": "found nothing to fix in the description"
@@ -13867,34 +13912,6 @@
       "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/738#issuecomment-6865480028",
       "when": "2026-11-13T21:34:49Z",
       "says": "NEEDS HUMAN REVIEW: 5 of 6 claims confirmed, 0 wrong, 1 unverifiable"
-    },
-    {
-      "agent": "Scout",
-      "pr": null,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43510023332",
-      "when": "2026-11-13T21:21:53Z",
-      "says": "found nothing to fix in the description"
-    },
-    {
-      "agent": "Booth",
-      "pr": 737,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/737#issuecomment-6862734387",
-      "when": "2026-11-13T19:24:55Z",
-      "says": "SAFE TO MERGE: 4 of 5 claims confirmed, 0 wrong, 1 unverifiable"
-    },
-    {
-      "agent": "Scout",
-      "pr": null,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43491726499",
-      "when": "2026-11-13T19:23:20Z",
-      "says": "found nothing to fix in the description"
-    },
-    {
-      "agent": "Booth",
-      "pr": 736,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/736#issuecomment-6862155558",
-      "when": "2026-11-13T18:57:26Z",
-      "says": "NEEDS HUMAN REVIEW: 4 of 6 claims confirmed, 0 wrong, 2 unverifiable"
     }
   ]
 }
