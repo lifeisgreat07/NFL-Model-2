@@ -36,6 +36,41 @@
       "find": "return [t - 1 for t in reg['protocol']['validation_tournaments']]",
       "replace": "return [t for t in reg['protocol']['validation_tournaments']]",
       "expect_caught_by": "test_the_validation_seasons_are_the_registered_tournaments_seasons"
+    },
+    {
+      "id": "ncaam-extension-reruns-the-whole-grid",
+      "why": "the extension scores the registered sixteen again as well as the eight new entries, so the tuning on file is recomputed rather than kept",
+      "find": "    new = tune(games, reg, extension_entries(reg))",
+      "replace": "    new = tune(games, reg, grid_entries(reg) + extension_entries(reg))",
+      "expect_caught_by": "test_the_extension_scores_only_the_added_entries_and_a_tie_keeps_the_registered_one"
+    },
+    {
+      "id": "ncaam-extension-tie-goes-to-the-new-entry",
+      "why": "the new entries are listed first, so an entry that only ties the registered best displaces it",
+      "find": "    rows = list(done['grid']) + new['grid']",
+      "replace": "    rows = new['grid'] + list(done['grid'])",
+      "expect_caught_by": "test_the_extension_scores_only_the_added_entries_and_a_tie_keeps_the_registered_one"
+    },
+    {
+      "id": "ncaam-confirmation-ignores-the-extension",
+      "why": "the confirmation reads the first tuning's choice even when the extension chose another setting",
+      "find": "    path = folder / EXTENSION if (folder / EXTENSION).exists() else folder / 'tuning.json'",
+      "replace": "    path = folder / 'tuning.json'",
+      "expect_caught_by": "test_the_confirmation_uses_the_extensions_choice_once_it_is_on_file"
+    },
+    {
+      "id": "ncaam-extension-rewritten",
+      "why": "the extension runs again over a result already on file, so a second look can be taken until one suits",
+      "find": "    if (RESULTS / EXTENSION).exists():\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_the_extension_is_written_once_and_only_after_the_tuning"
+    },
+    {
+      "id": "ncaam-extension-without-the-tuning",
+      "why": "the extension's check that the tuning on file is the registered grid is dropped, so eight entries can be added to any file",
+      "find": "        raise SystemExit('results/tuning.json is not the registered grid on the validation seasons')",
+      "replace": "        pass",
+      "expect_caught_by": "test_the_extension_refuses_a_tuning_file_that_is_not_the_registered_grid"
     }
   ]
 }
