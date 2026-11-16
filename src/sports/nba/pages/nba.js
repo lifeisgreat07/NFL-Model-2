@@ -401,6 +401,12 @@ const CHEVRON = '<svg class="game-row-chev nba-row-chev" viewBox="0 0 24 24" wid
 /* Mark's request (2026-10-15, option B): open or close every game of the day
    at once (src/core/expand.js, which the build puts on the page). */
 const EXPAND_BAR = '<div class="expand-bar"><button type="button" class="btn btn-secondary expand-all" data-expand-all aria-expanded="false" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8l5 5 5-5M7 14l5 5 5-5"/></svg><span>Expand all</span></button></div>';
+/* A row's last word, and on a row that src/core/scores.js watches, the word it puts in its place once ESPN has the
+   game: Live or Grading for a saved pick, No pick for a game without one (audit 9 D2). */
+function resultCell(marked, p, r){
+  if(!marked) return r.text;
+  return `<span class="score-off">${r.text}</span><span class="score-on" data-score-slot="${p ? 'result' : 'unpicked'}"></span>`;
+}
 function rowHtml(g, p, nowMs){
   const r = rowResult(g, p, nowMs);
   const id = `nba-detail-${g.id}`;
@@ -409,7 +415,7 @@ function rowHtml(g, p, nowMs){
       <span class="nba-row-time"><span class="score-off">${rowTime(g, p)}</span>${scoreSlot('clock')}</span>
       <span class="nba-row-game"><span class="score-off">${rowGame(g)}</span>${scoreSlot('game')}</span>
       <span class="nba-row-pick">${rowPick(g, p)}</span>
-      <span class="nba-row-result ${r.cls}">${r.text}</span>${CHEVRON}
+      <span class="nba-row-result ${r.cls}">${resultCell(scoreMark(g) !== '', p, r)}</span>${CHEVRON}
     </button>
     <div class="nba-row-detail" id="${id}" hidden>${p ? pickedCard(g, p) : waitingCard(g)}</div>
   </li>`;

@@ -1,0 +1,20 @@
+{
+  "target": "src/core/scores.js",
+  "tests": "tests/test_live_scores.py",
+  "cases": [
+    {
+      "id": "row-result-final-reads-live",
+      "why": "a game ESPN has called final still reads Live, the first half of audit 9's D2.",
+      "find": "result: e.state === 'post' ? 'Grading' : 'Live'",
+      "replace": "result: 'Live'",
+      "expect_caught_by": "test_a_rows_last_word_follows_espn_not_the_last_build"
+    },
+    {
+      "id": "row-result-no-word-for-a-game-without-a-pick",
+      "why": "a game with no pick has no word once it starts, so its row ends blank.",
+      "find": ", unpicked: 'No pick'}",
+      "replace": "}",
+      "expect_caught_by": "test_a_rows_last_word_follows_espn_not_the_last_build"
+    }
+  ]
+}

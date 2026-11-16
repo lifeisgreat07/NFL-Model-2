@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/nhl/pages/nhl.js",
+  "tests": "tests/test_live_scores.py",
+  "cases": [
+    {
+      "id": "nhl-row-result-has-no-slot",
+      "why": "the NHL row's last word has no slot for ESPN's, so a finished game reads the build's Locked or Live.",
+      "find": "  if(!marked) return r.text;\n  return `<span class=\"score-off\">${r.text}</span><span class=\"score-on\" data-score-slot=\"${p ? 'result' : 'unpicked'}\"></span>`;",
+      "replace": "  return r.text;",
+      "expect_caught_by": "test_a_watched_rows_last_word_has_a_slot_for_espns_and_an_unwatched_row_is_as_before"
+    },
+    {
+      "id": "nhl-row-result-picked-row-says-no-pick",
+      "why": "a saved pick's row gets the slot meant for a game without one, so it reads No pick once the game starts.",
+      "find": "data-score-slot=\"${p ? 'result' : 'unpicked'}\"",
+      "replace": "data-score-slot=\"unpicked\"",
+      "expect_caught_by": "test_a_watched_rows_last_word_has_a_slot_for_espns_and_an_unwatched_row_is_as_before"
+    }
+  ]
+}

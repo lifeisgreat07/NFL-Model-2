@@ -2064,6 +2064,10 @@
 [data-score-live] div.score-on{display:block;}
 [data-score-live] .score-off{display:none;}
 [data-score-live="in"] [data-score-slot="clock"]{color:var(--accent); font-weight:700;}
+/* Audit 9 D2: a saved pick's last word follows ESPN too, so its colour does: Live in the accent, as a row the
+   build saw under way reads; Grading in the quiet colour a locked row has. No pick keeps its row's colour. */
+[data-score-live="in"] [data-score-slot="result"]{color:var(--accent);}
+[data-score-live="post"] [data-score-slot="result"]{color:var(--text-2);}
 [data-score-live] [data-score-slot="game"]{font-variant-numeric:tabular-nums;}
 
 /* Stage 80 item 62 (F14): with no connection the page shown is this

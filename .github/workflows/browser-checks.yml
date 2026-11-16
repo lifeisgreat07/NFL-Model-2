@@ -148,6 +148,16 @@ jobs:
         timeout-minutes: 30
         run: python tests/browser/check_nhl_day.py "$RUNNER_TEMP/states/nhl.html"
 
+      # Audit 9 D2: a watched row's last word follows ESPN's scoreboard
+      # (answered by hand), not the status the build saw.
+      - name: Prove the row result check can fail
+        timeout-minutes: 30
+        run: python tests/browser/check_row_result.py --self-test --tmp "$RUNNER_TEMP/rowresult"
+
+      - name: Check a row's last word follows the live score
+        timeout-minutes: 30
+        run: python tests/browser/check_row_result.py "$RUNNER_TEMP/states/nhl.html"
+
       # The NHL board's eyebrow names the week it shows, as the NBA's
       # (Stage 77 item 32's rule), with the clock fixed four ways around
       # the sample week.
