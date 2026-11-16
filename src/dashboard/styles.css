@@ -997,6 +997,9 @@
   /* Stage 21: the week's game insights, above the cards. */
   .board-insights{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
     padding:var(--s3) var(--s4); margin:0 0 var(--s4); display:grid; gap:var(--s2);}
+  /* Audit 9 D5: the rule above sets a display value, which outranks the browser's own rule for `hidden`, so the
+     box was drawn empty, 49 px tall, whenever a week had nothing worth a look. */
+  .board-insights[hidden]{display:none;}
   .board-insights-title{margin:0; font-size:var(--fs-12); font-weight:800; letter-spacing:var(--track-label);
     text-transform:uppercase; color:var(--text-2);}
   .board-insights-list{list-style:none; margin:0; padding:0; display:grid; gap:var(--s2);}

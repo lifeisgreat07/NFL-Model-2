@@ -230,6 +230,16 @@ jobs:
         timeout-minutes: 30
         run: python tests/browser/check_accuracy.py "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
 
+      # Audit 9 D5: nothing marked hidden is drawn (the NFL board's empty
+      # "Worth a look" box was, 49 px tall).
+      - name: Prove the hidden check can fail
+        timeout-minutes: 30
+        run: python tests/browser/check_hidden.py --self-test --tmp "$RUNNER_TEMP/hidden"
+
+      - name: Check nothing marked hidden is drawn
+        timeout-minutes: 30
+        run: python tests/browser/check_hidden.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
+
       # Stage 79 item 45: one chart style, and no chart text under 11 px on
       # any sport's page.
       - name: Prove the chart text check can fail
