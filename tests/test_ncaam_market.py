@@ -4,6 +4,7 @@ Run with: pytest tests/test_ncaam_market.py -v
 """
 import json
 from datetime import UTC, datetime
+from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -66,6 +67,18 @@ def test_an_incoherent_price_and_a_missing_one_are_not_used():
     assert m._num('EVEN') == 100.0 and m._num('+120') == 120.0 and m._num(0) is None and m._num(None) is None
     edge, _ = probs(item('DraftKings', -150, -150))  # implied sum exactly 1.20
     assert len(edge) == 1
+
+
+def test_the_stored_market_prices_every_confirmation_game_and_holds_no_unclassified_provider():
+    """The six files read on 2026-11-16, against the registration and the seeds files. Prices only: no result."""
+    root = Path(__file__).resolve().parents[1]
+    reg = json.loads((root / 'experiments' / 'ncaam' / 'stage103' / 'registry.json').read_text(encoding='utf-8'))
+    seasons = [t - 1 for t in reg['protocol']['confirmation_tournaments']]
+    out, unknown = m.load(seasons, reg['data']['books'], reg['data']['not_books'])
+    seeded = pd.concat([pd.read_csv(m.HISTORY / f'seeds_{s}.csv', dtype=str) for s in seasons])
+    assert unknown == []
+    assert set(out['game_id']) == set(seeded['game_id']) and len(out) == len(seeded) == 401
+    assert out['home_prob'].between(0.005, 0.995).all() and (out['books'] >= 1).all()
 
 
 def test_every_listed_provider_is_stored_as_read_and_the_file_is_read_back(tmp_path):
