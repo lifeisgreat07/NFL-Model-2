@@ -26,8 +26,8 @@
     {
       "id": "sidebar-more-mark-takes-clicks",
       "why": "the more mark catches the pointer, so the tab under it cannot be clicked.",
-      "find": "margin-top:-34px; pointer-events:none;",
-      "replace": "margin-top:-34px;",
+      "find": "margin-top:calc(-1 * var(--s7)); pointer-events:none;",
+      "replace": "margin-top:calc(-1 * var(--s7));",
       "expect_caught_by": "test_the_more_mark_never_takes_a_click_and_adds_no_height"
     }
   ]

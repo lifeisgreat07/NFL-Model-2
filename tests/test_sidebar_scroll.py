@@ -34,8 +34,8 @@ def test_the_whole_sidebar_scrolls_in_a_window_too_short_for_the_list_to_absorb(
 def test_the_more_mark_never_takes_a_click_and_adds_no_height():
     mark = rule('nav.side-nav::after')
     assert 'pointer-events:none' in mark and 'position:sticky' in mark and 'opacity:0' in mark
-    height = re.search(r'flex:0 0 (\d+)px', mark).group(1)
-    assert f'margin-top:-{height}px' in mark
+    height = re.search(r'flex:0 0 (var\(--s\d\))', mark).group(1)
+    assert f'margin-top:calc(-1 * {height})' in mark
     assert 'animation-timeline:scroll()' in mark, 'shown only where the list really scrolls'
 
 
