@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-16 (session 1115-1116: #743 to #771, less the closed #745, #759 and #763)
+Last updated: 2026-11-17 (session 1115-1116: #743 to #771, less the closed #745, #759 and #763)
 
 ---
 
