@@ -471,7 +471,15 @@ def interval_glyph(h: dict[str, Any], width: int = 96, height: int = 14, pad: in
 
 def _registered_result(e):
     """The Result cell for a pre-registered answer, from its file's own
-    figures, leading with its interval drawn against zero (Stage 18)."""
+    figures, leading with its interval drawn against zero (Stage 18).
+
+    Audit 9 D9 (M4, Mark's choice of 2026-11-16): a row with a figure shows
+    the glyph, then the figure and its interval on one line, and folds the
+    sentence and its source under "Details". The 65 rows ran to 16,809 px on a
+    phone, and the sentence repeated what the glyph and the figure say. A
+    deferred row has no figure, so its reason stays in view."""
+    source = (f"<span class=\"lab-src\">Pre-registered, {e['stage']} {html_escape(str(e['id']))} "
+              f"&middot; <code>{html_escape(e['source'])}</code></span>")
     h = e['headline']
     if h is None:
         body = html_escape(e.get('reason') or 'Deferred.')
@@ -490,12 +498,15 @@ def _registered_result(e):
                 f"CI [{_signed(h['ci'][0])}, {_signed(h['ci'][1])}] at {round(h['ci_level'] * 100, 2):g}%, "
                 f"{where}, {h['n']:,} {h['n_of']}. "
                 f"{h.get('note', 'A negative difference favours the new idea.')}")
-        body = f'<span class="lab-lead">{interval_glyph(h)}</span>{body}'
+        brief = f"{metric[:1].upper() + metric[1:]} {_signed(h['diff'])} [{_signed(h['ci'][0])}, {_signed(h['ci'][1])}]"
+        body = (f'<span class="lab-lead">{interval_glyph(h)}</span><span class="lab-brief">{brief}</span>'
+                f'<details class="disclosure lab-more"><summary>Details</summary>'
+                f'<div class="lab-more-body">{body}{source}</div></details>')
+        return body
     # The id is read from a registry file, as the title and reason are, so it
     # is escaped as they are (Stage 88 item 6, the 2026-11-02 review); the
     # source is a path, escaped too so the cell holds only text it chose.
-    return (f"{body}<span class=\"lab-src\">Pre-registered, {e['stage']} {html_escape(str(e['id']))} "
-            f"&middot; <code>{html_escape(e['source'])}</code></span>")
+    return f"{body}{source}"
 
 
 def render_model_lab_rows(entries: list[dict[str, Any]]) -> str:

@@ -154,8 +154,8 @@ ROWS = [
 ]
 
 
-def strip(rows=ROWS, home_page=True, now='2026-10-14T22:00:00Z'):
-    dom = ("const box = {hidden: true, innerHTML: ''};\n"
+def strip(rows=ROWS, home_page=True, now='2026-10-14T22:00:00Z', sport=None):
+    dom = (f"const box = {{hidden: true, innerHTML: '', dataset: {json.dumps({'sport': sport} if sport else {})}}};\n"
            f"const data = {{textContent: {json.dumps(json.dumps(rows))}}};\n"
            f"const document = {{documentElement: {{hasAttribute: a => a === 'data-site-home' && {str(home_page).lower()}}},\n"
            "  getElementById: id => id === 'site-strip' ? box : id === 'site-strip-data' ? data : null};\n"
@@ -192,16 +192,26 @@ def test_each_card_says_when_in_the_visitors_time_zone_and_reads_as_one_sentence
     assert got[4][1] == 'NBA: BOS at NYK, Tue time TBD. Pick before the start.', 'a weekday NBA tip before 5 PM is not a time'
 
 
-def test_on_a_sports_page_the_cards_lead_up_a_level_and_the_heading_is_a_step_down():
-    box = strip(home_page=False)
-    assert [h for h, _, _ in cards(box['innerHTML'])][:1] == ['../nhl/']
-    assert '<h3 id="ts-title">Next games</h3>' in box['innerHTML']
+def test_on_a_sports_page_it_is_one_line_for_that_sports_next_game():
+    """Audit 9 D4, M2 option A (Mark, 2026-11-16): the cards stay on the home."""
+    nhl = strip(home_page=False, sport='nhl')
+    assert nhl['hidden'] is False and not cards(nhl['innerHTML'])
+    assert nhl['innerHTML'] == ('<p class="ts-next"><b id="ts-title">Next:</b> MTL at WSH, 7:30 PM. '
+                                '<span class="ts-pick is-pick">WSH 51% \u00b7 even.</span> '
+                                '<a href="../">Every sport&#39;s next games</a></p>')
+    nfl = strip(home_page=False, sport='nfl')['innerHTML']
+    assert 'SEA at DEN' in nfl and 'Leans SEA 56%.' in nfl and 'MTL' not in nfl, "only the board's own sport"
     assert '<h2 id="ts-title">Next games</h2>' in strip()['innerHTML']
 
 
+def test_a_board_with_no_game_of_its_own_ahead_shows_nothing():
+    assert strip(home_page=False, sport='nfl', now='2026-10-17T00:00:00Z') == {
+        'hidden': True, 'innerHTML': '', 'dataset': {'sport': 'nfl'}}
+
+
 def test_with_nothing_ahead_the_strip_stays_hidden():
-    assert strip(now='2026-11-30T00:00:00Z') == {'hidden': True, 'innerHTML': ''}
-    assert strip(rows=[]) == {'hidden': True, 'innerHTML': ''}
+    assert strip(now='2026-11-30T00:00:00Z') == {'hidden': True, 'innerHTML': '', 'dataset': {}}
+    assert strip(rows=[]) == {'hidden': True, 'innerHTML': '', 'dataset': {}}
 
 
 def test_the_strip_draws_the_homes_marks():
@@ -243,8 +253,11 @@ TEMPLATES = ['src/site/home/page.html', 'src/dashboard/body.html', 'src/sports/n
 
 @pytest.mark.parametrize('rel', TEMPLATES)
 def test_every_page_has_a_place_for_it(rel):
+    """A sport's board names its sport on the element, for its one line; the home names none."""
+    sport = {'src/dashboard/body.html': ' data-sport="nfl"', 'src/sports/nhl/pages/body.html': ' data-sport="nhl"',
+             'src/sports/nba/pages/body.html': ' data-sport="nba"'}.get(rel, '')
     assert (ROOT / rel).read_text(encoding='utf-8').count(
-        '<div class="ts" id="site-strip" role="region" aria-labelledby="ts-title" hidden></div>') == 1
+        f'<div class="ts" id="site-strip" role="region" aria-labelledby="ts-title"{sport} hidden></div>') == 1
 
 
 def test_the_build_puts_the_slate_and_the_script_on_a_page_once(tmp_path):
