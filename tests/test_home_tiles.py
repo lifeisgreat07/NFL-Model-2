@@ -40,6 +40,10 @@ def test_the_third_tile_counts_every_graded_pick_across_the_built_sports():
 def test_the_tiles_say_picks():
     line = JS[JS.index("document.getElementById('home-score').innerHTML"):]
     line = line[:line.index(';\n')]
-    assert "scoreTile(HOME.nfl, 'NFL picks')" in line and "scoreTile(HOME.nhl, 'NHL picks')" in line
+    # Audit 9 D13: a tile for every sport with a page (the NBA had none), named "<SPORT> picks", then the total.
+    assert "['nfl', 'nhl', 'nba'].map(s => scoreTile(HOME[s], `${SPORT_NAME[s]} picks`)).join('')" in line
     assert 'gradedTile([HOME.nfl, HOME.nhl, HOME.nba])' in line
+    css = (ROOT / 'src' / 'site' / 'home' / 'home.css').read_text(encoding='utf-8')
+    assert '.home-score{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));' in css, \
+        'four tiles in a row laid out for three'
     assert 'saved before the start' not in line and 'Model B' not in line

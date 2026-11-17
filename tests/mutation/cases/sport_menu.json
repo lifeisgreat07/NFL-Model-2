@@ -1,0 +1,72 @@
+{
+  "target": "src/site/build.py",
+  "tests": "tests/test_sport_menu.py",
+  "cases": [
+    {
+      "id": "menu-records-for-unpublished",
+      "why": "a sport with no page in the build still gets a record in every menu, beside a row whose page this build has not got.",
+      "find": "        if sport not in published or sport not in read:\n",
+      "replace": "        if sport not in read:\n",
+      "expect_caught_by": "test_a_sport_with_no_page_in_the_build_has_no_record"
+    },
+    {
+      "id": "menu-zero-record-shown",
+      "why": "a sport with nothing graded shows 0-0, a record of nothing, beside its name.",
+      "find": "        if rec and (rec['won'] or rec['lost']):\n",
+      "replace": "        if rec:\n",
+      "expect_caught_by": "test_the_build_writes_each_published_sports_record_on_every_page_and_adds_the_script"
+    },
+    {
+      "id": "menu-old-script-kept",
+      "why": "a page kept from the live site keeps its old menu script and gains a second.",
+      "find": "    html = _MENU_OLD.sub('', page.read_text(encoding='utf-8'))\n    if 'class=\"sm-rec\"'",
+      "replace": "    html = page.read_text(encoding='utf-8')\n    if 'class=\"sm-rec\"'",
+      "expect_caught_by": "test_a_page_kept_from_the_live_site_has_its_records_and_script_replaced"
+    },
+    {
+      "id": "menu-records-failure-breaks-the-build",
+      "why": "a sport whose results cannot be read stops the whole site build, when the records are an extra.",
+      "find": "    except Exception as exc:  # the records' failure leaves the menus without them\n",
+      "replace": "    except ValueError as exc:  # the records' failure leaves the menus without them\n",
+      "expect_caught_by": "test_a_failure_reading_the_records_still_publishes_the_menus"
+    },
+    {
+      "id": "menu-left-out-of-the-build",
+      "why": "the site build never writes the records or adds the script, so every menu goes out without either.",
+      "find": "    add_search(out, results)\n    add_menu(out, results)\n",
+      "replace": "    add_search(out, results)\n",
+      "expect_caught_by": "test_the_site_build_writes_the_records_after_the_strip_and_before_the_hashes"
+    },
+    {
+      "id": "menu-records-not-the-cards",
+      "why": "the NHL's row shows the NBA's record: the menu stops reading what each home card counts.",
+      "find": "    read = readers or {'nfl': home.nfl_facts, 'nhl': home.nhl_facts, 'nba': home.nba_facts}\n",
+      "replace": "    read = readers or {'nfl': home.nfl_facts, 'nhl': home.nba_facts, 'nba': home.nba_facts}\n",
+      "expect_caught_by": "test_the_records_are_the_home_cards_records"
+    },
+    {
+      "id": "menu-click-inside-closes",
+      "target": "src/core/sport_menu.js",
+      "why": "a click inside the open menu, on its own panel, closes it before the row is chosen.",
+      "find": "    if(!d.open || (inside && d.contains(inside))) continue;\n",
+      "replace": "    if(!d.open) continue;\n",
+      "expect_caught_by": "test_a_click_outside_closes_an_open_menu_and_a_click_inside_does_not"
+    },
+    {
+      "id": "menu-search-reads-the-record",
+      "target": "src/core/palette.js",
+      "why": "the search box reads \"NHL176-102\" as the page it is on, so its empty-box suggestions match no sport.",
+      "find": ".filter(n => n.nodeType === 3)",
+      "replace": "",
+      "expect_caught_by": "test_the_search_box_reads_the_current_pages_name_and_not_its_record"
+    },
+    {
+      "id": "menu-note-shown-alone",
+      "target": "src/dashboard/styles.css",
+      "why": "on a page built without the records, the menu still says what the records count, under rows that have none.",
+      "find": "  .sm-list:not(:has(.sm-rec:not(:empty))) .sm-note{display:none;}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_note_and_an_empty_record_hide_until_there_is_a_record"
+    }
+  ]
+}

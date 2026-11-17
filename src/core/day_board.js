@@ -112,14 +112,16 @@ function defaultDay(week, games, today){
   return days[0] || week;
 }
 
-/* "3 games, 1 of 1 correct so far", from the saved picks' grades. */
+/* "14 games, picks 9-5", from the saved picks' grades, "so far" while some are still to be graded (audit 9
+   D13: "9 of 14 correct so far" read as the same count as the forecasters' records beside it, each of which
+   is over the games that forecaster called). */
 function daySummary(games, picks){
   const n = games.length;
   if(!n) return 'No games this day.';
   const graded = games.map(g => picks[g.id]).filter(p => p && (p.result === 'correct' || p.result === 'wrong'));
   const right = graded.filter(p => p.result === 'correct').length;
   let s = `${n} game${n === 1 ? '' : 's'}`;
-  if(graded.length) s += `, ${right} of ${graded.length} correct so far`;
+  if(graded.length) s += `, picks ${right}–${graded.length - right}${graded.length < n ? ' so far' : ''}`;
   else {
     const locked = games.filter(g => picks[g.id]).length;
     if(locked) s += `, ${locked} locked`;
