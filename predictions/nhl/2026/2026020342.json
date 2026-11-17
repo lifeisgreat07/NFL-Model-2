@@ -1,0 +1,95 @@
+{
+ "game_id": "2026020342",
+ "season": 2026,
+ "slate": "2026-11-17",
+ "start_utc": "2026-11-18T03:00:00Z",
+ "home": "VGK",
+ "away": "DAL",
+ "model_a": 0.5716,
+ "model_b": 0.5369,
+ "pick": "VGK",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.072619,
+  "shot_matchup": 2.392229,
+  "goalie_matchup_2000": -0.000841
+ },
+ "market": {
+  "game_id": "2026020342",
+  "start_utc": "2026-11-18T03:00:00Z",
+  "home": "VGK",
+  "away": "DAL",
+  "book": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325,
+  "read_utc": "2026-11-17T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8478499,
+   "name": "Adin Hill",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/SinBinVegas/status/2122774264545997068?a=5TpJawEoeMaqNrFNbZI&s=20"
+  },
+  "away": {
+   "player_id": 8479979,
+   "name": "Jake Oettinger",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/mikeheika/status/2122780975214239783"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-16",
+  "read_utc": "2026-11-17T21:01:43Z",
+  "home": [
+   {
+    "name": "Noah Hanifin",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Kyle Capobianco",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lian Bichsel",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Miro Heiskanen",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Oskar Back",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Myers",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-17T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-16",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14735,
+  "training_games_priced": 7701,
+  "training_ids_sha256": "4b24823867c55dd1c01445bdcaac3a89a05be08a0ffa59f8bb129ffbe7847970"
+ },
+ "code_sha256": "2b02235a8ec7108b3fb80ff896bd0a894fa5fc3bdeac762dc153f46d145d9106",
+ "code_commit": "582f7ec28fa09f203801536e119d340aafc1f45b"
+}

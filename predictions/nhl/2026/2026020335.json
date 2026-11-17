@@ -1,0 +1,105 @@
+{
+ "game_id": "2026020335",
+ "season": 2026,
+ "slate": "2026-11-17",
+ "start_utc": "2026-11-18T00:00:00Z",
+ "home": "FLA",
+ "away": "EDM",
+ "model_a": 0.5251,
+ "model_b": 0.5667,
+ "pick": "FLA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.497192,
+  "shot_matchup": 2.330633,
+  "goalie_matchup_2000": -0.000986
+ },
+ "market": {
+  "game_id": "2026020335",
+  "start_utc": "2026-11-18T00:00:00Z",
+  "home": "FLA",
+  "away": "EDM",
+  "book": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325,
+  "read_utc": "2026-11-17T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8474593,
+   "name": "Jacob Markstrom",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/FlaPanthers/status/2122720700830019820"
+  },
+  "away": {
+   "player_id": 8482221,
+   "name": "Devon Levi",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/EdmontonJack/status/2122729326345175263"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-16",
+  "read_utc": "2026-11-17T21:01:43Z",
+  "home": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Nugent-Hopkins",
+    "position": "C",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-17T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-16",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14735,
+  "training_games_priced": 7701,
+  "training_ids_sha256": "4b24823867c55dd1c01445bdcaac3a89a05be08a0ffa59f8bb129ffbe7847970"
+ },
+ "code_sha256": "2b02235a8ec7108b3fb80ff896bd0a894fa5fc3bdeac762dc153f46d145d9106",
+ "code_commit": "582f7ec28fa09f203801536e119d340aafc1f45b"
+}

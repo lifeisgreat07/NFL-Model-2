@@ -1,0 +1,90 @@
+{
+ "game_id": "2026020336",
+ "season": 2026,
+ "slate": "2026-11-17",
+ "start_utc": "2026-11-18T00:00:00Z",
+ "home": "NYI",
+ "away": "CBJ",
+ "model_a": 0.5571,
+ "model_b": 0.539,
+ "pick": "NYI",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.325415,
+  "shot_matchup": -1.722661,
+  "goalie_matchup_2000": 0.002874
+ },
+ "market": {
+  "game_id": "2026020336",
+  "start_utc": "2026-11-18T00:00:00Z",
+  "home": "NYI",
+  "away": "CBJ",
+  "book": "DraftKings",
+  "home_price": -135.0,
+  "away_price": 114.0,
+  "home_prob": 0.5514,
+  "read_utc": "2026-11-17T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8478009,
+   "name": "Ilya Sorokin",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/stefen_rosner/status/2122717523208540239"
+  },
+  "away": {
+   "player_id": 8475660,
+   "name": "Cam Talbot",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/DMaetzMedia/status/2122717118634287320?a=LKmvdDlPqsuorxG8Ays&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-16",
+  "read_utc": "2026-11-17T21:01:43Z",
+  "home": [
+   {
+    "name": "Alexander Romanov",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Calum Ritchie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jean-Gabriel Pageau",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Logan Stanley",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Sean Monahan",
+    "position": "C",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-17T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-16",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14735,
+  "training_games_priced": 7701,
+  "training_ids_sha256": "4b24823867c55dd1c01445bdcaac3a89a05be08a0ffa59f8bb129ffbe7847970"
+ },
+ "code_sha256": "2b02235a8ec7108b3fb80ff896bd0a894fa5fc3bdeac762dc153f46d145d9106",
+ "code_commit": "582f7ec28fa09f203801536e119d340aafc1f45b"
+}

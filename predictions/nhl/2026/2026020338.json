@@ -1,0 +1,120 @@
+{
+ "game_id": "2026020338",
+ "season": 2026,
+ "slate": "2026-11-17",
+ "start_utc": "2026-11-18T00:30:00Z",
+ "home": "CHI",
+ "away": "TOR",
+ "model_a": 0.4537,
+ "model_b": 0.4423,
+ "pick": "TOR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.832593,
+  "shot_matchup": -2.039646,
+  "goalie_matchup_2000": 0.001264
+ },
+ "market": {
+  "game_id": "2026020338",
+  "start_utc": "2026-11-18T00:30:00Z",
+  "home": "CHI",
+  "away": "TOR",
+  "book": "DraftKings",
+  "home_price": 120.0,
+  "away_price": -142.0,
+  "home_prob": 0.4365,
+  "read_utc": "2026-11-17T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481519,
+   "name": "Spencer Knight",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://chicagohockeynow.com/chicago-blackhawks-toronto-maple-leafs-centennial-game-preview-lineups-watch/"
+  },
+  "away": {
+   "player_id": 8475683,
+   "name": "Sergei Bobrovsky",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/davidalter/status/2122739381559566465?a=xIH_TT3COwJYlM1A1M4&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-16",
+  "read_utc": "2026-11-17T21:01:43Z",
+  "home": [
+   {
+    "name": "Bowen Byram",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Cade Webber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Colton Sissons",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elvis Merzlikins",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kirill Marchenko",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marshall Rifai",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Max Domi",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Miles Wood",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Morgan Rielly",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Nick Blankenburg",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Villeneuve",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-17T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-16",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14735,
+  "training_games_priced": 7701,
+  "training_ids_sha256": "4b24823867c55dd1c01445bdcaac3a89a05be08a0ffa59f8bb129ffbe7847970"
+ },
+ "code_sha256": "2b02235a8ec7108b3fb80ff896bd0a894fa5fc3bdeac762dc153f46d145d9106",
+ "code_commit": "582f7ec28fa09f203801536e119d340aafc1f45b"
+}

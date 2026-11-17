@@ -1,0 +1,90 @@
+{
+ "game_id": "2026020337",
+ "season": 2026,
+ "slate": "2026-11-17",
+ "start_utc": "2026-11-18T00:00:00Z",
+ "home": "PHI",
+ "away": "BUF",
+ "model_a": 0.4967,
+ "model_b": 0.4586,
+ "pick": "BUF",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.323982,
+  "shot_matchup": -1.333666,
+  "goalie_matchup_2000": -0.000134
+ },
+ "market": {
+  "game_id": "2026020337",
+  "start_utc": "2026-11-18T00:00:00Z",
+  "home": "PHI",
+  "away": "BUF",
+  "book": "DraftKings",
+  "home_price": 105.0,
+  "away_price": -125.0,
+  "home_prob": 0.4675,
+  "read_utc": "2026-11-17T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479361,
+   "name": "Joseph Woll",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JHallNBCS/status/2122721746440855708"
+  },
+  "away": {
+   "player_id": 8479312,
+   "name": "Alex Lyon",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/rachelmlenzi/status/2122729117162324079?a=s2-JeDPlhXh-kf-sFh0&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-16",
+  "read_utc": "2026-11-17T21:01:43Z",
+  "home": [
+   {
+    "name": "Denver Barkey",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Nikita Grebenkin",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Justin Danforth",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Konsta Helenius",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Grzelcyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-17T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-16",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14735,
+  "training_games_priced": 7701,
+  "training_ids_sha256": "4b24823867c55dd1c01445bdcaac3a89a05be08a0ffa59f8bb129ffbe7847970"
+ },
+ "code_sha256": "2b02235a8ec7108b3fb80ff896bd0a894fa5fc3bdeac762dc153f46d145d9106",
+ "code_commit": "582f7ec28fa09f203801536e119d340aafc1f45b"
+}
