@@ -63,9 +63,9 @@ BACKTEST_UNCHANGED = {
 
 # Methodology table row -> calibration.json model.
 PAGE_ROWS = {
-    'Model A -- live, 4 features, weekly refit': 'model_a',
+    'Model A &mdash; live, 4 features, weekly refit': 'model_a',
     'Vegas market alone': 'market',
-    'Model B -- live, 4 features + market, weekly refit': 'model_b',
+    'Model B &mdash; live, 4 features + market, weekly refit': 'model_b',
 }
 
 
@@ -111,7 +111,7 @@ def unexplained(file_version, history, allowance):
 
 def methodology_table(html):
     """(intro paragraph, {label: [cells]}) for the Methodology backtest table."""
-    block = re.search(r'Backtest Results .*?<p>(.*?)</p>.*?<tbody>(.*?)</tbody>', html, re.S)
+    block = re.search(r'Backtest results: .*?<p>(.*?)</p>.*?<tbody>(.*?)</tbody>', html, re.S)
     assert block, "the Methodology backtest table was not found; the matcher is broken"
     rows = {}
     for tr in re.findall(r'<tr>(.*?)</tr>', block.group(2), re.S):
