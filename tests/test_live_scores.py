@@ -38,6 +38,7 @@ SCORES = (ROOT / 'src' / 'core' / 'scores.js').read_text(encoding='utf-8')
 APP = APP_SCRIPT.read_text(encoding='utf-8')
 NHL = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
 NBA = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
+DAY_BOARD = (ROOT / 'src' / 'core' / 'day_board.js').read_text(encoding='utf-8')
 CSS = (ROOT / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8')
 NODE = shutil.which('node')
 
@@ -172,7 +173,8 @@ def view(key, entry, now):
 
 def test_a_live_game_says_live_with_the_pages_own_codes():
     got = view('LA@WAS', {'as': 17, 'hs': 14, 'state': 'in', 'clock': 'Q3 4:12', 'at': 0}, 1000)
-    assert got == {'clock': 'Q3 4:12', 'game': 'LA 17 @ WAS 14', 'line': 'Live: LA 17, WAS 14 · Q3 4:12'}
+    assert got == {'clock': 'Q3 4:12', 'game': 'LA 17 @ WAS 14', 'line': 'Live: LA 17, WAS 14 · Q3 4:12',
+                   'result': 'Live', 'unpicked': 'No pick'}
 
 
 def test_an_old_reading_says_when_it_was_taken():
@@ -186,6 +188,14 @@ def test_espns_final_says_the_picks_wait_for_the_next_update():
     assert got['clock'] == 'Final/OT'
     plain = view('BOS@NY', {'as': 99, 'hs': 101, 'state': 'post', 'clock': 'Final', 'at': 0}, 10)
     assert plain['line'] == 'Final: BOS 99, NY 101 · picks are graded at the next update'
+
+
+def test_a_rows_last_word_follows_espn_not_the_last_build():
+    """Audit 9 D2: rows read "Final ... Live" and "Q4 ... Locked", the word from the build, the score from ESPN."""
+    on = view('BOS@NY', {'as': 80, 'hs': 77, 'state': 'in', 'clock': 'Q4 7:01', 'at': 0}, 10)
+    over = view('BOS@NY', {'as': 99, 'hs': 101, 'state': 'post', 'clock': 'Final', 'at': 0}, 10)
+    assert (on['result'], over['result']) == ('Live', 'Grading'), 'grading waits for the next run, as the line says'
+    assert on['unpicked'] == over['unpicked'] == 'No pick'
 
 
 # ---------- the page ----------
@@ -300,3 +310,31 @@ def test_the_build_tries_the_three_sport_pages_only(tmp_path):
     assert build.add_scores(tmp_path) == ['nfl/index.html', 'nhl/index.html', 'nba/index.html']
     assert 'data-site-scores' not in (tmp_path / 'index.html').read_text(encoding='utf-8')
     assert 'add_scores(out)' in inspect.getsource(build.build_site)
+
+
+@pytest.mark.parametrize('name,src', [('nhl', NHL), ('nba', NBA)], ids=['nhl', 'nba'])
+def test_a_watched_rows_last_word_has_a_slot_for_espns_and_an_unwatched_row_is_as_before(name, src):
+    """Audit 9 D2. A saved pick's row gets the result slot, a row with no pick the unpicked one; the word the
+    build wrote stays in .score-off, shown until ESPN answers."""
+    cell = function_source(DAY_BOARD, 'resultCell')   # shared, as tests/test_day_board.py requires
+    r = {'text': 'Locked', 'cls': 'locked'}
+    got = node(cell + 'console.log(JSON.stringify([' + ', '.join(
+        f'resultCell({m}, {json.dumps(p)}, {json.dumps(r)})' for m, p in (
+            ('true', {'pick': 'BOS'}), ('true', None), ('false', {'pick': 'BOS'}))) + ']));')
+    assert got == ['<span class="score-off">Locked</span><span class="score-on" data-score-slot="result"></span>',
+                   '<span class="score-off">Locked</span><span class="score-on" data-score-slot="unpicked"></span>',
+                   'Locked']
+    row = function_source(src, 'rowHtml')
+    assert f'<span class="{name}-row-result ${{r.cls}}">${{resultCell(scoreMark(g) !== \'\', p, r)}}</span>' in row
+
+
+def test_a_live_pick_reads_in_the_accent_and_a_finished_one_in_the_quiet_colour():
+    rules = re.sub(r'\s+', '', CSS)
+    assert '[data-score-live="in"][data-score-slot="result"]{color:var(--accent);}' in rules
+    assert '[data-score-live="post"][data-score-slot="result"]{color:var(--text-2);}' in rules
+
+
+def test_the_browser_checks_prove_a_rows_last_word_follows_espn_and_that_the_check_can_fail():
+    workflow = (ROOT / '.github' / 'workflows' / 'browser-checks.yml').read_text(encoding='utf-8')
+    assert 'python tests/browser/check_row_result.py --self-test --tmp "$RUNNER_TEMP/rowresult"' in workflow
+    assert 'python tests/browser/check_row_result.py "$RUNNER_TEMP/states/nhl.html"' in workflow

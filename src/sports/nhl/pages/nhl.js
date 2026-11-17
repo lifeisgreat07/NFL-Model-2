@@ -370,7 +370,7 @@ function rowHtml(g, p, nowMs){
       <span class="nhl-row-time"><span class="score-off">${rowTime(g, p)}</span>${scoreSlot('clock')}</span>
       <span class="nhl-row-game"><span class="score-off">${rowGame(g)}</span>${scoreSlot('game')}</span>
       <span class="nhl-row-pick">${rowPick(g, p)}</span>
-      <span class="nhl-row-result ${r.cls}">${r.text}</span>${CHEVRON}
+      <span class="nhl-row-result ${r.cls}">${resultCell(scoreMark(g) !== '', p, r)}</span>${CHEVRON}
     </button>
     <div class="nhl-row-detail" id="${id}" hidden>${p ? pickedCard(g, p) : waitingCard(g)}</div>
   </li>`;

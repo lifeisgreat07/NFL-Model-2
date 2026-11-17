@@ -409,7 +409,7 @@ function rowHtml(g, p, nowMs){
       <span class="nba-row-time"><span class="score-off">${rowTime(g, p)}</span>${scoreSlot('clock')}</span>
       <span class="nba-row-game"><span class="score-off">${rowGame(g)}</span>${scoreSlot('game')}</span>
       <span class="nba-row-pick">${rowPick(g, p)}</span>
-      <span class="nba-row-result ${r.cls}">${r.text}</span>${CHEVRON}
+      <span class="nba-row-result ${r.cls}">${resultCell(scoreMark(g) !== '', p, r)}</span>${CHEVRON}
     </button>
     <div class="nba-row-detail" id="${id}" hidden>${p ? pickedCard(g, p) : waitingCard(g)}</div>
   </li>`;
