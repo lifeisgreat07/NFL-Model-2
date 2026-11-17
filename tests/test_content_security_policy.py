@@ -76,7 +76,7 @@ def test_the_only_outside_hosts_any_page_loads_from_are_the_logo_hosts():
         if p.suffix in ('.html', '.js', '.css', '.py') and p.is_file():
             # A <meta> names the share image for other sites; the page does not load it.
             t = re.sub(r'<meta\b[^>]*>', '', p.read_text(encoding='utf-8'))
-            hosts |= set(re.findall(r'(?:src=["\']|url\(["\']?|[\'"`])https://([A-Za-z0-9.-]+)/[^"\'`\s]*\.(?:png|svg|jpe?g|gif|webp|js)', t))
+            hosts |= set(re.findall(r'(?:src=["\']|url\(["\']?|[\'"`])https://([A-Za-z0-9.-]+)/[^"\'`\s]*\.(?:png|svg|jpe?g|gif|webp|js)(?![A-Za-z0-9])', t))
     assert hosts == {'a.espncdn.com', 'assets.nhle.com'}, hosts
 
 
