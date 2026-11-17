@@ -695,7 +695,7 @@ function renderStandings(){
     const rows = s.teams.filter(t => t.conference === conf).sort((a, b) => b.projected_wins - a.projected_wins);
     return `<h2 class="section-title">${conf === 'East' ? 'Eastern' : 'Western'} Conference</h2><div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">${conf}</caption>
       <thead><tr><th scope="col">Club</th><th scope="col" class="num">Record</th><th scope="col" class="num">Projected wins</th><th scope="col" class="num">Top six</th><th scope="col" class="num">Play-in</th><th scope="col" class="num">Playoffs</th></tr></thead>
-      <tbody>${rows.map(t => `<tr><th scope="row">${escapeHtml(clubName(t.team))}</th><td class="num">${t.wins_now}-${t.losses_now}</td><td class="num">${t.projected_wins.toFixed(1)}</td><td class="num">${chance(t.top6_pct)}</td><td class="num">${chance(t.playin_pct)}</td><td class="num">${chance(t.playoff_pct)}</td></tr>`).join('')}</tbody></table></div>`;
+      <tbody>${rows.map(t => `<tr><th scope="row"><span class="club-full">${escapeHtml(clubName(t.team))}</span><abbr class="club-code" title="${escapeHtml(clubName(t.team))}">${escapeHtml(t.team)}</abbr></th><td class="num">${t.wins_now}-${t.losses_now}</td><td class="num">${t.projected_wins.toFixed(1)}</td><td class="num">${chance(t.top6_pct)}</td><td class="num">${chance(t.playin_pct)}</td><td class="num">${chance(t.playoff_pct)}</td></tr>`).join('')}</tbody></table></div>`;
   };
   el.innerHTML = head + ['East', 'West'].map(table).join('');
 }
