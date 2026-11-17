@@ -220,8 +220,9 @@ jobs:
         timeout-minutes: 30
         run: python tests/browser/check_side_column.py "$RUNNER_TEMP/states/nba.html" "$RUNNER_TEMP/states/nhl.html"
 
-      # Stage 102: every sport page's sidebar switcher fits its four pills with
-      # the league marks in them, at 1080, 1280 and 1440 px, both themes.
+      # Stage 102, and since audit 9 D3 a menu: every sport page's sport menu,
+      # opened, fits its rows with the league marks and records in them, in the
+      # sidebar at 1080, 1280 and 1440 px and the phone strip at 375, both themes.
       - name: Prove the switcher fit check can fail
         timeout-minutes: 30
         run: python tests/browser/check_switcher_fit.py --self-test --tmp "$RUNNER_TEMP/fit"

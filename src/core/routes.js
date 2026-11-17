@@ -24,12 +24,16 @@
    Stage 76 item 9 (F4): #game/<id> opens the board on that game's day with
    its row open and on screen. known().games lists the ids a route may name,
    and arg.open(id) draws it; a game that does not exist opens the board. */
+/* Audit 9 D14: the NFL's old addresses for Teams and What's Changed open those pages here too, and are
+   replaced by their addresses now (installRoutes), so an address copied between sports still works. */
+const ROUTE_OLD = {teamdive: 'teams', changelog: 'changes'};
 function parseHash(hash, known){
   let raw = '';
   try{ raw = decodeURIComponent(String(hash || '').replace(/^#/, '')); }catch(e){ raw = ''; }
   if(raw === '') return {page: 'board'};
   const slash = raw.indexOf('/');
-  const head = slash === -1 ? raw : raw.slice(0, slash);
+  const said = slash === -1 ? raw : raw.slice(0, slash);
+  const head = ROUTE_OLD[said] || said;
   const arg = slash === -1 ? '' : raw.slice(slash + 1);
   if(head === 'game') return (known.games || []).includes(arg) ? {page: 'board', game: arg} : {page: 'board'};
   if(head === 'team'){
@@ -95,6 +99,7 @@ function installRoutes(show, arg){
     // Arrival on a page by its link focuses its heading, as a tap does (N12).
     if(first.page !== 'board' || first.arg !== undefined) show(first.page, {focus: true});
     if(first.game && route.open) route.open(first.game);
+    if(ROUTE_OLD[location.hash.replace(/^#/, '')]) history.replaceState(null, '', url(first.page));
   }
   return function replace(page){
     const active = document.querySelector('.page.active');
