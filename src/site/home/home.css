@@ -110,6 +110,13 @@ body{ flex-direction:column; }
 .home-faq details:last-of-type{ border-bottom:0; }
 .home-faq summary{ font-size:var(--fs-16); font-weight:700; color:var(--text); cursor:pointer; min-height:24px; }
 .home-faq p{ margin:var(--s2) 0 0; font-size:var(--fs-14); line-height:1.5; color:var(--text-2); max-width:70ch; }
+/* Audit 9 D18: on a phone each question, each step's link and each footer link is a 44 px target (they were
+   24, 20 and 18). A link inside a sentence keeps its line, as WCAG 2.5.8 allows. */
+@media (max-width:640px){
+  .home-faq summary{ min-height:44px; display:flex; align-items:center; }
+  .home-step-link{ display:flex; align-items:center; min-height:44px; margin-top:0; }
+  .home-links a{ display:inline-flex; align-items:center; min-height:44px; }
+}
 .home-links{ display:flex; flex-wrap:wrap; gap:var(--s2) var(--s5); font-size:var(--fs-14); padding-top:var(--s4); border-top:1px solid var(--border); }
 .home-links a{ color:var(--accent); }
 @media (max-width:600px){

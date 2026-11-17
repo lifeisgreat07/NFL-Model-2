@@ -1220,6 +1220,16 @@
   .fav-star[aria-pressed="true"]{color:var(--text);}
   .fav-star[aria-pressed="true"] svg{fill:currentColor;}
   @media (hover: hover){ .fav-star:hover{color:var(--text);} }
+  /* Audit 9 D18: on a phone a tap target is 44 px. The star (24), a chip (31 to 33) and a table row's link
+     (24 tall, 38 wide with only the club's code showing) keep their size and gain a target around them, an ::after with no paint, so no row or chip
+     moves; the home's lone Settings text button (24) is given the height. */
+  @media (max-width:640px){
+    .fav-star, .btn-chip, .row-link{position:relative;}
+    .fav-star::after{content:''; position:absolute; inset:-10px;}
+    .btn-chip::after{content:''; position:absolute; inset:-7px 0;}
+    .row-link::after{content:''; position:absolute; inset:-10px -4px;}
+    .home-settings{min-height:44px;}
+  }
   .fav-title{display:flex; align-items:center; gap:var(--s2); margin:var(--s6) 0 var(--s3);}
   .fav-title > h2.section-title{margin:0;}  /* the row holds the heading's spacing */
   /* ---------- One chart style (Stage 79 item 45, the 2026-10-13 audit's N9 and V3) ----------
