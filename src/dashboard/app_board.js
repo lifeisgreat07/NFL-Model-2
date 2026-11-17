@@ -1374,7 +1374,7 @@ function pdfNoneText(weekData){
     });
   });
 })();
-/* Stage 77 item 29 (N4): on a phone the banner shows one line, and its
+/* Stage 77 item 29 (N4), and since audit 9 D4 at every width: the banner shows one line, and its
    "How to read a card" opens the banner's own three points and "How to
    read this" in place, where the cards are. It used to go to Methodology,
    which has no section on reading a card. */
