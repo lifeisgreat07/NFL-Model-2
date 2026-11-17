@@ -1,0 +1,110 @@
+[
+ {
+  "page": "nfl",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "nfl-390x844-light-base.png",
+  "bytes": 133478,
+  "parked": 3
+ },
+ {
+  "page": "nfl",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "nfl-390x844-dark-base.png",
+  "bytes": 133675,
+  "parked": 3
+ },
+ {
+  "page": "nfl",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "nfl-1440x900-light-base.png",
+  "bytes": 656412,
+  "parked": 4
+ },
+ {
+  "page": "nfl",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "nfl-1440x900-dark-base.png",
+  "bytes": 665553,
+  "parked": 4
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "nhl-390x844-light-base.png",
+  "bytes": 56410,
+  "parked": 3
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "nhl-390x844-dark-base.png",
+  "bytes": 57833,
+  "parked": 3
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "nhl-1440x900-light-base.png",
+  "bytes": 149201,
+  "parked": 4
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "nhl-1440x900-dark-base.png",
+  "bytes": 149334,
+  "parked": 4
+ },
+ {
+  "page": "nba",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "nba-390x844-light-base.png",
+  "bytes": 86202,
+  "parked": 3
+ },
+ {
+  "page": "nba",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "nba-390x844-dark-base.png",
+  "bytes": 87229,
+  "parked": 3
+ },
+ {
+  "page": "nba",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "nba-1440x900-light-base.png",
+  "bytes": 221039,
+  "parked": 4
+ },
+ {
+  "page": "nba",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "nba-1440x900-dark-base.png",
+  "bytes": 222125,
+  "parked": 4
+ }
+]
