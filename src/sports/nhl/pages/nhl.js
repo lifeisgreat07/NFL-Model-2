@@ -589,7 +589,9 @@ function renderAccuracy(){
   }
   const right = graded.filter(x => x.p.result === 'correct').length;
   const list = graded.sort((a, b) => (b.g.start || '').localeCompare(a.g.start || ''));
-  el.innerHTML = `<p class="nhl-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the market had a price when it was saved, Model A&#39;s otherwise. The forward test is judged on log loss once 100 games are graded; see Checking the AI&#39;s work.</p>
+  el.innerHTML = `<p class="nhl-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the market had a price when it was saved, Model A&#39;s otherwise. The forward test, next, is judged on log loss, not on picks right.</p>
+    <h2 class="section-title">The forward test so far</h2>
+    ${forwardHtml(DATA.forward, 'nhl')}
     ${accuracyHtml(accGames(graded))}
     ${calibrationHtml(graded)}
     <h2 class="section-title">Every graded pick</h2>
@@ -718,8 +720,7 @@ function renderReliability(){
   el.innerHTML = `<h2 class="section-title">The drift check</h2><p class="nhl-lede">${status}</p>
     ${rule && rule.rule.checkpoints ? `<p class="nhl-lede">The rule was registered before the season (<code>experiments/nhl/stage58/registry.json</code>) and amended on 2026-11-04 and 2026-11-11: ${driftLooks(rule)}</p>` : ''}
     ${spreadHtml(DATA.spread, 'nhl')}
-    <h2 class="section-title">The forward test so far</h2>
-    ${forwardHtml(DATA.forward, 'nhl')}
+    <p class="nhl-lede">The forward test, the live picks scored against the market and the base rate, is on <a href="#accuracy">Season Accuracy</a>, beside the record it is judged instead of.</p>
     <h2 class="section-title">The projected starter against the actual one</h2>
     ${m2Html(DATA.m2)}
     <h2 class="section-title">What runs unattended</h2>
