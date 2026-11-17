@@ -1,0 +1,38 @@
+[
+ {
+  "page": "nfl",
+  "label": "head",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "nfl-390x844-light-head.png",
+  "bytes": 130952,
+  "parked": 3
+ },
+ {
+  "page": "nfl",
+  "label": "head",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "nfl-390x844-dark-head.png",
+  "bytes": 132023,
+  "parked": 3
+ },
+ {
+  "page": "nfl",
+  "label": "head",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "nfl-1440x900-light-head.png",
+  "bytes": 620207,
+  "parked": 4
+ },
+ {
+  "page": "nfl",
+  "label": "head",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "nfl-1440x900-dark-head.png",
+  "bytes": 629570,
+  "parked": 4
+ }
+]
