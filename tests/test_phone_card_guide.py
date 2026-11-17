@@ -29,7 +29,7 @@ def phone_css():
 
 def base_css():
     """The stylesheet outside every @media block, where a rule holds at every width."""
-    out, depth, i = [], 0, 0
+    out, i = [], 0
     while i < len(CSS):
         if CSS.startswith('@media', i):
             j = CSS.index('{', i) + 1
