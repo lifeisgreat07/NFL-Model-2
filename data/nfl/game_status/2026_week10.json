@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 10,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-16T05:37:39Z",
+  "read_at": "2026-11-17T11:03:00Z",
   "games": [
     {
       "away": "WAS",
@@ -137,9 +137,9 @@
     {
       "away": "LAC",
       "home": "BAL",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 23,
+      "home_score": 20,
       "spread_line": 4.5,
       "neutral_site": false,
       "venue": "M&T Bank Stadium"
