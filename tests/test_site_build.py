@@ -30,6 +30,8 @@ class FakeRunner:
     def __call__(self, cmd):
         self.calls.append(cmd)
         mod = cmd[3]
+        if mod == 'src.sports.ncaam.page':
+            return 0  # the March Madness page, outside its weeks: it writes nothing (tests/test_march_build.py)
         sport = mod.split('.')[2]
         if sport in self.fail:
             return 1

@@ -180,7 +180,20 @@ function nbaCard(f){
               'Picks lock game by game', d.rows, 'Open the NBA board');
 }
 
-document.getElementById('home-cards').innerHTML = nflCard(HOME.nfl) + nhlCard(HOME.nhl) + nbaCard(HOME.nba);
+/* Stage 103 item 4: the March Madness bracket's card, only while its page is
+   published (from the lock to the middle of April); home.py hands it over
+   only then, so any other month there is no card at all. */
+function marchCard(m){
+  if(!m || !m.built) return '';
+  const status = m.played ? {text: `${m.played} of ${m.games} games played`} : {text: 'Locked, before the first game'};
+  const rows = [['Title odds', m.title]];
+  if(m.played) rows.push(['The lock’s side won', `${m.right} of ${m.played}`]);
+  return card('march', 'March Madness', 'march/', status, `${m.tournament} champion pick: ${m.champion}`, rows,
+              'Open the bracket');
+}
+
+document.getElementById('home-cards').innerHTML = nflCard(HOME.nfl) + nhlCard(HOME.nhl) + nbaCard(HOME.nba)
+  + marchCard(HOME.march);
 /* Stage 77 item 30 (H2): "Updated ... ET", as on each sport's page. */
 function updatedText(iso){
   if(!iso) return '';

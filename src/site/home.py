@@ -251,6 +251,18 @@ def facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
 
 
 
+def march_facts(lock: Path) -> dict[str, Any]:
+    """The March Madness bracket's card (Stage 103 item 4), from the lock its page was built from: the filled
+    bracket's champion and title odds, and how many games are played and graded."""
+    from src.sports.ncaam import bracket, page
+    doc = json.loads(lock.read_text(encoding='utf-8'))
+    graded = bracket.graded(doc)
+    champ = next(g for g in doc['filled'] if g['round'] == 'final')['winner']
+    return {'built': True, 'tournament': doc['tournament'], 'champion': doc['names'].get(champ, champ),
+            'title': page.pct(doc['odds'][champ]['champion']), 'games': len(doc['filled']),
+            'played': len(graded), 'right': sum(1 for g in graded if g['favourite_won'])}
+
+
 def render(data: dict[str, Any], font_faces: str = '') -> str:
     """The page, by the renderer every page shares (Stage 87 item 3, src/core/page_render.py)."""
     return page_render.finish(page_render.assemble(TEMPLATE, {'styles.css': SHARED_STYLES}),
@@ -265,12 +277,16 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument('--out', default='_site/index.html')
     ap.add_argument('--unpublished', default='',
                     help="comma-separated sports with no page in this build; their cards say so and link nowhere")
+    ap.add_argument('--march', default='',
+                    help="the lock the March Madness page was built from in this build; its card shows only then")
     args = ap.parse_args(argv)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     data = facts()
     for code in filter(None, args.unpublished.split(',')):
         data[code] = {'built': False}
+    if args.march:
+        data['march'] = march_facts(Path(args.march))
     out.write_text(render(data, font_faces_css()), encoding='utf-8')
     print(f'wrote {out} ({out.stat().st_size} bytes)')
     return 0

@@ -1,0 +1,27 @@
+{
+  "target": "src/site/build.py",
+  "tests": "tests/test_march_build.py",
+  "cases": [
+    {
+      "id": "march-build-no-page-reported",
+      "why": "a day with no bracket page is reported as a failed build, and every deploy outside March opens an issue.",
+      "find": "    if march.built or march.error:  # no page to build is not a failure, so not reported\n        results.append(march)",
+      "replace": "    results.append(march)",
+      "expect_caught_by": "test_the_build_reports_the_march_page_only_when_it_was_built_or_failed"
+    },
+    {
+      "id": "march-build-failure-swallowed",
+      "why": "a bracket page whose builder failed is treated as a day with no page, so nobody hears of it.",
+      "find": "        if code != 0:\n            raise RuntimeError(f'src.sports.ncaam.page exited {code}')",
+      "replace": "        if code != 0:\n            return res, None",
+      "expect_caught_by": "test_a_failed_march_build_is_reported_and_leaves_no_page"
+    },
+    {
+      "id": "march-build-home-always-told",
+      "why": "the home page is handed the lock whether or not the bracket page was built, so its card links to no page.",
+      "find": "    if march is not None:\n        cmd += ['--march', str(march)]",
+      "replace": "    cmd += ['--march', str(march)]",
+      "expect_caught_by": "test_the_home_page_hears_of_the_lock_only_when_the_march_page_was_built"
+    }
+  ]
+}
