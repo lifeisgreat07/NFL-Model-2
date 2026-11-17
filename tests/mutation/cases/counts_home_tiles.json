@@ -1,0 +1,13 @@
+{
+  "target": "src/site/home/home.js",
+  "tests": "tests/test_home_tiles.py",
+  "cases": [
+    {
+      "id": "counts-home-without-the-nba",
+      "why": "the home's records show the NFL and the NHL and leave the NBA's out again.",
+      "find": "['nfl', 'nhl', 'nba'].map(s => scoreTile(",
+      "replace": "['nfl', 'nhl'].map(s => scoreTile(",
+      "expect_caught_by": "test_the_tiles_say_picks"
+    }
+  ]
+}

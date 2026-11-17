@@ -758,8 +758,11 @@ function phoneRowHtml(g, n){
   const s = cardSide(g.mktB_home, g) || cardSide(g.fbA_home, g);
   const pick = !s ? '—' : s.team ? `${escapeHtml(s.team)} ${Math.round(s.pct)}%` : 'Toss-up';
   const verdict = g.graded ? (g.model_b_correct ?? g.model_a_correct) : undefined;
-  // An ungraded final says Final and no more, as its card does (cardProvisional).
-  const res = !g.graded ? (g.status === 'final' ? ['final', 'Final'] : ['', '']) : (g.result === 'tie' || verdict === null || verdict === undefined) ? ['tie', 'Tie']
+  // Audit 9 D6: an ungraded final says who won, in the row's neutral grey, as its card does (cardProvisional):
+  // no right or wrong until grading runs (Mark, 2026-09-28). Without a score it says Final.
+  const scored = g.away_score !== null && g.away_score !== undefined && g.home_score !== null && g.home_score !== undefined;
+  const over = !scored ? 'Final' : g.away_score === g.home_score ? 'Tie' : `${escapeHtml(g.away_score > g.home_score ? g.away : g.home)} won`;
+  const res = !g.graded ? (g.status === 'final' ? ['final', over] : ['', '']) : (g.result === 'tie' || verdict === null || verdict === undefined) ? ['tie', 'Tie']
     : verdict ? ['correct', 'Correct'] : ['incorrect', 'Missed'];  // Stage 77 item 26: one pair of result words
   return `<button type="button" class="game-row nfl-row" aria-expanded="false" aria-controls="card-${n}"${scoreMark(g)}>`
     + `<span class="nfl-row-time"><span class="score-off">${time}</span>${scoreSlot('clock')}</span>`
@@ -919,10 +922,17 @@ function compareSortState(key, sort, boardSort){
 }
 function compareTableHtml(games, sort, boardSort, weekLabel){
   const cell = (g, key) => { const s = cardSide(g[COMPARE_PROB[key]], g); return s ? cardSideText(s) : '—'; };
+  // Audit 9 D6: a finished game the grading has not reached says who won, as its card and its row do,
+  // with no right or wrong until grading runs; a dash said nothing had happened.
+  const ended = g => {
+    if(g.graded || g.status !== 'final' || g.away_score === null || g.away_score === undefined
+       || g.home_score === null || g.home_score === undefined) return '';
+    return g.away_score === g.home_score ? 'Tie' : `${escapeHtml(g.away_score > g.home_score ? g.away : g.home)} won`;
+  };
   const rows = compareRows(games, sort).map(g => `<tr><td>${compareKick(g)}</td>`
     + `<td><b>${escapeHtml(g.away)} @ ${escapeHtml(g.home)}</b></td>`
     + `<td class="num">${cell(g, 'a')}</td><td class="num">${cell(g, 'b')}</td><td class="num">${cell(g, 'market')}</td>`
-    + `<td>${gradedTagHtml(g) || '—'}</td></tr>`).join('');
+    + `<td>${gradedTagHtml(g) || ended(g) || '—'}</td></tr>`).join('');
   return `<div class="table-wrap"><table class="metrics-table compare-table"><caption class="visually-hidden">${escapeHtml(weekLabel)}: every game, each model's side and chance, the market's and the result</caption>
     <thead><tr>${COMPARE_COLS.map(([key, label, cls]) => `<th scope="col"${cls ? ` class="${cls}"` : ''} aria-sort="${compareSortState(key, sort, boardSort)}"><button type="button" class="cmp-sort" data-cmp="${key}">${label}</button></th>`).join('')}</tr></thead>
     <tbody>${rows}</tbody></table></div>`;

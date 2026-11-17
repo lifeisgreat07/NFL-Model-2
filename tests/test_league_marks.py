@@ -25,6 +25,9 @@ BODIES = {'nfl': ROOT / 'src' / 'dashboard' / 'body.html', 'nhl': ROOT / 'src' /
           'nba': ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'body.html'}
 CDN = 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/'
 SPORTS = ('nfl', 'nhl', 'nba')
+# Audit 9 D3: each sport's row in the menu ends with the slot the build writes its record into
+# (tests/test_sport_menu.py); the mark and the name are read with it set aside.
+REC = re.compile(r'<span class="sm-rec" data-rec="[a-z]+"></span>$')
 
 
 def run_mark(sport):
@@ -53,7 +56,7 @@ def test_each_card_mark_is_hot_linked_in_both_themes_with_our_icon_behind_it():
 def test_the_switcher_on_the_home_page_carries_each_leagues_mark_before_its_name():
     nav = re.search(r'<nav class="sport-switch home-switch" aria-label="Sports">(.*?)</nav>', PAGE, re.S).group(1)
     for sport in SPORTS:
-        pill = re.search(rf'<a href="{sport}/">(.*?)</a>', nav, re.S).group(1)
+        pill = REC.sub('', re.search(rf'<a href="{sport}/">(.*?)</a>', nav, re.S).group(1))
         assert pill.startswith('<span class="lgm lgm-sm" aria-hidden="true">'), sport
         assert f'src="{CDN}500/{sport}.png&amp;w=36&amp;h=36"' in pill and f'src="{CDN}500-dark/{sport}.png' in pill
         assert pill.endswith(f'</span>{sport.upper()}'), f'{sport}: the name must stay, after the mark'
@@ -85,7 +88,7 @@ def test_every_sport_pages_switchers_carry_the_marks_and_hide_a_failed_one():
         assert len(navs) == 2, page
         for nav in navs:
             for sport in SPORTS:
-                pill = re.search(rf'<a href="\.\./{sport}/"(?: aria-current="page")?>(.*?)</a>', nav, re.S).group(1)
+                pill = REC.sub('', re.search(rf'<a href="\.\./{sport}/"(?: aria-current="page")?>(.*?)</a>', nav, re.S).group(1))
                 imgs = re.findall(r'<img class="(lgm-[ld])" src="([^"]+)"[^>]*?( data-hide-on-error)?>', pill)
                 assert [(c, s) for c, s, _ in imgs] == [('lgm-l', f'{CDN}500/{sport}.png&amp;w=36&amp;h=36'),
                                                         ('lgm-d', f'{CDN}500-dark/{sport}.png&amp;w=36&amp;h=36')], (page, sport)
@@ -93,12 +96,11 @@ def test_every_sport_pages_switchers_carry_the_marks_and_hide_a_failed_one():
                 assert pill.endswith(f'</span>{sport.upper()}'), (page, sport)
 
 
-def test_the_sidebar_pills_tighten_so_four_fit():
-    """Option 2 of the rendered fits (Mark, 2026-11-11: "the slider needs to fit with the logos"): beside the name,
-    smaller, with less padding, in the sidebar only. Whether it really fits is a browser check's question
-    (tests/browser/check_switcher_fit.py)."""
-    assert '  .sidebar .sport-switch a{gap:var(--s1); padding:0 var(--s1); font-size:var(--fs-11);}\n' in SHARED_CSS
-    assert rules(SHARED_CSS)['.sidebar .lgm-sm'] == 'width:14px; height:14px; margin-right:0;'
+def test_the_menu_is_checked_in_a_browser_with_the_marks_in():
+    """Mark, 2026-11-11: "the slider needs to fit with the logos". Since audit 9 D3 the sidebar holds one button
+    and the list opens in place, so nothing is squeezed to fit; whether every row, its mark and its record fit,
+    on a wide screen and on a phone, is a browser check's question (tests/browser/check_switcher_fit.py)."""
+    assert rules(SHARED_CSS)['.lgm-sm'] == 'width:16px; height:16px; margin-right:var(--s1);'
     wf = (ROOT / '.github' / 'workflows' / 'browser-checks.yml').read_text(encoding='utf-8')
     assert 'python tests/browser/check_switcher_fit.py --self-test --tmp' in wf, 'the fit check is never proven able to fail'
     assert re.search(r'python tests/browser/check_switcher_fit\.py index\.html "\$RUNNER_TEMP/states/nhl\.html" '
