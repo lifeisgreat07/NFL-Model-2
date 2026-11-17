@@ -293,6 +293,16 @@
       var(--surface);
   }
   .table-wrap.fits{overflow:clip; background:var(--surface);}
+  /* Audit 9 D11: on a phone a wide table hid the columns it was scrolled to from the row they belong to
+     (Power Ratings' Playoff Odds, an interval at the end of a comparison). A table that scrolls keeps its
+     first column in view, a hairline on its right edge; the shadow at the far edge still says there is
+     more. Power Ratings' first column is the rank, so its team column stays too, beside a rank column of
+     a fixed width. z-index 4: above a scrolled bar's zero line (2) and a stuck header (3). */
+  .table-wrap:not(.fits) :is(th, td):first-child{position:sticky; left:0; z-index:4; background:var(--surface);
+    box-shadow:inset -1px 0 0 var(--border);}
+  .table-wrap:not(.fits) #ratings-table :is(th, td):first-child{width:44px; min-width:44px; max-width:44px; box-shadow:none;}
+  .table-wrap:not(.fits) #ratings-table :is(th, td):nth-child(2){position:sticky; left:44px; z-index:4;
+    background:var(--surface); box-shadow:inset -1px 0 0 var(--border);}
   /* A wrapper that scrolls is a Tab stop (setScrollStop), so it shows
      where focus is like every other stop on the page. The ring sits just
      inside the border, where no ancestor's overflow can clip it. */
