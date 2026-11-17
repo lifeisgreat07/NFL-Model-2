@@ -148,6 +148,16 @@ jobs:
         timeout-minutes: 30
         run: python tests/browser/check_nhl_day.py "$RUNNER_TEMP/states/nhl.html"
 
+      # Audit 9 D2: a watched row's last word follows ESPN's scoreboard
+      # (answered by hand), not the status the build saw.
+      - name: Prove the row result check can fail
+        timeout-minutes: 30
+        run: python tests/browser/check_row_result.py --self-test --tmp "$RUNNER_TEMP/rowresult"
+
+      - name: Check a row's last word follows the live score
+        timeout-minutes: 30
+        run: python tests/browser/check_row_result.py "$RUNNER_TEMP/states/nhl.html"
+
       # The NHL board's eyebrow names the week it shows, as the NBA's
       # (Stage 77 item 32's rule), with the clock fixed four ways around
       # the sample week.
@@ -220,6 +230,16 @@ jobs:
         timeout-minutes: 30
         run: python tests/browser/check_switcher_fit.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
 
+      # Audit 9 D1: every sidebar control can be reached in a laptop-sized
+      # window (1366x657, 1280x720), with the foot pinned.
+      - name: Prove the sidebar reach check can fail
+        timeout-minutes: 30
+        run: python tests/browser/check_sidebar_reach.py --self-test --tmp "$RUNNER_TEMP/reach"
+
+      - name: Check every sidebar control can be reached in a laptop window
+        timeout-minutes: 30
+        run: python tests/browser/check_sidebar_reach.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
+
       # Stage 79 item 46: the NHL's Accuracy and the NBA's Checking the AI's
       # work draw the race, the trend and the calibration diagram.
       - name: Prove the accuracy check can fail
@@ -229,6 +249,16 @@ jobs:
       - name: Check the accuracy charts on the NHL and the NBA
         timeout-minutes: 30
         run: python tests/browser/check_accuracy.py "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
+
+      # Audit 9 D5: nothing marked hidden is drawn (the NFL board's empty
+      # "Worth a look" box was, 49 px tall).
+      - name: Prove the hidden check can fail
+        timeout-minutes: 30
+        run: python tests/browser/check_hidden.py --self-test --tmp "$RUNNER_TEMP/hidden"
+
+      - name: Check nothing marked hidden is drawn
+        timeout-minutes: 30
+        run: python tests/browser/check_hidden.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
 
       # Stage 79 item 45: one chart style, and no chart text under 11 px on
       # any sport's page.

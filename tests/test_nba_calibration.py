@@ -69,6 +69,7 @@ def run_accuracy(bd):
     stubs = ('const out = {}; const document = {getElementById: () => out};'
              'function stateHtml(k, t, x){ return `STATE ${t}: ${x}`; }'
              'function accuracyHtml(){ return "ACC"; } function accGames(g){ return g; }'
+             'function forwardHtml(){ return "FWD"; }'
              'function escapeHtml(s){ return String(s); } function dayDate(d){ return new Date(d + "T12:00:00Z"); }'
              'const FMT_MONTHDAY = new Intl.DateTimeFormat("en-US", {month: "short", day: "numeric", timeZone: "UTC"});')
     src = f'const BD={json.dumps(bd)};function pct(x,d){{return (x*100).toFixed(d??0)+"%";}}' + stubs + functions() + \

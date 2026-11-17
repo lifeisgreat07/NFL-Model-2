@@ -1,5 +1,6 @@
-"""Stage 84 item 2: the forward test is shown on each sport's checks page, tied
-to the file the daily run writes.
+"""Stage 84 item 2: the forward test is shown on each sport's pages, tied to the
+file the daily run writes. Since audit 9 (D7, M3 option A) it is on Season Accuracy,
+under the record, and Checking the AI's work points there.
 
 Both pages render results/<sport>/forward_<season>.json through one function,
 forwardHtml, identical in nhl.js and nba.js until Stage 87 shares the pages'
@@ -106,11 +107,16 @@ def test_the_page_judges_nothing():
 
 
 @pytest.mark.parametrize('sport, data', [('nhl', 'DATA'), ('nba', 'BD')])
-def test_the_checks_page_renders_it_from_the_file_the_build_passes(sport, data):
+def test_season_accuracy_renders_it_from_the_file_the_build_passes(sport, data):
     js = day_script(sport)
-    body = re.search(r'function renderReliability\(\)\{.*?\n\}\n', js, re.S).group(0)
+    body = re.search(r'function renderAccuracy\(\)\{.*?\n\}\n', js, re.S).group(0)
     assert '<h2 class="section-title">The forward test so far</h2>' in body
     assert f"${{forwardHtml({data}.forward, '{sport}')}}" in body
+    # Under the record's lede, ahead of the record's charts: the scores it is judged by come first.
+    assert body.index('The forward test so far') < body.rindex('${accuracyHtml(accGames(graded))}')
+    checks = re.search(r'function renderReliability\(\)\{.*?\n\}\n', js, re.S).group(0)
+    assert 'forwardHtml(' not in checks, 'the forward test is drawn on one page only'
+    assert '<a href="#accuracy">Season Accuracy</a>' in checks, 'the checks page says where it went'
     site = (ROOT / 'src' / 'sports' / sport / 'site.py').read_text(encoding='utf-8')
     reader = '_read' if sport == 'nhl' else '_maybe'
     assert f"'forward': {reader}(PATHS.results / f'forward_{{season}}.json')," in site

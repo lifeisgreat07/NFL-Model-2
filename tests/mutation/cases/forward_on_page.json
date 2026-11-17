@@ -4,10 +4,10 @@
   "cases": [
     {
       "id": "forward-section-dropped-from-the-nba-page",
-      "why": "the NBA checks page stops rendering the forward test, so the file the daily run writes reaches no reader (Stage 84 item 2)",
+      "why": "the NBA's Season Accuracy page stops rendering the forward test, so the file the daily run writes reaches no reader (Stage 84 item 2; on Season Accuracy since audit 9 D7)",
       "find": "    ${forwardHtml(BD.forward, 'nba')}\n",
       "replace": "",
-      "expect_caught_by": "test_the_checks_page_renders_it_from_the_file_the_build_passes"
+      "expect_caught_by": "test_season_accuracy_renders_it_from_the_file_the_build_passes"
     },
     {
       "id": "forward-file-not-passed-to-the-nhl-page",
@@ -15,7 +15,30 @@
       "why": "the NHL build stops passing the forward-test file, so the page says nothing was graded whatever the file holds",
       "find": "        'forward': _read(PATHS.results / f'forward_{season}.json'),\n",
       "replace": "",
-      "expect_caught_by": "test_the_checks_page_renders_it_from_the_file_the_build_passes"
+      "expect_caught_by": "test_season_accuracy_renders_it_from_the_file_the_build_passes"
+    },
+    {
+      "id": "forward-section-dropped-from-the-nhl-page",
+      "target": "src/sports/nhl/pages/nhl.js",
+      "why": "the NHL's Season Accuracy page stops rendering the forward test (audit 9 D7 moved it there)",
+      "find": "    ${forwardHtml(DATA.forward, 'nhl')}\n",
+      "replace": "",
+      "expect_caught_by": "test_season_accuracy_renders_it_from_the_file_the_build_passes"
+    },
+    {
+      "id": "forward-drawn-on-both-nba-pages",
+      "why": "the NBA's checks page draws the forward test again as well, so the same figures sit on two pages and the next change updates one",
+      "find": "    ${spreadHtml(BD.spread, 'nba')}\n",
+      "replace": "    ${spreadHtml(BD.spread, 'nba')}\n    ${forwardHtml(BD.forward, 'nba')}\n",
+      "expect_caught_by": "test_season_accuracy_renders_it_from_the_file_the_build_passes"
+    },
+    {
+      "id": "nhl-checks-page-loses-its-pointer",
+      "target": "src/sports/nhl/pages/nhl.js",
+      "why": "the NHL checks page no longer says where the forward test went, so a reader who looked for it there finds nothing",
+      "find": "<a href=\"#accuracy\">Season Accuracy</a>",
+      "replace": "Season Accuracy",
+      "expect_caught_by": "test_season_accuracy_renders_it_from_the_file_the_build_passes"
     }
   ]
 }

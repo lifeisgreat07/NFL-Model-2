@@ -49,8 +49,8 @@
    "target": "src/sports/nba/pages/nba.js",
    "tests": "tests/test_nba_calibration.py",
    "why": "the NBA's Season Accuracy page drops the shared component and is prose only (B4; Stage 104 item 1 moved it there).",
-   "find": "See Checking the AI&#39;s work.</p>\n    ${accuracyHtml(accGames(graded))}\n",
-   "replace": "See Checking the AI&#39;s work.</p>\n",
+   "find": "    ${forwardHtml(BD.forward, 'nba')}\n    ${accuracyHtml(accGames(graded))}\n",
+   "replace": "    ${forwardHtml(BD.forward, 'nba')}\n",
    "expect_caught_by": "test_the_accuracy_page_counts_only_graded_picks"
   },
   {

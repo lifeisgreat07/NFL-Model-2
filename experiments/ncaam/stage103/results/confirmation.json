@@ -1,0 +1,74 @@
+{
+ "tournaments": [
+  2021,
+  2022,
+  2023,
+  2024,
+  2025,
+  2026
+ ],
+ "H_days": 120,
+ "lambda": 0.1,
+ "scores": {
+  "model_a": {
+   "games": 401,
+   "log_loss": 0.556952583112479,
+   "brier": 0.19045162968690338,
+   "accuracy": 0.7032418952618454
+  },
+  "seed_model": {
+   "games": 401,
+   "log_loss": 0.57730499359937,
+   "brier": 0.19723767762193395,
+   "accuracy": 0.7182044887780549
+  },
+  "market": {
+   "games": 401,
+   "log_loss": 0.5504380534091702,
+   "brier": 0.18744553195559038,
+   "accuracy": 0.6982543640897756
+  }
+ },
+ "questions": {
+  "H1": {
+   "candidate": "model_a",
+   "incumbent": "seed_model",
+   "games": 401,
+   "days": 71,
+   "diff": -0.02035241048689111,
+   "low": -0.04538748712084562,
+   "high": 0.007122392195232073,
+   "level": 0.975,
+   "label": "INCONCLUSIVE"
+  },
+  "H2": {
+   "candidate": "model_a",
+   "incumbent": "market",
+   "games": 401,
+   "days": 71,
+   "diff": 0.0065145297033087505,
+   "low": -0.00691201655914414,
+   "high": 0.02125142097280103,
+   "level": 0.975,
+   "label": "INCONCLUSIVE"
+  },
+  "M1": {
+   "candidate": "market",
+   "incumbent": "seed_model",
+   "games": 401,
+   "days": 71,
+   "diff": -0.026866940190199855,
+   "low": -0.0487986600771573,
+   "high": -0.005811023333938966,
+   "level": 0.975
+  },
+  "M2": {
+   "games": 371,
+   "higher_seed": 0.7169811320754716,
+   "model_a": 0.7169811320754716,
+   "model_a_games": 371,
+   "market": 0.7142857142857143,
+   "market_games": 371
+  }
+ }
+}
