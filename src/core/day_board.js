@@ -235,7 +235,7 @@ function forwardHtml(f, sport){
   const few = PAIRS.map(([, k]) => f.comparisons[k]).find(c => c && c.few_days);
   const fewNote = few ? ` Only ${few.days} game days are in so far, under the ${few.few_days.min_days} that make whole-day resampling dependable, so each interval is shown with the one that resamples single games under it (&ldquo;games&rdquo;), which is narrower because it ignores how games on one day move together. The day-block interval is the one the registration uses.` : '';
   const level = (f.interval_rule.level * 100).toFixed(2);
-  return `<p class="${sport}-lede">Every saved pick whose game is final, ${f.graded_picks} of them through ${f.through}, scored as the registration says (<code>${f.registered}</code>). Model B and the market are scored only on the picks that had a price.${f.market_price ? ' ' + f.market_price.said : ''}</p>
+  return `<p class="${sport}-lede">Every saved pick whose game is final, ${f.graded_picks} of them through ${dayText(f.through)}, scored as <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/${f.registered}">the registration</a> says. Model B and the market are scored only on the picks that had a price.${f.market_price ? ' ' + f.market_price.said : ''}</p>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's scores</caption>
     <thead><tr><th scope="col">Forecaster</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's comparisons</caption>
@@ -281,6 +281,16 @@ function leakNote(leak){
   if (leak.better_than_spread) out.push(` <b>Better than the backtest by more than its seasons differ.</b> Live log loss is ${leak.margin.toFixed(4)} below it, against a spread of ${leak.spread_range.toFixed(4)} between its seasons. A model doing that much better than it was tested is worth checking for a leak: a pick that could see its result.`);
   if (leak.leaked_picks) out.push(` ${leak.leaked_picks} saved pick${leak.leaked_picks === 1 ? '' : 's'} could have seen ${leak.leaked_picks === 1 ? 'its' : 'their'} result by ${leak.leaked_picks === 1 ? 'its' : 'their'} own record${leak.leaked_picks === 1 ? '' : 's'} (fitted on games of the same day, or saved or priced after the start); the registration lists them, and saved picks are never rewritten.`);
   return out.join('');
+}
+
+/* Audit 9 D15: a date in the page's own words, "Nov 15, 2026", where 2026-11-15 was printed. A date with a
+   time is the day it falls on in Eastern time, as the boards' days are. Anything else is left as it is. */
+function dayText(iso){
+  const s = String(iso || '');
+  if(!/^\d{4}-\d{2}-\d{2}/.test(s)) return s;
+  const timed = s.length > 10;
+  return new Date(timed ? s : s + 'T12:00:00Z').toLocaleDateString('en-US',
+    {month: 'short', day: 'numeric', year: 'numeric', timeZone: timed ? 'America/New_York' : 'UTC'});
 }
 
 function driftStatus(d, rule){
