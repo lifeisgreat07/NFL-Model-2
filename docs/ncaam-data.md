@@ -93,3 +93,8 @@ registration's rules are applied when a file is read, so every one of the 401 ga
 - Whether hoopR's file and ESPN's odds feed can be read from a runner.
 - When ESPN's tournament board shows the new bracket's seeds on Selection Sunday, before any game: the live bracket
   needs them then.
+- Whether a game the board lists before it is played carries both clubs' seeds (`curatedRank`) as a played one
+  does, and how it lists the side a First Four game will fill. The lock (`python -m src.sports.ncaam.bracket lock`)
+  reads the field from the First Four's and the first round's boards on that assumption, leaving out a side whose
+  club id is not a number; it is to be dry-run on the boards the Sunday the bracket is out, before the lock.
+- Which regions meet in the Final Four: the scoreboard does not say before those games, so the lock is given them.

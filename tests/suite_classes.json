@@ -226,6 +226,7 @@
   "tests/test_nba_standings.py": "isolated behavioural",
   "tests/test_nba_sources_down.py": "isolated behavioural",
   "tests/test_nba_stage61_registry.py": "workflow/docs/tests-of-tests",
+  "tests/test_ncaam_bracket.py": "isolated behavioural",
   "tests/test_ncaam_stage103_registry.py": "workflow/docs/tests-of-tests",
   "tests/test_nba_stage61_results.py": "isolated behavioural",
   "tests/test_nba_stage65_registry.py": "workflow/docs/tests-of-tests",

@@ -1,0 +1,97 @@
+{
+  "target": "src/sports/ncaam/bracket.py",
+  "tests": "tests/test_ncaam_bracket.py",
+  "cases": [
+    {
+      "id": "bracket-order-swapped",
+      "why": "the region's slots meet in the wrong order, so the 1 seed plays the 8 in the first round.",
+      "find": "ORDER = (1, 16, 8, 9, 5, 12, 4, 13, 6, 11, 3, 14, 7, 10, 2, 15)",
+      "replace": "ORDER = (1, 8, 16, 9, 5, 12, 4, 13, 6, 11, 3, 14, 7, 10, 2, 15)",
+      "expect_caught_by": "test_the_first_round_pairs_seeds_that_add_up_to_seventeen_in_the_brackets_order"
+    },
+    {
+      "id": "bracket-odds-one-sided",
+      "why": "only the left half's clubs are given a chance of winning a game, so half the field can never advance.",
+      "find": "for one, other in ((left, right), (right, left)):\n                for a, pa in one.items():\n                    dist[a] = pa * sum(pb * p(a, b) for b, pb in other.items())",
+      "replace": "for one, other in ((left, right),):\n                for a, pa in one.items():\n                    dist[a] = pa * sum(pb * p(a, b) for b, pb in other.items())",
+      "expect_caught_by": "test_every_round_s_odds_add_up_to_the_clubs_left_in_it"
+    },
+    {
+      "id": "bracket-odds-ignore-the-opponent",
+      "why": "a club's chance of winning a game ignores who it could meet, so the odds are not the bracket's.",
+      "find": "dist[a] = pa * sum(pb * p(a, b) for b, pb in other.items())",
+      "replace": "dist[a] = pa * 0.5",
+      "expect_caught_by": "test_a_first_round_win_is_the_pair_s_forecast_and_the_odds_are_exact_not_simulated"
+    },
+    {
+      "id": "bracket-round-off-by-one",
+      "why": "each game's winner is credited with the round after the one it reached, so every club's odds are a round out.",
+      "find": "out.setdefault(club, {r: 0.0 for r in ROUNDS})[ROUNDS[6 - depth]] = q",
+      "replace": "out.setdefault(club, {r: 0.0 for r in ROUNDS})[ROUNDS[min(6, 7 - depth)]] = q",
+      "expect_caught_by": "test_every_round_s_odds_add_up_to_the_clubs_left_in_it"
+    },
+    {
+      "id": "bracket-filled-from-the-bottom",
+      "why": "every game's pick ignores the club placed there by a later round, so the filled bracket can contradict itself.",
+      "find": "a = winner if winner in clubs_in(left) else best(left, depth + 1)",
+      "replace": "a = best(left, depth + 1)",
+      "expect_caught_by": "test_the_filled_bracket_has_sixty_seven_games_and_never_contradicts_itself"
+    },
+    {
+      "id": "bracket-champion-not-best-odds",
+      "why": "the filled bracket's champion is the club with the worst title odds.",
+      "find": "return min(clubs_in(node), key=lambda c: (-chances[c][ROUNDS[6 - depth]], c))",
+      "replace": "return min(clubs_in(node), key=lambda c: (chances[c][ROUNDS[6 - depth]], c))",
+      "expect_caught_by": "test_the_filled_bracket_s_champion_is_the_club_with_the_best_title_odds"
+    },
+    {
+      "id": "bracket-forecast-not-symmetric",
+      "why": "a pair's forecast reads the first club's rating only, so swapping who is listed first changes it.",
+      "find": "return 1.0 / (1.0 + math.exp(-coef * (rated.get(a, 0.0) - rated.get(b, 0.0))))",
+      "replace": "return 1.0 / (1.0 + math.exp(-coef * rated.get(a, 0.0)))",
+      "expect_caught_by": "test_swapping_who_is_listed_first_changes_no_forecast"
+    },
+    {
+      "id": "bracket-grade-on-the-favourite",
+      "why": "a game is scored on the favourite's forecast whoever won, so an upset costs nothing.",
+      "find": "won = q if home_won else 1 - q",
+      "replace": "won = max(q, 1 - q)",
+      "expect_caught_by": "test_a_game_is_graded_on_the_saved_forecast_for_the_two_clubs_that_met"
+    },
+    {
+      "id": "bracket-field-check-skips-missing-seeds",
+      "why": "a region with a seed missing is accepted, so the bracket is built with a hole in it.",
+      "find": "            if missing:\n                problems.append(f'{name}: no club for seeds {missing}')",
+      "replace": "            if missing and False:\n                problems.append(f'{name}: no club for seeds {missing}')",
+      "expect_caught_by": "test_a_broken_field_is_refused_with_the_fault_named"
+    },
+    {
+      "id": "bracket-lock-rewritten",
+      "why": "a second lock overwrites the first, so the saved forecasts can be changed after a game is played.",
+      "find": "    if path.exists():\n        raise CollectorError(f'{path.name} exists: the lock is saved once and never rewritten')",
+      "replace": "    if False:\n        raise CollectorError(f'{path.name} exists: the lock is saved once and never rewritten')",
+      "expect_caught_by": "test_the_lock_saves_every_pair_once_and_is_never_rewritten"
+    },
+    {
+      "id": "bracket-lock-after-the-start",
+      "why": "the lock is accepted after the tournament has begun, so its forecasts can read the First Four.",
+      "find": "if (g['tournament_id'] == NCAA).any():",
+      "replace": "if False:",
+      "expect_caught_by": "test_the_lock_is_refused_once_the_tournament_has_begun"
+    },
+    {
+      "id": "bracket-saved-pair-recomputed-the-wrong-way",
+      "why": "a pair saved the other way round is read as it stands, so the second club gets the first one's chance.",
+      "find": "return 1.0 - pairs[f'{b}|{a}']",
+      "replace": "return pairs[f'{b}|{a}']",
+      "expect_caught_by": "test_a_game_is_graded_on_the_saved_pair_not_a_recomputed_one"
+    },
+    {
+      "id": "bracket-board-seed-unchecked",
+      "why": "a seed outside one to sixteen on the board is taken as given, so the field can hold an unranked club.",
+      "find": "if not (isinstance(seed, int) and 1 <= seed <= 16):\n                    problems.append",
+      "replace": "if not isinstance(seed, int):\n                    problems.append",
+      "expect_caught_by": "test_a_board_seed_outside_one_to_sixteen_is_refused_with_the_game_named"
+    }
+  ]
+}
