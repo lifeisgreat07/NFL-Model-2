@@ -220,3 +220,13 @@ def test_a_board_of_only_ties_renders_without_a_record(boards):
     assert html.count('0 of 0') == 3
     assert 'No graded game has a winner yet.' in html and 'level' not in html
     assert 'Picked the winner &middot; 2 games graded' in html
+
+
+def test_a_tie_between_the_graded_count_and_the_records_is_said_in_words(boards):
+    """Audit 9 D13: "33 games graded" over records out of 32 said nothing about the game between them. The board
+    says it was a tie, graded with no winner, and that no record counts it; with nothing between them it says
+    nothing, and with every game a tie it says all of them were."""
+    ran(boards)
+    line = '1 of the 33 graded games was a tie: graded, with no winner, so no record above counts it.'
+    assert line in boards['none'] and line in boards['mine']
+    assert '2 of the 2 graded games were ties: graded, with no winner, so no record above counts them.' in boards['ties']

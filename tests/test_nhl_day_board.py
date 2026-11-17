@@ -136,6 +136,7 @@ def days():
         'today: defaultDay("2026-10-05", G, "2026-10-09"),'
         'other: defaultDay("2026-10-05", G, "2026-10-20"),'
         's3: daySummary([{id:"a"},{id:"b"},{id:"x"}], P),'
+        's_all: daySummary([{id:"a"},{id:"b"}], P),'
         's_locked: daySummary([{id:"c"},{id:"x"}], P),'
         's_none: daySummary([{id:"x"}], P),'
         's_empty: daySummary([], P)}));')
@@ -152,7 +153,9 @@ def test_the_board_opens_on_today_and_otherwise_on_the_first_day_with_games(days
 
 
 def test_the_summary_counts_the_days_right_picks_as_mark_wrote_it(days):
-    assert days['s3'] == '3 games, 1 of 2 correct so far'
+    # Audit 9 D13: the picks' record, and "so far" only while some of the day's games are still to be graded.
+    assert days['s3'] == '3 games, picks 1\u20131 so far'
+    assert days['s_all'] == '2 games, picks 1\u20131', 'every game graded: nothing is still to come'
     assert days['s_locked'] == '2 games, 1 locked'
     assert days['s_none'] == '1 game'
     assert days['s_empty'] == 'No games this day.'
