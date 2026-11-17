@@ -198,6 +198,13 @@ function trackTable(sport, t){
     + `<td>${trackNum(r.live.log_loss)}</td><td>${trackNum(r.backtest.log_loss)}</td>`
     + `<td>${trackNum(r.live.brier)}</td></tr>`).join('');
   const games = t.rows[0].live.games, back = t.rows[0].backtest.games;
+  // Audit 9 D13: the live rows are over the games Model B could be scored on, which can be fewer than the
+  // sport's graded games on this page (a tie has no winner; a pick saved with no market price has no
+  // Model B), so the line says how many of them, and why.
+  const all = Number(t.graded), through = esc(String(t.through));
+  const live = all > Number(games)
+    ? `Live: Model B scored on ${Number(games)} of the ${all} graded games through ${through}; the other ${all - Number(games)} had no winner or no Model B number.`
+    : `Live: ${Number(games)} graded games through ${through}.`;
   const cal = t.calibration ? `<p class="home-track-note">Model B's calibration slope live: ${Number(t.calibration.value).toFixed(2)} `
     + `(${Number(t.calibration.low).toFixed(2)} to ${Number(t.calibration.high).toFixed(2)}); 1 is perfect, `
     + `above 1 means its chances sit too close to 50%.</p>` : '';
@@ -206,7 +213,7 @@ function trackTable(sport, t){
     + `<table><caption class="sr-only">${SPORT_NAME[sport]}: log loss live and in the backtest, and Brier score live</caption>`
     + `<thead><tr><th scope="col"></th><th scope="col">Live</th><th scope="col">Backtest</th><th scope="col">Live Brier</th></tr></thead>`
     + `<tbody>${rows}</tbody></table>`
-    + `<p class="home-track-note">Live: ${Number(games)} graded picks through ${esc(String(t.through))}. `
+    + `<p class="home-track-note">${live} `
     + `Backtest: ${Number(back)} games, ${esc(t.backtest_label)}.</p>${cal}${note}</div>`;
 }
 function trackRecord(track){
@@ -266,8 +273,9 @@ function gradedTile(sports){
   const graded = built.reduce((t, f) => t + (f.record ? f.record.won + f.record.lost : 0), 0);
   return tile(`${built.length} sport${built.length === 1 ? '' : 's'}`, String(graded), `pick${graded === 1 ? '' : 's'} graded`);
 }
-document.getElementById('home-score').innerHTML = scoreTile(HOME.nfl, 'NFL picks')
-  + scoreTile(HOME.nhl, 'NHL picks') + gradedTile([HOME.nfl, HOME.nhl, HOME.nba]);
+// Audit 9 D13: a tile for every sport with a page, so the NBA's record is on the home too, then the total.
+document.getElementById('home-score').innerHTML = ['nfl', 'nhl', 'nba'].map(s => scoreTile(HOME[s], `${SPORT_NAME[s]} picks`)).join('')
+  + gradedTile([HOME.nfl, HOME.nhl, HOME.nba]);
 
 /* Stage 80 item 54 (the 2026-10-13 audit's F8): "Since your last visit".
    Each visit leaves each sport's record in this browser; the next one says

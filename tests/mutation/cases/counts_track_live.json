@@ -1,0 +1,29 @@
+{
+  "target": "src/site/home/home.js",
+  "tests": "tests/test_track_record.py",
+  "cases": [
+    {
+      "id": "counts-track-unexplained",
+      "why": "the home's track record says 251 graded picks under an NHL record of 278 and nothing about the other 27.",
+      "find": "  const live = all > Number(games)\n",
+      "replace": "  const live = false\n",
+      "expect_caught_by": "test_the_home_page_draws_each_sport_and_nothing_without_figures"
+    },
+    {
+      "id": "counts-nfl-tie-not-graded",
+      "target": "src/site/track_record.py",
+      "why": "the NFL's graded count leaves the tie out, so the home says Model B was scored on every graded game when one had no winner.",
+      "find": "            if y in (0, 1) or g.get('result') == 'tie':\n",
+      "replace": "            if y in (0, 1):\n",
+      "expect_caught_by": "test_each_sport_counts_its_graded_games_a_tie_included_and_an_unplayed_game_not"
+    },
+    {
+      "id": "counts-pending-pick-graded",
+      "target": "src/site/track_record.py",
+      "why": "the NHL's graded count takes in a pick still pending, so the home says Model B missed a game that has not been played.",
+      "find": "if r.get('result') in ('correct', 'wrong')]\n    return {'season': fwd['season']",
+      "replace": "if r.get('result')]\n    return {'season': fwd['season']",
+      "expect_caught_by": "test_each_sport_counts_its_graded_games_a_tie_included_and_an_unplayed_game_not"
+    }
+  ]
+}

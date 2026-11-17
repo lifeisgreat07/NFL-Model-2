@@ -1,0 +1,28 @@
+{
+  "target": "src/dashboard/styles.css",
+  "tests": "tests/test_touch_targets.py",
+  "cases": [
+    {
+      "id": "touch-star-target-short",
+      "why": "the favourite star's target on a phone reaches only 4 px past the star, 32 px in all, under the 44 a thumb needs.",
+      "find": "    .fav-star::after{content:''; position:absolute; inset:-10px;}\n",
+      "replace": "    .fav-star::after{content:''; position:absolute; inset:-4px;}\n",
+      "expect_caught_by": "test_the_star_a_chip_and_a_row_link_gain_a_target_around_them_on_a_phone"
+    },
+    {
+      "id": "touch-chip-target-gone",
+      "why": "a filter chip on a phone is a 31 px target again.",
+      "find": "    .btn-chip::after{content:''; position:absolute; inset:-7px 0;}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_star_a_chip_and_a_row_link_gain_a_target_around_them_on_a_phone"
+    },
+    {
+      "id": "touch-home-question-short",
+      "target": "src/site/home/home.css",
+      "why": "the home's questions are 24 px tall on a phone again.",
+      "find": "  .home-faq summary{ min-height:44px; display:flex; align-items:center; }\n",
+      "replace": "  .home-faq summary{ min-height:24px; display:flex; align-items:center; }\n",
+      "expect_caught_by": "test_the_homes_questions_steps_and_footer_links_are_44_px_on_a_phone"
+    }
+  ]
+}
