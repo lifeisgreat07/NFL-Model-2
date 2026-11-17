@@ -482,6 +482,7 @@
   "tests/test_whats_changed_page.py": "isolated behavioural",
   "tests/test_why_chance.py": "template/JS",
   "tests/test_why_words.py": "template/JS",
+  "tests/test_wide_tables.py": "template/JS",
   "tests/test_workflow_docs.py": "workflow/docs/tests-of-tests",
   "tests/test_workflow_permissions.py": "workflow/docs/tests-of-tests",
   "tests/test_workflow_pipefail.py": "workflow/docs/tests-of-tests",

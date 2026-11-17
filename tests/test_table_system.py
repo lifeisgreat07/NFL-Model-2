@@ -129,9 +129,28 @@ def test_the_default_is_the_scrolling_one(css):
 
 
 def test_the_header_sticks_only_where_the_table_fits(css):
-    sticky = re.findall(r'([^{}]+)\{[^}]*position:\s*sticky[^}]*\}', css)
-    th_sticky = [s.strip() for s in sticky if 'th' in s]
-    assert th_sticky == ['.table-wrap.fits thead th'], th_sticky
+    sticky = re.findall(r'([^{}]+)\{([^}]*position:\s*sticky[^}]*)\}', css)
+    th_top = [s.strip() for s, body in sticky if 'th' in s and 'left:' not in body]
+    assert th_top == ['.table-wrap.fits thead th'], th_top
+
+
+PINNED = ['.table-wrap:not(.fits) :is(th, td):first-child', '.table-wrap:not(.fits) #ratings-table :is(th, td):nth-child(2)']
+
+
+def test_a_table_that_scrolls_sideways_keeps_its_rows_name_in_view(css):
+    """Audit 9 D11: on a phone a wide table hid the columns scrolled to from the row they belong to. A table that
+    scrolls keeps its first column (on Power Ratings the rank, and the team beside it), sticking to the left
+    only, opaque, above a scrolled bar's zero line, with a hairline on its right edge."""
+    sticky = re.findall(r'([^{}]+)\{([^}]*position:\s*sticky[^}]*)\}', css)
+    left = {s.strip(): body for s, body in sticky if 'left:' in body}
+    assert list(left) == PINNED
+    zero = z_index(rule(css, '.srs-bar-track.diverging::before'))
+    for sel, body in left.items():
+        assert 'background:var(--surface)' in body and 'top:' not in body, sel
+        assert z_index(body) > zero, f'{sel} is under the Net Rating zero line'
+    rank = rule(css, '.table-wrap:not(.fits) #ratings-table :is(th, td):first-child')
+    assert 'width:44px' in rank and 'min-width:44px' in rank and 'left:44px' in left[PINNED[1]], \
+        'the team column sits right after a rank column of a fixed width'
 
 
 def test_tables_do_not_collapse_borders(css):
