@@ -133,8 +133,12 @@ function dayStatus(f, start){
     const done = !finals ? '' : finals === today.length ? ' · all final' : ` · ${finals} final, ${today.length - finals} to play`;
     status = {text:`${today.length} game${today.length === 1 ? '' : 's'} ${evening ? 'tonight' : 'today'}${done}`, cls:'is-live'};
     const later = today.filter(g => g.t > NOW && g.st !== 'final').map(g => g.t);
-    if(first > NOW || !later.length) rows.push([`First ${start}`, atClock(first)]);
-    else rows.push([`Next ${start}`, atClock(Math.min(...later))]);
+    /* Audit 9 D16: once every game has started, the card said "First tip-off
+       1:00 PM" for the rest of the day. The statuses are the build's, so a
+       game that started since is not known to be final: it is under way. */
+    if(first > NOW) rows.push([`First ${start}`, atClock(first)]);
+    else if(later.length) rows.push([`Next ${start}`, atClock(Math.min(...later))]);
+    else rows.push([evening ? 'Tonight' : 'Today', finals === today.length ? 'All final' : 'All under way']);
     const best = bestPick(slateOf(START_SPORT[start]).filter(r => r.k === 'pick' && dayKey(Date.parse(r.t)) === dayKey(NOW)), atClock);
     if(best) rows.push([`Best pick ${evening ? 'tonight' : 'today'}`, best]);
   } else if(upcoming.length){

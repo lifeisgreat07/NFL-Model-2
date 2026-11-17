@@ -12,7 +12,7 @@
   {
    "id": "home-tonight-first-again",
    "why": "after the first game starts, the card still names the first puck drop.",
-   "find": "    if(first > NOW || !later.length) rows.push([`First ${start}`, atClock(first)]);\n",
+   "find": "    if(first > NOW) rows.push([`First ${start}`, atClock(first)]);\n",
    "replace": "    if(true) rows.push([`First ${start}`, atClock(first)]);\n",
    "expect_caught_by": "test_once_games_finish_it_counts_them_and_names_the_next_start"
   },
@@ -22,6 +22,13 @@
    "find": "!finals ? '' : finals === today.length ? ' · all final' : ",
    "replace": "!finals ? '' : ",
    "expect_caught_by": "test_when_every_game_is_over_it_says_so"
+  },
+  {
+   "id": "home-names-a-passed-start",
+   "why": "once every game has started, the card names the first start again for the rest of the day (audit 9 D16)",
+   "find": "    else rows.push([evening ? 'Tonight' : 'Today', finals === today.length ? 'All final' : 'All under way']);\n",
+   "replace": "    else rows.push([`First ${start}`, atClock(first)]);\n",
+   "expect_caught_by": "test_once_every_game_has_started_it_names_no_start_that_has_passed"
   }
  ]
 }
