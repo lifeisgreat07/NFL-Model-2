@@ -99,7 +99,9 @@ def test_the_records_are_the_home_cards_records(monkeypatch):
 
 def test_the_site_build_writes_the_records_after_the_strip_and_before_the_hashes():
     body = inspect.getsource(build.build_site)
-    assert body.index('    add_strip(out, results)\n') < body.index('    add_menu(out, results)\n') < body.index('    add_csp(out)\n')
+    # After the search box's step too, which reads the strip's slate and is held to follow it straight away.
+    assert '    add_strip(out, results)\n    add_search(out, results)\n    add_menu(out, results)\n' in body
+    assert body.index('    add_menu(out, results)\n') < body.index('    add_csp(out)\n')
 
 
 def run_close(menus, inside):

@@ -33,8 +33,8 @@
     {
       "id": "menu-left-out-of-the-build",
       "why": "the site build never writes the records or adds the script, so every menu goes out without either.",
-      "find": "    add_strip(out, results)\n    add_menu(out, results)\n",
-      "replace": "    add_strip(out, results)\n",
+      "find": "    add_search(out, results)\n    add_menu(out, results)\n",
+      "replace": "    add_search(out, results)\n",
       "expect_caught_by": "test_the_site_build_writes_the_records_after_the_strip_and_before_the_hashes"
     },
     {
