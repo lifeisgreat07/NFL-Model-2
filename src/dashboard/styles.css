@@ -1944,30 +1944,47 @@
   .game-row-chev{color:var(--text-3); transition:transform var(--dur-base) var(--ease);}
   .game-row[aria-expanded="true"] .game-row-chev{transform:rotate(180deg);}
 
-  /* ---------- Sport switcher (Stage 59; Stage 68 item 35) ----------
-     Home and every sport in one segmented control, the current one raised:
-     in the sidebar under the name on a wide screen, and as a strip under
-     the top bar on a phone. The home page's control (.home-switch), which
-     Mark chose for every page on 2026-10-10 (option S1 of the rendered
-     "Stage 68 Design Options"); it replaced 28 px inverted pills. */
-  .sport-switch{display:flex; gap:2px; flex-wrap:nowrap; margin-top:var(--s3); padding:var(--s1); width:max-content;
-    max-width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r-full);}
-  .sport-switch a{display:inline-flex; align-items:center; min-height:40px; padding:0 var(--s3);
-    border-radius:var(--r-full); border:0; background:transparent;
+  /* ---------- Sport switcher (Stage 59; Stage 68 item 35; audit 9 D3) ----------
+     Mark's M1 B (2026-11-16, from the rendered side-by-side options): one menu on every page. Its button is
+     the page you are on, with its league's mark; open, it lists Home and every sport, each sport with its
+     season record, which the site build writes in (src/site/build.py add_menu). A fifth or sixth sport adds
+     a row rather than widening a track: the four-pill track had 2 px to spare in the sidebar. In the
+     sidebar the list opens in place; in the phone strip and the home bar it opens over the page.
+     <details> works with no script; src/core/sport_menu.js, which the build adds, closes it on Esc or a
+     click elsewhere. */
+  .sport-switch{position:relative; margin-top:var(--s3); width:max-content; max-width:100%;}
+  .sm > summary{display:flex; align-items:center; gap:var(--s2); min-height:44px; padding:0 var(--s3);
+    border-radius:var(--r-full); background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+    font-size:var(--fs-13); font-weight:700; white-space:nowrap; cursor:pointer; list-style:none;}
+  .sm > summary::-webkit-details-marker{display:none;}
+  .sm-caret{flex:none; width:7px; height:7px; margin-left:auto; border-right:2px solid currentColor;
+    border-bottom:2px solid currentColor; transform:translateY(-2px) rotate(45deg);}
+  .sm[open] .sm-caret{transform:translateY(2px) rotate(225deg);}
+  .sm-list{display:flex; flex-direction:column; gap:2px; margin-top:var(--s1); padding:var(--s1); min-width:220px;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);}
+  .sport-switch a{display:flex; align-items:center; min-height:44px; padding:0 var(--s3);
+    border-radius:var(--r-sm); border:0; background:transparent;
     color:var(--text-2); font-size:var(--fs-13); font-weight:700; text-decoration:none; white-space:nowrap;}
   @media (hover: hover){
-    .sport-switch a:hover{color:var(--text);}
+    .sport-switch a:hover{color:var(--text); background:var(--surface-2);}
+    .sm > summary:hover{border-color:var(--border-strong);}
   }
-  /* Stage 78 item 36 (V9): the raised segment is drawn with a hairline, not a shadow. */
-  .sport-switch a[aria-current="page"]{background:var(--surface); color:var(--text); box-shadow:inset 0 0 0 1px var(--border-strong);}
-  .sport-switch a:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  /* Stage 78 item 36 (V9): the current page is raised with a hairline, not a shadow or an inverted fill. */
+  .sport-switch a[aria-current="page"]{background:var(--surface-2); color:var(--text); box-shadow:inset 0 0 0 1px var(--border-strong);}
+  .sport-switch a:focus-visible, .sm > summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .sm-rec{margin-left:auto; padding-left:var(--s4); color:var(--text-2); font-weight:600; font-variant-numeric:tabular-nums;}
+  .sm-rec:empty{display:none;}
+  .sm-note{margin:var(--s1) var(--s3) var(--s2); max-width:28ch; color:var(--text-2); font-size:var(--fs-11);
+    font-weight:400; line-height:1.4; white-space:normal;}
+  .sm-list:not(:has(.sm-rec:not(:empty))) .sm-note{display:none;}
   .sidebar .sport-switch{margin:var(--s3) var(--s4) 0; width:auto;}
-  .sidebar .sport-switch a{flex:1; justify-content:center; padding:0 var(--s2);}
+  .sidebar .sm-list{min-width:0;}
+  .sport-strip .sm-list, .home-switch .sm-list{position:absolute; top:100%; left:0; z-index:var(--z-overlay);
+    box-shadow:var(--shadow-overlay);}
   /* Stage 102 (Mark, 2026-11-11, option B): each league's own mark beside its name in the switcher,
      hot-linked from ESPN as the team logos are, never committed. Both versions are in the page and the
      theme shows one (dark is the default, light is data-theme="light"); a mark that fails to load hides
-     itself (data-hide-on-error) and its box with it, so the pill keeps its name. In the sidebar the
-     pills tighten so four fit (option 2 of the rendered fits), on the 4px scale. */
+     itself (data-hide-on-error) and its box with it, so the menu row keeps its name. */
   .lgm{display:inline-flex; flex:none;}
   .lgm img{width:100%; height:100%; object-fit:contain; display:block;}
   .lgm .lgm-l{display:none;}
@@ -1975,11 +1992,9 @@
   [data-theme="light"] .lgm .lgm-d{display:none;}
   .lgm-sm{width:16px; height:16px; margin-right:var(--s1);}
   .lgm-sm:has(img[style*="none"]){display:none;}
-  .sidebar .sport-switch a{gap:var(--s1); padding:0 var(--s1); font-size:var(--fs-11);}
-  .sidebar .lgm-sm{width:14px; height:14px; margin-right:0;}
   .sport-strip{display:none;}
   @media (max-width:1079px){
-    .sport-strip{display:flex; flex-wrap:nowrap; overflow-x:auto; margin:var(--s2) var(--s4); padding:var(--s1);}
+    .sport-strip{display:block; margin:var(--s2) var(--s4) 0;}
   }
 
   /* Stage 47 item 11: printing a page prints that page. The navigation, the
@@ -2040,7 +2055,7 @@
     .tele-bar-seg:first-child{background:CanvasText !important;}
     .tele-bar-seg:last-child{background:Highlight !important;}
     .srs-bar-fill{background:Highlight !important;}
-    .model-chip, .insight-chip, .badge, .btn-chip, .sport-switch a{border:1px solid CanvasText;}
+    .model-chip, .insight-chip, .badge, .btn-chip, .sport-switch a, .sm > summary{border:1px solid CanvasText;}
   }
 /* Stage 68 item 18c (U20): the theme button showed a sun in both themes.
    Dark shows the sun (the button turns the page light), light the moon. */
