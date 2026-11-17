@@ -83,7 +83,7 @@ def test_the_glance_names_the_filled_champion_and_its_title_odds(lock_doc, conf)
     final = [g for g in lock_doc['filled'] if g['round'] == 'final'][0]
     champ = final['winner']
     glance = text.split('The filled bracket at a glance')[1].split('<h2>')[0]
-    first = glance.split('mm-row')[1]
+    first = glance.split('ncaam-row')[1]
     assert lock_doc['names'][champ] in first and 'Champion, over' in first
     assert f"{page.pct(lock_doc['odds'][champ]['champion'])} title" in first
     assert glance.count('Into the final, over') == 2
@@ -101,8 +101,8 @@ def test_every_club_has_a_row_of_odds_best_title_odds_first(lock_doc, conf):
 def test_every_region_shows_its_four_rounds_and_the_final_four_its_three_games(lock_doc, conf):
     text = body(lock_doc, [], conf)
     bracket_part = text.split('<h2>The filled bracket</h2>')[1].split('<h2>')[0]
-    assert bracket_part.count('class="mm-region"') == 5
-    assert bracket_part.count('class="mm-game"') == 63  # the First Four's games are not drawn
+    assert bracket_part.count('class="ncaam-region"') == 5
+    assert bracket_part.count('class="ncaam-game"') == 63  # the First Four's games are not drawn
     for name in lock_doc['field']['regions']:
         assert f'<h3>{name}</h3>' in bracket_part
 
@@ -111,7 +111,7 @@ def test_before_any_game_the_page_says_so_and_lists_no_games(lock_doc, conf):
     text = body(lock_doc, [], conf)
     assert 'No game has been played yet.' in text
     assert 'Games played' not in text
-    assert 'mm-out' not in text
+    assert 'ncaam-out' not in text
 
 
 def test_a_played_game_is_graded_and_its_loser_struck_through(lock_doc, conf):
@@ -122,7 +122,7 @@ def test_a_played_game_is_graded_and_its_loser_struck_through(lock_doc, conf):
     table = text.split('<h2>Games played</h2>')[1]
     assert table.count('>Correct<') == right and table.count('>Missed<') == 10 - right
     loser = graded[0]['home'] if graded[0]['winner'] == graded[0]['away'] else graded[0]['away']
-    assert f'<span class="mm-out">{lock_doc["names"][loser]}</span>' in text
+    assert f'<span class="ncaam-out">{lock_doc["names"][loser]}</span>' in text
 
 
 def test_the_winner_s_saved_chance_is_the_lock_s_pair(lock_doc, conf):
@@ -131,7 +131,7 @@ def test_the_winner_s_saved_chance_is_the_lock_s_pair(lock_doc, conf):
     loser = g['home'] if g['winner'] == g['away'] else g['away']
     text = body(lock_doc, [g], conf)
     row = text.split('<h2>Games played</h2>')[1]
-    assert f'<td class="mm-num">{page.pct(p(g["winner"], loser))}</td>' in row
+    assert f'<td class="ncaam-num">{page.pct(p(g["winner"], loser))}</td>' in row
 
 
 def test_club_names_are_escaped(lock_doc, conf):

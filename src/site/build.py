@@ -43,6 +43,7 @@ from pathlib import Path
 from typing import Any
 
 from src.core import csp
+from src.core.sport import sport_paths
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -259,7 +260,7 @@ def assemble_shared(out: Path) -> None:
 #: not one of SPORTS, built only in its weeks from the year's lock
 #: (src/sports/ncaam/page.py writes nothing on any other day).
 MARCH = 'march'
-MARCH_LOCKS = ROOT / 'data' / 'ncaam' / 'bracket'
+MARCH_LOCKS = sport_paths('ncaam').data / 'bracket'
 
 
 def build_march(out: Path, runner: Runner = run, today: date | None = None) -> tuple[SportResult, Path | None]:

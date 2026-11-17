@@ -53,6 +53,9 @@ RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
     ('src/sports/nba/page_inputs.py', ('nba',)),
     ('src/site/home/', ('home',)),
     ('src/site/home.py', ('home',)),
+    # The March Madness bracket page is built only from its lock, in March and April, so
+    # there is nothing to photograph the rest of the year.
+    ('src/sports/ncaam/pages/', ()),
     ('assets/favicon-nhl.svg', ('nhl',)),
     ('assets/favicon-nba.svg', ('nba',)),
     ('assets/favicon.svg', ('home', 'nfl')),

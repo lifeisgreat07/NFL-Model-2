@@ -39,7 +39,7 @@ def policy(connect):
 
 CSP = policy("'none'")
 SPORT_PAGES = ['src/dashboard/page.html', 'src/sports/nhl/pages/page.html', 'src/sports/nba/pages/page.html']
-PAGES = SPORT_PAGES + ['src/site/home/page.html']
+PAGES = SPORT_PAGES + ['src/site/home/page.html', 'src/sports/ncaam/pages/page.html']
 
 
 def meta(rel):

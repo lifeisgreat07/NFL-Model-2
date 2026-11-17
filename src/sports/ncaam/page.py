@@ -71,8 +71,8 @@ class Page:
 
     def club(self, c: str) -> str:
         name = html.escape(self.names.get(c, c))
-        cls = ' class="mm-out"' if c in self.out else ''
-        return f'<span class="mm-seed">{self.seed.get(c, "")}</span> <span{cls}>{name}</span>'
+        cls = ' class="ncaam-out"' if c in self.out else ''
+        return f'<span class="ncaam-seed">{self.seed.get(c, "")}</span> <span{cls}>{name}</span>'
 
     def trust(self, conf: dict[str, Any]) -> str:
         q = conf['questions']
@@ -83,7 +83,7 @@ class Page:
                   'the betting market did no better than the seeds' if m1['low'] > 0 else
                   'the betting market and the seeds came out level')
         return (
-            '<section class="mm-trust" aria-labelledby="mm-trust-h"><p><strong id="mm-trust-h">How far to trust it.</strong> '
+            '<section class="ncaam-trust" aria-labelledby="ncaam-trust-h"><p><strong id="ncaam-trust-h">How far to trust it.</strong> '
             f"On the {span} tournaments ({h1['games']} games), Model A's forecasts beat \"the higher seed wins\" "
             f"{words.get(h1['label'], '')}: {h1['label']}. Against the betting market: {h2['label']}. "
             f'Measured beside them, not a test: {market}.</p>'
@@ -94,10 +94,10 @@ class Page:
     def so_far(self) -> str:
         n = len(self.graded)
         if not n:
-            return '<p class="mm-lede" id="mm-so-far">No game has been played yet.</p>'
+            return '<p class="ncaam-lede" id="ncaam-so-far">No game has been played yet.</p>'
         right = sum(1 for g in self.graded if g['favourite_won'])
         loss = sum(g['log_loss'] for g in self.graded) / n
-        return (f'<p class="mm-lede" id="mm-so-far">So far: {n} of {len(self.doc["filled"])} games played; the side the lock gave the '
+        return (f'<p class="ncaam-lede" id="ncaam-so-far">So far: {n} of {len(self.doc["filled"])} games played; the side the lock gave the '
                 f'better chance won {right} of them. Average log loss {loss:.3f} (lower is better; a coin flip '
                 'scores 0.693).</p>')
 
@@ -108,22 +108,22 @@ class Page:
             w = g['winner']
             loser = g['clubs'][1] if g['clubs'][0] == w else g['clubs'][0]
             what = 'Champion, over' if g['round'] == 'final' else 'Into the final, over'
-            rows.append(f'<div class="mm-row"><span>{self.club(w)} <span class="mm-what">{what} '
+            rows.append(f'<div class="ncaam-row"><span>{self.club(w)} <span class="ncaam-what">{what} '
                         f'{html.escape(self.names.get(loser, loser))}: {pct(g["forecast"])} to win that game</span>'
-                        f'</span><span class="mm-chip">{pct(self.doc["odds"][w]["champion"])} title</span></div>')
-        return '<h2>The filled bracket at a glance</h2><div class="mm-glance">' + ''.join(rows) + '</div>'
+                        f'</span><span class="ncaam-chip">{pct(self.doc["odds"][w]["champion"])} title</span></div>')
+        return '<h2>The filled bracket at a glance</h2><div class="ncaam-glance">' + ''.join(rows) + '</div>'
 
     def game(self, g: dict[str, Any]) -> str:
         cells = []
         for c in g['clubs']:
             mine = c == g['winner']
             p = g['forecast'] if mine else 1 - g['forecast']
-            cells.append(f'<div class="{"mm-pick" if mine else "mm-not"}"><span>{self.club(c)}</span>'
-                         f'<span class="mm-num">{pct(p)}</span></div>')
-        return '<div class="mm-game">' + ''.join(cells) + '</div>'
+            cells.append(f'<div class="{"ncaam-pick" if mine else "ncaam-not"}"><span>{self.club(c)}</span>'
+                         f'<span class="ncaam-num">{pct(p)}</span></div>')
+        return '<div class="ncaam-game">' + ''.join(cells) + '</div>'
 
     def regions(self) -> str:
-        parts = ['<h2>The filled bracket</h2><p class="mm-note">Each game shows the two clubs the bracket puts '
+        parts = ['<h2>The filled bracket</h2><p class="ncaam-note">Each game shows the two clubs the bracket puts '
                  'there and the lock\'s chance for each; the bold one is picked. A club that has lost is struck '
                  'through.</p>']
         filled = self.doc['filled']
@@ -132,32 +132,32 @@ class Page:
             cols = []
             for rnd, label in REGION_ROUNDS:
                 games = ''.join(self.game(g) for g in mine if g['round'] == rnd)
-                cols.append(f'<div class="mm-col"><h4>{label}</h4><div class="mm-games">{games}</div></div>')
-            parts.append(f'<section class="mm-region"><h3>{html.escape(name)}</h3><div class="mm-scroll">'
-                         f'<div class="mm-cols">{"".join(cols)}</div></div></section>')
+                cols.append(f'<div class="ncaam-col"><h4>{label}</h4><div class="ncaam-games">{games}</div></div>')
+            parts.append(f'<section class="ncaam-region"><h3>{html.escape(name)}</h3><div class="ncaam-scroll">'
+                         f'<div class="ncaam-cols">{"".join(cols)}</div></div></section>')
         last = [g for g in filled if g['round'] in ('final_four', 'final')]
-        cols = [f'<div class="mm-col"><h4>{label}</h4><div class="mm-games">'
+        cols = [f'<div class="ncaam-col"><h4>{label}</h4><div class="ncaam-games">'
                 f'{"".join(self.game(g) for g in last if g["round"] == rnd)}</div></div>'
                 for rnd, label in (('final_four', 'Final Four'), ('final', 'Final'))]
         semis = ' and '.join(f'{a} v {b}' for a, b in self.doc['field']['semifinals'])
-        parts.append(f'<section class="mm-region"><h3>Final Four: {html.escape(semis)}</h3><div class="mm-scroll">'
-                     f'<div class="mm-cols" style="--mm-cols:2">{"".join(cols)}</div></div></section>')
+        parts.append(f'<section class="ncaam-region"><h3>Final Four: {html.escape(semis)}</h3><div class="ncaam-scroll">'
+                     f'<div class="ncaam-cols ncaam-last">{"".join(cols)}</div></div></section>')
         return ''.join(parts)
 
     def odds_table(self) -> str:
         odds = self.doc['odds']
         rounds = bracket.ROUNDS[1:]
         # A phone keeps the later rounds; the second round and the Sweet 16 are on wider screens.
-        hide = {r: (' mm-hide-phone' if r in ('round_of_32', 'sweet_16') else '') for r in rounds}
-        head = ''.join(f'<th scope="col" class="mm-num{hide[r]}">{ROUND_NAMES[r]}</th>' for r in rounds)
+        hide = {r: (' ncaam-hide-phone' if r in ('round_of_32', 'sweet_16') else '') for r in rounds}
+        head = ''.join(f'<th scope="col" class="ncaam-num{hide[r]}">{ROUND_NAMES[r]}</th>' for r in rounds)
         rows = []
         for c in sorted(odds, key=lambda c: (-odds[c]['champion'], self.seed.get(c, 99), self.names.get(c, c))):
-            cells = ''.join(f'<td class="mm-num{hide[r]}">{pct(odds[c][r])}</td>' for r in rounds)
-            rows.append(f'<tr><td>{self.club(c)} <span class="mm-region-name">{html.escape(self.region[c])}</span>'
+            cells = ''.join(f'<td class="ncaam-num{hide[r]}">{pct(odds[c][r])}</td>' for r in rounds)
+            rows.append(f'<tr><td>{self.club(c)} <span class="ncaam-region-name">{html.escape(self.region[c])}</span>'
                         f'</td>{cells}</tr>')
-        return ('<h2>Every club\'s chance of reaching each round</h2><div class="table-wrap"><table class="mm-table">'
+        return ('<h2>Every club\'s chance of reaching each round</h2><div class="table-wrap"><table class="ncaam-table">'
                 f'<thead><tr><th scope="col">Club</th>{head}</tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
-                '<p class="mm-note">From the lock: the chance of winning each game ahead, over every club that could '
+                '<p class="ncaam-note">From the lock: the chance of winning each game ahead, over every club that could '
                 'be met there. Worked out exactly, not by simulating.</p>')
 
     def played(self) -> str:
@@ -167,22 +167,22 @@ class Page:
         for g in sorted(self.graded, key=lambda g: (g['day'], g['game_id']), reverse=True):
             winner, loser = g['winner'], g['away'] if g['winner'] == g['home'] else g['home']
             p = g['home_forecast'] if winner == g['home'] else 1 - g['home_forecast']
-            mark = ('<span class="mm-right">Correct</span>' if g['favourite_won']
-                    else '<span class="mm-wrong">Missed</span>')
+            mark = ('<span class="ncaam-right">Correct</span>' if g['favourite_won']
+                    else '<span class="ncaam-wrong">Missed</span>')
             day = day_text(g['day']).rsplit(',', 1)[0]  # the year is in the page's title
-            rows.append(f'<tr><td class="mm-nowrap">{html.escape(self.names.get(winner, winner))} beat '
-                        f'{html.escape(self.names.get(loser, loser))}</td><td class="mm-nowrap mm-hide-phone">{day}</td>'
-                        f'<td class="mm-num">{pct(p)}</td><td>{mark}</td></tr>')
-        return ('<h2>Games played</h2><div class="table-wrap"><table class="mm-table"><thead><tr>'
-                '<th scope="col">Game</th><th scope="col" class="mm-hide-phone">Day</th>'
-                '<th scope="col" class="mm-num">Winner\'s saved chance</th>'
+            rows.append(f'<tr><td class="ncaam-nowrap">{html.escape(self.names.get(winner, winner))} beat '
+                        f'{html.escape(self.names.get(loser, loser))}</td><td class="ncaam-nowrap ncaam-hide-phone">{day}</td>'
+                        f'<td class="ncaam-num">{pct(p)}</td><td>{mark}</td></tr>')
+        return ('<h2>Games played</h2><div class="table-wrap"><table class="ncaam-table"><thead><tr>'
+                '<th scope="col">Game</th><th scope="col" class="ncaam-hide-phone">Day</th>'
+                '<th scope="col" class="ncaam-num">Winner\'s saved chance</th>'
                 f'<th scope="col">The lock\'s side</th></tr></thead><tbody>{"".join(rows)}</tbody></table></div>')
 
     def body(self, conf: dict[str, Any]) -> str:
         year = self.doc['tournament']
-        return ('<nav class="mm-top" aria-label="Site"><a href="../">Sportalytics home</a></nav>'
+        return ('<nav class="ncaam-top" aria-label="Site"><a href="../">Sportalytics home</a></nav>'
                 f'<h1>March Madness {year}: the bracket</h1>'
-                '<p class="mm-lede">Model A\'s forecast for every game of the men\'s tournament, saved once on '
+                '<p class="ncaam-lede">Model A\'s forecast for every game of the men\'s tournament, saved once on '
                 f'{day_text(self.doc["locked_utc"])} before the First Four, from every game through '
                 f'{day_text(self.doc["games_through"])}, and never changed. Each club\'s chance of reaching each '
                 'round, and one filled-in bracket that starts from the likeliest champion and works down.</p>'

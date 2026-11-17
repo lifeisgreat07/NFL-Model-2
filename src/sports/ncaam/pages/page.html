@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; font-src data:; connect-src 'none'; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: https://a.espncdn.com https://assets.nhle.com; font-src data:; connect-src 'none'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
 <link rel="canonical" href="https://lifeisgreat07.github.io/NFL-Model-2/march/">
 <meta name="theme-color" content="#0B0D10">
 <!-- The March Madness bracket (Stage 103 item 4): built only from the year's lock, and only in March and
@@ -27,7 +27,7 @@ __FONT_FACES__
 {% include "march.css" %}
 </style>
 </head>
-<body class="mm-body">
+<body class="ncaam-body">
 <script>
   (function(){
     try{
@@ -37,7 +37,7 @@ __FONT_FACES__
     }catch(e){}
   })();
 </script>
-<main class="mm-main">
+<main class="ncaam-main">
 __MARCH_BODY__
 </main>
 </body>
