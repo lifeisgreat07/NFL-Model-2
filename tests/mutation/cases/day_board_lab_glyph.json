@@ -1,0 +1,20 @@
+{
+ "target": "src/core/day_board.js",
+ "tests": "tests/test_nba_lab_glyph.py",
+ "cases": [
+  {
+   "id": "nba-lab-glyph-off-centre",
+   "why": "zero is no longer the centre of every frame, so the glyphs stop reading as one scale.",
+   "find": "  const x = v => Math.round((pad + (v + span) / (2 * span) * (width - 2 * pad)) * 10) / 10;",
+   "replace": "  const x = v => Math.round((pad + (v + span) / span * (width - 2 * pad)) * 10) / 10;",
+   "expect_caught_by": "test_the_port_draws_what_the_nfl_draws"
+  },
+  {
+   "id": "nba-lab-glyph-zero-said-wrong",
+   "why": "an interval that crosses zero is announced as excluding it.",
+   "find": "${lo <= 0 && 0 <= hi ? 'includes zero' : 'excludes zero'}",
+   "replace": "${lo < 0 && 0 < hi ? 'includes zero' : 'excludes zero'}",
+   "expect_caught_by": "test_the_port_draws_what_the_nfl_draws"
+  }
+ ]
+}

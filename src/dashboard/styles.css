@@ -133,6 +133,9 @@
     width:236px; flex-shrink:0; background:linear-gradient(180deg, var(--surface), var(--bg) 140%);
     border-right:1px solid var(--border); display:flex; flex-direction:column;
     padding:var(--s6) 0; position:sticky; top:0; height:100vh;
+    /* Audit 9 D1: the sidebar holds more than a laptop window is tall. The tab list scrolls (below) and the foot
+       stays pinned; in a window too short even for that, the whole sidebar scrolls. */
+    overflow-y:auto; overscroll-behavior:contain;
   }
   .brand{padding:0 var(--s6) var(--s6); border-bottom:1px solid var(--border); margin-bottom:var(--s4);}
   .brand-mark{display:flex; align-items:center; gap:var(--s2); font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11);
@@ -183,7 +186,22 @@
   .brand h1.wordmark{letter-spacing:-.01em; line-height:1;}
   .wm-accent{color:var(--accent);}
   .brand-sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2);}
-  nav.side-nav{display:flex; flex-direction:column; gap:2px; padding:0 var(--s3);}
+  nav.side-nav{display:flex; flex-direction:column; gap:2px; padding:0 var(--s3);
+    flex:0 1 auto; min-height:132px; overflow-y:auto; overscroll-behavior:contain;
+    scrollbar-width:thin; scrollbar-color:var(--text-3) transparent;}
+  nav.side-nav > *{flex-shrink:0;}
+  /* A list cut by the window's edge says so: a "more" mark rides the list's lower edge until its end is reached
+     (audit 9 D1). Drawn only where the list really scrolls: a list that fits has no scroll timeline to run on. */
+  @supports (animation-timeline:scroll()){
+    nav.side-nav::after{
+      content:'\25BE  more'; position:sticky; bottom:0; flex:0 0 var(--s7); margin-top:calc(-1 * var(--s7)); pointer-events:none;
+      display:flex; align-items:flex-end; justify-content:center; padding-bottom:2px; opacity:0;
+      font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.08em; color:var(--text-2);
+      background:linear-gradient(to bottom, transparent, var(--surface) 50%);
+      animation:side-more linear both; animation-timeline:scroll();
+    }
+    @keyframes side-more{0%{opacity:1;} 85%{opacity:1;} 100%{opacity:0;}}
+  }
   .nav-group-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.13em; text-transform:uppercase; color:var(--text-2); padding:var(--s4) var(--s3) var(--s2);}
   .nav-btn{
     display:flex; align-items:center; gap:var(--s3); background:transparent; border:none; color:var(--text-2);
@@ -997,6 +1015,9 @@
   /* Stage 21: the week's game insights, above the cards. */
   .board-insights{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
     padding:var(--s3) var(--s4); margin:0 0 var(--s4); display:grid; gap:var(--s2);}
+  /* Audit 9 D5: the rule above sets a display value, which outranks the browser's own rule for `hidden`, so the
+     box was drawn empty, 49 px tall, whenever a week had nothing worth a look. */
+  .board-insights[hidden]{display:none;}
   .board-insights-title{margin:0; font-size:var(--fs-12); font-weight:800; letter-spacing:var(--track-label);
     text-transform:uppercase; color:var(--text-2);}
   .board-insights-list{list-style:none; margin:0; padding:0; display:grid; gap:var(--s2);}
@@ -2064,6 +2085,10 @@
 [data-score-live] div.score-on{display:block;}
 [data-score-live] .score-off{display:none;}
 [data-score-live="in"] [data-score-slot="clock"]{color:var(--accent); font-weight:700;}
+/* Audit 9 D2: a saved pick's last word follows ESPN too, so its colour does: Live in the accent, as a row the
+   build saw under way reads; Grading in the quiet colour a locked row has. No pick keeps its row's colour. */
+[data-score-live="in"] [data-score-slot="result"]{color:var(--accent);}
+[data-score-live="post"] [data-score-slot="result"]{color:var(--text-2);}
 [data-score-live] [data-score-slot="game"]{font-variant-numeric:tabular-nums;}
 
 /* Stage 80 item 62 (F14): with no connection the page shown is this

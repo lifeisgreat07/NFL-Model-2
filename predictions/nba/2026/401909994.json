@@ -1,0 +1,79 @@
+{
+ "game_id": "401909994",
+ "season": 2026,
+ "slate": "2026-11-16",
+ "start_utc": "2026-11-17T00:00:00Z",
+ "home": "BOS",
+ "away": "ORL",
+ "model_a": 0.8359,
+ "model_b": 0.7474,
+ "pick": "BOS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.8732
+ },
+ "features": {
+  "point_matchup": 7.943152,
+  "efficiency_matchup": 8.041402,
+  "availability_matchup": 0.126793
+ },
+ "market": {
+  "game_id": "401909994",
+  "home": "BOS",
+  "away": "ORL",
+  "start_utc": "2026-11-17T00:00:00Z",
+  "read_utc": "2026-11-16T21:31:41Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -360.0,
+  "away_price": 287.0,
+  "home_prob": 0.7518
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-16T21:31:41Z",
+  "home": [
+   {
+    "athlete_id": "4397424",
+    "name": "Neemias Queta",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5107251",
+    "name": "Izaiyah Nelson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065654",
+    "name": "Jonathan Isaac",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5214637",
+    "name": "Noah Penda",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432573",
+    "name": "Paolo Banchero",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-16T21:31:41Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-15",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14255,
+  "training_games_priced": 14214,
+  "training_ids_sha256": "df8c1e762d2ab5c34254d467ed948687bacf751cedf030cf6ebbdc5f2e578683"
+ },
+ "code_sha256": "7fb46b20e0f288bf29c5fbdfc625a3a65cfba4e31f01da07c53cfecca08be877",
+ "code_commit": "83eb02b898bd5855746fc83f0a3d4d2b1e708915"
+}

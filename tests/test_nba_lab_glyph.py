@@ -1,10 +1,13 @@
-"""The NBA's Model Lab reads as the NFL's does (Stage 79 item 51, the 2026-10-13 UI/UX audit's B4).
+"""The NBA's and NHL's Model Labs read as the NFL's does (Stage 79 item 51, the 2026-10-13 UI/UX audit's B4;
+audit 9, finding D10).
 
 The NBA printed its decisions as bold text and its intervals as figures
 only; the NFL's Model Lab shows a neutral pill and draws each interval
 against zero (Stage 18). The NBA's page is built in the browser, so the
-glyph is a port of generate_dashboard.interval_glyph to nba.js; this runs
-the port under node and holds it to the Python original, number by number.
+glyph is a port of generate_dashboard.interval_glyph, which lived in nba.js
+and since audit 9 lives in src/core/day_board.js, which both day boards load: the
+NHL had kept printing bare intervals and bold words under a column headed Label.
+This runs the port under node and holds it to the Python original, number by number.
 
 Run with: pytest tests/test_nba_lab_glyph.py -v
 """
@@ -15,11 +18,15 @@ import shutil
 import subprocess
 from pathlib import Path
 
+import pytest
+
 from src.sports.nfl.generate_dashboard import interval_glyph
 from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
-JS = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
+JS = (ROOT / 'src' / 'core' / 'day_board.js').read_text(encoding='utf-8')
+BOARDS = {s: (ROOT / 'src' / 'sports' / s / 'pages' / f'{s}.js').read_text(encoding='utf-8') for s in ('nhl', 'nba')}
+NFL_BODY = (ROOT / 'src' / 'dashboard' / 'body.html').read_text(encoding='utf-8')
 NODE = shutil.which('node')
 CASES = [(-0.0905, -0.1086, -0.0719), (0.0008, 0.0002, 0.0015), (-0.0109, -0.0319, 0.0096), (0.0, -0.00001, 0.00004),
          (0.001, 0.0, 0.002)]   # an interval ending exactly at zero includes it
@@ -54,9 +61,22 @@ def test_the_port_draws_what_the_nfl_draws():
         assert all(abs(a - b) <= 0.11 for a, b in zip(js_numbers, py_numbers)), (d, lo, hi, js_numbers, py_numbers)
 
 
-def test_each_question_shows_the_glyph_and_its_decision_as_a_pill():
-    body = JS[JS.index('function renderModelLab(){'):]
+@pytest.mark.parametrize('sport', ['nhl', 'nba'])
+def test_each_question_shows_the_glyph_and_its_decision_as_a_pill(sport):
+    body = BOARDS[sport][BOARDS[sport].index('function renderModelLab(){'):]
     row = body[:body.index('.join(\'\');')]
     assert '<span class="lab-lead">${intervalGlyph(q.diff, q.low, q.high)}</span>' in row
     assert '<span class="lab-tags"><span class="conf-tag tag-neutral">${escapeHtml(q.label)}</span></span>' in row
     assert '<b>${q.label}</b>' not in row
+
+
+def test_the_glyph_is_drawn_from_one_place():
+    for sport, src in BOARDS.items():
+        assert 'function intervalGlyph(' not in src and 'function plainSigned(' not in src, sport
+
+
+def test_every_model_labs_decision_column_is_headed_decision():
+    head = '<th scope="col" class="num">Interval</th><th scope="col">Decision</th>'
+    for sport, src in BOARDS.items():
+        assert head in src and '<th scope="col">Label</th>' not in src, sport
+    assert '<th scope="col">Result</th><th scope="col">Decision</th>' in NFL_BODY
