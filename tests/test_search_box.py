@@ -58,7 +58,8 @@ NAV = ('<nav><button class="nav-btn active" data-page="board" aria-current="page
 
 
 def test_a_sports_pages_are_read_from_its_sidebar():
-    assert search.pages(NAV) == [['board', 'Week Board'], ['changelog', "What's Changed"]], \
+    # Audit 9 D14: at the address every sport gives the page (#changes), not the NFL's id for it (changelog).
+    assert search.pages(NAV) == [['board', 'Week Board'], ['changes', "What's Changed"]], \
         'the phone bar repeats them and is not read twice'
 
 
@@ -94,7 +95,7 @@ def test_the_index_holds_published_sports_only(tmp_path):
     (tmp_path / 'nfl' / 'index.html').write_text(NAV, encoding='utf-8')
     found = search.index(tmp_path, {'nfl'})
     assert {t[0] for t in found['teams']} == {'nfl'} and len(found['teams']) == 32
-    assert found['pages'] == [['nfl', 'board', 'Week Board'], ['nfl', 'changelog', "What's Changed"]]
+    assert found['pages'] == [['nfl', 'board', 'Week Board'], ['nfl', 'changes', "What's Changed"]]
     assert found['experiments'] == []
 
 
@@ -102,7 +103,7 @@ def test_the_index_holds_published_sports_only(tmp_path):
 
 INDEX = {'teams': [['nfl', 'SEA', 'Seattle Seahawks'], ['nhl', 'SEA', 'Seattle Kraken'], ['nba', 'BOS', 'Boston Celtics'],
                    ['nhl', 'OTC', 'Old Tampa Club'], ['nhl', 'TBL', 'Tampa Bay Lightning']],
-         'pages': [['nfl', 'board', 'Week Board'], ['nfl', 'accuracy', 'Season Accuracy'], ['nfl', 'teamdive', 'Team Deep-Dive'],
+         'pages': [['nfl', 'board', 'Week Board'], ['nfl', 'accuracy', 'Season Accuracy'], ['nfl', 'teams', 'Teams'],
                    ['nhl', 'teams', 'Teams'], ['nhl', 'accuracy', 'Season Accuracy'], ['nba', 'board', 'Day Board']],
          'experiments': [['nfl', 'early-season-extra-shrinkage', 'Early-season extra shrinkage']]}
 GAMES = [{'s': 'nhl', 't': '2026-10-15T23:00:00Z', 'a': 'SEA', 'h': 'TBL', 'g': '2026020111', 'k': 'wait'},
@@ -126,7 +127,7 @@ def test_sea_finds_both_seattles_their_games_and_season_accuracy():
 
 def test_each_thing_found_leads_where_it_lives_from_this_page():
     got = {(g[0], g[1], g[3]): g[2] for g in find('sea')}
-    assert got[('Teams', 'Seattle Seahawks', 'NFL · Team Deep-Dive')] == '../nfl/#team/SEA'
+    assert got[('Teams', 'Seattle Seahawks', 'NFL · Teams')] == '../nfl/#team/SEA'
     assert got[('Teams', 'Seattle Kraken', 'NHL · Teams')] == '../nhl/#team/SEA'
     assert got[('Games', 'SEA @ TBL', 'NHL · Thu 7:00 PM')] == '../nhl/#game/2026020111'
     assert got[('Games', 'SEA @ DEN', 'NFL · Thu 8:15 PM · Leans SEA 56%')] == '../nfl/#game/2026_week6-SEA-DEN'
@@ -144,7 +145,7 @@ def test_every_word_typed_must_start_a_word_and_a_name_that_starts_with_it_leads
 
 
 def test_with_nothing_typed_it_offers_this_sports_pages():
-    assert [g[1] for g in find('')] == ['Week Board', 'Season Accuracy', 'Team Deep-Dive']
+    assert [g[1] for g in find('')] == ['Week Board', 'Season Accuracy', 'Teams']
     assert find('', base='', here='Home') == []
     assert 'Type a team, a game or a page.' in PAL
 

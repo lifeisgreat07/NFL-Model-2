@@ -207,12 +207,18 @@ renderChangelog();
 
    parseRoute and routeHash are pure, so the suite runs them under node. */
 const ROUTE_PAGES = ['board','ratings','teamdive','picks','accuracy','modellab','method','changelog','reliability'];
+/* Audit 9 D14: every sport's pages have one address each (src/core/page_tabs.py). Two of the NFL's
+   pages keep their older ids inside the page; their addresses are the shared ones, and the old
+   addresses still open them (parseRoute) and are replaced by the new on arrival (wireRoutes). */
+const ROUTE_ADDRESS = {teamdive:'teams', changelog:'changes'};
+const ROUTE_PAGE_OF = Object.fromEntries(Object.entries(ROUTE_ADDRESS).map(([page, addr]) => [addr, page]));
 function parseRoute(hash, known){
   const raw = String(hash || '').replace(/^#/, '');
   if(/(^|&)picks=/.test(raw)) return null;
   if(raw === '') return {page:'board'};
   const slash = raw.indexOf('/');
-  const head = slash === -1 ? raw : raw.slice(0, slash);
+  const said = slash === -1 ? raw : raw.slice(0, slash);
+  const head = ROUTE_PAGE_OF[said] || said;
   let arg = slash === -1 ? '' : raw.slice(slash + 1);
   try{ arg = decodeURIComponent(arg); }catch(e){ arg = ''; }
   if(head === 'team') return known.teams.includes(arg) ? {page:'teamdive', team:arg} : {page:'teamdive'};
@@ -227,7 +233,7 @@ function routeHash(r){
   if(r.page === 'teamdive' && r.team) return '#team/' + encodeURIComponent(r.team);
   if(r.page === 'board' && r.week) return '#board/' + encodeURIComponent(r.week);
   if(r.page === 'modellab' && r.experiment) return '#modellab/' + encodeURIComponent(r.experiment);
-  return '#' + r.page;
+  return '#' + (ROUTE_ADDRESS[r.page] || r.page);
 }
 /* Stage 76 item 9 (the 2026-10-13 audit's F4): a game's address is its week
    and its two clubs, #game/2026_week6-SEA-DEN. Nothing in the data has to
@@ -405,6 +411,9 @@ function openGame(key){
   // A link that opens on a page focuses its heading, as a tap on the page's
   // nav button does (Stage 76 item 10: it left focus on <body>).
   if(location.hash) applyRoute(parseRoute(location.hash, routeKnown), {focus:true});
+  // An old address (#teamdive, #changelog) is replaced by the page's address now.
+  const old = /^#(teamdive|changelog)$/.exec(location.hash || '');
+  if(old) history.replaceState(null, '', routeUrl({page: old[1]}));
 })();
 /* Stage 80 item 64 (V5): the printed sheet's header says when it was printed. */
 window.addEventListener('beforeprint', () => {

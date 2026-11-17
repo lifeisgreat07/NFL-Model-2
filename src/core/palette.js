@@ -24,7 +24,7 @@ function palItems(index, games, base, now){
   const items = [];
   (index.teams || []).forEach(([s, abbr, name]) => items.push({group: 'Teams', label: name, words: `${abbr} ${name}`,
     href: href(s, s === 'nba' ? '' : `#team/${encodeURIComponent(abbr)}`),
-    note: `${NAME[s]} · ${s === 'nba' ? pageName['nba:board'] || 'Day Board' : pageName[s + (s === 'nfl' ? ':teamdive' : ':teams')] || 'Teams'}`}));
+    note: `${NAME[s]} · ${s === 'nba' ? pageName['nba:board'] || 'Day Board' : pageName[s + ':teams'] || 'Teams'}`}));
   (Array.isArray(games) ? games : []).filter(g => Date.parse(g.t) > now - 3 * 3600 * 1000 && NAME[g.s]).forEach(g => {
     const pick = g.k === 'pick' ? ` · ${g.p} ${g.c}%` : g.k === 'lean' ? ` · Leans ${g.p} ${g.c}%` : '';
     items.push({group: 'Games', label: `${g.a} @ ${g.h}`, words: `${g.a} ${g.h} ${g.a}@${g.h}`,

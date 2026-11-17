@@ -37,10 +37,10 @@ HASHES = ['', '#', '#board', '#board/2026_week2', '#board/1999_week1', '#team/KC
           '#team/ZZZ', '#team/', '#ratings', '#modellab/qb-feature-trailing-epa-dropback',
           '#modellab/no-such-row', '#part-method', '#picks=abc', '#ratings&picks=abc',
           '#board/2026_week2&picks=abc',
-          '#team/%E0%A4', '#Ratings', 'board']
+          '#team/%E0%A4', '#Ratings', 'board', '#teams', '#changes', '#teamdive', '#changelog']
 ROUTES = [{'page': 'board'}, {'page': 'board', 'week': '2026_week2'}, {'page': 'teamdive', 'team': 'KC'},
           {'page': 'teamdive'}, {'page': 'modellab', 'experiment': 'qb-feature-trailing-epa-dropback'},
-          {'page': 'method'}]
+          {'page': 'method'}, {'page': 'changelog'}]
 NAMES = ['QB feature (trailing EPA/dropback)', 'Ridge alpha tuning (200 -> 15)',
          '  Early-season QB-change interaction term  ', 'x' * 80]
 
@@ -106,8 +106,15 @@ def test_share_links_and_page_anchors_are_not_routes(run):
 
 
 def test_route_hash_writes_what_parse_route_reads(run):
-    assert run['hashes'] == ['#board', '#board/2026_week2', '#team/KC', '#teamdive',
-                             '#modellab/qb-feature-trailing-epa-dropback', '#method']
+    # Audit 9 D14: Teams and What's Changed are at the addresses every sport gives them (src/core/page_tabs.py).
+    assert run['hashes'] == ['#board', '#board/2026_week2', '#team/KC', '#teams',
+                             '#modellab/qb-feature-trailing-epa-dropback', '#method', '#changes']
+
+
+def test_the_shared_addresses_and_the_old_ones_open_the_same_pages(run):
+    p = run['parsed']
+    assert p['#teams'] == p['#teamdive'] == {'page': 'teamdive'}
+    assert p['#changes'] == p['#changelog'] == {'page': 'changelog'}
 
 
 def test_experiment_slugs_are_plain_and_short(run):
