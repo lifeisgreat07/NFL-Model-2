@@ -1,0 +1,20 @@
+{
+  "target": "src/dashboard/styles.css",
+  "tests": "tests/test_table_system.py",
+  "cases": [
+    {
+      "id": "wide-first-column-not-pinned",
+      "why": "a table that scrolls sideways on a phone lets its first column scroll away, so the columns scrolled to are read against no row.",
+      "find": "  .table-wrap:not(.fits) :is(th, td):first-child{position:sticky; left:0; z-index:4; background:var(--surface);\n",
+      "replace": "  .table-wrap:not(.fits) :is(th, td):first-child{left:0; z-index:4; background:var(--surface);\n",
+      "expect_caught_by": "test_a_table_that_scrolls_sideways_keeps_its_rows_name_in_view"
+    },
+    {
+      "id": "wide-pinned-under-the-zero-line",
+      "why": "the pinned team column sits under a scrolled bar's zero line, which shows through it as the row scrolls.",
+      "find": "  .table-wrap:not(.fits) #ratings-table :is(th, td):nth-child(2){position:sticky; left:44px; z-index:4;\n",
+      "replace": "  .table-wrap:not(.fits) #ratings-table :is(th, td):nth-child(2){position:sticky; left:44px; z-index:1;\n",
+      "expect_caught_by": "test_a_table_that_scrolls_sideways_keeps_its_rows_name_in_view"
+    }
+  ]
+}

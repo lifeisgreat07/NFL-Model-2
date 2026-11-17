@@ -40,6 +40,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
 from pathlib import Path
+from typing import Any
 
 from src.core import csp
 
@@ -364,6 +365,69 @@ def add_strip(out: Path, results: list[SportResult],
     return [p for p in pages if inject_strip(out / p, block)]
 
 
+#: The sport menu (audit 9 D3, Mark's M1 B on 2026-11-16): each sport's row
+#: in every page's switcher carries the season's record, written here as the
+#: strip is, and src/core/sport_menu.js, which closes an open menu on Esc or
+#: a click elsewhere. A page kept from the live site has its old records and
+#: script replaced.
+MENU_JS = ROOT / 'src' / 'core' / 'sport_menu.js'
+MENU_MARK = 'data-site-menu'
+_MENU_OLD = re.compile(r'<script[^>]*\bdata-site-menu\b[^>]*>.*?</script>\n?', re.S)
+_MENU_REC = re.compile(r'(<span class="sm-rec" data-rec="([a-z]+)">)[^<]*(</span>)')
+
+
+def menu_records(results: list[SportResult],
+                 readers: dict[str, Callable[[], dict[str, Any]]] | None = None) -> dict[str, str]:
+    """Each published sport's record as its home card counts it (src/site/home.py: Model B's graded NFL
+    picks, the NHL's and NBA's graded picks), "won-lost"; none for a sport with no graded pick yet."""
+    from src.site import home
+    published = {r.sport for r in results if r.published and r.sport in SPORTS}
+    read = readers or {'nfl': home.nfl_facts, 'nhl': home.nhl_facts, 'nba': home.nba_facts}
+    out = {}
+    for sport in SPORTS:
+        if sport not in published or sport not in read:
+            continue
+        facts = read[sport]()
+        rec = facts.get('record') if facts.get('built') else None
+        if rec and (rec['won'] or rec['lost']):
+            out[sport] = f"{int(rec['won'])}-{int(rec['lost'])}"
+    return out
+
+
+def menu_block() -> str:
+    from src.core.page_comments import strip_page_comments
+    script = strip_page_comments('<script>\n' + MENU_JS.read_text(encoding='utf-8') + '</script>')
+    return script.replace('<script>', f'<script {MENU_MARK}>', 1) + '\n'
+
+
+def inject_menu(page: Path, records: dict[str, str], block: str) -> bool:
+    """Write the records into one built page's menus and put the script before its </body>: only a page
+    whose switcher has the record slots."""
+    if not page.exists():
+        return False
+    html = _MENU_OLD.sub('', page.read_text(encoding='utf-8'))
+    if 'class="sm-rec"' not in html or '</body>' not in html:
+        return False
+    html = _MENU_REC.sub(lambda m: m.group(1) + records.get(m.group(2), '') + m.group(3), html)
+    at = html.rindex('</body>')
+    page.write_text(html[:at] + block + html[at:], encoding='utf-8')
+    return True
+
+
+def add_menu(out: Path, results: list[SportResult],
+             readers: dict[str, Callable[[], dict[str, Any]]] | None = None) -> list[str]:
+    """The records and the script on the home and every sport's page. The records are an extra: a failure
+    reading them is printed and the menus go out without them."""
+    try:
+        records = menu_records(results, readers)
+    except Exception as exc:  # the records' failure leaves the menus without them
+        print(f'the sport menu records were left off: {exc}')
+        records = {}
+    block = menu_block()
+    pages = ['index.html'] + [f'{s}/index.html' for s in SPORTS]
+    return [p for p in pages if inject_menu(out / p, records, block)]
+
+
 #: The search box's script and how the build marks what it puts on a page
 #: (Stage 80 item 56), as the strip's.
 PALETTE_JS = ROOT / 'src' / 'core' / 'palette.js'
@@ -607,6 +671,7 @@ def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS
     results.append(build_home(out, runner, unpublished, lock))
     add_strip(out, results)
     add_search(out, results)
+    add_menu(out, results)
     add_sheet(out)
     add_scores(out)
     add_share(out)

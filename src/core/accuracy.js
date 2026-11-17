@@ -179,7 +179,8 @@ function accSummaryHtml(games, total){
     return `<span>${s.name} <b>${r.correct}–${r.n - r.correct}</b></span>`;
   });
   const of = total > games.length ? ` <span class="slate-of">${games.length} of ${total} graded</span>` : '';
-  return `<p class="slate-summary">${parts.join(' · ')}${of}</p>`;
+  // Audit 9 D13: each forecaster's record is over the games it called, so it is said to be by forecaster.
+  return `<p class="slate-summary"><span class="slate-by">By forecaster:</span> ${parts.join(' · ')}${of}</p>`;
 }
 function accuracyHtml(games){
   return accRaceHtml(games) + accTrendHtml(games) + accDiagramHtml(games);

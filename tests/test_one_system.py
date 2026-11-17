@@ -65,6 +65,12 @@ def test_one_disclosure():
     assert markers == ['the NFL template'] * 2, f'a disclosure draws its own marker: {markers}'
     assert rules(SHARED, '.disclosure > summary::-webkit-details-marker') == ['display:none;']
     details = re.findall(r'<details\b[^>]*>', HOME + BODY + APP)
+    # The one <details> that is not a disclosure is the sport menu (audit 9 D3): a menu of links, opening over
+    # the page on a phone, whose button is a control with its own caret and no browser marker.
+    menus = [d for d in details if d == '<details class="sm">']
+    assert len(menus) == 3, f'the home and the NFL template each have their sport menus: {len(menus)}'
+    assert rules(SHARED, '.sm > summary::-webkit-details-marker') == ['display:none;']
+    details = [d for d in details if d not in menus]
     assert details and all('class="disclosure' in d for d in details), [d for d in details if 'disclosure' not in d]
 
 

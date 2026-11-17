@@ -1,0 +1,13 @@
+{
+  "target": "src/dashboard/app_accuracy.js",
+  "tests": "tests/test_scoreboard.py",
+  "cases": [
+    {
+      "id": "counts-tie-unsaid",
+      "why": "the NFL scoreboard says 136 games graded over records out of 135 and nothing about the tie between them.",
+      "find": "  const ties = undecided > 0 ?",
+      "replace": "  const ties = undecided > 9 ?",
+      "expect_caught_by": "test_a_tie_between_the_graded_count_and_the_records_is_said_in_words"
+    }
+  ]
+}

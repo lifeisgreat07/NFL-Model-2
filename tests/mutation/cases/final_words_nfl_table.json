@@ -1,0 +1,13 @@
+{
+  "target": "src/dashboard/app_board.js",
+  "tests": "tests/test_compare_mode.py",
+  "cases": [
+    {
+      "id": "final-words-table-dash",
+      "why": "the table's Result column shows a dash for a game that is over and not graded yet.",
+      "find": "    + `<td>${gradedTagHtml(g) || ended(g) || '—'}</td></tr>`).join('');\n",
+      "replace": "    + `<td>${gradedTagHtml(g) || '—'}</td></tr>`).join('');\n",
+      "expect_caught_by": "test_a_final_the_grading_has_not_reached_says_who_won_in_the_result_column"
+    }
+  ]
+}
