@@ -32,5 +32,5 @@ def test_playoff_odds_come_straight_after_the_team_in_the_header_and_in_every_ro
 def test_the_nba_standings_name_a_club_by_its_code_on_a_phone():
     assert ('<tr><th scope="row"><span class="club-full">${escapeHtml(clubName(t.team))}</span>'
             '<abbr class="club-code" title="${escapeHtml(clubName(t.team))}">${escapeHtml(t.team)}</abbr></th>') in NBA
-    assert '.club-code{display:none; text-decoration:none;}' in NBA_CSS
-    assert '@media (max-width:639px){ .club-full{display:none;} .club-code{display:inline;} }' in NBA_CSS
+    assert '[data-sport="nba"] .club-code{display:none; text-decoration:none;}' in NBA_CSS
+    assert '@media (max-width:639px){ [data-sport="nba"] .club-full{display:none;} [data-sport="nba"] .club-code{display:inline;} }' in NBA_CSS

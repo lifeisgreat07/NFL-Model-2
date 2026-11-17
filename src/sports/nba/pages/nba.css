@@ -108,5 +108,5 @@ html[data-density="compact"] .nba-row{min-height:40px;}
 .nba-change .nba-change-date{font-size:var(--fs-12); color:var(--text-3);}
 /* Audit 9 D11: the standings name a club in full, and by its code under 640 px, where the full names made
    the table scroll and pushed the playoff chances off the screen. */
-.club-code{display:none; text-decoration:none;}
-@media (max-width:639px){ .club-full{display:none;} .club-code{display:inline;} }
+[data-sport="nba"] .club-code{display:none; text-decoration:none;}
+@media (max-width:639px){ [data-sport="nba"] .club-full{display:none;} [data-sport="nba"] .club-code{display:inline;} }
