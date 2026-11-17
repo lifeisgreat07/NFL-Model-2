@@ -24,7 +24,7 @@ function palItems(index, games, base, now){
   const items = [];
   (index.teams || []).forEach(([s, abbr, name]) => items.push({group: 'Teams', label: name, words: `${abbr} ${name}`,
     href: href(s, s === 'nba' ? '' : `#team/${encodeURIComponent(abbr)}`),
-    note: `${NAME[s]} · ${s === 'nba' ? pageName['nba:board'] || 'Day Board' : pageName[s + (s === 'nfl' ? ':teamdive' : ':teams')] || 'Teams'}`}));
+    note: `${NAME[s]} · ${s === 'nba' ? pageName['nba:board'] || 'Day Board' : pageName[s + ':teams'] || 'Teams'}`}));
   (Array.isArray(games) ? games : []).filter(g => Date.parse(g.t) > now - 3 * 3600 * 1000 && NAME[g.s]).forEach(g => {
     const pick = g.k === 'pick' ? ` · ${g.p} ${g.c}%` : g.k === 'lean' ? ` · Leans ${g.p} ${g.c}%` : '';
     items.push({group: 'Games', label: `${g.a} @ ${g.h}`, words: `${g.a} ${g.h} ${g.a}@${g.h}`,
@@ -62,7 +62,10 @@ function palSearch(items, q, here){
   try{ GAMES = JSON.parse((document.getElementById('site-strip-data') || {}).textContent || '[]'); }catch(e){}
   const home = document.documentElement.hasAttribute('data-site-home');
   const base = home ? '' : '../';
-  const here = (document.querySelector('.sport-switch [aria-current="page"]') || {}).textContent || '';
+  // The current page's name in the sport menu, its own words only: the build writes the season's record
+  // beside it (audit 9 D3).
+  const cur = document.querySelector('.sport-switch [aria-current="page"]');
+  const here = cur ? [...cur.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join('').trim() : '';
   const items = palItems(INDEX, GAMES, base, Date.now());
   const GROUPS = PAL_GROUPS;
   const search = q => palSearch(items, q, here);

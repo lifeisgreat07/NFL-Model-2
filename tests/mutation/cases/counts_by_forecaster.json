@@ -1,0 +1,13 @@
+{
+  "target": "src/core/accuracy.js",
+  "tests": "tests/test_slate_summary.py",
+  "cases": [
+    {
+      "id": "counts-forecasters-unlabelled",
+      "why": "each forecaster's record on a day board loses its label, so Model B 7-5 sits beside picks 9-5 as if both counted the same games.",
+      "find": "<span class=\"slate-by\">By forecaster:</span> ",
+      "replace": "",
+      "expect_caught_by": "test_a_graded_day_on_the_nhl_and_nba_reads_the_same"
+    }
+  ]
+}

@@ -75,7 +75,8 @@ def test_a_graded_day_on_the_nhl_and_nba_reads_the_same():
                         {'a': 0.7, 'b': 0.45, 'm': 0.5, 'home': False}])
     code = ACC[ACC.index('const ACC_SERIES'):ACC.index('/* The NFL scoreboard')] + fn(ACC, 'accSummaryHtml')
     got = node(code + f'console.log(JSON.stringify([accSummaryHtml({games}, 3), accSummaryHtml({games}, 5), accSummaryHtml([], 4)]));')
-    assert text(got[0]) == 'Model B 2–1 · Model A 2–1 · Market 2–0', 'a pick of exactly 50% picks no side'
+    # Audit 9 D13: said to be each forecaster's, beside the day's picks record, which is over every graded pick.
+    assert text(got[0]) == 'By forecaster: Model B 2–1 · Model A 2–1 · Market 2–0', 'a pick of exactly 50% picks no side'
     assert text(got[1]).endswith(' 3 of 5 graded') and got[2] == ''
     for sport, picks in (('nhl', 'DATA.picks'), ('nba', 'BD.picks')):
         js = (ROOT / 'src' / 'sports' / sport / 'pages' / f'{sport}.js').read_text(encoding='utf-8')

@@ -1,0 +1,20 @@
+{
+  "target": "src/core/day_board.js",
+  "tests": "tests/test_nhl_day_board.py",
+  "cases": [
+    {
+      "id": "counts-so-far-when-all-graded",
+      "why": "a day whose every game is graded still says \"so far\", as if more were to come.",
+      "find": "${graded.length < n ? ' so far' : ''}",
+      "replace": "${' so far'}",
+      "expect_caught_by": "test_the_summary_counts_the_days_right_picks_as_mark_wrote_it"
+    },
+    {
+      "id": "counts-day-line-of-again",
+      "why": "the day line goes back to \"1 of 2 correct\", which reads as the same count as each forecaster's record beside it.",
+      "find": "  if(graded.length) s += `, picks ${right}–${graded.length - right}",
+      "replace": "  if(graded.length) s += `, ${right} of ${graded.length} correct",
+      "expect_caught_by": "test_the_summary_counts_the_days_right_picks_as_mark_wrote_it"
+    }
+  ]
+}

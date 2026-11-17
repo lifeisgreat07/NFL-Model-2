@@ -91,6 +91,27 @@ def test_the_nfl_is_scored_from_its_graded_weeks(tmp_path):
     assert 'model v2.4' in got['note'] and got['backtest_label'] == 'the 2022-2025 seasons'
 
 
+def test_each_sport_counts_its_graded_games_a_tie_included_and_an_unplayed_game_not(tmp_path):
+    """Audit 9 D13: the home says Model B was scored on N of the graded games, so each sport carries how many it
+    graded: the NFL's games with a result, a tie among them, not a locked week's unplayed games; the NHL's
+    and NBA's picks graded correct or wrong, not one still pending."""
+    write(tmp_path / 'data' / 'nfl' / 'calibration.json', {
+        'model_version': '2.4', 'backtest_seasons': [2022, 2025],
+        'models': {'model_a': {'metrics': {'n': 10}, 'decomposition': {'base_rate': 0.55}},
+                   'model_b': {'metrics': {'n': 10, 'log_loss': 0.61, 'brier': 0.21}},
+                   'market': {'metrics': {'n': 10, 'log_loss': 0.62, 'brier': 0.22}}}})
+    write(tmp_path / 'results' / 'nfl' / '2026_week1_graded.json', [
+        {'actual_home_win': 1, 'model_b_home_win_prob': 0.8, 'market_prob_home': 0.7},
+        {'actual_home_win': None, 'result': 'tie', 'model_b_home_win_prob': 0.6, 'market_prob_home': 0.6}])
+    write(tmp_path / 'results' / 'nfl' / '2026_week2_graded.json', [{'actual_home_win': None, 'model_b_home_win_prob': 0.7}])
+    got = tr.nfl(tmp_path)
+    assert got['graded'] == 2 and got['rows'][0]['live']['games'] == 1
+    day_fixture(tmp_path)
+    write(tmp_path / 'results' / 'nhl' / 'graded_2026.json',
+          [{'result': 'correct'}, {'result': 'wrong'}, {'result': 'correct'}, {'result': 'pending'}])
+    assert tr.day_sport('nhl', tmp_path)['graded'] == 3
+
+
 def test_the_committed_files_give_every_sport_a_record_that_matches_its_sources():
     got = tr.track_record()
     for sport in ('nhl', 'nba'):
@@ -106,6 +127,10 @@ def test_the_home_page_draws_each_sport_and_nothing_without_figures():
     src = HOME_JS.read_text(encoding='utf-8')
     rec = tr.track_record()
     rec['nhl']['note'] = '<b>bold</b>'
+    # Audit 9 D13: a sport whose live rows are over fewer games than it graded says how many and why.
+    g = rec['nfl']['rows'][0]['live']['games']
+    rec['nfl']['graded'] = g + 2
+    rec['nba']['graded'] = rec['nba']['rows'][0]['live']['games']
     js = (one_line(src, 'esc') + "const SPORT_NAME = {nfl:'NFL', nhl:'NHL', nba:'NBA'};\n"
           + one_line(src, 'trackNum') + function_source(src, 'trackTable', at_line_start=True)
           + function_source(src, 'trackRecord', at_line_start=True)
@@ -118,6 +143,18 @@ def test_the_home_page_draws_each_sport_and_nothing_without_figures():
     assert f"<tr><th scope=\"row\">Model B</th><td>{b['live']['log_loss']:.3f}</td><td>{b['backtest']['log_loss']:.3f}</td>" in page
     assert '&lt;b&gt;bold&lt;/b&gt;' in page and '<b>bold</b>' not in page
     assert out[1] == '' and out[2] == '', 'no tables at all when there is nothing to show'
+    assert (f'Live: Model B scored on {g} of the {g + 2} graded games through {rec["nfl"]["through"]}; '
+            'the other 2 had no winner or no Model B number.') in page
+    assert f'Live: {rec["nba"]["rows"][0]["live"]["games"]} graded games through {rec["nba"]["through"]}.' in page
+
+
+def test_each_sport_carries_its_graded_games_at_least_as_many_as_model_b_was_scored_on():
+    """Audit 9 D13: the NFL's count takes in a tie (graded, no winner), the NHL's and NBA's every graded pick, as
+    the home's record tiles count them."""
+    rec = tr.track_record()
+    for sport in ('nfl', 'nhl', 'nba'):
+        if rec[sport]:
+            assert rec[sport]['graded'] >= rec[sport]['rows'][0]['live']['games'], sport
 
 
 def test_the_section_is_hidden_until_there_is_something_to_show():

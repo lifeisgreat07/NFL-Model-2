@@ -5,8 +5,8 @@
   {
    "id": "home-tiles-model-b-label",
    "why": "the NFL tile reads \"NFL, Model B\" again (Stage 77 item 13).",
-   "find": "scoreTile(HOME.nfl, 'NFL picks')",
-   "replace": "scoreTile(HOME.nfl, 'NFL, Model B')",
+   "find": "`${SPORT_NAME[s]} picks`",
+   "replace": "`${SPORT_NAME[s]}, Model B`",
    "expect_caught_by": "test_the_tiles_say_picks"
   },
   {

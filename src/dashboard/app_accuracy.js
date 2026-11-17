@@ -717,6 +717,11 @@ function scoreboardHtml(o, mine, leftOut, nGraded){
     {name: 'Model A', subject: 'Model A', series: 'var(--series-a)', shape: 'dot', ...o.model_a},
   ];
   const race = [...rows].sort((a, b) => b.correct - a.correct);
+  // Audit 9 D13: "136 games graded" over records out of 135 said nothing about the one between them, a tie.
+  // The graded games no record counts are said in words: a tie has a result and no winner.
+  const undecided = nGraded - Math.max(...rows.map(r => r.n));
+  const ties = undecided > 0 ? `<div class="score-foot">${undecided} of the ${nGraded} graded games `
+    + `${undecided === 1 ? 'was a tie' : 'were ties'}: graded, with no winner, so no record above counts ${undecided === 1 ? 'it' : 'them'}.</div>` : '';
   // Graded picks that all came too late, or with no time, still join the
   // race as a row that says so (Stage 37 item 1, Mark's observation in the
   // 2026-10-04 audit): leaving the row out read as the picks being lost.
@@ -733,6 +738,7 @@ function scoreboardHtml(o, mine, leftOut, nGraded){
     <div class="scoreboard-verdict">${scoreboardVerdict(rows)}</div>
     ${race.map(row).join('')}
     <div class="score-axis" aria-hidden="true"><span></span><div class="score-axis-track"><span class="coin">50% &middot; a coin flip</span><span class="full">100%</span></div><span></span></div>
+    ${ties}
     ${mine || leftOut ? '' : `<div class="score-foot">${JOIN_THE_RACE}</div>`}
     ${leftOut ? `<div class="score-foot">${leftOut} Only picks made before kickoff are counted.${mine ? '' : ` ${PICKS_LIVE_HERE}`}</div>` : ''}
   </div>`;

@@ -62,3 +62,14 @@ def test_a_row_says_the_time_the_game_the_pick_and_the_result():
     assert 'KC 61%' in out and 'incorrect">Missed<' in out
     assert 'final">Final<' in row(dict(g, graded=False, status='final')), 'an ungraded final: Final, no verdict'
     assert 'Toss-up' in row(dict(g, mktB_home=50.5, graded=False)) and '">Missed' not in row(dict(g, graded=False))
+
+
+def test_a_final_the_grading_has_not_reached_says_who_won_and_nothing_about_the_pick():
+    """Audit 9 D6: the row said "Final" with no score or result while its card said who won. It says who won,
+    or Tie, in the row's neutral grey, and no Correct or Missed until grading runs (Mark, 2026-09-28)."""
+    g = {'home': 'KC', 'away': 'BUF', 'gametime_et': '20:15', 'mktB_home': 61.2, 'fbA_home': 55, 'graded': False,
+         'status': 'final', 'away_score': 24, 'home_score': 17}
+    out = row(g)
+    assert 'nfl-row-res final">BUF won<' in out
+    assert 'nfl-row-res final">Tie<' in row(dict(g, home_score=24))
+    assert 'Correct' not in out and 'Missed' not in out

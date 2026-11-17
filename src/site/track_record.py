@@ -66,7 +66,10 @@ def day_sport(sport: str, root: Path = ROOT) -> dict[str, Any] | None:
                      'live': _row(live.get('log_loss'), live.get('brier'), int(live.get('games') or 0)),
                      'backtest': _row(bt.get('log_loss'), bt.get('brier'), int(bt.get('games') or 0))})
     slope = ((fwd.get('calibration') or {}).get('model_b') or {}).get('slope')
-    return {'season': fwd['season'], 'through': fwd.get('through'), 'rows': rows,
+    # Audit 9 D13: the season's graded picks, which the live rows may be fewer than (Model B needs a market
+    # price when a pick is saved); the home page says how many of them were scored and why.
+    graded = [r for r in (_read(folder / f"graded_{fwd['season']}.json") or []) if r.get('result') in ('correct', 'wrong')]
+    return {'season': fwd['season'], 'through': fwd.get('through'), 'rows': rows, 'graded': len(graded),
             'calibration': None if not slope else {k: round(slope[k], 2) for k in ('value', 'low', 'high')},
             'backtest_label': 'the 2024-25 and 2025-26 confirmation seasons', 'note': None}
 
@@ -84,11 +87,14 @@ def nfl(root: Path = ROOT) -> dict[str, Any] | None:
     # The lock writes a week's graded file before its games are played, so the record runs through the
     # latest week with a result, not the latest file.
     graded_weeks: set[int] = set()
+    graded = 0  # every game with a result, a tie included (audit 9 D13)
     for s, w, path in weeks:
         if s != season:
             continue
         for g in json.loads(path.read_text(encoding='utf-8')):
             y = g.get('actual_home_win')
+            if y in (0, 1) or g.get('result') == 'tie':
+                graded += 1
             if y not in (0, 1):
                 continue
             if g.get('model_b_home_win_prob') is not None:
@@ -112,7 +118,7 @@ def nfl(root: Path = ROOT) -> dict[str, Any] | None:
     seasons = cal.get('backtest_seasons') or []
     if not graded_weeks:
         return None
-    return {'season': season, 'through': f'week {max(graded_weeks)}', 'rows': rows,
+    return {'season': season, 'through': f'week {max(graded_weeks)}', 'rows': rows, 'graded': graded,
             'calibration': None,
             'backtest_label': f'the {seasons[0]}-{seasons[-1]} seasons' if seasons else 'the backtest',
             'note': (f"The backtest is model v{cal.get('model_version')}; this season's picks are later "

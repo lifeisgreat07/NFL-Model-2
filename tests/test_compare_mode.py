@@ -135,3 +135,12 @@ def test_the_choice_is_kept_and_a_header_keeps_the_focus():
     assert 'if(again) again.focus();' in inst
     assert "mq.addEventListener('change'" in inst, 'across 641 px the board changes view'
     assert re.search(r'^installCompare\(\);$', APP, re.M)
+
+
+def test_a_final_the_grading_has_not_reached_says_who_won_in_the_result_column():
+    """Audit 9 D6: the table's Result said a dash for a game that was over, while its card said who won."""
+    week = [game('IND', 'TEN', 60, 62, 64, status='final', away_score=27, home_score=20),
+            game('NYJ', 'MIA', 50, 52, 54, status='final', away_score=20, home_score=20),
+            game('LV', 'DEN', 40, 42, 44, status='final')]
+    got = rows(run(f"compareTableHtml({json.dumps(week)}, {{key: null, dir: -1}}, 'chronological', 'W')"))
+    assert [r[5] for r in got] == ['IND won', 'Tie', '\u2014'], 'no score: nothing to say yet'
