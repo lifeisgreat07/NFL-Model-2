@@ -117,9 +117,12 @@ def test_the_time_column_says_final_and_how_it_ended(rows):
 
 
 def test_the_game_column_bolds_the_winner_with_the_score(rows):
-    assert rows['right']['game'] == '<b>COL 3</b> <span class="at-symbol">@</span> DAL 2'
-    assert rows['shutout']['game'] == '<b>COL 1</b> <span class="at-symbol">@</span> DAL 0'
-    assert rows['open']['game'] == 'COL <span class="at-symbol">@</span> DAL'
+    # Each team and its score in one .nhl-row-team, so they never split (audit 9 D12).
+    def team(x):
+        return f'<span class="nhl-row-team">{x}</span>'
+    assert rows['right']['game'] == f'{team("<b>COL 3</b>")} <span class="at-symbol">@</span> {team("DAL 2")}'
+    assert rows['shutout']['game'] == f'{team("<b>COL 1</b>")} <span class="at-symbol">@</span> {team("DAL 0")}'
+    assert rows['open']['game'] == f'{team("COL")} <span class="at-symbol">@</span> {team("DAL")}'
 
 
 @pytest.fixture(scope='module')

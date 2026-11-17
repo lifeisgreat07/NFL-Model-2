@@ -43,8 +43,8 @@
     {
       "id": "nhl-day-winner-not-bold",
       "why": "the row no longer marks the winner.",
-      "find": "return abbr === won ? `<b>${text}</b>` : text;",
-      "replace": "return text;",
+      "find": "return `<span class=\"nhl-row-team\">${abbr === won ? `<b>${text}</b>` : text}</span>`;",
+      "replace": "return `<span class=\"nhl-row-team\">${text}</span>`;",
       "expect_caught_by": "test_the_game_column_bolds_the_winner_with_the_score"
     },
     {

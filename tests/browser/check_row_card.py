@@ -95,6 +95,10 @@ NEW = """  return pickText(g, p).replace(' · even', '<span class="row-even"><sp
 PHONE = """  .nhl-row-pick .row-even{display:block;}
   .nhl-row-pick .row-even-sep{display:none;}
 """
+#: Since audit 9 D12 the game cell wraps at the @ on a phone, so taking out PHONE alone cuts nothing; the planted
+#: page takes this out too, which brings back the cut the phone rules exist to prevent.
+WRAP = """  .nhl-row-game{white-space:normal; overflow:visible;}
+"""
 
 
 def self_test(tmp):
@@ -114,9 +118,11 @@ def self_test(tmp):
     if html.count(PHONE) != 1:
         return problems + [f'self-test: the page holds {html.count(PHONE)} copies of the phone rule, expected 1']
     cut = tmp / 'row-card-nhl-uncut.html'
-    cut.write_text(rehash(html.replace(PHONE, '')), encoding='utf-8')
+    if html.count(WRAP) != 1:
+        return problems + [f'self-test: the page holds {html.count(WRAP)} copies of the wrap rule, expected 1']
+    cut.write_text(rehash(html.replace(PHONE, '').replace(WRAP, '')), encoding='utf-8')
     if not any('cut off' in r for r in asyncio.run(check_page(cut))):
-        problems.append('self-test: a page with no phone rule was not reported cut off')
+        problems.append('self-test: a page with neither phone rule was not reported cut off')
     return problems
 
 

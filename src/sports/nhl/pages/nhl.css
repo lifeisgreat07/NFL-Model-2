@@ -15,10 +15,17 @@
 .nhl-row-game{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .nhl-row-game .at-symbol{color:var(--text-3);}
 .nhl-row-pick{white-space:nowrap; color:var(--text-2);}
+.nhl-row-team{white-space:nowrap;}
 /* Stage 75 item 2: a close game's pick reads "TOR 51% · even", as its card
    does. On a phone "even" takes its own line under the pick, so the pick
    column keeps its width and the game beside it is not cut. */
 @media (max-width:600px){
+  /* Audit 9 D12: at 375 px the game cell was 87 to 95 px for a final game needing 96 to 99, so the home score
+     was lost to an ellipsis. As on the NBA's rows: the game wraps at the @, and the result column grows to its
+     label. */
+  .nhl-row{grid-template-columns:3.7rem minmax(0, 1fr) auto minmax(4.4rem, max-content) 14px; column-gap:var(--s2);}
+  .nhl-row-time{white-space:nowrap;}
+  .nhl-row-game{white-space:normal; overflow:visible;}
   .nhl-row-pick{text-align:right;}
   .nhl-row-pick .row-even{display:block;}
   .nhl-row-pick .row-even-sep{display:none;}
