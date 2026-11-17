@@ -191,6 +191,7 @@
   "tests/test_model_lab_filters.py": "template/JS",
   "tests/test_model_lab_glyph.py": "isolated behavioural",
   "tests/test_model_lab_page.py": "isolated behavioural",
+  "tests/test_model_lab_rows_fold.py": "isolated behavioural",
   "tests/test_model_specs.py": "isolated behavioural",
   "tests/test_models_split_badge.py": "template/JS",
   "tests/test_more_button_pages.py": "isolated behavioural",
