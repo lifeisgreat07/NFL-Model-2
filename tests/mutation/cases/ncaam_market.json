@@ -1,0 +1,55 @@
+{
+  "target": "src/sports/ncaam/market.py",
+  "tests": "tests/test_ncaam_market.py",
+  "cases": [
+    {
+      "id": "ncaam-market-live-feed-used",
+      "why": "a live feed's price, set after the tip, counts as a book's.",
+      "find": "if 'live' in name.lower() or name in never:",
+      "replace": "if name in never:",
+      "expect_caught_by": "test_a_live_feed_a_model_and_an_unknown_provider_are_never_the_market"
+    },
+    {
+      "id": "ncaam-market-unknown-provider-used",
+      "why": "a provider the registration has not classified is used at once.",
+      "find": "            unclassified.add(name)\n            continue\n",
+      "replace": "            unclassified.add(name)\n",
+      "expect_caught_by": "test_a_live_feed_a_model_and_an_unknown_provider_are_never_the_market"
+    },
+    {
+      "id": "ncaam-market-mean-of-books",
+      "why": "the market is the books' mean, so one stale book drags it.",
+      "find": "statistics.median(ps)",
+      "replace": "statistics.mean(ps)",
+      "expect_caught_by": "test_the_market_is_the_median_of_the_books"
+    },
+    {
+      "id": "ncaam-market-closing-price-ignored",
+      "why": "the listed price is used where ESPN gives a closing one.",
+      "find": "closing = pd.notna(row.close_home_price) and pd.notna(row.close_away_price)",
+      "replace": "closing = False",
+      "expect_caught_by": "test_the_closing_price_is_used_where_espn_gives_one"
+    },
+    {
+      "id": "ncaam-market-incoherent-price-used",
+      "why": "a price whose two sides cannot both be a book's is used.",
+      "find": "    if not PRICE_SUM[0] <= ih + ia <= PRICE_SUM[1]:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_an_incoherent_price_and_a_missing_one_are_not_used"
+    },
+    {
+      "id": "ncaam-market-margin-left-in",
+      "why": "the book's margin stays in the probability, so the market's two sides sum above one.",
+      "find": "    return ih / (ih + ia)\n",
+      "replace": "    return ih\n",
+      "expect_caught_by": "test_a_price_has_its_margin_taken_out_evenly"
+    },
+    {
+      "id": "ncaam-market-reads-every-game",
+      "why": "odds are fetched for every game of the season, six thousand requests for sixty-seven games.",
+      "find": "for gid in games.loc[games['tournament_id'] == NCAA, 'game_id']:",
+      "replace": "for gid in games['game_id']:",
+      "expect_caught_by": "test_every_listed_provider_is_stored_as_read_and_the_file_is_read_back"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "target": "src/sports/ncaam/ratings.py",
+  "tests": "tests/test_ncaam_ratings.py",
+  "cases": [
+    {
+      "id": "ncaam-lock-reads-the-walk",
+      "why": "a tournament game's locked margin is its walk-forward one, so a later round is forecast with the earlier rounds played and the backtest knows more than the locked bracket will.",
+      "find": "lock = frozen[h] - frozen[w] if frozen is not None",
+      "replace": "lock = beta[h] - beta[w] if frozen is not None",
+      "expect_caught_by": "test_the_lock_never_reads_a_tournament_game_and_the_walk_does"
+    },
+    {
+      "id": "ncaam-lock-refrozen-each-day",
+      "why": "the ratings are frozen again on every tournament day, so the lock moves with each round.",
+      "find": "if frozen is None and pd.notna(t_first) and day >= t_first:",
+      "replace": "if pd.notna(t_first) and day >= t_first:",
+      "expect_caught_by": "test_the_lock_never_reads_a_tournament_game_and_the_walk_does"
+    },
+    {
+      "id": "ncaam-neutral-keeps-the-home-edge",
+      "why": "a neutral game is given the fitted home edge, so the club ESPN lists as home is favoured at a site that is nobody's.",
+      "find": "walk = beta[h] - beta[w] + beta[0] * site",
+      "replace": "walk = beta[h] - beta[w] + beta[0]",
+      "expect_caught_by": "test_a_neutral_game_gets_no_home_edge_and_a_home_game_does"
+    },
+    {
+      "id": "ncaam-decay-runs-backwards",
+      "why": "the recency weight grows with age, so November decides a March rating.",
+      "find": "u = 1.0 if h_days is None else 2.0 ** (age / h_days)",
+      "replace": "u = 1.0 if h_days is None else 2.0 ** (-age / h_days)",
+      "expect_caught_by": "test_the_running_sums_give_the_same_margins_as_a_fresh_weighted_ridge"
+    },
+    {
+      "id": "ncaam-home-edge-penalised",
+      "why": "the ridge shrinks the home edge with the clubs, which the registration says it does not.",
+      "find": "    m[0, 0] -= lam\n",
+      "replace": "",
+      "expect_caught_by": "test_the_running_sums_give_the_same_margins_as_a_fresh_weighted_ridge"
+    },
+    {
+      "id": "ncaam-own-day-feeds-the-rating",
+      "why": "a day's games are added to the sums before the day is solved, so each game's margin helps forecast itself.",
+      "find": "            beta = solve(a, b, 1.0 if h_days is None",
+      "replace": "            add_day(a, b, h, w, site, block['margin'].to_numpy(float), 1.0)\n            beta = solve(a, b, 1.0 if h_days is None",
+      "expect_caught_by": "test_a_games_own_day_never_feeds_its_expected_margin"
+    },
+    {
+      "id": "ncaam-curve-gains-an-intercept",
+      "why": "the curve is fitted with an intercept, so the listed home club, usually the better seed, gets an edge at a neutral site.",
+      "find": "fit_intercept=False",
+      "replace": "fit_intercept=True",
+      "expect_caught_by": "test_the_curve_has_no_intercept"
+    },
+    {
+      "id": "ncaam-tournament-flag-trusted",
+      "why": "a tournament game ESPN fails to flag as neutral is forecast as a home game.",
+      "find": "'neutral': (g['neutral_site'] == 'True') | tournament,",
+      "replace": "'neutral': (g['neutral_site'] == 'True'),",
+      "expect_caught_by": "test_the_history_is_read_with_tournament_games_neutral_whatever_the_flag_says"
+    },
+    {
+      "id": "ncaam-curve-rows-from-december",
+      "why": "the curve's rows start a month early, on ratings with a handful of games behind them.",
+      "find": "return pd.Timestamp(year=season + 1, month=1, day=1)",
+      "replace": "return pd.Timestamp(year=season, month=12, day=1)",
+      "expect_caught_by": "test_margins_keeps_only_the_curve_rows_and_runs_each_season_on_its_own"
+    }
+  ]
+}

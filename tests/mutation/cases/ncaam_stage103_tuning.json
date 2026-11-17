@@ -1,0 +1,20 @@
+{
+  "target": "experiments/ncaam/stage103/results/tuning.json",
+  "tests": "tests/test_ncaam_backtest.py",
+  "cases": [
+    {
+      "id": "ncaam-tuning-choice-edited",
+      "why": "the chosen setting is edited by hand to one the search did not prefer, so the confirmation runs on a setting no result supports.",
+      "find": "\"chosen\": {\n  \"H_days\": null,\n  \"lambda\": 1.0",
+      "replace": "\"chosen\": {\n  \"H_days\": null,\n  \"lambda\": 3.0",
+      "expect_caught_by": "test_the_tuning_on_file_is_the_registered_grid_on_the_registered_games_and_chose_its_lowest_log_loss"
+    },
+    {
+      "id": "ncaam-tuning-seasons-edited",
+      "why": "the file claims a season the tuning was not registered to read.",
+      "find": "  2017,\n  2018\n ],",
+      "replace": "  2017,\n  2018,\n  2019\n ],",
+      "expect_caught_by": "test_the_tuning_on_file_is_the_registered_grid_on_the_registered_games_and_chose_its_lowest_log_loss"
+    }
+  ]
+}
