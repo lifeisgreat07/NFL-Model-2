@@ -67,7 +67,9 @@ def test_from_twenty_days_there_is_none():
 @pytest.mark.parametrize('sport', ['nhl', 'nba'])
 def test_the_page_prints_it_and_says_why_only_while_it_applies(sport):
     src = day_script(sport).replace('\r\n', '\n')
-    js = function_source(src, 'forwardHtml') + "function calibrationTable(){ return ''; }\n"
+    # Audit 9 D15: forwardHtml says its dates in words, by the shared dayText.
+    js = (function_source(src, 'dayText') + function_source(src, 'forwardHtml')
+          + "function calibrationTable(){ return ''; }\n")
 
     def render(days):
         diff, d = series(days)
