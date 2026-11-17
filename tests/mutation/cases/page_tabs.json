@@ -1,0 +1,70 @@
+{
+  "target": "src/dashboard/body.html",
+  "tests": "tests/test_page_tabs.py",
+  "cases": [
+    {
+      "id": "tabs-nfl-teams-old-name",
+      "target": "src/dashboard/body.html",
+      "why": "the NFL's sidebar calls Teams \"Team Deep-Dive\" again, a name the other two sports do not use for the same page.",
+      "find": "Teams</button>",
+      "replace": "Team Deep-Dive</button>",
+      "expect_caught_by": "test_the_sidebar_shows_the_shared_tabs_in_the_shared_order_under_the_shared_names"
+    },
+    {
+      "id": "tabs-nfl-changes-before-checking",
+      "target": "src/dashboard/body.html",
+      "why": "the NFL's sidebar puts What's Changed before Checking the AI's work again, the other order from the other sports.",
+      "find": "    <button class=\"nav-btn\" data-page=\"reliability\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 12l2 2 4-4\"/><path d=\"M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z\"/></svg>Checking the AI&#39;s work</button>\n    <button class=\"nav-btn\" data-page=\"changelog\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 8v4l3 2\"/><path d=\"M3.05 11a9 9 0 1 1 .5 4\"/><path d=\"M3 21v-5h5\"/></svg>What&#39;s Changed</button>\n",
+      "replace": "    <button class=\"nav-btn\" data-page=\"changelog\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 8v4l3 2\"/><path d=\"M3.05 11a9 9 0 1 1 .5 4\"/><path d=\"M3 21v-5h5\"/></svg>What&#39;s Changed</button>\n    <button class=\"nav-btn\" data-page=\"reliability\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 12l2 2 4-4\"/><path d=\"M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z\"/></svg>Checking the AI&#39;s work</button>\n",
+      "expect_caught_by": "test_the_sidebar_shows_the_shared_tabs_in_the_shared_order_under_the_shared_names"
+    },
+    {
+      "id": "tabs-nhl-standings-odds",
+      "target": "src/sports/nhl/pages/body.html",
+      "why": "the NHL's sidebar says Standings Odds where the NBA's says Standings.",
+      "find": "Standings</button>",
+      "replace": "Standings Odds</button>",
+      "expect_caught_by": "test_the_sidebar_shows_the_shared_tabs_in_the_shared_order_under_the_shared_names"
+    },
+    {
+      "id": "tabs-nba-more-sheet-order",
+      "target": "src/sports/nba/pages/body.html",
+      "why": "the NBA's More sheet lists Methodology before Model Lab, unlike its sidebar and the other sports' sheets.",
+      "find": "    <button class=\"bnav-more-item\" data-page=\"modellab\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2\"/><path d=\"M9 2h6M6 15h12\"/></svg><span>Model Lab</span></button>\n    <button class=\"bnav-more-item\" data-page=\"method\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z\"/><path d=\"M9 12h6M9 16h6M9 8h2\"/></svg><span>Methodology</span></button>\n",
+      "replace": "    <button class=\"bnav-more-item\" data-page=\"method\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z\"/><path d=\"M9 12h6M9 16h6M9 8h2\"/></svg><span>Methodology</span></button>\n    <button class=\"bnav-more-item\" data-page=\"modellab\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2\"/><path d=\"M9 2h6M6 15h12\"/></svg><span>Model Lab</span></button>\n",
+      "expect_caught_by": "test_the_phone_bar_and_its_more_sheet_hold_the_rest_in_the_same_order"
+    },
+    {
+      "id": "tabs-nhl-heading-not-the-tab",
+      "target": "src/sports/nhl/pages/body.html",
+      "why": "the NHL's ratings page is headed Ratings under a tab called Power Ratings.",
+      "find": "      <h2>Power Ratings</h2>",
+      "replace": "      <h2>Ratings</h2>",
+      "expect_caught_by": "test_each_pages_heading_is_its_tabs_name"
+    },
+    {
+      "id": "tabs-nfl-router-forgets-the-addresses",
+      "target": "src/dashboard/app_pages.js",
+      "why": "the NFL's router no longer gives Teams and What's Changed the shared addresses, so a link to #teams opens nothing.",
+      "find": "const ROUTE_ADDRESS = {teamdive:'teams', changelog:'changes'};\n",
+      "replace": "const ROUTE_ADDRESS = {};\n",
+      "expect_caught_by": "test_both_routers_know_the_old_addresses_this_list_names"
+    },
+    {
+      "id": "tabs-old-address-not-read-on-the-nhl",
+      "target": "src/core/routes.js",
+      "why": "an NFL address of old (#teamdive) pasted onto the NHL's page opens the board instead of Teams.",
+      "find": "  const head = ROUTE_OLD[said] || said;\n",
+      "replace": "  const head = said;\n",
+      "expect_caught_by": "test_an_old_address_opens_its_page_on_the_other_sports_too"
+    },
+    {
+      "id": "tabs-old-address-kept",
+      "target": "src/core/routes.js",
+      "why": "arriving at an old address leaves it in the bar, so a copied link keeps spreading the old address.",
+      "find": "    if(ROUTE_OLD[location.hash.replace(/^#/, '')]) history.replaceState(null, '', url(first.page));\n",
+      "replace": "",
+      "expect_caught_by": "test_arriving_at_an_old_address_replaces_it_with_the_new"
+    }
+  ]
+}

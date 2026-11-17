@@ -37,8 +37,10 @@ def _text(fragment: str) -> str:
 
 
 def pages(page: str) -> list[list[str]]:
-    """A built sport page's pages, as its sidebar lists them: [name, label]."""
-    return [[name, _text(label)] for name, label in _NAV.findall(page)]
+    """A built sport page's pages, as its sidebar lists them: [address, label] (audit 9 D14: the address,
+    not the NFL's older ids, src/core/page_tabs.py)."""
+    from src.core.page_tabs import address
+    return [[address(name), _text(label)] for name, label in _NAV.findall(page)]
 
 
 def experiment_slug(text: str) -> str:
