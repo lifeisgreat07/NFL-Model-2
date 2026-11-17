@@ -4,17 +4,17 @@
   "cases": [
     {
       "id": "switch-s1-pills-back",
-      "why": "the sport pages' links go back to 28 px pills, under a phone's tap target and unlike the home page's",
-      "find": "  .sport-switch a{display:inline-flex; align-items:center; min-height:40px; padding:0 var(--s3);\n",
-      "replace": "  .sport-switch a{display:inline-flex; align-items:center; min-height:28px; padding:0 var(--s3);\n",
-      "expect_caught_by": "test_the_links_are_forty_pixel_segments"
+      "why": "the menu's rows go back to 28 px, under a phone's tap target",
+      "find": "  .sport-switch a{display:flex; align-items:center; min-height:44px; padding:0 var(--s3);\n",
+      "replace": "  .sport-switch a{display:flex; align-items:center; min-height:28px; padding:0 var(--s3);\n",
+      "expect_caught_by": "test_the_rows_and_the_button_are_full_tap_targets"
     },
     {
       "id": "switch-s1-inverted-current",
-      "why": "the current sport is filled with the text colour again, the white block S1 replaced",
-      "find": "  .sport-switch a[aria-current=\"page\"]{background:var(--surface); color:var(--text);",
-      "replace": "  .sport-switch a[aria-current=\"page\"]{background:var(--text); color:var(--surface);",
-      "expect_caught_by": "test_the_current_sport_is_raised_not_inverted"
+      "why": "the current page is filled with the text colour again, the white block S1 replaced",
+      "find": "  .sport-switch a[aria-current=\"page\"]{background:var(--surface-2); color:var(--text);",
+      "replace": "  .sport-switch a[aria-current=\"page\"]{background:var(--text); color:var(--surface-2);",
+      "expect_caught_by": "test_the_current_page_is_raised_not_inverted"
     },
     {
       "id": "switch-s1-sidebar-edge",
@@ -22,6 +22,13 @@
       "find": "  .sidebar .sport-switch{margin:var(--s3) var(--s4) 0; width:auto;}\n",
       "replace": "",
       "expect_caught_by": "test_in_the_sidebar_it_keeps_inside_the_margins"
+    },
+    {
+      "id": "switch-s1-marker-back",
+      "why": "the browser's own triangle comes back beside the menu's caret, two markers on one button",
+      "find": "  .sm > summary::-webkit-details-marker{display:none;}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_button_is_one_rounded_control_and_the_list_a_panel"
     }
   ]
 }

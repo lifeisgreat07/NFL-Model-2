@@ -16,9 +16,10 @@ body{ flex-direction:column; }
 .home-theme{ width:44px; height:44px; flex:none; border-radius:var(--r-md); border:1px solid var(--border);
   background:transparent; color:var(--text); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
 .home-theme svg{ width:18px; height:18px; }
-.home-switch{ margin-top:0; }  /* Stage 78 item 37 (X10): the shared .sport-switch, placed in the home bar. */
+.home-switch{ margin-top:0; }  /* Stage 78 item 37 (X10): the shared .sport-switch (since audit 9 D3, a menu), placed in the home bar. */
+.home-switch .sm-list{ left:auto; right:0; }  /* the menu opens leftward from the bar's right end */
 .home-switch span.is-unbuilt{ font-size:var(--fs-13); font-weight:700; padding:0 var(--s3);
-  color:var(--text-3); min-height:40px; display:inline-flex; align-items:center; cursor:default; }
+  color:var(--text-3); min-height:44px; display:flex; align-items:center; cursor:default; }
 .home-card:focus-visible, .home-brand:focus-visible, .home-theme:focus-visible,
 .home-links a:focus-visible, .home-faq summary:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 .home-main{ width:100%; max-width:1100px; margin:0 auto; padding:var(--s7) var(--s5) var(--s8); display:grid; gap:var(--s4); align-content:start; }
@@ -118,6 +119,7 @@ body{ flex-direction:column; }
   .home-theme{ grid-column:3; grid-row:1; }
   .home-search{ grid-column:2; grid-row:1; }  /* Stage 80 item 56: the search button, left of the theme */
   .home-switch{ grid-column:1 / -1; justify-self:start; }
+  .home-switch .sm-list{ left:0; right:auto; }
   .home-wordmark{ font-size:var(--fs-20); }
   .home-mark{ width:18px; height:18px; }
   .home-sub{ font-size:var(--fs-16); }
