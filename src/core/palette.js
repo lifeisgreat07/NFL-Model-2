@@ -62,7 +62,10 @@ function palSearch(items, q, here){
   try{ GAMES = JSON.parse((document.getElementById('site-strip-data') || {}).textContent || '[]'); }catch(e){}
   const home = document.documentElement.hasAttribute('data-site-home');
   const base = home ? '' : '../';
-  const here = (document.querySelector('.sport-switch [aria-current="page"]') || {}).textContent || '';
+  // The current page's name in the sport menu, its own words only: the build writes the season's record
+  // beside it (audit 9 D3).
+  const cur = document.querySelector('.sport-switch [aria-current="page"]');
+  const here = cur ? [...cur.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join('').trim() : '';
   const items = palItems(INDEX, GAMES, base, Date.now());
   const GROUPS = PAL_GROUPS;
   const search = q => palSearch(items, q, here);

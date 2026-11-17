@@ -246,6 +246,7 @@
   "tests/test_sidebar_scroll.py": "template/JS",
   "tests/test_neutral_site_rule.py": "isolated behavioural",
   "tests/test_nfl_flag_legend.py": "template/JS",
+  "tests/test_sport_menu.py": "isolated behavioural",
   "tests/test_whats_changed_complete.py": "workflow/docs/tests-of-tests",
   "tests/test_nfl_options_pdf.py": "template/JS",
   "tests/test_nfl_phone_rows.py": "template/JS",

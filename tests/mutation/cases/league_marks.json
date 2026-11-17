@@ -33,19 +33,19 @@
       "expect_caught_by": "test_a_mark_that_fails_falls_back_and_the_theme_shows_one_version"
     },
     {
-      "id": "league-mark-sidebar-loose",
+      "id": "league-mark-rows-shrink",
       "target": "src/dashboard/styles.css",
-      "why": "the sidebar pills keep their old spacing, so with the marks in them NHL and NBA run out of the switcher.",
-      "find": "  .sidebar .sport-switch a{gap:var(--s1); padding:0 var(--s1); font-size:var(--fs-11);}\n",
-      "replace": "",
-      "expect_caught_by": "test_the_sidebar_pills_tighten_so_four_fit"
+      "why": "the marks shrink to 10 px in the menu rows, too small to tell the leagues apart beside their names.",
+      "find": "  .lgm-sm{width:16px; height:16px; margin-right:var(--s1);}\n",
+      "replace": "  .lgm-sm{width:10px; height:10px; margin-right:var(--s1);}\n",
+      "expect_caught_by": "test_the_menu_is_checked_in_a_browser_with_the_marks_in"
     },
     {
       "id": "league-mark-broken-image-on-a-sport-page",
       "target": "src/sports/nhl/pages/body.html",
-      "why": "the NHL page's phone strip shows a broken-image glyph in its NFL pill when the mark fails, instead of hiding it.",
-      "find": "<nav class=\"sport-switch sport-strip\" aria-label=\"Sports\"><a href=\"../\">Home</a><a href=\"../nfl/\"><span class=\"lgm lgm-sm\" aria-hidden=\"true\"><img class=\"lgm-l\" src=\"https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/nfl.png&amp;w=36&amp;h=36\" alt=\"\" width=\"16\" height=\"16\" data-hide-on-error>",
-      "replace": "<nav class=\"sport-switch sport-strip\" aria-label=\"Sports\"><a href=\"../\">Home</a><a href=\"../nfl/\"><span class=\"lgm lgm-sm\" aria-hidden=\"true\"><img class=\"lgm-l\" src=\"https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/nfl.png&amp;w=36&amp;h=36\" alt=\"\" width=\"16\" height=\"16\">",
+      "why": "the NHL page's phone menu shows a broken-image glyph in its NFL row when the mark fails, instead of hiding it.",
+      "find": "<nav class=\"sport-switch sport-strip\" aria-label=\"Sports\"><details class=\"sm\"><summary><span class=\"lgm lgm-sm\" aria-hidden=\"true\"><img class=\"lgm-l\" src=\"https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/nhl.png&amp;w=36&amp;h=36\" alt=\"\" width=\"16\" height=\"16\" data-hide-on-error><img class=\"lgm-d\" src=\"https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500-dark/nhl.png&amp;w=36&amp;h=36\" alt=\"\" width=\"16\" height=\"16\" data-hide-on-error></span>NHL<span class=\"sm-caret\" aria-hidden=\"true\"></span></summary><div class=\"sm-list\"><a href=\"../\">Home</a><a href=\"../nfl/\"><span class=\"lgm lgm-sm\" aria-hidden=\"true\"><img class=\"lgm-l\" src=\"https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/nfl.png&amp;w=36&amp;h=36\" alt=\"\" width=\"16\" height=\"16\" data-hide-on-error>",
+      "replace": "<nav class=\"sport-switch sport-strip\" aria-label=\"Sports\"><details class=\"sm\"><summary><span class=\"lgm lgm-sm\" aria-hidden=\"true\"><img class=\"lgm-l\" src=\"https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/nhl.png&amp;w=36&amp;h=36\" alt=\"\" width=\"16\" height=\"16\" data-hide-on-error><img class=\"lgm-d\" src=\"https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500-dark/nhl.png&amp;w=36&amp;h=36\" alt=\"\" width=\"16\" height=\"16\" data-hide-on-error></span>NHL<span class=\"sm-caret\" aria-hidden=\"true\"></span></summary><div class=\"sm-list\"><a href=\"../\">Home</a><a href=\"../nfl/\"><span class=\"lgm lgm-sm\" aria-hidden=\"true\"><img class=\"lgm-l\" src=\"https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/nfl.png&amp;w=36&amp;h=36\" alt=\"\" width=\"16\" height=\"16\">",
       "expect_caught_by": "test_every_sport_pages_switchers_carry_the_marks_and_hide_a_failed_one"
     },
     {
