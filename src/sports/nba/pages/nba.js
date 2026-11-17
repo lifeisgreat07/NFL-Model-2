@@ -409,7 +409,7 @@ function rowHtml(g, p, nowMs){
       <span class="nba-row-time"><span class="score-off">${rowTime(g, p)}</span>${scoreSlot('clock')}</span>
       <span class="nba-row-game"><span class="score-off">${rowGame(g)}</span>${scoreSlot('game')}</span>
       <span class="nba-row-pick">${rowPick(g, p)}</span>
-      <span class="nba-row-result ${r.cls}">${r.text}</span>${CHEVRON}
+      <span class="nba-row-result ${r.cls}">${resultCell(scoreMark(g) !== '', p, r)}</span>${CHEVRON}
     </button>
     <div class="nba-row-detail" id="${id}" hidden>${p ? pickedCard(g, p) : waitingCard(g)}</div>
   </li>`;
@@ -534,29 +534,6 @@ document.addEventListener('keydown', e => {
 });
 
 /* ---------- model lab ---------- */
-/* Stage 79 item 51 (the 2026-10-13 audit's B4): the NBA's decisions read as
-   the NFL Model Lab's do, a neutral pill, and each interval is drawn against
-   zero with the NFL's glyph (generate_dashboard.interval_glyph, Stage 18):
-   one frame per row with zero at its centre, the interval and its ends, and
-   a dot at the difference, on the row's own scale. */
-function plainSigned(x){
-  let places = 4;
-  while(places < 8 && x !== 0 && Number(Math.abs(x).toFixed(places)) === 0) places++;
-  return `${x < 0 ? '−' : '+'}${Math.abs(x).toFixed(places)}`;
-}
-function intervalGlyph(d, lo, hi){
-  const width = 96, height = 14, pad = 5, mid = height / 2;
-  const span = Math.max(Math.abs(lo), Math.abs(hi), Math.abs(d)) || 1;
-  const x = v => Math.round((pad + (v + span) / (2 * span) * (width - 2 * pad)) * 10) / 10;
-  const label = `${plainSigned(d)}, interval ${plainSigned(lo)} to ${plainSigned(hi)}, ${lo <= 0 && 0 <= hi ? 'includes zero' : 'excludes zero'}`;
-  return `<svg class="lab-ci" role="img" aria-label="${label}" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">`
-    + `<rect class="lab-ci-frame" x="0.5" y="0.5" width="${width - 1}" height="${height - 1}" rx="3"/>`
-    + `<line class="lab-ci-zero" x1="${x(0)}" y1="0" x2="${x(0)}" y2="${height}"/>`
-    + `<line class="lab-ci-range" x1="${x(lo)}" y1="${mid}" x2="${x(hi)}" y2="${mid}"/>`
-    + `<line class="lab-ci-range" x1="${x(lo)}" y1="${mid - 4}" x2="${x(lo)}" y2="${mid + 4}"/>`
-    + `<line class="lab-ci-range" x1="${x(hi)}" y1="${mid - 4}" x2="${x(hi)}" y2="${mid + 4}"/>`
-    + `<circle class="lab-ci-point" cx="${x(d)}" cy="${mid}" r="3"/></svg>`;
-}
 function renderModelLab(){
   const rows = Object.entries(Q).map(([id, q]) => `<tr><th scope="row">${id}</th><td>${QUESTION[id] || ''}</td><td class="num">${signed(q.diff, 4)}</td><td class="num"><span class="lab-lead">${intervalGlyph(q.diff, q.low, q.high)}</span>[${signed(q.low, 4)}, ${signed(q.high, 4)}]</td><td>${q.label ? `<span class="lab-tags"><span class="conf-tag tag-neutral">${escapeHtml(q.label)}</span></span>` : 'a measurement'}</td></tr>`).join('');
   const chosen = DATA.tuning.chosen;
@@ -565,7 +542,7 @@ function renderModelLab(){
   document.getElementById('modellab-body').innerHTML = `
     <p class="nba-lede">Registered before any NBA model was fitted (<code>experiments/nba/stage61/registry.json</code>), tuned on ${VALIDATE} (H = ${B.H_days} days, ridge strength ${B.lambda}), and answered once on ${CONFIRM}. A difference below zero means the first model forecast better. Each interval is a paired bootstrap of whole game days at ${pct(Q.H1.level, 2)}; a result counts only when the interval excludes zero.</p>
     <div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">The backtest's questions</caption>
-    <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Label</th></tr></thead>
+    <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Decision</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
     <h2 class="section-title">Scores on ${CONFIRM}</h2>
     ${heldOutTable(B.scores, FORECASTS, 'nba')}
@@ -661,6 +638,8 @@ function m2Html(m){
 /* ---------- season accuracy (Stage 104 item 1) ----------
    The NHL's page (src/sports/nhl/pages/nhl.js), on the NBA's graded picks: the
    record, the shared accuracy component, calibration and every graded pick.
+   Audit 9 (D7, M3 option A, 2026-11-16): the forward test sits here, under
+   the record it is judged instead of, not on Checking the AI's work.
    Until 2026-11-11 the record sat inside Checking the AI's work, and the NBA
    had no Season Accuracy page, which read as a scoreboard left off. */
 function renderAccuracy(){
@@ -677,7 +656,9 @@ function renderAccuracy(){
   }
   const right = graded.filter(x => x.p.result === 'correct').length;
   const list = graded.slice().sort((a, b) => (b.g.start || '').localeCompare(a.g.start || ''));
-  el.innerHTML = `<p class="nba-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the game had a price when it was saved, Model A&#39;s otherwise. This is a small sample that grows every game day, so the record alone says little: the forward test is judged on log loss, not on picks right. See Checking the AI&#39;s work.</p>
+  el.innerHTML = `<p class="nba-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the game had a price when it was saved, Model A&#39;s otherwise. This is a small sample that grows every game day, so the record alone says little: the forward test, next, is judged on log loss, not on picks right.</p>
+    <h2 class="section-title">The forward test so far</h2>
+    ${forwardHtml(BD.forward, 'nba')}
     ${accuracyHtml(accGames(graded))}
     ${calibrationHtml(graded)}
     ${gradedListHtml(list, 'nba')}`;
@@ -688,8 +669,7 @@ function renderReliability(){
     <p class="nba-lede">${driftStatus(BD.drift, BD.drift_rule)}</p>
     ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class="nba-lede">The rule is registered in <code>experiments/nba/stage65/registry.json</code>, amended on 2026-11-04, 2026-11-05 and 2026-11-11: ${driftLooks(BD.drift_rule)}</p>` : ''}
     ${spreadHtml(BD.spread, 'nba')}
-    <h2 class="section-title">The forward test so far</h2>
-    ${forwardHtml(BD.forward, 'nba')}
+    <p class="nba-lede">The forward test, the live picks scored against the market and the base rate, is on <a href="#accuracy">Season Accuracy</a>, beside the record it is judged instead of.</p>
     <h2 class="section-title">The injury report against who played</h2>
     ${m2Html(BD.m2)}
     <p class="nba-lede"><b>The drift check leans toward flagging.</b> Its baseline was measured with each game's actual players, from the box score: knowing who played lowered the backtest's log loss by ${(-Q.M1.diff).toFixed(3)} (M1). A live pick knows only the injury report before tip-off, so live log loss is expected to run up to about that much worse for a reason that is not drift, and the check may flag sooner than a like-for-like comparison would. The registration says so (<code>experiments/nba/stage65/registry.json</code>), and M2 measures the gap once there are live games.</p>

@@ -1,9 +1,15 @@
 /* The "Next games" strip (Stage 80 item 52, the 2026-10-13 UI/UX audit's
    F1; Mark chose the small cards, option B, on 2026-10-14). The next six
-   games across the three sports, on the home and on each sport's board:
+   games across the three sports, on the home:
    each a card with the sport's mark, the start in the visitor's time zone,
    the game, and its saved pick and chance, the NFL preview's lean, or when
    its pick will be saved. Each card opens its sport's board.
+
+   On a sport's board it is one line, that sport's next game only, and a
+   link to the home for the rest (audit 9 D4; M2 option A, Mark's choice of
+   2026-11-16): six cards of three sports took 101-109 px above a board
+   whose own first game then started below the fold. The board names its
+   sport on the strip's element (data-sport).
 
    The site build puts this script and the slate it reads (src/site/home.py
    slate()) on every page that has an empty #site-strip, after all four are
@@ -66,10 +72,20 @@
       + `<span class="ts-teams">${esc(r.a)} @ ${esc(r.h)}</span>`
       + `<span class="ts-pick${r.k === 'pick' ? ' is-pick' : ''}">${esc(line)}</span>${bar}</a>`;
   }
-  const next = (Array.isArray(rows) ? rows : []).filter(r => Date.parse(r.t) > NOW && NAME[r.s]).slice(0, SHOWN);
+  const ahead = (Array.isArray(rows) ? rows : []).filter(r => Date.parse(r.t) > NOW && NAME[r.s]);
+  if(!home){
+    const own = box.dataset ? box.dataset.sport : undefined;
+    const r = ahead.find(x => x.s === own);
+    if(!r) return;
+    box.innerHTML = `<p class="ts-next"><b id="ts-title">Next:</b> ${esc(r.a)} at ${esc(r.h)}, ${esc(when(r))}. `
+      + `<span class="ts-pick${r.k === 'pick' ? ' is-pick' : ''}">${esc(pickLine(r))}.</span> `
+      + `<a href="${base}">Every sport&#39;s next games</a></p>`;
+    box.hidden = false;
+    return;
+  }
+  const next = ahead.slice(0, SHOWN);
   if(!next.length) return;
-  const tag = home ? 'h2' : 'h3';
-  box.innerHTML = `<div class="ts-head"><${tag} id="ts-title">Next games</${tag}>`
+  box.innerHTML = `<div class="ts-head"><h2 id="ts-title">Next games</h2>`
     + `<span>across the three sports, in your time zone</span></div>`
     + `<div class="ts-row">${next.map(card).join('')}</div>`;
   box.hidden = false;

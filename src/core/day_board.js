@@ -208,6 +208,7 @@ function gradedListHtml(list, sport){
 
 /* Stage 84 item 7 (the 2026-11-02 review): the held-out seasons' scores with
    the registered Brier column (tests/test_heldout_table.py). */
+
 function heldOutTable(scores, names, sport){
   const rows = names.filter(([, k]) => scores[k]).map(([n, k]) => { const v = scores[k];
     return `<tr><th scope="row">${n}</th><td class="num">${Number(v.games).toLocaleString('en-US')}</td><td class="num">${v.log_loss.toFixed(4)}</td><td class="num">${v.brier.toFixed(4)}</td><td class="num">${(v.accuracy * 100).toFixed(1)}%</td></tr>`; }).join('');
@@ -311,9 +312,42 @@ function driftLooks(rule){
   return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many, resampling whole game days, is above the backtest&#39;s ${base}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
 }
 
+/* A row's last word, and on a row that src/core/scores.js watches, the word it puts in its place once ESPN has the
+   game: Live or Grading for a saved pick, No pick for a game without one (audit 9 D2). */
+function resultCell(marked, p, r){
+  if(!marked) return r.text;
+  return `<span class="score-off">${r.text}</span><span class="score-on" data-score-slot="${p ? 'result' : 'unpicked'}"></span>`;
+}
+
 function setMoreSheetOpen(open){
   const sheet = document.getElementById('bnav-more-sheet');
   if(!sheet) return;
   sheet.classList.toggle('open', open);
   sheet.inert = !open;
+}
+
+/* Audit 9 D10: the Model Lab's interval glyph, moved here from nba.js so the NHL's questions are drawn as
+   the NBA's and the NFL's are (tests/test_nba_lab_glyph.py holds it to the NFL's Python original). */
+/* Stage 79 item 51 (the 2026-10-13 audit's B4): the NBA's decisions read as
+   the NFL Model Lab's do, a neutral pill, and each interval is drawn against
+   zero with the NFL's glyph (generate_dashboard.interval_glyph, Stage 18):
+   one frame per row with zero at its centre, the interval and its ends, and
+   a dot at the difference, on the row's own scale. */
+function plainSigned(x){
+  let places = 4;
+  while(places < 8 && x !== 0 && Number(Math.abs(x).toFixed(places)) === 0) places++;
+  return `${x < 0 ? '−' : '+'}${Math.abs(x).toFixed(places)}`;
+}
+function intervalGlyph(d, lo, hi){
+  const width = 96, height = 14, pad = 5, mid = height / 2;
+  const span = Math.max(Math.abs(lo), Math.abs(hi), Math.abs(d)) || 1;
+  const x = v => Math.round((pad + (v + span) / (2 * span) * (width - 2 * pad)) * 10) / 10;
+  const label = `${plainSigned(d)}, interval ${plainSigned(lo)} to ${plainSigned(hi)}, ${lo <= 0 && 0 <= hi ? 'includes zero' : 'excludes zero'}`;
+  return `<svg class="lab-ci" role="img" aria-label="${label}" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">`
+    + `<rect class="lab-ci-frame" x="0.5" y="0.5" width="${width - 1}" height="${height - 1}" rx="3"/>`
+    + `<line class="lab-ci-zero" x1="${x(0)}" y1="0" x2="${x(0)}" y2="${height}"/>`
+    + `<line class="lab-ci-range" x1="${x(lo)}" y1="${mid}" x2="${x(hi)}" y2="${mid}"/>`
+    + `<line class="lab-ci-range" x1="${x(lo)}" y1="${mid - 4}" x2="${x(lo)}" y2="${mid + 4}"/>`
+    + `<line class="lab-ci-range" x1="${x(hi)}" y1="${mid - 4}" x2="${x(hi)}" y2="${mid + 4}"/>`
+    + `<circle class="lab-ci-point" cx="${x(d)}" cy="${mid}" r="3"/></svg>`;
 }

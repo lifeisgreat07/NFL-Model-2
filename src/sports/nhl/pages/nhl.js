@@ -343,8 +343,10 @@ function rowGame(g){
   const has = g.status === 'final' && g.hs !== null && g.hs !== undefined && g.as !== null && g.as !== undefined;
   const team = (abbr, score) => {
     const text = has ? `${abbr} ${score}` : abbr;
-    return abbr === won ? `<b>${text}</b>` : text;
+    return `<span class="nhl-row-team">${abbr === won ? `<b>${text}</b>` : text}</span>`;
   };
+  /* A team and its score never split; on a phone the game wraps at the @ rather than losing the home score to an
+     ellipsis, as the NBA's does (audit 9 D12). */
   return `${team(g.away, g.as)} <span class="at-symbol">@</span> ${team(g.home, g.hs)}`;
 }
 /* Stage 77 item 35 (L6): a day with no games names the next day that has
@@ -370,7 +372,7 @@ function rowHtml(g, p, nowMs){
       <span class="nhl-row-time"><span class="score-off">${rowTime(g, p)}</span>${scoreSlot('clock')}</span>
       <span class="nhl-row-game"><span class="score-off">${rowGame(g)}</span>${scoreSlot('game')}</span>
       <span class="nhl-row-pick">${rowPick(g, p)}</span>
-      <span class="nhl-row-result ${r.cls}">${r.text}</span>${CHEVRON}
+      <span class="nhl-row-result ${r.cls}">${resultCell(scoreMark(g) !== '', p, r)}</span>${CHEVRON}
     </button>
     <div class="nhl-row-detail" id="${id}" hidden>${p ? pickedCard(g, p) : waitingCard(g)}</div>
   </li>`;
@@ -589,7 +591,9 @@ function renderAccuracy(){
   }
   const right = graded.filter(x => x.p.result === 'correct').length;
   const list = graded.sort((a, b) => (b.g.start || '').localeCompare(a.g.start || ''));
-  el.innerHTML = `<p class="nhl-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the market had a price when it was saved, Model A&#39;s otherwise. The forward test is judged on log loss once 100 games are graded; see Checking the AI&#39;s work.</p>
+  el.innerHTML = `<p class="nhl-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the market had a price when it was saved, Model A&#39;s otherwise. The forward test, next, is judged on log loss, not on picks right.</p>
+    <h2 class="section-title">The forward test so far</h2>
+    ${forwardHtml(DATA.forward, 'nhl')}
     ${accuracyHtml(accGames(graded))}
     ${calibrationHtml(graded)}
     ${gradedListHtml(list, 'nhl')}`;
@@ -657,11 +661,11 @@ const QUESTION = {
 function renderModelLab(){
   const b = DATA.backtest, el = document.getElementById('modellab-body');
   if(!b){ el.innerHTML = stateHtml('waiting', 'No backtest results', ''); return; }
-  const rows = Object.entries(b.questions).map(([id, q]) => `<tr><th scope="row">${id}</th><td>${QUESTION[id] || ''}</td><td class="num">${signed(q.diff, 4)}</td><td class="num">[${signed(q.low, 4)}, ${signed(q.high, 4)}]</td><td>${q.label ? `<b>${q.label}</b>` : 'a measurement'}</td></tr>`).join('');
+  const rows = Object.entries(b.questions).map(([id, q]) => `<tr><th scope="row">${id}</th><td>${QUESTION[id] || ''}</td><td class="num">${signed(q.diff, 4)}</td><td class="num"><span class="lab-lead">${intervalGlyph(q.diff, q.low, q.high)}</span>[${signed(q.low, 4)}, ${signed(q.high, 4)}]</td><td>${q.label ? `<span class="lab-tags"><span class="conf-tag tag-neutral">${escapeHtml(q.label)}</span></span>` : 'a measurement'}</td></tr>`).join('');
   const s = b.scores;
   el.innerHTML = `<p class="nhl-lede">Registered before any NHL model was fitted (<code>experiments/nhl/stage56/registry.json</code>), tuned on 2022-23 and 2023-24 (H = ${b.H_days} days, K = ${Number(b.K_shots).toLocaleString('en-US')} shots), and answered once on 2024-25 and 2025-26. A difference below zero means the first model forecast better. Each interval is a paired day-block bootstrap at ${pct(b.questions.H1.level, 2)}; a result counts only when the interval excludes zero.</p>
     <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">The backtest's questions</caption>
-    <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Label</th></tr></thead>
+    <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Decision</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
     <h2 class="section-title">Scores on the held-out seasons</h2>
     ${heldOutTable(s, [['Model A', 'model_a'], ['Base rate', 'base_rate'], ['Model B', 'model_b'], ['Market', 'market']], 'nhl')}
@@ -715,8 +719,7 @@ function renderReliability(){
   el.innerHTML = `<h2 class="section-title">The drift check</h2><p class="nhl-lede">${status}</p>
     ${rule && rule.rule.checkpoints ? `<p class="nhl-lede">The rule was registered before the season (<code>experiments/nhl/stage58/registry.json</code>) and amended on 2026-11-04 and 2026-11-11: ${driftLooks(rule)}</p>` : ''}
     ${spreadHtml(DATA.spread, 'nhl')}
-    <h2 class="section-title">The forward test so far</h2>
-    ${forwardHtml(DATA.forward, 'nhl')}
+    <p class="nhl-lede">The forward test, the live picks scored against the market and the base rate, is on <a href="#accuracy">Season Accuracy</a>, beside the record it is judged instead of.</p>
     <h2 class="section-title">The projected starter against the actual one</h2>
     ${m2Html(DATA.m2)}
     <h2 class="section-title">What runs unattended</h2>

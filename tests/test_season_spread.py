@@ -106,6 +106,6 @@ def test_the_checks_page_shows_it_under_the_drift_check(sport, data, reader, sta
     _, js = function(sport)
     body = js[js.index('function renderReliability(){'):]
     assert f"${{spreadHtml({data}.spread, '{sport}')}}" in body
-    assert body.index(f"${{spreadHtml({data}.spread, '{sport}')}}") < body.index('The forward test so far')
+    assert body.index('The drift check') < body.index(f"${{spreadHtml({data}.spread, '{sport}')}}")
     site = (ROOT / 'src' / 'sports' / sport / 'site.py').read_text(encoding='utf-8')
     assert f"'spread': {reader}(PATHS.experiments / '{stage}' / 'results' / 'model_a_by_season.json')," in site
