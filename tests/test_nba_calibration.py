@@ -15,10 +15,12 @@ from pathlib import Path
 
 import pytest
 
+from tests.js_source import function_source
 from tests.optional import in_ci
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
+DAY_BOARD = (ROOT / 'src' / 'core' / 'day_board.js').read_text(encoding='utf-8')
 NODE = shutil.which('node')
 
 
@@ -72,6 +74,9 @@ def run_accuracy(bd):
              'function forwardHtml(){ return "FWD"; }'
              'function escapeHtml(s){ return String(s); } function dayDate(d){ return new Date(d + "T12:00:00Z"); }'
              'const FMT_MONTHDAY = new Intl.DateTimeFormat("en-US", {month: "short", day: "numeric", timeZone: "UTC"});')
+    # The graded list is shared (src/core/day_board.js, audit 9 D8): the real functions, not a stub.
+    stubs += re.search(r'^const GRADED_RECENT_DAYS = \d+;$', DAY_BOARD, re.M).group(0) + ''.join(
+        function_source(DAY_BOARD, n) for n in ('gradedRow', 'gradedCsv', 'gradedListHtml'))
     src = f'const BD={json.dumps(bd)};function pct(x,d){{return (x*100).toFixed(d??0)+"%";}}' + stubs + functions() + \
         'renderAccuracy(); process.stdout.write(out.innerHTML);'
     return subprocess.run([NODE, '-e', src], capture_output=True, text=True, check=True).stdout

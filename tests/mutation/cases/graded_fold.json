@@ -1,0 +1,34 @@
+{
+  "target": "src/core/day_board.js",
+  "tests": "tests/test_graded_fold.py",
+  "cases": [
+    {
+      "id": "graded-fold-drops-the-older-picks",
+      "why": "the folded part is never drawn, so every pick before the last game days disappears from the page.",
+      "find": "${older.length ? `<details class=\"disclosure graded-more\">",
+      "replace": "${false ? `<details class=\"disclosure graded-more\">",
+      "expect_caught_by": "test_the_last_seven_game_days_show_and_every_other_pick_is_one_tap_below"
+    },
+    {
+      "id": "graded-csv-only-the-recent-days",
+      "why": "the CSV holds only the picks on show, so the download promised as every graded pick is not.",
+      "find": "encodeURIComponent(gradedCsv(list))",
+      "replace": "encodeURIComponent(gradedCsv(recent))",
+      "expect_caught_by": "test_the_csv_holds_every_graded_pick_newest_first"
+    },
+    {
+      "id": "graded-csv-field-unquoted",
+      "why": "a field with a comma is written bare, so the CSV's columns slip.",
+      "find": "const cell = v => /[\",\\n]/.test(String(v)) ? `\"${String(v).replace(/\"/g, '\"\"')}\"` : String(v);",
+      "replace": "const cell = v => String(v);",
+      "expect_caught_by": "test_a_comma_or_quote_in_a_field_is_quoted_in_the_csv_and_escaped_on_the_page"
+    },
+    {
+      "id": "graded-row-unescaped",
+      "why": "a club's name goes into the page unescaped, as the NHL's table had it before audit 9.",
+      "find": "<td>${escapeHtml(x.g.away)} at ${escapeHtml(x.g.home)}</td>",
+      "replace": "<td>${x.g.away} at ${x.g.home}</td>",
+      "expect_caught_by": "test_a_comma_or_quote_in_a_field_is_quoted_in_the_csv_and_escaped_on_the_page"
+    }
+  ]
+}

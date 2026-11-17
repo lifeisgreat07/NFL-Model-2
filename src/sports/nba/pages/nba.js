@@ -661,10 +661,7 @@ function renderAccuracy(){
     ${forwardHtml(BD.forward, 'nba')}
     ${accuracyHtml(accGames(graded))}
     ${calibrationHtml(graded)}
-    <h2 class="section-title">Every graded pick</h2>
-    <div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">Graded picks</caption>
-    <thead><tr><th scope="col">Date</th><th scope="col">Game</th><th scope="col">Pick</th><th scope="col">Model</th><th scope="col">Result</th></tr></thead>
-    <tbody>${list.map(x => `<tr><td>${FMT_MONTHDAY.format(dayDate(x.g.day))}</td><td>${escapeHtml(x.g.away)} at ${escapeHtml(x.g.home)}</td><td>${escapeHtml(x.p.pick)}</td><td>${x.p.by === 'model_b' ? 'Model B' : 'Model A'}</td><td><span class="graded-tag ${x.p.result === 'correct' ? 'correct' : 'incorrect'}">${x.p.result === 'correct' ? 'Correct' : 'Missed'}</span></td></tr>`).join('')}</tbody></table></div>`;
+    ${gradedListHtml(list, 'nba')}`;
 }
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
