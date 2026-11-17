@@ -110,7 +110,11 @@ function scoresView(key, e, nowMs, fmt){
   else line += ` · ${e.clock}`;
   line += e.state === 'post' ? ' · picks are graded at the next update' : '';
   if(e.state !== 'post' && nowMs - e.at > SCORES_STALE_MS) line += ` · as of ${fmt(new Date(e.at))}`;
-  return {clock: e.clock, game: `${away} ${e.as} @ ${home} ${e.hs}`, line};
+  /* A row's last word (audit 9 D2): it came from the status saved at the last build, so a finished game said
+     "Live" and a game under way said "Locked". A saved pick reads Live while ESPN has the game on and Grading
+     once ESPN calls it final (grading waits for the next run); a game with no pick reads No pick once it starts. */
+  return {clock: e.clock, game: `${away} ${e.as} @ ${home} ${e.hs}`, line,
+          result: e.state === 'post' ? 'Grading' : 'Live', unpicked: 'No pick'};
 }
 
 (function(){
