@@ -7,7 +7,7 @@
    "why": "\"How to read a card\" goes to the Methodology page again.",
    "find": "New here? <button type=\"button\" class=\"btn btn-link\" id=\"onboarding-phone-more\" aria-expanded=\"false\" aria-controls=\"onboarding-banner\">How to read a card</button>",
    "replace": "New here? <a href=\"#method\">How to read a card</a>",
-   "expect_caught_by": "test_the_phone_line_opens_the_guide_here_not_methodology"
+   "expect_caught_by": "test_the_line_opens_the_guide_here_not_methodology_at_every_width"
   }
  ]
 }

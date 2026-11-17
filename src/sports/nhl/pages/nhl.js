@@ -133,13 +133,15 @@ function scoreLine(g){
   const extra = g.lp === 'OT' ? ' (OT)' : g.lp === 'SO' ? ' (SO)' : '';
   return `Final: ${g.away} ${g.as}, ${g.home} ${g.hs}${extra}`;
 }
-function goalieText(team, gl){
+/* Audit 9 D15: on a game already under way or over, "No report yet" said a report could still come; there it
+   says there was none when the pick was saved. */
+function goalieText(team, gl, started){
   if(!gl || !gl.name) return `${team} <b>none named</b>`;
   let pill;
   if(gl.basis !== 'projected') pill = '<span class="tag tag-outline nhl-goalie unreported">Last start</span>';
   else if(gl.status === 'Confirmed') pill = '<span class="tag tag-fill nhl-goalie confirmed">Confirmed</span>';
   else if(gl.status === 'Likely') pill = '<span class="tag tag-outline nhl-goalie likely">Likely</span>';
-  else pill = '<span class="tag tag-outline nhl-goalie unreported">No report yet</span>';
+  else pill = `<span class="tag tag-outline nhl-goalie unreported">${started ? 'No report at the pick' : 'No report yet'}</span>`;
   // Stage 77 item 34 (L7): a hidden comma, so a screen reader says
   // "Jake Allen, Confirmed", not "Jake AllenConfirmed"; the pill's margin is the gap on screen.
   return `${team} <b>${escapeHtml(gl.name)}</b><span class="visually-hidden">, </span>${pill}`;
@@ -211,7 +213,7 @@ function pickedCard(g, p){
     </div>
     <div class="card-keys">${key('b')}${key('market')}${key('a')}</div>
     <div class="market-ref">${market}</div>
-    <div class="card-qbs">Goalies: ${goalieText(g.away, p.goalies.away)} · ${goalieText(g.home, p.goalies.home)}</div>
+    <div class="card-qbs">Goalies: ${goalieText(g.away, p.goalies.away, g.status !== 'scheduled')} · ${goalieText(g.home, p.goalies.home, g.status !== 'scheduled')}</div>
     ${proofLine(g, p, DATA.proof)}
     ${SHARE_BUTTON}
   </div>`;
@@ -483,7 +485,7 @@ function sideHtml(day, byDay){
     : !picked.length ? `<p class="nhl-side-note">No pick is saved for this day yet, so no goalie is named. Each is saved by the last run before its game.</p>`
     : `<ul class="nhl-side-list">${picked.map(g => {
         const gl = DATA.picks[g.id].goalies;
-        return `<li><span class="nhl-side-game">${g.away} at ${g.home}</span><span>${goalieText(g.away, gl.away)}</span><span>${goalieText(g.home, gl.home)}</span></li>`;
+        return `<li><span class="nhl-side-game">${g.away} at ${g.home}</span><span>${goalieText(g.away, gl.away, g.status !== 'scheduled')}</span><span>${goalieText(g.home, gl.home, g.status !== 'scheduled')}</span></li>`;
       }).join('')}</ul>`;
   const prev = new Date(dayDate(day).getTime() - 864e5).toISOString().slice(0, 10);
   const graded = (byDay[prev] || ALL_BY_DAY[prev] || []).map(g => DATA.picks[g.id]).filter(p => p && (p.result === 'correct' || p.result === 'wrong'));
@@ -507,7 +509,7 @@ function renderStandings(){
     el.innerHTML = stateHtml('waiting', 'Not simulated yet', 'The daily run simulates the season in every run that saves picks.');
     return;
   }
-  const head = `<p class="nhl-lede">As of ${escapeHtml(s.as_of)}: the rest of the regular season played out ${s.simulations.toLocaleString('en-US')} times from Model A, with today&#39;s ratings held fixed. A game goes to overtime ${pct(s.overtime_share)} of the time and, once there, to a shootout ${pct(s.shootout_share_of_overtime)} of the time, as in the last two seasons. The top three of each division and two wild cards per conference make the playoffs.</p>`;
+  const head = `<p class="nhl-lede">As of ${escapeHtml(dayText(s.as_of))}: the rest of the regular season played out ${s.simulations.toLocaleString('en-US')} times from Model A, with today&#39;s ratings held fixed. A game goes to overtime ${pct(s.overtime_share)} of the time and, once there, to a shootout ${pct(s.shootout_share_of_overtime)} of the time, as in the last two seasons. The top three of each division and two wild cards per conference make the playoffs.</p>`;
   const table = div => {
     const rows = s.teams.filter(t => t.division === div).sort((a, b) => b.projected_points - a.projected_points);
     return `<div><h3>${div}</h3><div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">${div} division</caption>
@@ -541,7 +543,7 @@ function renderRatings(){
   const r = DATA.ratings, el = document.getElementById('ratings-body');
   if(!r){ el.innerHTML = stateHtml('waiting', 'No ratings yet', 'The daily run writes them every run.'); return; }
   const scale = Math.max(...r.teams.map(t => Math.abs(t.goal)), 0.01);
-  const teams = `<p class="nhl-lede">As of ${escapeHtml(r.as_of)}. A club&#39;s goal rating is how many goals a game better than an average club it has been, from a ridge regression of every earlier game&#39;s goal margin, recent games counting more. The shot rating is the same on shots on goal. Model A reads the difference between the two clubs in a game.</p>
+  const teams = `<p class="nhl-lede">As of ${escapeHtml(dayText(r.as_of))}. A club&#39;s goal rating is how many goals a game better than an average club it has been, fitted to every earlier game&#39;s goal margin, recent games counting more and every club pulled a little toward average. The shot rating is the same on shots on goal. Model A reads the difference between the two clubs in a game.</p>
     <div class="table-wrap"><table class="metrics-table nhl-ratings-table"><caption class="visually-hidden">Team ratings</caption>
     <thead><tr><th scope="col">#</th><th scope="col">Club</th><th scope="col" style="text-align:center;">${ratingAxisHtml(scale, 'Goals a game')}</th><th scope="col" class="num">Shots a game</th></tr></thead>
     <tbody>${r.teams.map((t, i) => ratingRowHtml(t, i, scale)).join('')}</tbody></table></div>`;
@@ -573,7 +575,7 @@ function calibrationHtml(graded){
     return `<tr><th scope="row">${label}</th><td class="num">${n}</td><td class="num">${said === null ? '' : pct(said, 1)}</td><td class="num">${right === null ? '' : pct(right, 1)}</td></tr>`;
   }).join('');
   const thin = graded.length < CAL_MIN * CAL_BINS.length;
-  return `<h2 class="section-title">How sure, and how often right</h2>
+  return `<h2 class="section-title">Each pick&#39;s chance, and how often it was right</h2>
     <p class="nhl-lede">Each graded pick by the chance its model gave the side it picked. A well-calibrated model is right about as often as it says.${thin ? ` With ${graded.length} graded picks, most rows hold too few games to read: a row means little under ${CAL_MIN}.` : ''}</p>
     <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">Calibration of the graded picks</caption>
     <thead><tr><th scope="col">The pick's chance</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Said, on average</th><th scope="col" class="num">Correct</th></tr></thead>
@@ -663,7 +665,7 @@ function renderModelLab(){
   if(!b){ el.innerHTML = stateHtml('waiting', 'No backtest results', ''); return; }
   const rows = Object.entries(b.questions).map(([id, q]) => `<tr><th scope="row">${id}</th><td>${QUESTION[id] || ''}</td><td class="num">${signed(q.diff, 4)}</td><td class="num"><span class="lab-lead">${intervalGlyph(q.diff, q.low, q.high)}</span>[${signed(q.low, 4)}, ${signed(q.high, 4)}]</td><td>${q.label ? `<span class="lab-tags"><span class="conf-tag tag-neutral">${escapeHtml(q.label)}</span></span>` : 'a measurement'}</td></tr>`).join('');
   const s = b.scores;
-  el.innerHTML = `<p class="nhl-lede">Registered before any NHL model was fitted (<code>experiments/nhl/stage56/registry.json</code>), tuned on 2022-23 and 2023-24 (H = ${b.H_days} days, K = ${Number(b.K_shots).toLocaleString('en-US')} shots), and answered once on 2024-25 and 2025-26. A difference below zero means the first model forecast better. Each interval is a paired day-block bootstrap at ${pct(b.questions.H1.level, 2)}; a result counts only when the interval excludes zero.</p>
+  el.innerHTML = `<p class="nhl-lede">Registered before any NHL model was fitted (<a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/experiments/nhl/stage56/registry.json">the registration</a>), tuned on 2022-23 and 2023-24 (an earlier game counting half as much every ${b.H_days} days, and a goalie&#39;s save rate pulled toward the league&#39;s until he has faced about ${Number(b.K_shots).toLocaleString('en-US')} shots), and answered once on 2024-25 and 2025-26. A difference below zero means the first model forecast better. Each interval resamples whole game days and is ${pct(b.questions.H1.level, 2)} sure, wider than the usual 95% because three questions share that 95%; a result counts only when the interval excludes zero.</p>
     <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">The backtest's questions</caption>
     <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Decision</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
@@ -717,7 +719,7 @@ function renderReliability(){
   const saved = Object.keys(DATA.picks).length;
   const status = driftStatus(d, rule);
   el.innerHTML = `<h2 class="section-title">The drift check</h2><p class="nhl-lede">${status}</p>
-    ${rule && rule.rule.checkpoints ? `<p class="nhl-lede">The rule was registered before the season (<code>experiments/nhl/stage58/registry.json</code>) and amended on 2026-11-04 and 2026-11-11: ${driftLooks(rule)}</p>` : ''}
+    ${rule && rule.rule.checkpoints ? `<p class="nhl-lede">The rule was registered before the season (<a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/experiments/nhl/stage58/registry.json">the registration</a>) and amended on Nov 4 and Nov 11, 2026: ${driftLooks(rule)}</p>` : ''}
     ${spreadHtml(DATA.spread, 'nhl')}
     <p class="nhl-lede">The forward test, the live picks scored against the market and the base rate, is on <a href="#accuracy">Season Accuracy</a>, beside the record it is judged instead of.</p>
     <h2 class="section-title">The projected starter against the actual one</h2>

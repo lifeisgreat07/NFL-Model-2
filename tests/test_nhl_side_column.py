@@ -24,6 +24,6 @@ def test_it_follows_the_selected_day():
     board = js[js.index('function renderBoard('):js.index('\nfunction ', js.index('function renderBoard('))]
     assert 'side.innerHTML = sideHtml(currentDay, byDay);' in board
     side = js[js.index('function sideHtml('):js.index('const ALL_BY_DAY')]
-    for part in ('goalieText(g.away, gl.away)', "p.result === 'correct' || p.result === 'wrong'", 'odds(t.playoff_pct)',
+    for part in ("goalieText(g.away, gl.away, g.status !== 'scheduled')", "p.result === 'correct' || p.result === 'wrong'", 'odds(t.playoff_pct)',
                  'data-page="standings"'):
         assert part in side, part

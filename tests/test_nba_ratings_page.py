@@ -19,6 +19,9 @@ from tests.optional import in_ci
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8').replace('\r\n', '\n')
+# Audit 9 D15: the ratings' date in words, by the day boards' shared dayText.
+DAY_TEXT = re.search(r'function dayText\(iso\)\{.*?\n\}\n', (ROOT / 'src' / 'core' / 'day_board.js')
+                     .read_text(encoding='utf-8').replace('\r\n', '\n'), re.S).group(0)
 NODE = shutil.which('node')
 
 
@@ -38,7 +41,7 @@ def run(call, bd):
     src = ('const out = {}; const document = {getElementById: () => out, documentElement: {getAttribute: () => null}};'
            'function stateHtml(k, t, x){ return `STATE ${t}`; } function escapeHtml(s){ return String(s); }'
            f'const BD = {json.dumps(bd)};' + one_liners + fn('logo') + fn('ratingAxisHtml') + fn('ratingRowHtml')
-           + fn('renderRatings') + call + 'process.stdout.write(out.innerHTML);')
+           + DAY_TEXT + fn('renderRatings') + call + 'process.stdout.write(out.innerHTML);')
     return subprocess.run([NODE, '-e', src], capture_output=True, text=True, encoding='utf-8', check=True).stdout
 
 
@@ -52,7 +55,7 @@ def test_power_ratings_rank_the_clubs_as_the_file_does_with_both_ratings():
     out = run('renderRatings();', BD)
     rows = re.findall(r'<td class="rank">(\d+)</td>.*?class="team-abbr">(\w+)<.*?class="net-value">([^<]+)<.*?<td class="num">([^<]+)</td></tr>', out)
     assert rows == [('1', 'BOS', '+6.0', '+5.5'), ('2', 'NY', '\u22123.0', '\u22122.4')], rows
-    assert 'As of 2026-11-11' in out and 'width:50%' in out, 'the largest rating fills its half of the bar'
+    assert 'As of Nov 11, 2026' in out and 'width:50%' in out, 'the largest rating fills its half of the bar'
 
 
 @pytest.mark.skipif(NODE is None and not in_ci(), reason='node is not installed')

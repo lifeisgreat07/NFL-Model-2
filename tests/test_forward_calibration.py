@@ -114,6 +114,8 @@ def test_the_report_calibrates_a_and_b_on_the_games_each_has():
 def functions(sport):
     js = day_script(sport).replace('\r\n', '\n')
     out = []
+    # Audit 9 D15: the lede's date in words, by the shared dayText.
+    out.append(re.search(r'function dayText\(iso\)\{.*?\n\}\n', js, re.S).group(0))
     for name in ('forwardHtml', 'calibrationTable'):
         m = re.search(rf'function {name}\(f, sport(, level)?\)\{{.*?\n\}}\n', js, re.S)
         assert m, f'{name} is not findable in {sport}.js -- re-anchor this guard'

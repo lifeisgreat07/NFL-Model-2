@@ -540,7 +540,7 @@ function renderModelLab(){
   const grid = DATA.tuning.grid.map(g => { const on = g.H_days === chosen.H_days && g.lambda === chosen.lambda;
     return `<tr${on ? ' class="nba-chosen"' : ''}><td class="num">${g.H_days}</td><td class="num">${g.lambda}</td><td class="num">${g.log_loss.toFixed(5)}</td><td>${on ? 'chosen' : ''}</td></tr>`; }).join('');
   document.getElementById('modellab-body').innerHTML = `
-    <p class="nba-lede">Registered before any NBA model was fitted (<code>experiments/nba/stage61/registry.json</code>), tuned on ${VALIDATE} (H = ${B.H_days} days, ridge strength ${B.lambda}), and answered once on ${CONFIRM}. A difference below zero means the first model forecast better. Each interval is a paired bootstrap of whole game days at ${pct(Q.H1.level, 2)}; a result counts only when the interval excludes zero.</p>
+    <p class="nba-lede">Registered before any NBA model was fitted (<a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/experiments/nba/stage61/registry.json">the registration</a>), tuned on ${VALIDATE} (an earlier game counting half as much every ${B.H_days} days, and every club&#39;s rating pulled toward average with a strength of ${B.lambda}), and answered once on ${CONFIRM}. A difference below zero means the first model forecast better. Each interval resamples whole game days and is ${pct(Q.H1.level, 2)} sure, wider than the usual 95% because three questions share that 95%; a result counts only when the interval excludes zero.</p>
     <div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">The backtest's questions</caption>
     <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Decision</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
@@ -576,7 +576,7 @@ function renderMethod(){
     <p class="nba-lede"><b>Model A</b> reads three numbers about a game, each home minus away. Two are team ratings from a ridge regression of every earlier game&#39;s margin, recent games counting more (half as much every ${B.H_days} days): one on points, one on points per 100 possessions. The third is availability: the share of each team&#39;s expected minutes that plays, where a player&#39;s expected minutes are his recent minutes per team game. A logistic regression turns the three into a home-win probability.</p>
     <p class="nba-lede"><b>Model B</b> is Model A plus the market&#39;s home-win probability: ESPN&#39;s moneyline with the bookmaker&#39;s margin taken out evenly, the closing price where there is one.</p>
     <p class="nba-lede"><b>The test.</b> Every regular-season, play-in and playoff game from ${seasonLabel(P.training_from_season)} on. Before each game day both models are refitted on every earlier game and predict that day&#39;s games, so nothing a game did is known before it. The settings were chosen on ${VALIDATE} only, then fixed, and ${CONFIRM} were scored once. ${P.budget_m} questions shared a ${pct(P.alpha)} error budget, so each interval is at ${pct(1 - P.alpha / P.budget_m, 2)}.</p>
-    <p class="nba-lede"><b>The live picks</b> (from ${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))}, registered in <code>experiments/nba/stage65/registry.json</code> before the first was saved): each game's pick is saved by the last run before tip-off and never changed. Model B makes it with ESPN's pre-game price; when ESPN has none, Kalshi's game market is the named fallback, used only when its two sides are quoted within five cents, and the card says so. With neither, the card says <b>no price</b> and Model A makes the pick. Availability comes from ESPN's injury report: every player not listed Out counts as playing.</p>
+    <p class="nba-lede"><b>The live picks</b> (from ${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))}, registered in <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/experiments/nba/stage65/registry.json">the registration file</a> before the first was saved): each game's pick is saved by the last run before tip-off and never changed. Model B makes it with ESPN's pre-game price; when ESPN has none, Kalshi's game market is the named fallback, used only when its two sides are quoted within five cents, and the card says so. With neither, the card says <b>no price</b> and Model A makes the pick. Availability comes from ESPN's injury report: every player not listed Out counts as playing.</p>
     <p class="nba-lede"><b>What the backtest knew that a live pick would not:</b> who actually played, from the box score. A live pick would know only the injury report before tip-off. The registration measures that gap (M2) once there are live games to measure it on.</p>
     ${edgeNote(DATA.tuning, 'lambda', 'ridge strength')}
     <p class="nba-lede"><b>Neutral sites.</b> A game at a neutral site (the NBA Cup final, a game abroad) still gives the listed home team its home edge. The NFL has a declared rule for those games since v2.6; none has been registered for basketball.</p>
@@ -605,7 +605,7 @@ function gradedPicks(){
 }
 function calibrationHtml(graded){
   if(!graded.length){
-    return `<h2 class="section-title">How sure, and how often right</h2>
+    return `<h2 class="section-title">Each pick&#39;s chance, and how often it was right</h2>
     <p class="nba-lede">No NBA pick has been graded yet. From opening night this table sets each graded pick's chance beside how often picks that sure came true.</p>`;
   }
   const rows = CAL_BINS.map(([lo, hi]) => {
@@ -617,7 +617,7 @@ function calibrationHtml(graded){
     return `<tr><th scope="row">${label}</th><td class="num">${n}</td><td class="num">${said === null ? '' : pct(said, 1)}</td><td class="num">${right === null ? '' : pct(right, 1)}</td></tr>`;
   }).join('');
   const thin = graded.length < CAL_MIN * CAL_BINS.length;
-  return `<h2 class="section-title">How sure, and how often right</h2>
+  return `<h2 class="section-title">Each pick&#39;s chance, and how often it was right</h2>
     <p class="nba-lede">Each graded pick by the chance its model gave the side it picked. A well-calibrated model is right about as often as it says.${thin ? ` With ${graded.length} graded picks, most rows hold too few games to read: a row means little under ${CAL_MIN}.` : ''}</p>
     <div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">Calibration of the graded picks</caption>
     <thead><tr><th scope="col">The pick's chance</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Said, on average</th><th scope="col" class="num">Correct</th></tr></thead>
@@ -667,14 +667,14 @@ function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
     <h2 class="section-title">The drift check</h2>
     <p class="nba-lede">${driftStatus(BD.drift, BD.drift_rule)}</p>
-    ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class="nba-lede">The rule is registered in <code>experiments/nba/stage65/registry.json</code>, amended on 2026-11-04, 2026-11-05 and 2026-11-11: ${driftLooks(BD.drift_rule)}</p>` : ''}
+    ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class="nba-lede">The rule is registered in <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/experiments/nba/stage65/registry.json">the live season&#39;s registration</a>, amended on Nov 4, Nov 5 and Nov 11, 2026: ${driftLooks(BD.drift_rule)}</p>` : ''}
     ${spreadHtml(BD.spread, 'nba')}
     <p class="nba-lede">The forward test, the live picks scored against the market and the base rate, is on <a href="#accuracy">Season Accuracy</a>, beside the record it is judged instead of.</p>
     <h2 class="section-title">The injury report against who played</h2>
     ${m2Html(BD.m2)}
-    <p class="nba-lede"><b>The drift check leans toward flagging.</b> Its baseline was measured with each game's actual players, from the box score: knowing who played lowered the backtest's log loss by ${(-Q.M1.diff).toFixed(3)} (M1). A live pick knows only the injury report before tip-off, so live log loss is expected to run up to about that much worse for a reason that is not drift, and the check may flag sooner than a like-for-like comparison would. The registration says so (<code>experiments/nba/stage65/registry.json</code>), and M2 measures the gap once there are live games.</p>
+    <p class="nba-lede"><b>The drift check leans toward flagging.</b> Its baseline was measured with each game's actual players, from the box score: knowing who played lowered the backtest's log loss by ${(-Q.M1.diff).toFixed(3)} (M1). A live pick knows only the injury report before tip-off, so live log loss is expected to run up to about that much worse for a reason that is not drift, and the check may flag sooner than a like-for-like comparison would. The registration says so (<a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/experiments/nba/stage65/registry.json">the registration file</a>), and M2 measures the gap once there are live games.</p>
     <h2 class="section-title">Before anything was fitted</h2>
-    <p class="nba-lede">The questions, the seasons, the settings to search, the bootstrap and the labels were written down and committed on ${escapeHtml(DATA.registered)} (<code>experiments/nba/stage61/registry.json</code>), before any NBA feature was computed on a real game. H3 had been expected to come back INCONCLUSIVE; it came back ${Q.H3.label}, and it is reported as it came out. Nothing was re-run or re-tuned. The board still shows Model B&#39;s pick when a game has a price, although H3 found the market slightly better: the pick rule was carried over unchanged from the NFL and NHL boards when the live season was registered (<code>experiments/nba/stage65/registry.json</code>), and the forward test measures Model B against the market on every live pick.</p>
+    <p class="nba-lede">The questions, the seasons, the settings to search, the bootstrap and the labels were written down and committed on ${escapeHtml(dayText(DATA.registered))} (<a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/experiments/nba/stage61/registry.json">the registration file</a>), before any NBA feature was computed on a real game. H3 had been expected to come back INCONCLUSIVE; it came back ${Q.H3.label}, and it is reported as it came out. Nothing was re-run or re-tuned. The board still shows Model B&#39;s pick when a game has a price, although H3 found the market slightly better: the pick rule was carried over unchanged from the NFL and NHL boards when the live season was registered (<a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/experiments/nba/stage65/registry.json">the registration file</a>), and the forward test measures Model B against the market on every live pick.</p>
     <h2 class="section-title">After</h2>
     <p class="nba-lede">Every number on these pages is read from the committed results files when the page is built, and tests hold those files to the registration: the whole grid searched on the validation seasons only, the lowest kept, each label following from its interval. Those tests were checked in turn, by breaking the code on purpose and confirming a test fails.</p>
     <p class="nba-lede">A separate auditing agent, Booth, re-ran the confirmation on a Linux machine before the results were merged (PR #319): it matched the committed file to within 1e-12 though not bit for bit (its largest difference was 1.6e-16), and every published figure, interval and label agreed. Booth did not re-run the tuning grid; that the full backtest, tuning included, reproduces both files byte for byte was checked only on the Windows machine that wrote them.</p>`;
@@ -690,7 +690,7 @@ function renderStandings(){
   if(!s){ el.innerHTML = stateHtml('waiting', 'Not simulated yet', 'The daily run simulates the season in every run that saves picks.'); return; }
   const [lo, hi] = s.games_listed;
   const listed = hi < 82 ? ` The schedule lists ${lo === hi ? lo : `${lo} to ${hi}`} of each club&#39;s 82 games so far: the last two are set by the NBA Cup and are counted once the league lists them.` : '';
-  const head = `<p class="nba-lede">As of ${escapeHtml(s.as_of)}: the rest of the regular season played out ${s.simulations.toLocaleString('en-US')} times from Model A without its availability term, with today&#39;s ratings held fixed, then the play-in. Each conference&#39;s top six make the playoffs; seeds 7 to 10 play in for the last two places. Holding today&#39;s ratings fixed makes these odds surer than they should be, most of all early in the season: real clubs change, and 0% or 100% means only that no simulated season went the other way.${listed}</p>`;
+  const head = `<p class="nba-lede">As of ${escapeHtml(dayText(s.as_of))}: the rest of the regular season played out ${s.simulations.toLocaleString('en-US')} times from Model A without its availability term, with today&#39;s ratings held fixed, then the play-in. Each conference&#39;s top six make the playoffs; seeds 7 to 10 play in for the last two places. Holding today&#39;s ratings fixed makes these odds surer than they should be, most of all early in the season: real clubs change, and 0% or 100% means only that no simulated season went the other way.${listed}</p>`;
   const table = conf => {
     const rows = s.teams.filter(t => t.conference === conf).sort((a, b) => b.projected_wins - a.projected_wins);
     return `<h2 class="section-title">${conf === 'East' ? 'Eastern' : 'Western'} Conference</h2><div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">${conf}</caption>
@@ -723,7 +723,7 @@ function renderRatings(){
   const r = BD.ratings, el = document.getElementById('ratings-body');
   if(!r || !r.teams.length){ el.innerHTML = stateHtml('waiting', 'No ratings yet', 'The daily run writes them every run.'); return; }
   const scale = Math.max(...r.teams.map(t => Math.abs(t.point)), 0.1);
-  el.innerHTML = `<p class="nba-lede">As of ${escapeHtml(r.as_of)}. A club&#39;s point rating is how many points a game better than an average club it has been, from a ridge regression of every earlier game&#39;s point margin, recent games counting more. The efficiency rating is the same per 100 possessions, so a fast or slow pace does not inflate it. Model A reads the difference between the two clubs in a game, with who is available.</p>
+  el.innerHTML = `<p class="nba-lede">As of ${escapeHtml(dayText(r.as_of))}. A club&#39;s point rating is how many points a game better than an average club it has been, fitted to every earlier game&#39;s point margin, recent games counting more and every club pulled a little toward average. The efficiency rating is the same per 100 possessions, so a fast or slow pace does not inflate it. Model A reads the difference between the two clubs in a game, with who is available.</p>
     <div class="table-wrap"><table class="metrics-table nba-ratings-table"><caption class="visually-hidden">Team ratings</caption>
     <thead><tr><th scope="col">#</th><th scope="col">Club</th><th scope="col" style="text-align:center;">${ratingAxisHtml(scale, 'Points a game')}</th><th scope="col" class="num">Per 100 possessions</th></tr></thead>
     <tbody>${r.teams.map((t, i) => ratingRowHtml(t, i, scale)).join('')}</tbody></table></div>`;
@@ -765,7 +765,7 @@ function renderTeams(){
   const facts = [
     rating ? `Point rating <b>${signed(rating.point, 1)}</b> a game (${rated + 1} of ${r.teams.length}), efficiency rating <b>${signed(rating.efficiency, 1)}</b> per 100 possessions.` : 'No ratings yet.',
     rec.won + rec.lost ? `<b>${rec.won}-${rec.lost}</b> this season.` : 'No games played yet this season.',
-    odds_ ? `Projected <b>${odds_.projected_wins.toFixed(1)}</b> wins; the playoffs <b>${chance(odds_.playoff_pct)}</b>, the play-in ${chance(odds_.playin_pct)}.` : 'Standings odds not simulated yet.',
+    odds_ ? `Projected <b>${odds_.projected_wins.toFixed(1)}</b> wins. Makes the playoffs in <b>${chance(odds_.playoff_pct)}</b> of simulated seasons; finishes 7th to 10th, in the play-in, in ${chance(odds_.playin_pct)}, some of them on the way to the playoffs.` : 'Standings odds not simulated yet.',
   ];
   const games = teamGames(t).filter(g => g.status === 'final' || BD.picks[g.id]);
   const row = g => {
@@ -866,7 +866,7 @@ document.querySelectorAll('#theme-toggle, .topbar-theme').forEach(btn => btn.add
 }));
 
 document.getElementById('built-line').textContent = `Updated ${new Date(DATA.built_utc).toLocaleString('en-US', {timeZone: ET, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})} ET`;
-document.getElementById('board-updated').textContent = `Updated ${new Date(DATA.built_utc).toLocaleString('en-US', {timeZone: ET, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})} ET${BD.schedule_as_of ? `, schedule as of ${BD.schedule_as_of}` : ''}`;
+document.getElementById('board-updated').textContent = `Updated ${new Date(DATA.built_utc).toLocaleString('en-US', {timeZone: ET, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})} ET${BD.schedule_as_of ? `, schedule as of ${dayText(BD.schedule_as_of)}` : ''}`;
 themeLabel();
 renderBoard();
 /* Stage 80 item 53: a star redraws the board with its team's games first. */

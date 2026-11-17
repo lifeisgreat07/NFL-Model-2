@@ -24,11 +24,12 @@ def test_the_amber_is_retired():
 
 
 def test_goalie_pills_are_shared_tags_with_their_word():
-    pills = NHL_JS[NHL_JS.index('function goalieText(team, gl){'):]
+    pills = NHL_JS[NHL_JS.index('function goalieText(team, gl, started){'):]
     pills = pills[:pills.index('\n}\n')]
     assert "'<span class=\"tag tag-fill nhl-goalie confirmed\">Confirmed</span>'" in pills
     assert "'<span class=\"tag tag-outline nhl-goalie likely\">Likely</span>'" in pills
-    assert "'<span class=\"tag tag-outline nhl-goalie unreported\">No report yet</span>'" in pills
+    # Audit 9 D15: "No report yet" before the start, "No report at the pick" once it is under way.
+    assert "`<span class=\"tag tag-outline nhl-goalie unreported\">${started ? 'No report at the pick' : 'No report yet'}</span>`" in pills
     assert "'<span class=\"tag tag-outline nhl-goalie unreported\">Last start</span>'" in pills
     assert 'accent' not in NHL_CSS[NHL_CSS.index('.nhl-goalie{'):].split('}')[0]
 
