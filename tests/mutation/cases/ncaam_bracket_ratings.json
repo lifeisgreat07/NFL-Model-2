@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/ncaam/ratings.py",
+  "tests": "tests/test_ncaam_bracket.py",
+  "cases": [
+    {
+      "id": "bracket-lock-ratings-read-the-day",
+      "why": "the lock's ratings read the games of the tournament's first day, so they are not the ones the confirmation froze.",
+      "find": "for d, block in games[games['day'] < day].groupby('day', sort=True):",
+      "replace": "for d, block in games[games['day'] <= day].groupby('day', sort=True):",
+      "expect_caught_by": "test_the_lock_s_ratings_are_the_ones_the_confirmation_froze"
+    },
+    {
+      "id": "bracket-lock-ratings-no-decay",
+      "why": "the lock's ratings weigh November like March, unlike the setting the tuning chose.",
+      "find": "u = 1.0 if h_days is None else 2.0 ** (float((d - first).days) / h_days)",
+      "replace": "u = 1.0",
+      "expect_caught_by": "test_the_lock_s_ratings_are_the_ones_the_confirmation_froze"
+    }
+  ]
+}

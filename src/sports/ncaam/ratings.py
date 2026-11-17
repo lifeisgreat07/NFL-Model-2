@@ -106,6 +106,24 @@ def add_day(a: Array, b: Array, h: npt.NDArray[Any], w: npt.NDArray[Any], site: 
             np.add.at(a, (cols[p], cols[q]), u * vals[p] * vals[q])
 
 
+def ratings_before(games: pd.DataFrame, day: pd.Timestamp, h_days: float | None, lam: float) -> dict[str, float]:
+    """Each club's rating from one season's games strictly before `day`, as `season_margins` solves it on that day:
+    the bracket's lock reads these, so a pair's expected margin is one rating minus the other (every tournament
+    game is neutral). A club with no game before `day` is rated 0."""
+    clubs = sorted(set(games['home']) | set(games['away']))
+    idx = {c: i + 1 for i, c in enumerate(clubs)}
+    k = len(clubs) + 1
+    a, b = np.zeros((k, k)), np.zeros(k)
+    first = games['day'].min()
+    for d, block in games[games['day'] < day].groupby('day', sort=True):
+        u = 1.0 if h_days is None else 2.0 ** (float((d - first).days) / h_days)
+        add_day(a, b, block['home'].map(idx).to_numpy(), block['away'].map(idx).to_numpy(),
+                (~block['neutral']).to_numpy(float), block['margin'].to_numpy(float), u)
+    age = float((day - first).days)
+    beta = solve(a, b, 1.0 if h_days is None else 0.5 ** (age / h_days), lam)
+    return {c: float(beta[i]) for c, i in idx.items()}
+
+
 def margins(games: pd.DataFrame, h_days: float | None, lam: float) -> pd.DataFrame:
     """`games` from the first curve day of each season on, with `walk` and `lock` added, in day order."""
     parts = [season_margins(g, h_days, lam) for _, g in games.groupby('season', sort=True)]
