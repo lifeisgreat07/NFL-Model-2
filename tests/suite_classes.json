@@ -136,6 +136,7 @@
   "tests/test_home_a2.py": "template/JS",
   "tests/test_home_how.py": "template/JS",
   "tests/test_home_option_a.py": "template/JS",
+  "tests/test_home_phone_order.py": "template/JS",
   "tests/test_home_since.py": "template/JS",
   "tests/test_home_tiles.py": "template/JS",
   "tests/test_home_tonight.py": "template/JS",
