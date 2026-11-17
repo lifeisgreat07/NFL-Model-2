@@ -25,7 +25,7 @@ NODE = shutil.which('node')
 
 def text(gl):
     require_tool('node')
-    fn = re.search(r'function goalieText\(team, gl\)\{.*?\n\}\n', JS, re.S)
+    fn = re.search(r'function goalieText\(team, gl, started\)\{.*?\n\}\n', JS, re.S)
     assert fn, 'goalieText is not findable -- re-anchor this guard'
     code = ("function escapeHtml(s){ return String(s); }\n" + fn.group(0)
             + 'const h = goalieText("NJD", %s); console.log(JSON.stringify([h, h.replace(/<[^>]+>/g, "")]));' % json.dumps(gl))

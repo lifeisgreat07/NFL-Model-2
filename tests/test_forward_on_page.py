@@ -32,6 +32,8 @@ def function(sport):
     """forwardHtml and the calibrationTable it calls (Stage 84 item 5)."""
     js = day_script(sport).replace('\r\n', '\n')
     out = []
+    # Audit 9 D15: the lede's date in words, by the shared dayText.
+    out.append(re.search(r'function dayText\(iso\)\{.*?\n\}\n', js, re.S).group(0))
     for name in ('forwardHtml', 'calibrationTable'):
         m = re.search(rf'function {name}\(f, sport(, level)?\)\{{.*?\n\}}\n', js, re.S)
         assert m, f'{name} is not findable in {sport}.js -- re-anchor this guard'
@@ -71,8 +73,13 @@ def test_both_pages_carry_the_same_function():
 def test_every_figure_in_the_file_is_on_the_page(sport):
     f = a_file(sport)
     html = render(sport, f)
-    assert f"{f['graded_picks']} of them through {f['through']}" in html
-    assert f"<code>{f['registered']}</code>" in html
+    # Audit 9 D15: the date in words ("Oct 21, 2026"), not as the file has it.
+    y, m, d = (int(x) for x in f['through'][:10].split('-'))
+    month = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split()[m - 1]
+    assert f"{f['graded_picks']} of them through {month} {d}, {y}" in html
+    # Audit 9 D15: the registration a link with words, not a file path in the lede.
+    assert f"<a href=\"https://github.com/lifeisgreat07/NFL-Model-2/blob/main/{f['registered']}\">the registration</a>" in html
+    assert '<code>' not in html.split('</p>')[0], 'a file path back in the lede'
     for name, s in f['scores'].items():
         row = re.search(r'<tr><th scope="row">[^<]+</th>' + ''.join(
             rf'<td class="num">{re.escape(v)}</td>' for v in (

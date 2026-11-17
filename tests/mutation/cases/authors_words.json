@@ -1,0 +1,54 @@
+{
+  "target": "src/sports/nhl/pages/nhl.js",
+  "tests": "tests/test_authors_words.py",
+  "cases": [
+    {
+      "id": "words-ridge-back-in-the-nhl-ratings",
+      "target": "src/sports/nhl/pages/nhl.js",
+      "why": "the NHL's Ratings lede says \"from a ridge regression\" again, a term only the author reads.",
+      "find": "fitted to every earlier game&#39;s goal margin, recent games counting more and every club pulled a little toward average.",
+      "replace": "from a ridge regression of every earlier game&#39;s goal margin, recent games counting more.",
+      "expect_caught_by": "test_the_ratings_say_what_the_fit_does_without_naming_it"
+    },
+    {
+      "id": "words-playoffs-plus-play-in",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "a club's page says \"the playoffs 81%, the play-in 60%\" again, which reads as 141%.",
+      "find": "Makes the playoffs in <b>${chance(odds_.playoff_pct)}</b> of simulated seasons; finishes 7th to 10th, in the play-in, in ${chance(odds_.playin_pct)}, some of them on the way to the playoffs.",
+      "replace": "the playoffs <b>${chance(odds_.playoff_pct)}</b>, the play-in ${chance(odds_.playin_pct)}.",
+      "expect_caught_by": "test_the_nbas_playoff_and_play_in_chances_do_not_read_as_one_total"
+    },
+    {
+      "id": "words-goalie-report-yet-after-the-start",
+      "target": "src/sports/nhl/pages/nhl.js",
+      "why": "a game already played says its goalie has \"No report yet\".",
+      "find": "${started ? 'No report at the pick' : 'No report yet'}",
+      "replace": "${'No report yet'}",
+      "expect_caught_by": "test_a_goalie_with_no_report_on_a_game_under_way_is_not_waiting_for_one"
+    },
+    {
+      "id": "words-one-heading-two-sections",
+      "target": "src/sports/nhl/pages/nhl.js",
+      "why": "the NHL's calibration table goes back under the chart's heading, two sections with one name.",
+      "find": "  return `<h2 class=\"section-title\">Each pick&#39;s chance, and how often it was right</h2>\n    <p class=\"nhl-lede\">",
+      "replace": "  return `<h2 class=\"section-title\">How sure, and how often right</h2>\n    <p class=\"nhl-lede\">",
+      "expect_caught_by": "test_season_accuracy_has_one_heading_a_section"
+    },
+    {
+      "id": "words-a-time-on-the-wrong-day",
+      "target": "src/core/day_board.js",
+      "why": "a time late in the Eastern evening is printed as the next day's date, the day it is in UTC.",
+      "find": "timeZone: timed ? 'America/New_York' : 'UTC'",
+      "replace": "timeZone: 'UTC'",
+      "expect_caught_by": "test_a_date_reads_as_a_date"
+    },
+    {
+      "id": "words-model-lab-h-and-k",
+      "target": "src/sports/nhl/pages/nhl.js",
+      "why": "the NHL's Model Lab lede says \"(H = 120 days, K = 2,000 shots)\" again, unexplained.",
+      "find": "(an earlier game counting half as much every ${b.H_days} days, and a goalie&#39;s save rate pulled toward the league&#39;s until he has faced about ${Number(b.K_shots).toLocaleString('en-US')} shots)",
+      "replace": "(H = ${b.H_days} days, K = ${Number(b.K_shots).toLocaleString('en-US')} shots)",
+      "expect_caught_by": "test_the_model_labs_settings_and_level_are_said_in_words"
+    }
+  ]
+}
