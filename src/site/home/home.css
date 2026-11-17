@@ -34,6 +34,20 @@ body{ flex-direction:column; }
   border-radius:var(--r-full); background:var(--accent); color:var(--surface); font-weight:800; font-size:var(--fs-16);
   text-decoration:none; }
 .home-cta-when{ font-size:var(--fs-13); color:var(--text-2); }
+/* Audit 9 D16, first half: on a phone the hero was 384 px tall and the first sport's card began 853 px down,
+   below the first screen. There the headline and its one action come first, then a starred team's games, the
+   next games and the cards, then the rest of the hero and the records. Only words that take no focus move:
+   the action, the starred games, the strip's games and the cards keep the order they have in the page, so the
+   Tab order is the order seen. */
+@media (max-width: 600px){
+  .home-hero{ display:contents; }
+  .page.active.home-page > *, .home-hero > *{ order:10; }
+  .home-hero > .home-title{ order:1; }
+  .home-hero > .home-cta{ order:2; margin-top:0; }
+  .page.active.home-page > #home-yours{ order:3; }
+  .page.active.home-page > #site-strip{ order:4; }
+  .page.active.home-page > #home-cards{ order:5; }
+}
 /* The scoreboard: each sport's record, worked out from the same files as the cards. */
 /* Stage 80 item 54 (F8): what was graded since this browser's last visit. */
 .home-since{ margin:0 0 calc(-1 * var(--s2)); font-size:var(--fs-14); color:var(--text); }
