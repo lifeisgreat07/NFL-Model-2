@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-11-17T08:12:09Z",
+  "generated_utc": "2026-11-17T08:32:41Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 802,
-    "audits_superseded": 144,
-    "pull_requests_audited": 658,
+    "audits_total": 804,
+    "audits_superseded": 145,
+    "pull_requests_audited": 659,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 4833,
+    "claims_checked": 4839,
     "discrepancies_found": 38,
-    "unverifiable": 529,
+    "unverifiable": 530,
     "pull_requests_with_a_discrepancy": 27,
     "reports_disagreeing_with_themselves": 44
   },
@@ -14162,9 +14162,67 @@
       "implicated": [],
       "inconsistencies": [],
       "superseded": false
+    },
+    {
+      "pr": 775,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/775#issuecomment-6942544235",
+      "posted_utc": "2026-11-17T08:14:43Z",
+      "head": "50e2d7c",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 6,
+      "confirmed": 5,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [
+        "prose says Confirmed: 4, block has 5",
+        "prose says Unverifiable: 2, block has 1"
+      ],
+      "superseded": true
+    },
+    {
+      "pr": 775,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/775#issuecomment-6942755185",
+      "posted_utc": "2026-11-17T08:24:58Z",
+      "head": "50e2d7c",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 6,
+      "confirmed": 5,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
     }
   ],
   "recent": [
+    {
+      "agent": "Booth",
+      "pr": 775,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/775#issuecomment-6942755185",
+      "when": "2026-11-17T08:24:58Z",
+      "says": "NEEDS HUMAN REVIEW: 5 of 6 claims confirmed, 0 wrong, 1 unverifiable"
+    },
+    {
+      "pr": 775,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/775#issuecomment-6942555360",
+      "when": "2026-11-17T08:15:13Z",
+      "agent": "Spotter",
+      "says": "#### What changed **Home.** - Navigation: in `home-1440x900-dark-head` and `home-1440x900-light-head` the header's \"Home \u25be\" dropdown is now a row of pill tabs (Home, NFL, NHL, NBA), with Home highlig\u2026"
+    },
+    {
+      "agent": "Scout",
+      "pr": null,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/44044757190",
+      "when": "2026-11-17T08:12:27Z",
+      "says": "found nothing to fix in the description"
+    },
     {
       "pr": 774,
       "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/774#issuecomment-6942209558",
@@ -14255,27 +14313,6 @@
       "when": "2026-11-17T03:31:13Z",
       "agent": "Spotter",
       "says": "Spotter did not post a reading this run: - Spotter produced no reading this run"
-    },
-    {
-      "agent": "Booth",
-      "pr": 770,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/770#issuecomment-6937249063",
-      "when": "2026-11-17T03:29:37Z",
-      "says": "SAFE TO MERGE: 5 of 6 claims confirmed, 0 wrong, 1 unverifiable"
-    },
-    {
-      "agent": "Scout",
-      "pr": null,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/44010427076",
-      "when": "2026-11-17T03:28:13Z",
-      "says": "found nothing to fix in the description"
-    },
-    {
-      "agent": "Booth",
-      "pr": 768,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/768#issuecomment-6935544428",
-      "when": "2026-11-17T01:58:44Z",
-      "says": "NEEDS HUMAN REVIEW: 5 of 6 claims confirmed, 0 wrong, 1 unverifiable"
     }
   ]
 }
