@@ -1,0 +1,27 @@
+{
+  "target": "src/site/home/home.css",
+  "tests": "tests/test_home_phone_order.py",
+  "cases": [
+    {
+      "id": "home-phone-cards-last-again",
+      "why": "on a phone the sport cards fall back below the hero, the records and the rest, 853 px down, off the first screen.",
+      "find": "  .page.active.home-page > #home-cards{ order:5; }\n",
+      "replace": "",
+      "expect_caught_by": "test_on_a_phone_the_cards_follow_the_headline_its_action_and_the_next_games"
+    },
+    {
+      "id": "home-phone-strip-after-cards",
+      "why": "on a phone the next games show after the cards though a keyboard meets them before, so Tab jumps back up the page.",
+      "find": "  .page.active.home-page > #site-strip{ order:4; }\n",
+      "replace": "  .page.active.home-page > #site-strip{ order:6; }\n",
+      "expect_caught_by": "test_on_a_phone_the_cards_follow_the_headline_its_action_and_the_next_games"
+    },
+    {
+      "id": "home-phone-hero-a-box",
+      "why": "the hero stays one box on a phone, so its words cannot be ordered after the cards and the hero is as tall as before.",
+      "find": "  .home-hero{ display:contents; }\n",
+      "replace": "",
+      "expect_caught_by": "test_on_a_phone_the_cards_follow_the_headline_its_action_and_the_next_games"
+    }
+  ]
+}

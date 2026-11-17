@@ -1,0 +1,21 @@
+{
+  "target": "src/sports/nba/pages/nba.js",
+  "tests": "tests/test_wide_tables.py",
+  "cases": [
+    {
+      "id": "wide-nba-standings-full-names",
+      "why": "the NBA's standings name every club in full on a phone again, and the playoff chances scroll off the screen.",
+      "find": "<abbr class=\"club-code\" title=\"${escapeHtml(clubName(t.team))}\">${escapeHtml(t.team)}</abbr></th>",
+      "replace": "</th>",
+      "expect_caught_by": "test_the_nba_standings_name_a_club_by_its_code_on_a_phone"
+    },
+    {
+      "id": "wide-playoff-odds-last-again",
+      "target": "src/dashboard/body.html",
+      "why": "Power Ratings' header puts Playoff Odds back at the end while each row has it after the team, so every column after the team is under the wrong heading.",
+      "find": "            <th scope=\"col\" data-key=\"team\" tabindex=\"0\" aria-sort=\"none\">Team</th>\n            <th scope=\"col\" data-key=\"playoff\"",
+      "replace": "            <th scope=\"col\" data-key=\"team\" tabindex=\"0\" aria-sort=\"none\">Team</th>\n            <th scope=\"col\" data-key=\"playof\"",
+      "expect_caught_by": "test_playoff_odds_come_straight_after_the_team_in_the_header_and_in_every_row"
+    }
+  ]
+}
