@@ -159,8 +159,8 @@ def test_the_hand_written_incidents_survived_the_rebuild():
     a card linking to it. So the writing is checked where it now lives, not
     deleted from the check."""
     page = _page()
-    for phrase in ('Incident 1', 'Case Studies', 'data-case-study="qb-rating-leak"',
-                   'The Actual Rule'):
+    for phrase in ('Incident 1', 'Case studies', 'data-case-study="qb-rating-leak"',
+                   'The actual rule'):
         assert phrase in page, f"{phrase!r} was lost in the rebuild"
     doc = (REPO_ROOT / 'docs' / 'case-studies' / 'qb-rating-leak.md').read_text(encoding='utf-8')
     for phrase in ('Nothing in the repository could reproduce its numbers',  # was Incident 2

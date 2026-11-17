@@ -47,7 +47,7 @@ function renderAgentLog(){
     quietly corrected.</p>
     <p class="rel-prov">${s.audits_total} review${s.audits_total===1?'':'s'} in total,
     ${s.audits_superseded} of them replaced by a later run of the same review and not counted.
-    Collected ${agentLog.generated_utc || 'unknown'}.</p>
+    Collected ${agentLog.generated_utc ? runStartedText(agentLog.generated_utc) + ' ET' : 'at an unknown time'}.</p>
   </div>${agentsAtWork(agentLog.recent)}`;
 }
 
@@ -131,15 +131,15 @@ function renderRecentRuns(){
       failed + ' failed'}. GitHub&#39;s own timer has started jobs hours late, so
     since October 4 an outside service also asks for each run at its scheduled
     time; those show as &ldquo;Requested&rdquo;, as does a run started by hand.
-    &ldquo;Late by&rdquo; is how long after its scheduled time a run started; seven
+    &ldquo;Started late by&rdquo; is how long after its scheduled time a run started; seven
     hours or more is in bold. Times are Eastern.</p>
     ${runs.length ? `<div class="table-wrap" data-scroll-label="Recent scheduled runs"><table class="metrics-table">
       <caption class="visually-hidden">The last scheduled runs, newest first</caption>
       <thead><tr><th scope="col">Job</th><th scope="col">Started</th>
-      <th scope="col">Result</th><th scope="col">Min</th><th scope="col">Late by</th></tr></thead>
+      <th scope="col">Result</th><th scope="col">Minutes</th><th scope="col">Started late by</th></tr></thead>
       <tbody>${body}</tbody>
     </table></div>` : stateHtml('note', 'No runs yet.', 'GitHub returned no runs for these jobs.')}
-    <p class="rel-prov">Read ${escapeHtml(recentRuns.read_utc || 'at an unknown time')} (UTC).
+    <p class="rel-prov">Read ${recentRuns.read_utc ? runStartedText(recentRuns.read_utc) + ' ET' : 'at an unknown time'}.
     Each result links to that run on GitHub.</p>
   </div>`;
 }

@@ -217,7 +217,7 @@ def test_the_reader_measures_each_run_against_its_own_workflows_cron_lines():
 def test_the_table_has_a_late_by_column_and_marks_seven_hours():
     rows = [dict(ROWS[0], late_minutes=3), dict(ROWS[1], late_minutes=463), dict(ROWS[2], late_minutes=None)]
     out = render({'read_utc': 't', 'runs': rows})
-    assert '<th scope="col">Late by</th>' in out
+    assert '<th scope="col">Started late by</th>' in out
     assert '<td class="num">0h 03m</td>' in out
     assert '<td class="num"><b>7h 43m</b></td>' in out
     assert '<td class="num">&ndash;</td>' in out.split('Running')[1]
