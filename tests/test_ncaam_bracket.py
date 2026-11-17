@@ -180,6 +180,27 @@ def test_the_filled_bracket_s_champion_is_the_club_with_the_best_title_odds():
         assert final['winner'] == max(chances, key=lambda c: chances[c]['champion'])
 
 
+def test_the_filled_bracket_is_chosen_from_the_top_not_from_each_game_s_favourite():
+    """Forecasts need not be transitive. B beats A in their game, but A beats the other half far more often, so
+    A has the better title odds: chosen from the top, A wins the semifinal too; picking each part's likeliest
+    winner from the bottom would put B in the final and leave the champion out of its own final."""
+    forecasts = {('A', 'B'): 0.4, ('A', 'C'): 0.95, ('A', 'D'): 0.95, ('B', 'C'): 0.4, ('B', 'D'): 0.4,
+                 ('C', 'D'): 0.5}
+
+    def p(x, y):
+        return forecasts[(x, y)] if (x, y) in forecasts else 1 - forecasts[(y, x)]
+    tree = (('A', 'B'), ('C', 'D'))
+    chances = {c: {r: 0.0 for r in b.ROUNDS} for c in 'ABCD'}
+    for c, q in b.odds(tree, p).items():
+        chances[c].update(q)
+    assert chances['A']['champion'] > chances['B']['champion'] and chances['B']['final'] > chances['A']['final']
+    games = b.filled(tree, p, chances)
+    final = games[-1]
+    assert final['winner'] == 'A' and 'A' in final['clubs']
+    semi = [g for g in games if set(g['clubs']) == {'A', 'B'}][0]
+    assert semi['winner'] == 'A' and semi['forecast'] == pytest.approx(0.4)
+
+
 def test_the_lock_s_ratings_are_the_ones_the_confirmation_froze():
     rng = np.random.default_rng(5)
     days = pd.date_range('2021-12-01', '2022-03-10')
