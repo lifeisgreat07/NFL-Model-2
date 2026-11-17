@@ -1,0 +1,74 @@
+{
+ "game_id": "401910005",
+ "season": 2026,
+ "slate": "2026-11-17",
+ "start_utc": "2026-11-18T04:00:00Z",
+ "home": "LAL",
+ "away": "CHA",
+ "model_a": 0.7167,
+ "model_b": 0.716,
+ "pick": "LAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8438,
+  "away": 0.8981
+ },
+ "features": {
+  "point_matchup": 5.015426,
+  "efficiency_matchup": 4.879279,
+  "availability_matchup": -0.054371
+ },
+ "market": {
+  "game_id": "401910005",
+  "home": "LAL",
+  "away": "CHA",
+  "start_utc": "2026-11-18T04:00:00Z",
+  "read_utc": "2026-11-17T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -289.0,
+  "away_price": 236.0,
+  "home_prob": 0.714
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-17T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4066457",
+    "name": "Austin Reaves",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433136",
+    "name": "Walker Kessler",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3032979",
+    "name": "Dennis Schroder",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061575",
+    "name": "Kon Knueppel",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-17T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-16",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14263,
+  "training_games_priced": 14222,
+  "training_ids_sha256": "5a8a400c2e1bd703ae213c15eddc92523b92662b3f3b7c837d4c67500dc3a5d8"
+ },
+ "code_sha256": "61d30e4282c5d50a026b17a156e179a3dd630ac06cf927d0468315995febd62e",
+ "code_commit": "a736efc6d496a8e79ba56d3a36e4235afb482936"
+}
