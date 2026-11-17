@@ -7,6 +7,8 @@ The site the deploy publishes:
     nfl/index.html        the NFL's board, and nfl/dist/ its printable picks
     nhl/index.html        the NHL's pages
     nba/index.html        the NBA's pages
+    march/index.html      the March Madness bracket, only from its lock to
+                          the middle of April (Stage 103 item 4)
     og-card.png, assets/  shared by every page; .nojekyll
 
 **Each sport builds on its own.** A builder runs in a process of its own, so
@@ -36,11 +38,12 @@ import urllib.error
 import urllib.request
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
 from src.core import csp
+from src.core.sport import sport_paths
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -253,13 +256,52 @@ def assemble_shared(out: Path) -> None:
         shutil.copyfile(ROOT / src, target)
 
 
-def build_home(out: Path, runner: Runner = run, unpublished: tuple[str, ...] = ()) -> SportResult:
+#: The March Madness bracket (Stage 103 item 4): a page of its own at march/,
+#: not one of SPORTS, built only in its weeks from the year's lock
+#: (src/sports/ncaam/page.py writes nothing on any other day).
+MARCH = 'march'
+MARCH_LOCKS = sport_paths('ncaam').data / 'bracket'
+
+
+def build_march(out: Path, runner: Runner = run, today: date | None = None) -> tuple[SportResult, Path | None]:
+    """The bracket page, in a process of its own, and the lock it was built
+    from (None when no page was written: another month, or no lock). Its
+    failure is reported like a sport's and leaves the site without the page;
+    a day with no page to build is not a failure."""
+    day = today or datetime.now(UTC).date()
+    lock = MARCH_LOCKS / f'lock_{day.year}.json'
+    res = SportResult(MARCH)
+    page = out / MARCH / 'index.html'
+    cmd = [sys.executable, '-B', '-m', 'src.sports.ncaam.page', '--out', str(page), '--today', day.isoformat(),
+           '--lock', str(lock)]
+    try:
+        code = runner(cmd)
+        res.log.append(f'src.sports.ncaam.page: exit {code}')
+        if code != 0:
+            raise RuntimeError(f'src.sports.ncaam.page exited {code}')
+        if not page.exists():
+            return res, None
+        left = unfilled(page.read_text(encoding='utf-8'))
+        if left:
+            raise RuntimeError(f'march/index.html has unfilled placeholders: {left}')
+        res.built = True
+        return res, lock
+    except Exception as exc:  # the bracket page's failure, and only its own
+        res.error = str(exc)
+    shutil.rmtree(out / MARCH, ignore_errors=True)
+    return res, None
+
+
+def build_home(out: Path, runner: Runner = run, unpublished: tuple[str, ...] = (),
+               march: Path | None = None) -> SportResult:
     """The home page, in a process of its own like every sport's. If it
     fails, the root forwards to the NFL board instead, as it did before the
     home page existed, and the failure is reported like a sport's."""
     res = SportResult('home')
     page = out / 'index.html'
     cmd = [sys.executable, '-B', '-m', 'src.site.home', '--out', str(page), '--unpublished', ','.join(unpublished)]
+    if march is not None:
+        cmd += ['--march', str(march)]
     try:
         code = runner(cmd)
         res.log.append(f'src.site.home: exit {code}')
@@ -623,7 +665,11 @@ def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS
     out.mkdir(parents=True)
     results = [build_sport(s, out, live_url, runner, fetcher) for s in sports]
     assemble_shared(out)
-    results.append(build_home(out, runner, tuple(r.sport for r in results if not r.published)))
+    march, lock = build_march(out, runner)
+    unpublished = tuple(r.sport for r in results if not r.published)
+    if march.built or march.error:  # no page to build is not a failure, so not reported
+        results.append(march)
+    results.append(build_home(out, runner, unpublished, lock))
     add_strip(out, results)
     add_search(out, results)
     add_menu(out, results)

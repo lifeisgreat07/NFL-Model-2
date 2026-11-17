@@ -1,0 +1,57 @@
+/* The March Madness bracket page (Stage 103 item 4). Colours, type and spacing are the shared sheet's tokens. */
+body.ncaam-body{ display:block; min-height:100vh; background:var(--bg); color:var(--text); }
+.ncaam-main{ max-width:1240px; margin:0 auto; padding:var(--s4) var(--s4) calc(var(--s4) * 2 + var(--safe-bottom)); }
+.ncaam-top{ display:flex; align-items:center; gap:var(--s3); margin:0 0 var(--s3); font-size:var(--fs-14); }
+.ncaam-top a{ color:var(--text-2); text-decoration:none; min-height:44px; display:inline-flex; align-items:center; }
+@media (hover: hover){
+  .ncaam-top a:hover{ color:var(--text); text-decoration:underline; }
+}
+.ncaam-main h1{ font-size:var(--fs-24); line-height:var(--lh-tight); margin:0 0 var(--s2); }
+.ncaam-main h2{ font-size:var(--fs-16); margin:calc(var(--s4) + var(--s2)) 0 var(--s2); }
+.ncaam-lede{ color:var(--text-2); max-width:72ch; margin:0 0 var(--s3); line-height:var(--lh-body); }
+.ncaam-trust{ border:1px solid var(--border); border-radius:var(--r-md); background:var(--surface); padding:var(--s3) var(--s3);
+  max-width:80ch; margin:0 0 var(--s2); line-height:var(--lh-body); color:var(--text-2); }
+.ncaam-trust strong{ color:var(--text); }
+.ncaam-trust p{ margin:0 0 var(--s2); } .ncaam-trust p:last-child{ margin:0; }
+.ncaam-seed{ display:inline-block; min-width:1.7em; color:var(--text-3); font-variant-numeric:tabular-nums; }
+.ncaam-out{ color:var(--text-3); text-decoration:line-through; }
+.ncaam-num{ font-variant-numeric:tabular-nums; }
+
+/* At a glance: the champion and the Final Four. */
+.ncaam-glance{ display:grid; gap:var(--s2); max-width:640px; }
+.ncaam-row{ display:flex; align-items:center; justify-content:space-between; gap:var(--s3); border:1px solid var(--border);
+  border-radius:var(--r-md); background:var(--surface); padding:var(--s2) var(--s3); }
+.ncaam-row .ncaam-what{ color:var(--text-3); font-size:var(--fs-13); }
+.ncaam-chip{ border-radius:var(--r-full); padding:var(--s1) var(--s2); background:var(--accent-soft); font-size:var(--fs-13);
+  font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+/* The bracket: one block per region, its rounds as columns; a phone scrolls a region sideways. */
+.ncaam-region{ margin:0 0 var(--s4); }
+.ncaam-region h3{ font-size:var(--fs-13); letter-spacing:var(--track-label); text-transform:uppercase; color:var(--text-2);
+  margin:var(--s4) 0 var(--s2); }
+.ncaam-scroll{ overflow-x:auto; padding-bottom:var(--s1); }
+.ncaam-cols{ --ncaam-cols:4; display:grid; grid-template-columns:repeat(var(--ncaam-cols), minmax(168px, 1fr)); gap:var(--s2);
+  min-width:calc(var(--ncaam-cols) * 178px); }
+.ncaam-cols.ncaam-last{ --ncaam-cols:2; }
+.ncaam-col{ display:flex; flex-direction:column; gap:var(--s1); }
+.ncaam-games{ flex:1; display:flex; flex-direction:column; justify-content:space-around; gap:var(--s2); }
+.ncaam-col h4{ font-size:var(--fs-11); letter-spacing:var(--track-label); text-transform:uppercase; color:var(--text-3); margin:0; }
+.ncaam-game{ border:1px solid var(--border); border-radius:var(--r-md); background:var(--surface); font-size:var(--fs-13); }
+.ncaam-game > div{ display:flex; justify-content:space-between; gap:var(--s2); padding:var(--s1) var(--s2); }
+.ncaam-game > div + div{ border-top:1px solid var(--border); }
+.ncaam-game .ncaam-pick{ font-weight:700; }
+.ncaam-game .ncaam-not{ color:var(--text-3); }
+
+/* Every club's odds, and the games played so far. */
+.ncaam-table{ border-collapse:collapse; font-size:var(--fs-13); width:100%; }
+.ncaam-table th, .ncaam-table td{ padding:var(--s2) var(--s2); border-bottom:1px solid var(--border); text-align:right; }
+.ncaam-table th:first-child, .ncaam-table td:first-child{ text-align:left; }
+.ncaam-table th{ font-size:var(--fs-11); color:var(--text-3); text-transform:uppercase; letter-spacing:var(--track-label); font-weight:600; }
+.ncaam-region-name{ color:var(--text-3); font-size:var(--fs-12); }
+.ncaam-right{ color:var(--graded-correct); } .ncaam-wrong{ color:var(--graded-wrong); }
+.ncaam-nowrap{ white-space:nowrap; }
+.ncaam-note{ color:var(--text-3); font-size:var(--fs-13); max-width:80ch; }
+
+@media (max-width: 640px){
+  .ncaam-hide-phone{ display:none; }
+}

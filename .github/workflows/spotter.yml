@@ -49,6 +49,7 @@ on:
       - 'src/sports/nba/pages/**'
       - 'src/sports/nba/site.py'
       - 'src/sports/nba/page_inputs.py'
+      - 'src/sports/ncaam/pages/**'
       - 'src/agents/spotter_pages.py'
       - 'assets/**'
       - 'tests/browser/spotter_render.py'

@@ -1,0 +1,20 @@
+{
+  "target": "src/site/home.py",
+  "tests": "tests/test_march_build.py",
+  "cases": [
+    {
+      "id": "march-home-wrong-champion",
+      "why": "the home card names a semifinal's winner as the champion pick.",
+      "find": "champ = next(g for g in doc['filled'] if g['round'] == 'final')['winner']",
+      "replace": "champ = next(g for g in doc['filled'] if g['round'] == 'final_four')['winner']",
+      "expect_caught_by": "test_the_home_card_s_facts_come_from_the_lock"
+    },
+    {
+      "id": "march-home-counts-every-game-right",
+      "why": "the home card counts every played game as the lock's side winning.",
+      "find": "'played': len(graded), 'right': sum(1 for g in graded if g['favourite_won'])}",
+      "replace": "'played': len(graded), 'right': len(graded)}",
+      "expect_caught_by": "test_the_home_card_s_facts_come_from_the_lock"
+    }
+  ]
+}

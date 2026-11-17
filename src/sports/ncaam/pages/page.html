@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" data-page="march">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: https://a.espncdn.com https://assets.nhle.com; font-src data:; connect-src 'none'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
+<link rel="canonical" href="https://lifeisgreat07.github.io/NFL-Model-2/march/">
+<meta name="theme-color" content="#0B0D10">
+<!-- The March Madness bracket (Stage 103 item 4): built only from the year's lock, and only in March and
+     April; src/sports/ncaam/page.py writes every part of the body. -->
+<title>March Madness bracket · Sportalytics</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../assets/site.webmanifest">
+<meta name="description" content="Every club's chance of reaching each round of the men's tournament, and one filled-in bracket, saved once before the First Four and graded game by game.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sportalytics">
+<meta property="og:title" content="March Madness bracket · Sportalytics">
+<meta property="og:url" content="https://lifeisgreat07.github.io/NFL-Model-2/march/">
+<meta property="og:image" content="https://lifeisgreat07.github.io/NFL-Model-2/og-home.png">
+<style>
+{% include "styles.css" %}
+</style>
+<style id="font-faces">
+__FONT_FACES__
+</style>
+<style id="march-styles">
+{% include "march.css" %}
+</style>
+</head>
+<body class="ncaam-body">
+<script>
+  (function(){
+    try{
+      var saved = localStorage.getItem('site:theme');
+      if(!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) saved = 'light';
+      if(saved === 'light') document.documentElement.setAttribute('data-theme','light');
+    }catch(e){}
+  })();
+</script>
+<main class="ncaam-main">
+__MARCH_BODY__
+</main>
+</body>
+</html>

@@ -1,0 +1,69 @@
+{
+  "target": "src/sports/ncaam/page.py",
+  "tests": "tests/test_ncaam_page.py",
+  "cases": [
+    {
+      "id": "march-page-all-year",
+      "why": "the bracket page is published every month, so last March's bracket stays on the site all year.",
+      "find": "return (today.month == 3) or (today.month == 4 and today.day <= 15)",
+      "replace": "return True",
+      "expect_caught_by": "test_the_page_is_published_from_the_first_of_march_to_the_middle_of_april"
+    },
+    {
+      "id": "march-page-certain-chance",
+      "why": "a long shot's chance is printed as 0%, a claim that it cannot happen.",
+      "find": "    if x < 0.005:\n        return '<1%'",
+      "replace": "    if x < 0.0:\n        return '<1%'",
+      "expect_caught_by": "test_a_chance_is_never_printed_as_none_or_certain"
+    },
+    {
+      "id": "march-page-without-a-lock",
+      "why": "with no lock the page is written anyway, from nothing.",
+      "find": "if not shown(today) or not path.exists():",
+      "replace": "if not shown(today):",
+      "expect_caught_by": "test_no_lock_or_the_wrong_month_writes_no_page"
+    },
+    {
+      "id": "march-page-verdict-softened",
+      "why": "the trust box drops H1's label, so the page reads as if Model A had beaten the seeds.",
+      "find": "{words.get(h1['label'], '')}: {h1['label']}. Against",
+      "replace": "{words.get(h1['label'], '')}. Against",
+      "expect_caught_by": "test_the_verdicts_are_the_confirmation_s"
+    },
+    {
+      "id": "march-page-glance-wrong-club",
+      "why": "the glance names the final's loser as the champion.",
+      "find": "            w = g['winner']\n            loser = g['clubs'][1] if g['clubs'][0] == w else g['clubs'][0]",
+      "replace": "            loser = g['winner']\n            w = g['clubs'][1] if g['clubs'][0] == loser else g['clubs'][0]",
+      "expect_caught_by": "test_the_glance_names_the_filled_champion_and_its_title_odds"
+    },
+    {
+      "id": "march-page-odds-top-only",
+      "why": "the odds table shows only the favourites, so most of the field has no row.",
+      "find": "for c in sorted(odds, key=lambda c: (-odds[c]['champion'], self.seed.get(c, 99), self.names.get(c, c))):",
+      "replace": "for c in sorted(odds, key=lambda c: (-odds[c]['champion'], self.seed.get(c, 99), self.names.get(c, c)))[:24]:",
+      "expect_caught_by": "test_every_club_has_a_row_of_odds_best_title_odds_first"
+    },
+    {
+      "id": "march-page-loser-not-struck",
+      "why": "a club that has lost is drawn as if still in the tournament.",
+      "find": "self.out = {g['home'] if g['winner'] == g['away'] else g['away'] for g in graded}",
+      "replace": "self.out = set()",
+      "expect_caught_by": "test_a_played_game_is_graded_and_its_loser_struck_through"
+    },
+    {
+      "id": "march-page-chance-of-the-loser",
+      "why": "a played game shows the loser's saved chance as the winner's.",
+      "find": "p = g['home_forecast'] if winner == g['home'] else 1 - g['home_forecast']",
+      "replace": "p = g['home_forecast']",
+      "expect_caught_by": "test_the_winner_s_saved_chance_is_the_lock_s_pair"
+    },
+    {
+      "id": "march-page-names-unescaped",
+      "why": "a club's name reaches the page unescaped.",
+      "find": "        name = html.escape(self.names.get(c, c))\n",
+      "replace": "        name = self.names.get(c, c)\n",
+      "expect_caught_by": "test_club_names_are_escaped"
+    }
+  ]
+}
