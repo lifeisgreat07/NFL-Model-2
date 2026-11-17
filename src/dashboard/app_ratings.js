@@ -142,6 +142,9 @@ function renderRatings(){
     return `<tr>
       <td class="rank">${i+1}</td>
       <td><div class="team-cell"><a class="row-link" href="${routeHash({page:'teamdive', team:t.team})}"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-hide-on-error><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span></a>${trendHtml}</div></td>
+      <td class="num">${(t.playoff===null||t.playoff===undefined)
+        ? '<span title="This team was not in the simulation.">—</span>'
+        : t.playoff.toFixed(1)+'%'}</td>
       <td class="num"><div class="net-cell-inner">
         <div class="srs-bar-track diverging" title="${fmtRating(t.net)} per 100 plays; league scale ±${fmtRatingScale(maxAbs)}, centre line is zero"><div class="srs-bar-fill" style="left:${t.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
         <span class="net-value">${fmtRating(t.net)}</span>
@@ -152,9 +155,6 @@ function renderRatings(){
       <td class="num">${(t.sos===null||t.sos===undefined)
         ? '<span title="No games played yet, so there are no opponents to average.">—</span>'
         : fmtRating(t.sos)}</td>
-      <td class="num">${(t.playoff===null||t.playoff===undefined)
-        ? '<span title="This team was not in the simulation.">—</span>'
-        : t.playoff.toFixed(1)+'%'}</td>
     </tr>`;
   }).join('');
 }
