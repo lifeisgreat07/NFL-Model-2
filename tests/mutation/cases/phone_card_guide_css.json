@@ -4,17 +4,17 @@
  "cases": [
   {
    "id": "card-guide-open-hides",
-   "why": "opening the guide shows nothing on a phone.",
+   "why": "opening the guide shows nothing.",
    "find": "  #onboarding-banner.onboarding-open .onboarding-more{display:block;}",
    "replace": "  #onboarding-banner.onboarding-open .onboarding-more{display:none;}",
-   "expect_caught_by": "test_open_shows_the_points_and_the_more_on_a_phone"
+   "expect_caught_by": "test_closed_it_is_one_line_and_open_shows_the_points_and_the_more_at_every_width"
   },
   {
    "id": "card-guide-small-button",
    "why": "the button's words drop below the line's size beside it.",
    "find": ".onboarding-phone .btn-link{font-size:inherit; min-height:24px;}",
    "replace": ".onboarding-phone .btn-link{min-height:24px;}",
-   "expect_caught_by": "test_open_shows_the_points_and_the_more_on_a_phone"
+   "expect_caught_by": "test_closed_it_is_one_line_and_open_shows_the_points_and_the_more_at_every_width"
   }
  ]
 }

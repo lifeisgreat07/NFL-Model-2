@@ -459,6 +459,22 @@
   .disclosure > summary::before{content:'+\00a0';}
   .disclosure[open] > summary::before{content:'\2212\00a0';}
   .onboarding-more ul{margin-top:var(--s2);}
+  /* Audit 9 D4: the banner is one line at every width, "New here? How to read a card" and Got it, as it was
+     on a phone (Stage 77 item 29). On a wide screen it was a heading, three points and a disclosure, 217 px
+     tall above the board's cards on a first visit. The button opens the points and "How to read this"
+     in place, each on its own line under the first. */
+  #onboarding-banner{padding:var(--s3) var(--s4);}
+  #onboarding-banner .onboarding-content{display:flex; flex-wrap:wrap; align-items:center; gap:var(--s2) var(--s4);}
+  #onboarding-banner .onboarding-content > ul, #onboarding-banner .onboarding-more{flex-basis:100%; margin-bottom:0;}
+  #onboarding-banner [data-act="dismiss-onboarding"]{margin-left:auto;}
+  #onboarding-banner .onboarding-content > h4,
+  #onboarding-banner .onboarding-content > ul,
+  #onboarding-banner .onboarding-more{display:none;}
+  .onboarding-phone{display:block; margin:0;}
+  /* Stage 77 item 29 (N4): "How to read a card" opens the guide here. */
+  #onboarding-banner.onboarding-open .onboarding-content > ul,
+  #onboarding-banner.onboarding-open .onboarding-more{display:block;}
+  .onboarding-phone .btn-link{font-size:inherit; min-height:24px;}
   /* Model Lab's reliability diagram uses the same disclosure (Stage 18):
      the same 24px text toggle, plus and minus markers, and focus ring. Its
      own rules, not a second selector on .onboarding-more's, so those stay
@@ -2078,15 +2094,6 @@
   #board-options-btn .nfl-options-chev{color:var(--text-2); transition:transform var(--dur-base) var(--ease);}
   #board-options-btn[aria-expanded="true"]{border-color:var(--accent); color:var(--accent);}
   #board-options-btn[aria-expanded="true"] .nfl-options-chev{transform:rotate(180deg); color:var(--accent);}
-  #onboarding-banner .onboarding-content > h4,
-  #onboarding-banner .onboarding-content > ul,
-  #onboarding-banner .onboarding-more{display:none;}
-  .onboarding-phone{display:block; margin:0;}
-  /* Stage 77 item 29 (N4): "How to read a card" opens the guide here. */
-  #onboarding-banner.onboarding-open .onboarding-content > ul,
-  #onboarding-banner.onboarding-open .onboarding-more{display:block;}
-  #onboarding-banner.onboarding-open .onboarding-phone{margin:0 0 var(--s3);}
-  .onboarding-phone .btn-link{font-size:inherit; min-height:24px;}
 }
 
 /* Stage 80 item 61 (F15): live scores. src/core/scores.js marks a game

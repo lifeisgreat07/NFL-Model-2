@@ -1,0 +1,28 @@
+{
+  "target": "src/dashboard/styles.css",
+  "tests": "tests/test_phone_card_guide.py",
+  "cases": [
+    {
+      "id": "banner-points-shown-on-a-wide-screen",
+      "why": "on a wide screen the onboarding banner shows its heading and three points again, about 217 px above the board's cards on a first visit.",
+      "find": "  #onboarding-banner .onboarding-content > h4,\n  #onboarding-banner .onboarding-content > ul,\n  #onboarding-banner .onboarding-more{display:none;}\n  .onboarding-phone{display:block; margin:0;}\n",
+      "replace": "  .onboarding-phone{display:block; margin:0;}\n",
+      "expect_caught_by": "test_closed_it_is_one_line_and_open_shows_the_points_and_the_more_at_every_width"
+    },
+    {
+      "id": "banner-got-it-on-its-own-line",
+      "why": "Got it drops to a line of its own under \"New here? How to read a card\", two lines where one does.",
+      "find": "  #onboarding-banner [data-act=\"dismiss-onboarding\"]{margin-left:auto;}\n",
+      "replace": "",
+      "expect_caught_by": "test_closed_it_is_one_line_and_open_shows_the_points_and_the_more_at_every_width"
+    },
+    {
+      "id": "banner-line-phone-only",
+      "target": "src/dashboard/body.html",
+      "why": "the one line is a phone's alone again, so a wide screen shows no way into the guide but the full banner.",
+      "find": "<p class=\"onboarding-phone\">New here? ",
+      "replace": "<p class=\"nfl-phone-only onboarding-phone\">New here? ",
+      "expect_caught_by": "test_the_line_opens_the_guide_here_not_methodology_at_every_width"
+    }
+  ]
+}
