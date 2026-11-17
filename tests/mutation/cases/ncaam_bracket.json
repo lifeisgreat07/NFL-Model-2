@@ -35,7 +35,7 @@
       "why": "every game's pick ignores the club placed there by a later round, so the filled bracket can contradict itself.",
       "find": "a = winner if winner in clubs_in(left) else best(left, depth + 1)",
       "replace": "a = best(left, depth + 1)",
-      "expect_caught_by": "test_the_filled_bracket_has_sixty_seven_games_and_never_contradicts_itself"
+      "expect_caught_by": "test_the_filled_bracket_is_chosen_from_the_top_not_from_each_game_s_favourite"
     },
     {
       "id": "bracket-champion-not-best-odds",
