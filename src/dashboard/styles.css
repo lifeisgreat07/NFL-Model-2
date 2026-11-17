@@ -1103,6 +1103,10 @@
   .ts-head{display:flex; flex-wrap:wrap; align-items:baseline; column-gap:var(--s3); margin:0 0 var(--s2);}
   .ts-head h2, .ts-head h3{margin:0; font-size:var(--fs-14); font-weight:800; color:var(--text);}
   .ts-head span{font-size:var(--fs-12); color:var(--text-2);}
+  /* Audit 9 D4 (M2 option A): on a sport's board, one line for its next game. */
+  .ts-next{margin:0; font-size:var(--fs-14); color:var(--text-2);}
+  .ts-next b{color:var(--text);}
+  .ts-next .ts-pick{color:var(--text);}
   .ts-row{display:flex; gap:var(--s2); overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:var(--s1);}
   .ts-item{scroll-snap-align:start; flex:0 0 auto; display:grid; gap:2px; width:150px; padding:var(--s2) var(--s3);
     background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);

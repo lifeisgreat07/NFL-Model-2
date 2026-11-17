@@ -12,8 +12,8 @@
   {
    "id": "strip-shows-all",
    "why": "the strip runs on past six cards.",
-   "find": ".slice(0, SHOWN);",
-   "replace": ";",
+   "find": "const next = ahead.slice(0, SHOWN);",
+   "replace": "const next = ahead;",
    "expect_caught_by": "test_the_strip_shows_the_next_six_games_still_to_start"
   },
   {
@@ -46,10 +46,10 @@
   },
   {
    "id": "strip-wrong-base",
-   "why": "a sport page's cards link inside that sport's own folder.",
+   "why": "a sport page's link to every sport's games points inside that sport's own folder.",
    "find": "const base = home ? '' : '../';",
    "replace": "const base = '';",
-   "expect_caught_by": "test_on_a_sports_page_the_cards_lead_up_a_level_and_the_heading_is_a_step_down"
+   "expect_caught_by": "test_on_a_sports_page_it_is_one_line_for_that_sports_next_game"
   },
   {
    "id": "strip-shown-empty",
@@ -64,6 +64,35 @@
    "find": "const bar = r.k === 'pick' ?",
    "replace": "const bar = true ?",
    "expect_caught_by": "test_each_card_says_the_pick_the_lean_or_when_the_pick_is_saved"
+  },
+  {
+   "id": "strip-board-line-any-sport",
+   "why": "a board's one line names the next game of any sport, so the NFL page leads with a hockey game",
+   "find": "const r = ahead.find(x => x.s === own);",
+   "replace": "const r = ahead[0];",
+   "expect_caught_by": "test_on_a_sports_page_it_is_one_line_for_that_sports_next_game"
+  },
+  {
+   "id": "strip-board-gets-the-cards",
+   "why": "a sport's board draws the six cards again, above a board whose first game then starts below the fold (audit 9 D4)",
+   "find": "  if(!home){\n",
+   "replace": "  if(false){\n",
+   "expect_caught_by": "test_on_a_sports_page_it_is_one_line_for_that_sports_next_game"
+  },
+  {
+   "id": "strip-board-line-shown-empty",
+   "why": "a board with no game of its own ahead shows an empty \"Next:\" line",
+   "find": "    if(!r) return;\n",
+   "replace": "    if(!r) { box.hidden = false; return; }\n",
+   "expect_caught_by": "test_a_board_with_no_game_of_its_own_ahead_shows_nothing"
+  },
+  {
+   "id": "strip-board-sport-unnamed",
+   "target": "src/dashboard/body.html",
+   "why": "the NFL board stops naming its sport on the strip, so its one line never draws",
+   "find": " data-sport=\"nfl\" hidden>",
+   "replace": " hidden>",
+   "expect_caught_by": "test_every_page_has_a_place_for_it"
   }
  ]
 }
