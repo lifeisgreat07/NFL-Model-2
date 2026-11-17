@@ -1947,7 +1947,7 @@ function importMyPicks(file){
       alert(`Imported ${Object.keys(incoming).length} picks (existing picks on this device were kept where they overlap).`);
       renderPicksGrid();
     } catch(err){
-      alert('Could not read that file -- make sure it\'s a picks export from this same site.');
+      alert('Could not read that file. Make sure it is a picks export from this same site.');
     }
   };
   reader.readAsText(file);

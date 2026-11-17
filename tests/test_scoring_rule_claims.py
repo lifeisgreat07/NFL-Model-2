@@ -40,7 +40,7 @@ def table(src):
     for name, acc, ll, br in re.findall(
             r'<tr><td>([^<]+)</td><td[^>]*>([\d.]+)%</td><td[^>]*>([\d.]+)</td><td[^>]*>([\d.]+)</td>', src):
         rows[name.strip()] = (float(acc), float(ll), float(br))
-    need = ('Model A -- live, 4 features, weekly refit', 'Model B -- live, 4 features + market, weekly refit',
+    need = ('Model A &mdash; live, 4 features, weekly refit', 'Model B &mdash; live, 4 features + market, weekly refit',
             'Vegas market alone', 'Coin flip')
     for n in need:
         assert n in rows, f'the backtest table has no row {n!r} -- re-anchor this guard'
@@ -86,7 +86,7 @@ def test_the_standing_table_compares_on_scoring_rules(src, table):
     assert '<tr><td>Model A against the market (log loss, Brier)</td><td>Behind on both.' in src
     assert table['A'][1] > table['market'][1] and table['A'][2] > table['market'][2], (
         'the table no longer has Model A behind the market on both rules, so the row is wrong')
-    m = re.search(r'Football-only, no market data</td><td>Reasonable -- log loss ([\d.]+) on held-out games against ([\d.]+) for a coin flip', src)
+    m = re.search(r'Football-only, no market data</td><td>Reasonable &mdash; log loss ([\d.]+) on held-out games against ([\d.]+) for a coin flip', src)
     assert m, 'the football-only row no longer leads with log loss'
     assert (float(m.group(1)), float(m.group(2))) == (table['A'][1], table['coin'][1])
 

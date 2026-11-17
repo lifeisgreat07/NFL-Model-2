@@ -324,7 +324,7 @@ function buildCumulativeTrendChart(width){
 
   return `<div class="method-block">
     <h3>Cumulative Accuracy Trend</h3>
-    <p style="margin-bottom:var(--s3);">Running accuracy as the season progresses -- not week-by-week noise, but how each approach has performed overall up to that point.</p>
+    <p style="margin-bottom:var(--s3);">Running accuracy as the season progresses &mdash; not week-by-week noise, but how each approach has performed overall up to that point.</p>
     <div style="font-size:var(--fs-11); color:var(--text-2); margin-bottom:var(--s2);">${legend}</div>
     <div class="trend-plot" id="trend-plot" data-w="${W}"><svg class="chart" viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:${W}px;" role="img" aria-label="Line chart of running accuracy by week for Model A, Model B, the market and, once you have made picks, yours. Each week's own figures are in the Week by week table below.">
       ${gridLines.join('')}
@@ -857,7 +857,7 @@ function renderAccuracy(){
   // and marked, so the number is visible without reading as a result.
   const calibRows = accuracy.calibration.map(c=>{
     const rate = c.underpowered
-      ? `<span style="color:var(--text-2);" title="n=${c.n}, below the ${accuracy.min_bucket_n}-game floor -- not a meaningful rate">${c.actual_rate}%&nbsp;*</span>`
+      ? `<span style="color:var(--text-2);" title="n=${c.n}, below the ${accuracy.min_bucket_n}-game floor, so not a meaningful rate">${c.actual_rate}%&nbsp;*</span>`
       : `${c.actual_rate}%`;
     return `<tr><td>${c.bucket}</td><td class="num">${c.n}</td><td class="num">${c.avg_predicted}%</td><td class="num">${rate}</td></tr>`;
   }).join('');

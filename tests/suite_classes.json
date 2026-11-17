@@ -26,6 +26,7 @@
   "tests/test_ats_evaluation.py": "isolated behavioural",
   "tests/test_audit7_disclosures.py": "template/JS",
   "tests/test_auditor_edits.py": "mixed",
+  "tests/test_authors_words_nfl.py": "isolated behavioural",
   "tests/test_authors_words.py": "template/JS",
   "tests/test_backfill_game_dates.py": "isolated behavioural",
   "tests/test_backtest_figures_tie.py": "mixed",

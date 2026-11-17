@@ -123,11 +123,11 @@ def test_the_ats_finding_survived():
 
 
 @pytest.mark.parametrize('phrase', [
-    'In Production',            # Data Sources
-    'Research-Only',            # Data Sources
-    'Betting Terms',            # Glossary
-    'Evaluation Terms',         # Glossary
-    'The Short Version',        # How This Compares
+    'In production',            # Data Sources
+    'Research only',            # Data Sources
+    'Betting terms',            # Glossary
+    'Evaluation terms',         # Glossary
+    'The short version',        # How This Compares
 ])
 def test_the_merged_content_is_actually_there(phrase):
     """Named individually, for the same reason the What's Changed suite names

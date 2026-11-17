@@ -1,0 +1,34 @@
+{
+  "target": "src/dashboard/body.html",
+  "tests": "tests/test_authors_words_nfl.py",
+  "cases": [
+    {
+      "id": "nfl-picks-lede-backend",
+      "why": "My Picks Log explains itself in the author's terms again: a static site with no backend.",
+      "find": "Your picks are saved on this device only and are not synced anywhere;",
+      "replace": "Saved locally only (this is a static site with no backend);",
+      "expect_caught_by": "test_the_ledes_and_headers_no_longer_say"
+    },
+    {
+      "id": "nfl-sos-header-back",
+      "why": "the ratings table's column is headed SOS again.",
+      "find": "tabindex=\"0\" aria-sort=\"none\">Schedule</th>",
+      "replace": "tabindex=\"0\" aria-sort=\"none\">SOS</th>",
+      "expect_caught_by": "test_the_ledes_and_headers_no_longer_say"
+    },
+    {
+      "id": "nfl-method-heading-title-case",
+      "why": "a Methodology heading goes back to Title Case.",
+      "find": "<h4>Known gaps</h4>",
+      "replace": "<h4>Known Gaps</h4>",
+      "expect_caught_by": "test_the_methodology_and_checking_headings_are_in_sentence_case"
+    },
+    {
+      "id": "nfl-double-hyphen-visible",
+      "why": "a double hyphen reaches a reader in place of a dash.",
+      "find": "Data pipeline migrated from nfl_data_py to nflreadpy",
+      "replace": "Data pipeline -- migrated from nfl_data_py to nflreadpy",
+      "expect_caught_by": "test_no_double_hyphen_reaches_a_reader_of_the_nfl_page"
+    }
+  ]
+}

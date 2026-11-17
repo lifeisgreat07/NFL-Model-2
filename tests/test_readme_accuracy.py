@@ -202,9 +202,9 @@ TEMPLATE = JOINED_TEMPLATE
 RESULT_ROWS = {
     'Coin flip': 'Coin flip',
     'Home team always wins': 'Home team always wins',
-    'Model A (football only)': 'Model A -- live, 4 features, weekly refit',
+    'Model A (football only)': 'Model A &mdash; live, 4 features, weekly refit',
     'Vegas market alone': 'Vegas market alone',
-    'Model B (+ market)': 'Model B -- live, 4 features + market, weekly refit',
+    'Model B (+ market)': 'Model B &mdash; live, 4 features + market, weekly refit',
 }
 
 
@@ -220,7 +220,7 @@ def readme_results(text):
 
 def methodology_results(html):
     """{label: [cells]} from the Methodology page's backtest table."""
-    block = re.search(r'Backtest Results .*?<tbody>(.*?)</tbody>', html, re.S)
+    block = re.search(r'Backtest results: .*?<tbody>(.*?)</tbody>', html, re.S)
     assert block, "the Methodology backtest table was not found; the matcher is broken"
     rows = {}
     for tr in re.findall(r'<tr>(.*?)</tr>', block.group(1), re.S):

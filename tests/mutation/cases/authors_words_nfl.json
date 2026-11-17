@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard/app_pages.js",
+  "tests": "tests/test_authors_words_nfl.py",
+  "cases": [
+    {
+      "id": "nfl-checking-collected-iso",
+      "why": "Checking prints when the record was collected as a raw ISO stamp again.",
+      "find": "Collected ${agentLog.generated_utc ? runStartedText(agentLog.generated_utc) + ' ET' : 'at an unknown time'}.</p>",
+      "replace": "Collected ${agentLog.generated_utc || 'unknown'}.</p>",
+      "expect_caught_by": "test_checking_dates_its_collections_in_eastern_time_not_iso"
+    },
+    {
+      "id": "nfl-runs-read-in-utc",
+      "why": "the run table's provenance line goes back to a raw UTC stamp.",
+      "find": "<p class=\"rel-prov\">Read ${recentRuns.read_utc ? runStartedText(recentRuns.read_utc) + ' ET' : 'at an unknown time'}.",
+      "replace": "<p class=\"rel-prov\">Read ${escapeHtml(recentRuns.read_utc || 'at an unknown time')} (UTC).",
+      "expect_caught_by": "test_checking_dates_its_collections_in_eastern_time_not_iso"
+    },
+    {
+      "id": "nfl-runs-min-header",
+      "why": "the minutes column is headed MIN again, which reads as a minimum or Minnesota.",
+      "find": "<th scope=\"col\">Minutes</th><th scope=\"col\">Started late by</th>",
+      "replace": "<th scope=\"col\">Min</th><th scope=\"col\">Started late by</th>",
+      "expect_caught_by": "test_the_run_table_says_minutes_and_started_late_by"
+    }
+  ]
+}
