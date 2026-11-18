@@ -1,155 +1,155 @@
 {
- "as_of": "2026-11-17",
+ "as_of": "2026-11-18",
  "teams": [
   {
    "team": "SA",
-   "point": 7.7461,
-   "efficiency": 7.6018
+   "point": 7.429,
+   "efficiency": 7.2757
   },
   {
    "team": "OKC",
-   "point": 7.0581,
-   "efficiency": 6.8305
+   "point": 6.9823,
+   "efficiency": 6.7536
   },
   {
    "team": "BOS",
-   "point": 6.4874,
-   "efficiency": 6.5795
+   "point": 6.4974,
+   "efficiency": 6.5899
   },
   {
    "team": "NY",
-   "point": 6.0163,
-   "efficiency": 6.0827
-  },
-  {
-   "team": "HOU",
-   "point": 4.5294,
-   "efficiency": 4.5176
+   "point": 6.1309,
+   "efficiency": 6.2151
   },
   {
    "team": "DET",
-   "point": 4.3682,
-   "efficiency": 4.3415
+   "point": 4.7513,
+   "efficiency": 4.7363
+  },
+  {
+   "team": "HOU",
+   "point": 4.5279,
+   "efficiency": 4.5161
   },
   {
    "team": "MIN",
-   "point": 4.2511,
-   "efficiency": 4.1109
+   "point": 4.1646,
+   "efficiency": 4.0271
   },
   {
    "team": "LAL",
-   "point": 3.1348,
-   "efficiency": 3.0074
+   "point": 3.0465,
+   "efficiency": 2.9185
   },
   {
    "team": "DEN",
-   "point": 2.4409,
-   "efficiency": 2.2939
+   "point": 2.4203,
+   "efficiency": 2.2727
   },
   {
    "team": "CLE",
-   "point": 2.2969,
-   "efficiency": 2.1591
+   "point": 2.3234,
+   "efficiency": 2.187
   },
   {
    "team": "POR",
-   "point": 2.2229,
-   "efficiency": 2.2552
+   "point": 2.2567,
+   "efficiency": 2.2842
   },
   {
    "team": "TOR",
-   "point": 1.2682,
-   "efficiency": 0.9581
+   "point": 1.1168,
+   "efficiency": 0.7872
   },
   {
    "team": "MIA",
-   "point": 0.8333,
-   "efficiency": 0.8162
+   "point": 0.8524,
+   "efficiency": 0.8359
   },
   {
    "team": "GS",
-   "point": 0.8063,
-   "efficiency": 0.7857
+   "point": 0.7605,
+   "efficiency": 0.7394
   },
   {
    "team": "ATL",
-   "point": 0.4729,
-   "efficiency": 0.4536
+   "point": 0.4863,
+   "efficiency": 0.468
   },
   {
    "team": "PHI",
-   "point": 0.1568,
-   "efficiency": 0.1214
-  },
-  {
-   "team": "LAC",
-   "point": 0.0355,
-   "efficiency": 0.0101
+   "point": 0.1897,
+   "efficiency": 0.1559
   },
   {
    "team": "PHX",
-   "point": -0.141,
-   "efficiency": -0.2502
+   "point": -0.1641,
+   "efficiency": -0.2736
   },
   {
    "team": "ORL",
-   "point": -0.5644,
-   "efficiency": -0.5628
+   "point": -0.535,
+   "efficiency": -0.5333
   },
   {
    "team": "MEM",
-   "point": -0.6207,
-   "efficiency": -0.582
+   "point": -0.5925,
+   "efficiency": -0.5545
+  },
+  {
+   "team": "LAC",
+   "point": -0.7897,
+   "efficiency": -0.8204
   },
   {
    "team": "CHA",
-   "point": -1.8807,
-   "efficiency": -1.8718
+   "point": -1.8024,
+   "efficiency": -1.7926
   },
   {
    "team": "DAL",
-   "point": -2.6938,
-   "efficiency": -2.5974
+   "point": -2.7015,
+   "efficiency": -2.6056
   },
   {
    "team": "IND",
-   "point": -3.8914,
-   "efficiency": -3.807
+   "point": -3.8754,
+   "efficiency": -3.7902
   },
   {
    "team": "NO",
-   "point": -4.7553,
-   "efficiency": -4.7485
+   "point": -4.7305,
+   "efficiency": -4.7235
   },
   {
    "team": "CHI",
-   "point": -4.8594,
-   "efficiency": -4.5426
-  },
-  {
-   "team": "BKN",
-   "point": -6.4803,
-   "efficiency": -6.3986
+   "point": -4.8629,
+   "efficiency": -4.5463
   },
   {
    "team": "UTAH",
-   "point": -6.6015,
-   "efficiency": -6.3476
+   "point": -5.8252,
+   "efficiency": -5.5677
+  },
+  {
+   "team": "BKN",
+   "point": -6.4557,
+   "efficiency": -6.3733
   },
   {
    "team": "MIL",
-   "point": -6.6025,
-   "efficiency": -6.654
+   "point": -6.5844,
+   "efficiency": -6.6354
   },
   {
    "team": "SAC",
-   "point": -7.3219,
-   "efficiency": -7.1195
+   "point": -7.3418,
+   "efficiency": -7.1405
   },
   {
    "team": "WSH",
-   "point": -7.7124,
-   "efficiency": -7.4434
+   "point": -7.6746,
+   "efficiency": -7.4056
   }
  ]
 }
