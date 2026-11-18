@@ -1,6 +1,6 @@
 {
- "games": 282,
- "mean_log_loss": 0.654666182620773,
+ "games": 289,
+ "mean_log_loss": 0.6558519347428083,
  "baseline": 0.6753173753776152,
  "flagged": false,
  "looks": [
@@ -20,7 +20,7 @@
  "next_look": 400,
  "leak": {
   "better_than_spread": false,
-  "margin": 0.020651,
+  "margin": 0.019465,
   "spread_range": 0.02573782672847491,
   "leaked_picks": 29
  }
