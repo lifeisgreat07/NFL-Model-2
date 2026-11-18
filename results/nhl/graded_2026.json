@@ -1732,5 +1732,23 @@
   "pick": "SJS",
   "result": "wrong",
   "saved_utc": "2026-11-17T21:01:43Z"
+ },
+ {
+  "game_id": "2026020344",
+  "pick": "DET",
+  "result": "pending",
+  "saved_utc": "2026-11-18T21:01:45Z"
+ },
+ {
+  "game_id": "2026020345",
+  "pick": "NJD",
+  "result": "pending",
+  "saved_utc": "2026-11-18T21:01:45Z"
+ },
+ {
+  "game_id": "2026020346",
+  "pick": "UTA",
+  "result": "pending",
+  "saved_utc": "2026-11-18T21:01:45Z"
  }
 ]
