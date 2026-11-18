@@ -1682,19 +1682,19 @@
  {
   "game_id": "2026020335",
   "pick": "FLA",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-17T21:01:43Z"
  },
  {
   "game_id": "2026020336",
   "pick": "NYI",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-17T21:01:43Z"
  },
  {
   "game_id": "2026020337",
   "pick": "BUF",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-17T21:01:43Z"
  },
  {
@@ -1718,7 +1718,7 @@
  {
   "game_id": "2026020341",
   "pick": "OTT",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-17T21:01:43Z"
  },
  {

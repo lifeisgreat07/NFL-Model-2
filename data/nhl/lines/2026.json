@@ -3826,5 +3826,17 @@
   "home_prob": 0.4573,
   "read_utc": "2026-11-17T21:59:13Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020342",
+  "start_utc": "2026-11-18T03:00:00Z",
+  "home": "VGK",
+  "away": "DAL",
+  "book": "DraftKings",
+  "home_price": -130.0,
+  "away_price": 110.0,
+  "home_prob": 0.5427,
+  "read_utc": "2026-11-18T02:39:13Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]
