@@ -1,0 +1,109 @@
+{
+ "game_id": "401910013",
+ "season": 2026,
+ "slate": "2026-11-18",
+ "start_utc": "2026-11-19T01:00:00Z",
+ "home": "NO",
+ "away": "DET",
+ "model_a": 0.2662,
+ "model_b": 0.3689,
+ "pick": "DET",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7902,
+  "away": 0.7586
+ },
+ "features": {
+  "point_matchup": -9.481802,
+  "efficiency_matchup": -9.459821,
+  "availability_matchup": 0.031538
+ },
+ "market": {
+  "game_id": "401910013",
+  "home": "NO",
+  "away": "DET",
+  "start_utc": "2026-11-19T01:00:00Z",
+  "read_utc": "2026-11-18T21:31:42Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 160.0,
+  "away_price": -191.0,
+  "home_prob": 0.3695
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-18T21:31:42Z",
+  "home": [
+   {
+    "athlete_id": "4683634",
+    "name": "Bennedict Mathurin",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4576086",
+    "name": "Bryce McGowens",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3907497",
+    "name": "Dejounte Murray",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431675",
+    "name": "Trendon Watford",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4397688",
+    "name": "Trey Murphy III",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4432166",
+    "name": "Cade Cunningham",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3157465",
+    "name": "Duncan Robinson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4395702",
+    "name": "Isaiah Joe",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433621",
+    "name": "Jalen Duren",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4683771",
+    "name": "Ronald Holland II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2990962",
+    "name": "Taurean Prince",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-18T21:31:42Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-17",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14268,
+  "training_games_priced": 14227,
+  "training_ids_sha256": "7ae77af7458504708f0467a11f268e973ac16261da28cc87a88a72b07df3269b"
+ },
+ "code_sha256": "61d30e4282c5d50a026b17a156e179a3dd630ac06cf927d0468315995febd62e",
+ "code_commit": "0974429107f43fffb5b520a4b0b52f6f3fb23b06"
+}

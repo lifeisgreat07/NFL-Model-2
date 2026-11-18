@@ -1,0 +1,109 @@
+{
+ "game_id": "401910014",
+ "season": 2026,
+ "slate": "2026-11-18",
+ "start_utc": "2026-11-19T01:00:00Z",
+ "home": "OKC",
+ "away": "ATL",
+ "model_a": 0.7598,
+ "model_b": 0.6851,
+ "pick": "OKC",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7602,
+  "away": 0.803
+ },
+ "features": {
+  "point_matchup": 6.496033,
+  "efficiency_matchup": 6.285664,
+  "availability_matchup": -0.042738
+ },
+ "market": {
+  "game_id": "401910014",
+  "home": "OKC",
+  "away": "ATL",
+  "start_utc": "2026-11-19T01:00:00Z",
+  "read_utc": "2026-11-18T21:31:42Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -249.0,
+  "away_price": 205.0,
+  "home_prob": 0.6851
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-18T21:31:42Z",
+  "home": [
+   {
+    "athlete_id": "4683692",
+    "name": "Cason Wallace",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433255",
+    "name": "Chet Holmgren",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4593803",
+    "name": "Jalen Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432823",
+    "name": "Jaylin Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061603",
+    "name": "Thomas Sorber",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4873201",
+    "name": "Asa Newell",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2490149",
+    "name": "CJ McCollum",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105571",
+    "name": "Henri Veesaar",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3146557",
+    "name": "Jock Landale",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5149077",
+    "name": "Kingston Flemings",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4712863",
+    "name": "Mouhamed Gueye",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-18T21:31:42Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-17",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14268,
+  "training_games_priced": 14227,
+  "training_ids_sha256": "7ae77af7458504708f0467a11f268e973ac16261da28cc87a88a72b07df3269b"
+ },
+ "code_sha256": "61d30e4282c5d50a026b17a156e179a3dd630ac06cf927d0468315995febd62e",
+ "code_commit": "0974429107f43fffb5b520a4b0b52f6f3fb23b06"
+}

@@ -1,0 +1,41 @@
+{
+ "game_id": "401910017",
+ "season": 2026,
+ "slate": "2026-11-18",
+ "start_utc": "2026-11-19T03:00:00Z",
+ "home": "LAL",
+ "away": "UTAH",
+ "model_a": 0.7987,
+ "model_b": 0.8076,
+ "neutral_site": false,
+ "market_source": "espn",
+ "price_used": true,
+ "price_note": null,
+ "features": {
+  "point_matchup": 8.871646,
+  "efficiency_matchup": 8.48616,
+  "availability_matchup": -0.199181,
+  "b2b_matchup": 0.0
+ },
+ "market": {
+  "source": "espn",
+  "home_price": -567.0,
+  "away_price": 424.0,
+  "home_prob": 0.8167,
+  "read_utc": "2026-11-18T21:31:42Z"
+ },
+ "saved_utc": "2026-11-18T21:31:42Z",
+ "code": "nba-day-sport-v3",
+ "registry": "experiments/nba/stage105_v3/registry.json",
+ "H_days": 120.0,
+ "lambda": 10.0,
+ "star_power": 2.0,
+ "never_a_pick": true,
+ "training_through": "2026-11-17",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14263,
+  "training_games_priced": 14215,
+  "training_ids_sha256": "82a85b9405494f31fc9ee3762c6d2d24830463d7d7556eb6ab7b431865a5ac97"
+ }
+}
