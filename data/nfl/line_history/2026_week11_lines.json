@@ -89,5 +89,26 @@
     "home": "WAS",
     "away": "CIN",
     "spread_line": -6.5
+  },
+  {
+    "captured_date": "2026-11-19",
+    "captured_utc": "2026-11-19T11:03:01Z",
+    "home": "HOU",
+    "away": "IND",
+    "spread_line": 12.5
+  },
+  {
+    "captured_date": "2026-11-19",
+    "captured_utc": "2026-11-19T11:03:01Z",
+    "home": "DET",
+    "away": "TB",
+    "spread_line": 7.0
+  },
+  {
+    "captured_date": "2026-11-19",
+    "captured_utc": "2026-11-19T11:03:01Z",
+    "home": "KC",
+    "away": "ARI",
+    "spread_line": 15.5
   }
 ]

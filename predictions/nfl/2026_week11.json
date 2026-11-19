@@ -12,19 +12,19 @@
     "weekday": "Thursday",
     "model_version": "2.6",
     "game_type": "REG",
-    "off_matchup": -0.0237,
-    "def_matchup": -0.0051,
-    "qb_matchup": 0.1696,
+    "off_matchup": -0.0187,
+    "def_matchup": -0.016,
+    "qb_matchup": 0.1658,
     "qb_change_diff": 0,
-    "spread_line": 11.5,
-    "model_a_home_win_prob": 0.6254,
-    "model_b_home_win_prob": 0.8276,
-    "market_prob_home": 0.89,
+    "spread_line": 12.5,
+    "model_a_home_win_prob": 0.6395,
+    "model_b_home_win_prob": 0.8489,
+    "market_prob_home": 0.9066,
     "context_notes": [],
     "why": {
-      "off_matchup": -0.0158,
-      "def_matchup": 0.0042,
-      "qb_matchup": 0.4004,
+      "off_matchup": -0.0143,
+      "def_matchup": 0.0149,
+      "qb_matchup": 0.4494,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0039163",
@@ -41,18 +41,16 @@
     "announced_away_qb": "Daniel Jones",
     "last_game_away_qb_id": "00-0035710",
     "last_game_away_qb": "D.Jones",
-    "confidence_rank": 4,
-    "confidence_points": 10,
+    "confidence_rank": 3,
+    "confidence_points": 11,
     "data_provenance": {
-      "read_utc": "2026-11-17T11:02:55Z",
+      "read_utc": "2026-11-19T11:03:01Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 10,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-17T11:02:55.792644+00:00"
+    }
   },
   {
     "season": 2026,
@@ -67,19 +65,19 @@
     "weekday": "Sunday",
     "model_version": "2.6",
     "game_type": "REG",
-    "off_matchup": 0.098,
-    "def_matchup": -0.0322,
-    "qb_matchup": 0.4151,
+    "off_matchup": 0.0858,
+    "def_matchup": -0.032,
+    "qb_matchup": 0.4036,
     "qb_change_diff": 0,
     "spread_line": 16.5,
-    "model_a_home_win_prob": 0.7677,
-    "model_b_home_win_prob": 0.9116,
+    "model_a_home_win_prob": 0.7879,
+    "model_b_home_win_prob": 0.9099,
     "market_prob_home": 0.9526,
     "context_notes": [],
     "why": {
-      "off_matchup": 0.0653,
-      "def_matchup": 0.0264,
-      "qb_matchup": 0.9799,
+      "off_matchup": 0.0657,
+      "def_matchup": 0.0297,
+      "qb_matchup": 1.0935,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0034857",
@@ -99,15 +97,13 @@
     "confidence_rank": 2,
     "confidence_points": 12,
     "data_provenance": {
-      "read_utc": "2026-11-17T11:02:55Z",
+      "read_utc": "2026-11-19T11:03:01Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 10,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-17T11:02:55.792644+00:00"
+    }
   },
   {
     "season": 2026,
@@ -122,22 +118,22 @@
     "weekday": "Sunday",
     "model_version": "2.6",
     "game_type": "REG",
-    "off_matchup": -0.013,
-    "def_matchup": -0.0171,
-    "qb_matchup": -0.0369,
+    "off_matchup": -0.008,
+    "def_matchup": -0.0177,
+    "qb_matchup": -0.0226,
     "qb_change_diff": -1,
     "spread_line": 2.5,
-    "model_a_home_win_prob": 0.6252,
-    "model_b_home_win_prob": 0.6385,
+    "model_a_home_win_prob": 0.6327,
+    "model_b_home_win_prob": 0.6386,
     "market_prob_home": 0.6117,
     "context_notes": [
       "BAL: the pick uses Tyler Huntley, the listed starter, not J.Brissett, who started BAL's last game."
     ],
     "why": {
-      "off_matchup": -0.0087,
-      "def_matchup": 0.0141,
-      "qb_matchup": -0.087,
-      "qb_change": 0.4698
+      "off_matchup": -0.0061,
+      "def_matchup": 0.0164,
+      "qb_matchup": -0.0613,
+      "qb_change": 0.4715
     },
     "home_qb_id": "00-0039150",
     "home_qb": "Bryce Young",
@@ -156,15 +152,13 @@
     "confidence_rank": 13,
     "confidence_points": 1,
     "data_provenance": {
-      "read_utc": "2026-11-17T11:02:55Z",
+      "read_utc": "2026-11-19T11:03:01Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 10,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-17T11:02:55.792644+00:00"
+    }
   },
   {
     "season": 2026,
@@ -179,19 +173,19 @@
     "weekday": "Sunday",
     "model_version": "2.6",
     "game_type": "REG",
-    "off_matchup": 0.0292,
-    "def_matchup": -0.0615,
-    "qb_matchup": 0.0507,
+    "off_matchup": 0.0254,
+    "def_matchup": -0.0527,
+    "qb_matchup": 0.0519,
     "qb_change_diff": 0,
     "spread_line": 11.5,
-    "model_a_home_win_prob": 0.5777,
-    "model_b_home_win_prob": 0.8457,
+    "model_a_home_win_prob": 0.5824,
+    "model_b_home_win_prob": 0.8444,
     "market_prob_home": 0.89,
     "context_notes": [],
     "why": {
       "off_matchup": 0.0195,
-      "def_matchup": 0.0505,
-      "qb_matchup": 0.1196,
+      "def_matchup": 0.0489,
+      "qb_matchup": 0.1407,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0039918",
@@ -208,18 +202,16 @@
     "announced_away_qb": "Tyler Shough",
     "last_game_away_qb_id": "00-0040743",
     "last_game_away_qb": "T.Shough",
-    "confidence_rank": 3,
-    "confidence_points": 11,
+    "confidence_rank": 4,
+    "confidence_points": 10,
     "data_provenance": {
-      "read_utc": "2026-11-17T11:02:55Z",
+      "read_utc": "2026-11-19T11:03:01Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 10,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-17T11:02:55.792644+00:00"
+    }
   },
   {
     "season": 2026,
@@ -234,19 +226,19 @@
     "weekday": "Sunday",
     "model_version": "2.6",
     "game_type": "REG",
-    "off_matchup": -0.0163,
-    "def_matchup": -0.1751,
-    "qb_matchup": 0.2633,
+    "off_matchup": -0.0112,
+    "def_matchup": -0.1551,
+    "qb_matchup": 0.2319,
     "qb_change_diff": 0,
     "spread_line": 8.5,
-    "model_a_home_win_prob": 0.7065,
-    "model_b_home_win_prob": 0.7743,
+    "model_a_home_win_prob": 0.7083,
+    "model_b_home_win_prob": 0.773,
     "market_prob_home": 0.8243,
     "context_notes": [],
     "why": {
-      "off_matchup": -0.0108,
-      "def_matchup": 0.1439,
-      "qb_matchup": 0.6215,
+      "off_matchup": -0.0086,
+      "def_matchup": 0.1441,
+      "qb_matchup": 0.6283,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0033077",
@@ -266,15 +258,13 @@
     "confidence_rank": 6,
     "confidence_points": 8,
     "data_provenance": {
-      "read_utc": "2026-11-17T11:02:55Z",
+      "read_utc": "2026-11-19T11:03:01Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 10,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-17T11:02:55.792644+00:00"
+    }
   },
   {
     "season": 2026,
@@ -289,19 +279,19 @@
     "weekday": "Sunday",
     "model_version": "2.6",
     "game_type": "REG",
-    "off_matchup": 0.1346,
-    "def_matchup": -0.0219,
-    "qb_matchup": 0.1889,
+    "off_matchup": 0.1264,
+    "def_matchup": -0.0253,
+    "qb_matchup": 0.1708,
     "qb_change_diff": 0,
-    "spread_line": 6.5,
-    "model_a_home_win_prob": 0.6631,
-    "model_b_home_win_prob": 0.7161,
-    "market_prob_home": 0.7653,
+    "spread_line": 7.0,
+    "model_a_home_win_prob": 0.6696,
+    "model_b_home_win_prob": 0.7314,
+    "market_prob_home": 0.7812,
     "context_notes": [],
     "why": {
-      "off_matchup": 0.0897,
-      "def_matchup": 0.018,
-      "qb_matchup": 0.4458,
+      "off_matchup": 0.0968,
+      "def_matchup": 0.0235,
+      "qb_matchup": 0.4627,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0033106",
@@ -318,18 +308,16 @@
     "announced_away_qb": "Baker Mayfield",
     "last_game_away_qb_id": "00-0034855",
     "last_game_away_qb": "B.Mayfield",
-    "confidence_rank": 9,
-    "confidence_points": 5,
+    "confidence_rank": 8,
+    "confidence_points": 6,
     "data_provenance": {
-      "read_utc": "2026-11-17T11:02:55Z",
+      "read_utc": "2026-11-19T11:03:01Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 10,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-17T11:02:55.792644+00:00"
+    }
   },
   {
     "season": 2026,
@@ -344,22 +332,22 @@
     "weekday": "Sunday",
     "model_version": "2.6",
     "game_type": "REG",
-    "off_matchup": 0.0045,
-    "def_matchup": 0.0123,
-    "qb_matchup": 0.1566,
+    "off_matchup": 0.0051,
+    "def_matchup": 0.0117,
+    "qb_matchup": 0.1356,
     "qb_change_diff": -1,
-    "spread_line": 16.5,
-    "model_a_home_win_prob": 0.7223,
-    "model_b_home_win_prob": 0.9306,
-    "market_prob_home": 0.9526,
+    "spread_line": 15.5,
+    "model_a_home_win_prob": 0.7222,
+    "model_b_home_win_prob": 0.9204,
+    "market_prob_home": 0.9437,
     "context_notes": [
       "ARI: the pick uses Gardner Minshew, the listed starter, not C.Beck, who started ARI's last game."
     ],
     "why": {
-      "off_matchup": 0.003,
-      "def_matchup": -0.0101,
-      "qb_matchup": 0.3696,
-      "qb_change": 0.4698
+      "off_matchup": 0.0039,
+      "def_matchup": -0.0109,
+      "qb_matchup": 0.3673,
+      "qb_change": 0.4715
     },
     "home_qb_id": "00-0033873",
     "home_qb": "Patrick Mahomes",
@@ -378,15 +366,13 @@
     "confidence_rank": 1,
     "confidence_points": 13,
     "data_provenance": {
-      "read_utc": "2026-11-17T11:02:55Z",
+      "read_utc": "2026-11-19T11:03:01Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 10,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-17T11:02:55.792644+00:00"
+    }
   },
   {
     "season": 2026,
@@ -401,19 +387,19 @@
     "weekday": "Sunday",
     "model_version": "2.6",
     "game_type": "REG",
-    "off_matchup": 0.0114,
-    "def_matchup": 0.0028,
-    "qb_matchup": -0.1769,
+    "off_matchup": 0.0116,
+    "def_matchup": 0.0108,
+    "qb_matchup": -0.1601,
     "qb_change_diff": 0,
     "spread_line": -6.0,
-    "model_a_home_win_prob": 0.4283,
-    "model_b_home_win_prob": 0.2839,
+    "model_a_home_win_prob": 0.4227,
+    "model_b_home_win_prob": 0.2826,
     "market_prob_home": 0.2514,
     "context_notes": [],
     "why": {
-      "off_matchup": 0.0076,
-      "def_matchup": -0.0023,
-      "qb_matchup": -0.4176,
+      "off_matchup": 0.0088,
+      "def_matchup": -0.0101,
+      "qb_matchup": -0.4339,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0039923",
@@ -430,18 +416,16 @@
     "announced_away_qb": "Trevor Lawrence",
     "last_game_away_qb_id": "00-0036971",
     "last_game_away_qb": "T.Lawrence",
-    "confidence_rank": 8,
-    "confidence_points": 6,
+    "confidence_rank": 9,
+    "confidence_points": 5,
     "data_provenance": {
-      "read_utc": "2026-11-17T11:02:55Z",
+      "read_utc": "2026-11-19T11:03:01Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 10,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-17T11:02:55.792644+00:00"
+    }
   },
   {
     "season": 2026,
@@ -456,22 +440,22 @@
     "weekday": "Sunday",
     "model_version": "2.6",
     "game_type": "REG",
-    "off_matchup": -0.1323,
-    "def_matchup": -0.044,
-    "qb_matchup": -0.0039,
+    "off_matchup": -0.1229,
+    "def_matchup": -0.039,
+    "qb_matchup": -0.0227,
     "qb_change_diff": -1,
     "spread_line": 3.0,
-    "model_a_home_win_prob": 0.63,
-    "model_b_home_win_prob": 0.64,
+    "model_a_home_win_prob": 0.6167,
+    "model_b_home_win_prob": 0.642,
     "market_prob_home": 0.6331,
     "context_notes": [
       "NYJ: the pick uses Geno Smith, the listed starter, not C.Klubnik, who started NYJ's last game."
     ],
     "why": {
-      "off_matchup": -0.0882,
-      "def_matchup": 0.0361,
-      "qb_matchup": -0.0093,
-      "qb_change": 0.4698
+      "off_matchup": -0.0941,
+      "def_matchup": 0.0362,
+      "qb_matchup": -0.0615,
+      "qb_change": 0.4715
     },
     "home_qb_id": "00-0036355",
     "home_qb": "Justin Herbert",
@@ -490,15 +474,13 @@
     "confidence_rank": 12,
     "confidence_points": 2,
     "data_provenance": {
-      "read_utc": "2026-11-17T11:02:55Z",
+      "read_utc": "2026-11-19T11:03:01Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 10,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-17T11:02:55.792644+00:00"
+    }
   },
   {
     "season": 2026,
@@ -513,19 +495,19 @@
     "weekday": "Sunday",
     "model_version": "2.6",
     "game_type": "REG",
-    "off_matchup": -0.012,
-    "def_matchup": -0.0485,
-    "qb_matchup": 0.2176,
+    "off_matchup": -0.0126,
+    "def_matchup": -0.0391,
+    "qb_matchup": 0.212,
     "qb_change_diff": 0,
     "spread_line": 10.0,
-    "model_a_home_win_prob": 0.6613,
-    "model_b_home_win_prob": 0.7972,
+    "model_a_home_win_prob": 0.6736,
+    "model_b_home_win_prob": 0.7945,
     "market_prob_home": 0.8603,
     "context_notes": [],
     "why": {
-      "off_matchup": -0.008,
-      "def_matchup": 0.0399,
-      "qb_matchup": 0.5136,
+      "off_matchup": -0.0097,
+      "def_matchup": 0.0363,
+      "qb_matchup": 0.5744,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0039732",
@@ -545,15 +527,13 @@
     "confidence_rank": 5,
     "confidence_points": 9,
     "data_provenance": {
-      "read_utc": "2026-11-17T11:02:55Z",
+      "read_utc": "2026-11-19T11:03:01Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 10,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-17T11:02:55.792644+00:00"
+    }
   },
   {
     "season": 2026,
@@ -568,19 +548,19 @@
     "weekday": "Sunday",
     "model_version": "2.6",
     "game_type": "REG",
-    "off_matchup": -0.0216,
-    "def_matchup": 0.0261,
-    "qb_matchup": -0.1524,
+    "off_matchup": -0.021,
+    "def_matchup": 0.0164,
+    "qb_matchup": -0.1598,
     "qb_change_diff": 0,
     "spread_line": -4.5,
-    "model_a_home_win_prob": 0.4324,
-    "model_b_home_win_prob": 0.3206,
+    "model_a_home_win_prob": 0.4156,
+    "model_b_home_win_prob": 0.3246,
     "market_prob_home": 0.3061,
     "context_notes": [],
     "why": {
-      "off_matchup": -0.0144,
-      "def_matchup": -0.0215,
-      "qb_matchup": -0.3597,
+      "off_matchup": -0.0161,
+      "def_matchup": -0.0152,
+      "qb_matchup": -0.433,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0039398",
@@ -600,15 +580,13 @@
     "confidence_rank": 10,
     "confidence_points": 4,
     "data_provenance": {
-      "read_utc": "2026-11-17T11:02:55Z",
+      "read_utc": "2026-11-19T11:03:01Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 10,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-17T11:02:55.792644+00:00"
+    }
   },
   {
     "season": 2026,
@@ -623,19 +601,19 @@
     "weekday": "Sunday",
     "model_version": "2.6",
     "game_type": "REG",
-    "off_matchup": 0.2442,
-    "def_matchup": -0.0913,
-    "qb_matchup": 0.1563,
+    "off_matchup": 0.2221,
+    "def_matchup": -0.0823,
+    "qb_matchup": 0.1413,
     "qb_change_diff": 0,
     "spread_line": 3.0,
-    "model_a_home_win_prob": 0.6472,
-    "model_b_home_win_prob": 0.654,
+    "model_a_home_win_prob": 0.6524,
+    "model_b_home_win_prob": 0.651,
     "market_prob_home": 0.6331,
     "context_notes": [],
     "why": {
-      "off_matchup": 0.1627,
-      "def_matchup": 0.0751,
-      "qb_matchup": 0.3689,
+      "off_matchup": 0.1701,
+      "def_matchup": 0.0765,
+      "qb_matchup": 0.383,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0037834",
@@ -655,15 +633,13 @@
     "confidence_rank": 11,
     "confidence_points": 3,
     "data_provenance": {
-      "read_utc": "2026-11-17T11:02:55Z",
+      "read_utc": "2026-11-19T11:03:01Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 10,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-17T11:02:55.792644+00:00"
+    }
   },
   {
     "season": 2026,
@@ -678,19 +654,19 @@
     "weekday": "Monday",
     "model_version": "2.6",
     "game_type": "REG",
-    "off_matchup": -0.0459,
-    "def_matchup": 0.0151,
-    "qb_matchup": -0.1758,
+    "off_matchup": -0.04,
+    "def_matchup": 0.0225,
+    "qb_matchup": -0.1613,
     "qb_change_diff": 0,
     "spread_line": -6.5,
-    "model_a_home_win_prob": 0.4172,
-    "model_b_home_win_prob": 0.2591,
+    "model_a_home_win_prob": 0.4097,
+    "model_b_home_win_prob": 0.2585,
     "market_prob_home": 0.2347,
     "context_notes": [],
     "why": {
       "off_matchup": -0.0306,
-      "def_matchup": -0.0124,
-      "qb_matchup": -0.415,
+      "def_matchup": -0.0209,
+      "qb_matchup": -0.4371,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0039910",
@@ -710,14 +686,12 @@
     "confidence_rank": 7,
     "confidence_points": 7,
     "data_provenance": {
-      "read_utc": "2026-11-17T11:02:55Z",
+      "read_utc": "2026-11-19T11:03:01Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 10,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-17T11:02:55.792644+00:00"
+    }
   }
 ]

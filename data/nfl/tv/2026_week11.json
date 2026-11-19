@@ -1,0 +1,213 @@
+{
+  "reads": [
+    "2026-11-19T11:03:18Z"
+  ],
+  "changes": [],
+  "games": [
+    {
+      "elias": "2026111900",
+      "networks": [
+        "Prime Video"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "IND",
+      "home": "HOU",
+      "territory": "NATIONAL",
+      "listed": [
+        "Prime Video"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
+      "read_at": "2026-11-19T11:03:18Z"
+    },
+    {
+      "elias": "2026112200",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "MIA",
+      "home": "BUF",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
+      "read_at": "2026-11-19T11:03:18Z"
+    },
+    {
+      "elias": "2026112201",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "BAL",
+      "home": "CAR",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
+      "read_at": "2026-11-19T11:03:18Z"
+    },
+    {
+      "elias": "2026112202",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NO",
+      "home": "CHI",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
+      "read_at": "2026-11-19T11:03:18Z"
+    },
+    {
+      "elias": "2026112203",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "TEN",
+      "home": "DAL",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
+      "read_at": "2026-11-19T11:03:18Z"
+    },
+    {
+      "elias": "2026112204",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "TB",
+      "home": "DET",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
+      "read_at": "2026-11-19T11:03:18Z"
+    },
+    {
+      "elias": "2026112205",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "ARI",
+      "home": "KC",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
+      "read_at": "2026-11-19T11:03:18Z"
+    },
+    {
+      "elias": "2026112209",
+      "networks": [],
+      "held_back": [
+        "kickoff disagrees: nfl.com 2026-11-22T18:00:00Z"
+      ],
+      "reported": [],
+      "away": "PIT",
+      "home": "PHI",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ]
+    },
+    {
+      "elias": "2026112207",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NYJ",
+      "home": "LAC",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
+      "read_at": "2026-11-19T11:03:18Z"
+    },
+    {
+      "elias": "2026112206",
+      "networks": [],
+      "held_back": [
+        "kickoff disagrees: nfl.com 2026-11-22T21:25:00Z"
+      ],
+      "reported": [],
+      "away": "JAX",
+      "home": "NYG",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ]
+    },
+    {
+      "elias": "2026112208",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LV",
+      "home": "DEN",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
+      "read_at": "2026-11-19T11:03:18Z"
+    },
+    {
+      "elias": "2026112210",
+      "networks": [
+        "NBC"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "MIN",
+      "home": "SF",
+      "territory": "NATIONAL",
+      "listed": [
+        "NBC"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
+      "read_at": "2026-11-19T11:03:18Z"
+    },
+    {
+      "elias": "2026112300",
+      "networks": [
+        "ESPN"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CIN",
+      "home": "WAS",
+      "territory": "NATIONAL",
+      "listed": [
+        "ESPN",
+        "ABC"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
+      "read_at": "2026-11-19T11:03:18Z"
+    }
+  ]
+}
