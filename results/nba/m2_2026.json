@@ -6,8 +6,8 @@
  "printed_from": 100,
  "judged": false,
  "availability": {
-  "mean_report_minus_box": 0.00018109008402797052,
-  "mean_absolute_gap": 0.14085335403549457,
+  "mean_report_minus_box": 0.00018109008402795982,
+  "mean_absolute_gap": 0.14085335403549454,
   "median_absolute_gap": 0.1312538534549884
  },
  "model_a": {
@@ -16,8 +16,8 @@
   "box_minus_report": {
    "games": 207,
    "days": 28,
-   "diff": 0.01737794319752352,
-   "low": -0.0004715031779076668,
+   "diff": 0.017377943197523525,
+   "low": -0.0004715031779076456,
    "high": 0.03670293399050796,
    "level": 0.9833333333333333
   }
