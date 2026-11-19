@@ -1,0 +1,104 @@
+{
+ "game_id": "2026020352",
+ "season": 2026,
+ "slate": "2026-11-19",
+ "start_utc": "2026-11-20T00:00:00Z",
+ "home": "CAR",
+ "away": "MTL",
+ "model_a": 0.7386,
+ "model_b": 0.7939,
+ "pick": "CAR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.933296,
+  "shot_matchup": 10.301497,
+  "goalie_matchup_2000": 0.003387
+ },
+ "market": {
+  "game_id": "2026020352",
+  "start_utc": "2026-11-20T00:00:00Z",
+  "home": "CAR",
+  "away": "MTL",
+  "book": "DraftKings",
+  "home_price": -345.0,
+  "away_price": 275.0,
+  "home_prob": 0.7441,
+  "read_utc": "2026-11-19T21:57:02Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481611,
+   "name": "Pyotr Kochetkov",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8482487,
+   "name": "Jakub Dobes",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/EricEngels/status/2123097526303883296?a=cnbCEKINErXav5Os7hg&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-19",
+  "read_utc": "2026-11-19T21:57:02Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Bryce Pickford",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Chris Kreider",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ivan Demidov",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Josh Anderson",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lucas Condotta",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mike Matheson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Sam Montembeault",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Zack Bolduc",
+    "position": "RW",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-19T21:57:02Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-18",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14749,
+  "training_games_priced": 7715,
+  "training_ids_sha256": "2a56371dd6849bc22048b46bd4789153279edbf5c0e47330af707c751948585f"
+ },
+ "code_sha256": "2b02235a8ec7108b3fb80ff896bd0a894fa5fc3bdeac762dc153f46d145d9106",
+ "code_commit": "a1e7adebc5dc04f7e01de7a0db5561c4670e276f"
+}

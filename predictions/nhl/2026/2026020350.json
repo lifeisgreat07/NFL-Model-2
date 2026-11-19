@@ -1,0 +1,105 @@
+{
+ "game_id": "2026020350",
+ "season": 2026,
+ "slate": "2026-11-19",
+ "start_utc": "2026-11-20T00:00:00Z",
+ "home": "PIT",
+ "away": "STL",
+ "model_a": 0.5152,
+ "model_b": 0.4906,
+ "pick": "STL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.144949,
+  "shot_matchup": 2.042135,
+  "goalie_matchup_2000": -0.008394
+ },
+ "market": {
+  "game_id": "2026020350",
+  "start_utc": "2026-11-20T00:00:00Z",
+  "home": "PIT",
+  "away": "STL",
+  "book": "DraftKings",
+  "home_price": -108.0,
+  "away_price": -112.0,
+  "home_prob": 0.4957,
+  "read_utc": "2026-11-19T21:57:02Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481668,
+   "name": "Arturs Silovs",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/DanPotashTV/status/2123450783836328381?a=csNJe7RTH2aLaTo54y0&s=20"
+  },
+  "away": {
+   "player_id": 8480981,
+   "name": "Joel Hofer",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://thehockeynews.com/nhl/st-louis-blues/game-day/11-19-26-blues-penguins-gameday-lineup"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-19",
+  "read_utc": "2026-11-19T21:57:02Z",
+  "home": [
+   {
+    "name": "Bryan Rust",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elmer Soderblom",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Robertson",
+    "position": "LW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Ryan Graves",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Dillon Dube",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ross Johnston",
+    "position": "LW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Torey Krug",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Tucker",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-19T21:57:02Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-18",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14749,
+  "training_games_priced": 7715,
+  "training_ids_sha256": "2a56371dd6849bc22048b46bd4789153279edbf5c0e47330af707c751948585f"
+ },
+ "code_sha256": "2b02235a8ec7108b3fb80ff896bd0a894fa5fc3bdeac762dc153f46d145d9106",
+ "code_commit": "a1e7adebc5dc04f7e01de7a0db5561c4670e276f"
+}
