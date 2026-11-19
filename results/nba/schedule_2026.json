@@ -3720,6 +3720,19 @@
    "time_valid": true
   },
   {
+   "game_id": "401910054",
+   "slate": "2026-11-29",
+   "start_utc": "2026-11-29T20:30:00Z",
+   "home": "CLE",
+   "away": "MIA",
+   "status": "scheduled",
+   "game_type": "regular",
+   "home_score": null,
+   "away_score": null,
+   "neutral_site": false,
+   "time_valid": true
+  },
+  {
    "game_id": "401910051",
    "slate": "2026-11-29",
    "start_utc": "2026-11-29T21:00:00Z",
@@ -3751,19 +3764,6 @@
    "start_utc": "2026-11-29T22:00:00Z",
    "home": "UTAH",
    "away": "PHX",
-   "status": "scheduled",
-   "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "neutral_site": false,
-   "time_valid": true
-  },
-  {
-   "game_id": "401910054",
-   "slate": "2026-11-29",
-   "start_utc": "2026-11-29T23:00:00Z",
-   "home": "CLE",
-   "away": "MIA",
    "status": "scheduled",
    "game_type": "regular",
    "home_score": null,

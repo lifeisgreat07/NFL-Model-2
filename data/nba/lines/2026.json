@@ -3526,5 +3526,53 @@
   "home_price": -545.0,
   "away_price": 411.0,
   "home_prob": 0.812
+ },
+ {
+  "game_id": "401910019",
+  "home": "MEM",
+  "away": "GS",
+  "start_utc": "2026-11-20T01:00:00Z",
+  "read_utc": "2026-11-19T21:31:42Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -217.0,
+  "away_price": 180.0,
+  "home_prob": 0.6571
+ },
+ {
+  "game_id": "401910020",
+  "home": "MIL",
+  "away": "POR",
+  "start_utc": "2026-11-20T01:00:00Z",
+  "read_utc": "2026-11-19T21:31:42Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 378.0,
+  "away_price": -494.0,
+  "home_prob": 0.201
+ },
+ {
+  "game_id": "401910021",
+  "home": "MIN",
+  "away": "NY",
+  "start_utc": "2026-11-20T01:00:00Z",
+  "read_utc": "2026-11-19T21:31:42Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -104.0,
+  "away_price": -113.0,
+  "home_prob": 0.49
+ },
+ {
+  "game_id": "401910022",
+  "home": "SA",
+  "away": "LAC",
+  "start_utc": "2026-11-20T01:00:00Z",
+  "read_utc": "2026-11-19T21:31:42Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -1040.0,
+  "away_price": 670.0,
+  "home_prob": 0.8754
  }
 ]

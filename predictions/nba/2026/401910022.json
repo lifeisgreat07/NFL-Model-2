@@ -1,0 +1,84 @@
+{
+ "game_id": "401910022",
+ "season": 2026,
+ "slate": "2026-11-19",
+ "start_utc": "2026-11-20T01:00:00Z",
+ "home": "SA",
+ "away": "LAC",
+ "model_a": 0.7998,
+ "model_b": 0.8782,
+ "pick": "SA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8981,
+  "away": 0.9578
+ },
+ "features": {
+  "point_matchup": 8.27919,
+  "efficiency_matchup": 8.154823,
+  "availability_matchup": -0.059694
+ },
+ "market": {
+  "game_id": "401910022",
+  "home": "SA",
+  "away": "LAC",
+  "start_utc": "2026-11-20T01:00:00Z",
+  "read_utc": "2026-11-19T21:31:42Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -1040.0,
+  "away_price": 670.0,
+  "home_prob": 0.8754
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-19T21:31:42Z",
+  "home": [
+   {
+    "athlete_id": "5037871",
+    "name": "Dylan Harper",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5101845",
+    "name": "Jayden Quaintance",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6440",
+    "name": "Tobias Harris",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "6580",
+    "name": "Bradley Beal",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3913176",
+    "name": "Brandon Ingram",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4396818",
+    "name": "Jordan Miller",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-19T21:31:42Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-18",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14280,
+  "training_games_priced": 14239,
+  "training_ids_sha256": "bc38032a69dddbe942dfd6f551a98d507897677bfb162f3585feccc2d9f0d2fa"
+ },
+ "code_sha256": "61d30e4282c5d50a026b17a156e179a3dd630ac06cf927d0468315995febd62e",
+ "code_commit": "bb775179358b34fcb4c33feacd8cd0b37be43342"
+}
