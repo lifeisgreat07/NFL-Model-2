@@ -9943,5 +9943,50 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020358",
   "start_utc": "2026-11-20T03:00:00Z"
+ },
+ {
+  "date": "2026-11-19",
+  "home": "CAR",
+  "home_goalie": "Pyotr Kochetkov",
+  "home_status": null,
+  "home_report": null,
+  "away": "MTL",
+  "away_goalie": "Jakub Dobes",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/EricEngels/status/2123097526303883296?a=cnbCEKINErXav5Os7hg&s=20",
+  "read_utc": "2026-11-19T02:06:47Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020352",
+  "start_utc": "2026-11-20T00:00:00Z"
+ },
+ {
+  "date": "2026-11-19",
+  "home": "WSH",
+  "home_goalie": "Logan Thompson",
+  "home_status": null,
+  "home_report": null,
+  "away": "BUF",
+  "away_goalie": "Ukko-Pekka Luukkonen",
+  "away_status": null,
+  "away_report": null,
+  "read_utc": "2026-11-19T02:06:47Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020351",
+  "start_utc": "2026-11-20T00:00:00Z"
+ },
+ {
+  "date": "2026-11-19",
+  "home": "SEA",
+  "home_goalie": "Philipp Grubauer",
+  "home_status": null,
+  "home_report": null,
+  "away": "VAN",
+  "away_goalie": "Leevi Merilainen",
+  "away_status": null,
+  "away_report": null,
+  "read_utc": "2026-11-19T02:06:47Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020357",
+  "start_utc": "2026-11-20T02:40:00Z"
  }
 ]
