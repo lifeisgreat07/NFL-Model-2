@@ -110,5 +110,54 @@
     "home": "KC",
     "away": "ARI",
     "spread_line": 15.5
+  },
+  {
+    "captured_date": "2026-11-20",
+    "captured_utc": "2026-11-20T05:17:31Z",
+    "home": "CAR",
+    "away": "BAL",
+    "spread_line": 3.0
+  },
+  {
+    "captured_date": "2026-11-20",
+    "captured_utc": "2026-11-20T05:17:31Z",
+    "home": "DET",
+    "away": "TB",
+    "spread_line": 6.0
+  },
+  {
+    "captured_date": "2026-11-20",
+    "captured_utc": "2026-11-20T05:17:31Z",
+    "home": "KC",
+    "away": "ARI",
+    "spread_line": 16.5
+  },
+  {
+    "captured_date": "2026-11-20",
+    "captured_utc": "2026-11-20T05:17:31Z",
+    "home": "DEN",
+    "away": "LV",
+    "spread_line": 10.5
+  },
+  {
+    "captured_date": "2026-11-20",
+    "captured_utc": "2026-11-20T05:17:31Z",
+    "home": "PHI",
+    "away": "PIT",
+    "spread_line": -3.5
+  },
+  {
+    "captured_date": "2026-11-20",
+    "captured_utc": "2026-11-20T05:17:31Z",
+    "home": "SF",
+    "away": "MIN",
+    "spread_line": 3.5
+  },
+  {
+    "captured_date": "2026-11-20",
+    "captured_utc": "2026-11-20T05:17:31Z",
+    "home": "WAS",
+    "away": "CIN",
+    "spread_line": -6.0
   }
 ]
