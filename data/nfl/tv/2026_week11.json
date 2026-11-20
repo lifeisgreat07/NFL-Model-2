@@ -1,7 +1,8 @@
 {
   "reads": [
     "2026-11-19T11:03:18Z",
-    "2026-11-20T05:17:32Z"
+    "2026-11-20T05:17:32Z",
+    "2026-11-20T14:00:55Z"
   ],
   "changes": [],
   "games": [
@@ -19,7 +20,7 @@
         "Prime Video"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
-      "read_at": "2026-11-20T05:17:32Z"
+      "read_at": "2026-11-20T14:00:55Z"
     },
     {
       "elias": "2026112200",
@@ -35,7 +36,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
-      "read_at": "2026-11-20T05:17:32Z"
+      "read_at": "2026-11-20T14:00:55Z"
     },
     {
       "elias": "2026112201",
@@ -51,7 +52,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
-      "read_at": "2026-11-20T05:17:32Z"
+      "read_at": "2026-11-20T14:00:55Z"
     },
     {
       "elias": "2026112202",
@@ -67,7 +68,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
-      "read_at": "2026-11-20T05:17:32Z"
+      "read_at": "2026-11-20T14:00:55Z"
     },
     {
       "elias": "2026112203",
@@ -83,7 +84,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
-      "read_at": "2026-11-20T05:17:32Z"
+      "read_at": "2026-11-20T14:00:55Z"
     },
     {
       "elias": "2026112204",
@@ -99,7 +100,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
-      "read_at": "2026-11-20T05:17:32Z"
+      "read_at": "2026-11-20T14:00:55Z"
     },
     {
       "elias": "2026112205",
@@ -115,7 +116,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
-      "read_at": "2026-11-20T05:17:32Z"
+      "read_at": "2026-11-20T14:00:55Z"
     },
     {
       "elias": "2026112209",
@@ -145,7 +146,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
-      "read_at": "2026-11-20T05:17:32Z"
+      "read_at": "2026-11-20T14:00:55Z"
     },
     {
       "elias": "2026112206",
@@ -175,7 +176,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
-      "read_at": "2026-11-20T05:17:32Z"
+      "read_at": "2026-11-20T14:00:55Z"
     },
     {
       "elias": "2026112210",
@@ -191,7 +192,7 @@
         "NBC"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
-      "read_at": "2026-11-20T05:17:32Z"
+      "read_at": "2026-11-20T14:00:55Z"
     },
     {
       "elias": "2026112300",
@@ -208,7 +209,7 @@
         "ABC"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-11",
-      "read_at": "2026-11-20T05:17:32Z"
+      "read_at": "2026-11-20T14:00:55Z"
     }
   ]
 }
