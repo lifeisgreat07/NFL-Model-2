@@ -1,0 +1,79 @@
+{
+ "game_id": "401909313",
+ "season": 2026,
+ "slate": "2026-11-20",
+ "start_utc": "2026-11-21T03:00:00Z",
+ "home": "LAL",
+ "away": "SAC",
+ "model_a": 0.8409,
+ "model_b": 0.8647,
+ "pick": "LAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8999,
+  "away": 0.9465
+ },
+ "features": {
+  "point_matchup": 10.186924,
+  "efficiency_matchup": 9.892787,
+  "availability_matchup": -0.0466
+ },
+ "market": {
+  "game_id": "401909313",
+  "home": "LAL",
+  "away": "SAC",
+  "start_utc": "2026-11-21T03:00:00Z",
+  "read_utc": "2026-11-20T21:31:27Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -890.0,
+  "away_price": 600.0,
+  "home_prob": 0.8629
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-20T21:31:27Z",
+  "home": [
+   {
+    "athlete_id": "4066457",
+    "name": "Austin Reaves",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065732",
+    "name": "De'Andre Hunter",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431679",
+    "name": "Precious Achiuwa",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-20T21:31:27Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14284,
+  "training_games_priced": 14243,
+  "training_ids_sha256": "c104f1a2511d61f5b8c2ddfbff4900d24ceab2531c2fd74a8c11ed5113f7fd17"
+ },
+ "code_sha256": "61d30e4282c5d50a026b17a156e179a3dd630ac06cf927d0468315995febd62e",
+ "code_commit": "a5838588d0b39cd0476adb433bdeb3795e245187"
+}

@@ -4019,11 +4019,11 @@
    "time_valid": true
   },
   {
-   "game_id": "401910074",
+   "game_id": "401910075",
    "slate": "2026-12-01",
    "start_utc": "2026-12-02T03:00:00Z",
-   "home": "POR",
-   "away": "MIN",
+   "home": "GS",
+   "away": "UTAH",
    "status": "scheduled",
    "game_type": "regular",
    "home_score": null,
@@ -4032,11 +4032,11 @@
    "time_valid": true
   },
   {
-   "game_id": "401910075",
+   "game_id": "401910074",
    "slate": "2026-12-01",
    "start_utc": "2026-12-02T04:00:00Z",
-   "home": "GS",
-   "away": "UTAH",
+   "home": "POR",
+   "away": "MIN",
    "status": "scheduled",
    "game_type": "regular",
    "home_score": null,

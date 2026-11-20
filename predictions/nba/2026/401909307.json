@@ -1,0 +1,104 @@
+{
+ "game_id": "401909307",
+ "season": 2026,
+ "slate": "2026-11-20",
+ "start_utc": "2026-11-21T00:30:00Z",
+ "home": "CLE",
+ "away": "IND",
+ "model_a": 0.7338,
+ "model_b": 0.6714,
+ "pick": "CLE",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8111,
+  "away": 0.919
+ },
+ "features": {
+  "point_matchup": 6.216243,
+  "efficiency_matchup": 6.00244,
+  "availability_matchup": -0.107921
+ },
+ "market": {
+  "game_id": "401909307",
+  "home": "CLE",
+  "away": "IND",
+  "start_utc": "2026-11-21T00:30:00Z",
+  "read_utc": "2026-11-20T21:31:27Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -230.0,
+  "away_price": 191.0,
+  "home_prob": 0.6698
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-20T21:31:27Z",
+  "home": [
+   {
+    "athlete_id": "4432158",
+    "name": "Evan Mobley",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4683747",
+    "name": "Jaylon Tyson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5106268",
+    "name": "Nae'Qwan Tomlin",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4576087",
+    "name": "Peyton Watson",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4395712",
+    "name": "Andrew Nembhard",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4433076",
+    "name": "Ben Sheppard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105854",
+    "name": "Braden Smith",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5157066",
+    "name": "Johnny Furphy",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2530530",
+    "name": "T.J. McConnell",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4396993",
+    "name": "Tyrese Haliburton",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-20T21:31:27Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14284,
+  "training_games_priced": 14243,
+  "training_ids_sha256": "c104f1a2511d61f5b8c2ddfbff4900d24ceab2531c2fd74a8c11ed5113f7fd17"
+ },
+ "code_sha256": "61d30e4282c5d50a026b17a156e179a3dd630ac06cf927d0468315995febd62e",
+ "code_commit": "a5838588d0b39cd0476adb433bdeb3795e245187"
+}
