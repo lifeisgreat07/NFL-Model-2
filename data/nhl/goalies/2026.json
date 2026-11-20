@@ -10153,5 +10153,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020358",
   "start_utc": "2026-11-20T03:00:00Z"
+ },
+ {
+  "date": "2026-11-19",
+  "home": "COL",
+  "home_goalie": "Scott Wedgewood",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/evanrawal/status/2123589581799125489",
+  "away": "ANA",
+  "away_goalie": "Lukas Dostal",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/ZachCav/status/2123493541834019122?a=aL7ykWYeTOWSVVyfM5w&s=20",
+  "read_utc": "2026-11-20T01:56:05Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020356",
+  "start_utc": "2026-11-20T02:00:00Z"
  }
 ]
