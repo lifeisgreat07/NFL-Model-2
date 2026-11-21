@@ -3062,10 +3062,10 @@
    "start_utc": "2026-11-21T18:00:00Z",
    "home": "PHI",
    "away": "MIL",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
+   "home_score": 132,
+   "away_score": 129,
    "neutral_site": false,
    "time_valid": true
   },
