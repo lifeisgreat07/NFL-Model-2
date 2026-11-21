@@ -159,5 +159,19 @@
     "home": "WAS",
     "away": "CIN",
     "spread_line": -6.0
+  },
+  {
+    "captured_date": "2026-11-21",
+    "captured_utc": "2026-11-21T05:17:48Z",
+    "home": "DET",
+    "away": "TB",
+    "spread_line": 5.5
+  },
+  {
+    "captured_date": "2026-11-21",
+    "captured_utc": "2026-11-21T05:17:48Z",
+    "home": "SF",
+    "away": "MIN",
+    "spread_line": 3.0
   }
 ]

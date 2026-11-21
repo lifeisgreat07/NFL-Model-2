@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 11,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-20T05:17:30Z",
+  "read_at": "2026-11-21T05:17:45Z",
   "games": [
     {
       "away": "IND",
@@ -60,7 +60,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 6.0,
+      "spread_line": 5.5,
       "neutral_site": false,
       "venue": "Ford Field"
     },
@@ -120,7 +120,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 3.5,
+      "spread_line": 3.0,
       "neutral_site": true,
       "venue": "Estadio Banorte"
     },
