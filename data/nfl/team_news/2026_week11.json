@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 11,
-  "read_at": "2026-11-19T11:03:19Z",
+  "read_at": "2026-11-21T13:27:18Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-11-19T07:12:47Z"
+    "depth_chart_snapshot": "2026-11-21T07:02:04Z"
   },
   "teams": {
     "HOU": {
@@ -59,9 +59,26 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
-      "doubtful": [],
-      "questionable_starters": 0
+      "out": [
+        {
+          "name": "Christian Benford",
+          "position": "CB",
+          "injury": "Groin"
+        },
+        {
+          "name": "Dorian Williams",
+          "position": "LB",
+          "injury": "Calf"
+        }
+      ],
+      "doubtful": [
+        {
+          "name": "Dalton Kincaid",
+          "position": "TE",
+          "injury": "Thumb"
+        }
+      ],
+      "questionable_starters": 1
     },
     "MIA": {
       "qb": {
@@ -70,9 +87,21 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
-      "doubtful": [],
-      "questionable_starters": 0
+      "out": [
+        {
+          "name": "Bradley Pinion",
+          "position": "P",
+          "injury": "Groin"
+        }
+      ],
+      "doubtful": [
+        {
+          "name": "Dante Trader Jr.",
+          "position": "S",
+          "injury": "Shoulder"
+        }
+      ],
+      "questionable_starters": 1
     },
     "CAR": {
       "qb": {
@@ -81,9 +110,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Bobby Okereke",
+          "position": "LB",
+          "injury": "Foot"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "BAL": {
       "qb": {
@@ -92,7 +127,23 @@
         "changed_from": "J.Brissett"
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Jaylinn Hawkins",
+          "position": "S",
+          "injury": "Knee"
+        },
+        {
+          "name": "Marlon Humphrey",
+          "position": "CB",
+          "injury": "Not injury related - personal matter"
+        },
+        {
+          "name": "Nnamdi Madubuike",
+          "position": "DT",
+          "injury": "Hamstring"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -103,7 +154,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Kyler Gordon",
+          "position": "CB",
+          "injury": "Shoulder"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -114,9 +171,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Martin Emerson",
+          "position": "CB",
+          "injury": "Concussion"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "DAL": {
       "qb": {
@@ -125,7 +188,28 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "DaRon Bland",
+          "position": "CB",
+          "injury": "Ankle"
+        },
+        {
+          "name": "Jake Ferguson",
+          "position": "TE",
+          "injury": "Knee"
+        },
+        {
+          "name": "P.J. Locke",
+          "position": "S",
+          "injury": "Concussion"
+        },
+        {
+          "name": "Tyler Booker",
+          "position": "G",
+          "injury": "Ankle"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -138,7 +222,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 3
     },
     "DET": {
       "qb": {
@@ -147,9 +231,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Cade Mays",
+          "position": "C",
+          "injury": "Ankle"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "TB": {
       "qb": {
@@ -158,9 +248,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Antoine Winfield Jr.",
+          "position": "S",
+          "injury": "Ankle"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "KC": {
       "qb": {
@@ -169,7 +265,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Kenneth Walker III",
+          "position": "RB",
+          "injury": "Groin"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -182,7 +284,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "NYG": {
       "qb": {
@@ -213,9 +315,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Daiyan Henley",
+          "position": "LB",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 3
     },
     "NYJ": {
       "qb": {
@@ -226,7 +334,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "DEN": {
       "qb": {
@@ -237,7 +345,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "LV": {
       "qb": {
@@ -246,9 +354,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Tonka Hemingway",
+          "position": "DT",
+          "injury": "Stinger"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 3
     },
     "PHI": {
       "qb": {
@@ -257,7 +371,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Zack Baun",
+          "position": "LB",
+          "injury": "Back"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -270,7 +390,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "SF": {
       "qb": {
@@ -281,7 +401,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 3
     },
     "MIN": {
       "qb": {
@@ -292,7 +412,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "WAS": {
       "qb": {

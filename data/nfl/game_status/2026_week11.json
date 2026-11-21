@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 11,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-21T05:17:45Z",
+  "read_at": "2026-11-21T13:27:14Z",
   "games": [
     {
       "away": "IND",
@@ -50,7 +50,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 8.5,
+      "spread_line": 7.5,
       "neutral_site": false,
       "venue": "AT&T Stadium"
     },
