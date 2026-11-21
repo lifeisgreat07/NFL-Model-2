@@ -1,0 +1,89 @@
+{
+ "game_id": "2026020359",
+ "season": 2026,
+ "slate": "2026-11-21",
+ "start_utc": "2026-11-21T18:00:00Z",
+ "home": "CAR",
+ "away": "EDM",
+ "model_a": 0.6977,
+ "model_b": 0.6678,
+ "pick": "CAR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.642505,
+  "shot_matchup": 8.643241,
+  "goalie_matchup_2000": 0.002028
+ },
+ "market": {
+  "game_id": "2026020359",
+  "start_utc": "2026-11-21T18:00:00Z",
+  "home": "CAR",
+  "away": "EDM",
+  "book": "DraftKings",
+  "home_price": -198.0,
+  "away_price": 164.0,
+  "home_prob": 0.6369,
+  "read_utc": "2026-11-21T14:01:40Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481611,
+   "name": "Pyotr Kochetkov",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8477465,
+   "name": "Tristan Jarry",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-20",
+  "read_utc": "2026-11-21T14:01:40Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Nugent-Hopkins",
+    "position": "C",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-21T14:01:40Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14761,
+  "training_games_priced": 7727,
+  "training_ids_sha256": "4cf03b036649c54c92ad1c050e6f6ea4744d663aab3cb7c4be958c65e0b91b01"
+ },
+ "code_sha256": "2b02235a8ec7108b3fb80ff896bd0a894fa5fc3bdeac762dc153f46d145d9106",
+ "code_commit": "4c09cc4f8b7470347f0c11b48a33d7b56be8dc5c"
+}
