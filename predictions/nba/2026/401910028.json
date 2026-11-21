@@ -1,0 +1,84 @@
+{
+ "game_id": "401910028",
+ "season": 2026,
+ "slate": "2026-11-21",
+ "start_utc": "2026-11-22T03:00:00Z",
+ "home": "SAC",
+ "away": "BOS",
+ "model_a": 0.2002,
+ "model_b": 0.1705,
+ "pick": "BOS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9482,
+  "away": 0.7531
+ },
+ "features": {
+  "point_matchup": -13.767235,
+  "efficiency_matchup": -13.676649,
+  "availability_matchup": 0.195156
+ },
+ "market": {
+  "game_id": "401910028",
+  "home": "SAC",
+  "away": "BOS",
+  "start_utc": "2026-11-22T03:00:00Z",
+  "read_utc": "2026-11-21T21:31:37Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 443.0,
+  "away_price": -597.0,
+  "home_prob": 0.177
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-21T21:31:37Z",
+  "home": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431679",
+    "name": "Precious Achiuwa",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3078576",
+    "name": "Derrick White",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065648",
+    "name": "Jayson Tatum",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4351852",
+    "name": "Mitchell Robinson",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-21T21:31:37Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-20",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14293,
+  "training_games_priced": 14252,
+  "training_ids_sha256": "ff45df8ee32da9c4b0e1fe72a75c07e16b8570f85ff8d5e616dbb06c56e75ba5"
+ },
+ "code_sha256": "61d30e4282c5d50a026b17a156e179a3dd630ac06cf927d0468315995febd62e",
+ "code_commit": "2a850be15c936363bef3c680bc708a5a9363eccc"
+}

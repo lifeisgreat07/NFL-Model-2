@@ -1,0 +1,94 @@
+{
+ "game_id": "401910024",
+ "season": 2026,
+ "slate": "2026-11-21",
+ "start_utc": "2026-11-22T00:30:00Z",
+ "home": "NY",
+ "away": "POR",
+ "model_a": 0.7118,
+ "model_b": 0.5793,
+ "pick": "NY",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.957,
+  "away": 0.9212
+ },
+ "features": {
+  "point_matchup": 3.856964,
+  "efficiency_matchup": 3.923674,
+  "availability_matchup": 0.035817
+ },
+ "market": {
+  "game_id": "401910024",
+  "home": "NY",
+  "away": "POR",
+  "start_utc": "2026-11-22T00:30:00Z",
+  "read_utc": "2026-11-21T21:31:37Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -156.0,
+  "away_price": 131.0,
+  "home_prob": 0.5847
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-21T21:31:37Z",
+  "home": [
+   {
+    "athlete_id": "2528426",
+    "name": "Jordan Clarkson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3136195",
+    "name": "Karl-Anthony Towns",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3934719",
+    "name": "OG Anunoby",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4706557",
+    "name": "Chris Youngblood",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4683021",
+    "name": "Deni Avdija",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4279888",
+    "name": "Ja Morant",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4914336",
+    "name": "Shaedon Sharpe",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4578893",
+    "name": "Vit Krejci",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-21T21:31:37Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-20",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14293,
+  "training_games_priced": 14252,
+  "training_ids_sha256": "ff45df8ee32da9c4b0e1fe72a75c07e16b8570f85ff8d5e616dbb06c56e75ba5"
+ },
+ "code_sha256": "61d30e4282c5d50a026b17a156e179a3dd630ac06cf927d0468315995febd62e",
+ "code_commit": "2a850be15c936363bef3c680bc708a5a9363eccc"
+}
