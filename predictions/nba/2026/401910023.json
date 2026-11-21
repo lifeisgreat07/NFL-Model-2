@@ -1,0 +1,89 @@
+{
+ "game_id": "401910023",
+ "season": 2026,
+ "slate": "2026-11-21",
+ "start_utc": "2026-11-21T18:00:00Z",
+ "home": "PHI",
+ "away": "MIL",
+ "model_a": 0.746,
+ "model_b": 0.8168,
+ "pick": "PHI",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8219,
+  "away": 0.9597
+ },
+ "features": {
+  "point_matchup": 6.85891,
+  "efficiency_matchup": 6.852159,
+  "availability_matchup": -0.137844
+ },
+ "market": {
+  "game_id": "401910023",
+  "home": "PHI",
+  "away": "MIL",
+  "start_utc": "2026-11-21T18:00:00Z",
+  "read_utc": "2026-11-21T16:01:52Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -545.0,
+  "away_price": 411.0,
+  "home_prob": 0.812
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-21T16:01:52Z",
+  "home": [
+   {
+    "athlete_id": "5105637",
+    "name": "Adem Bona",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4871141",
+    "name": "Ariel Hukporti",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3912848",
+    "name": "Dean Wade",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4870562",
+    "name": "Dominick Barlow",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3917376",
+    "name": "Jaylen Brown",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431678",
+    "name": "Tyrese Maxey",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4997526",
+    "name": "Ousmane Dieng",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-21T16:01:52Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-20",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14293,
+  "training_games_priced": 14252,
+  "training_ids_sha256": "ff45df8ee32da9c4b0e1fe72a75c07e16b8570f85ff8d5e616dbb06c56e75ba5"
+ },
+ "code_sha256": "61d30e4282c5d50a026b17a156e179a3dd630ac06cf927d0468315995febd62e",
+ "code_commit": "37b24a26318a94d885d62cf9ff26df155f2c99d4"
+}
