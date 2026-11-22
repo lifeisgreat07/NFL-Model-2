@@ -24,7 +24,12 @@ The answer has `src.core.sport.SCHEDULE_COLUMNS`, with MLB's meanings:
 (a 'Completed Early' game is final); `home_win` is 1 or 0 once final, extra
 innings included, and <NA> for an official tie (the Stats API's `isTie`, such as
 2016-09-29's called Cubs-Pirates game): final, with no winner. Beside those: `game_type`, `game_number`, `double_header`,
-`venue_id`, `venue` and `neutral_site`.
+`venue_id`, `venue` and `neutral_site`, and `series_game` and `series_games`: the game's place in its series ("game
+2 of 4", the Stats API's `seriesGameNumber` and `gamesInSeries`) for the board's series line (Stage 100 item 1). Every
+game of 2010-2026 carries both; two do not make sense (2023's 716404 reads 1 of 0, 2025's 776907 reads 4 of 3), so a
+place that is missing, not a whole number, or not 1 to N of N is left empty (<NA>) rather than stopping the load:
+nothing that decides a pick reads it, and an empty place only means the board shows no series line for that game.
+A season cached before these two columns existed is read back without them.
 
 Anything this file does not recognise (a state, a game type, a missing
 field, a tied final) stops the load with every problem named:
@@ -71,7 +76,8 @@ CODED_STATE: Mapping[str, GameStatus] = {
 }
 
 #: The columns this file adds to the core's.
-EXTRA_COLUMNS = ('game_type', 'game_number', 'double_header', 'venue_id', 'venue', 'neutral_site')
+EXTRA_COLUMNS = ('game_type', 'game_number', 'double_header', 'venue_id', 'venue', 'neutral_site',
+                 'series_game', 'series_games')
 
 #: A date as the Stats API writes it.
 DATE = re.compile(r'\d{4}-\d{2}-\d{2}')
@@ -140,6 +146,14 @@ def raw_problems(g: Json) -> list[str]:
     return out
 
 
+def series_place(g: Json) -> tuple[int | None, int | None]:
+    """The game's place in its series, (game, of), or (None, None) unless both are whole numbers with 1 <= game <= of."""
+    n, of = g.get('seriesGameNumber'), g.get('gamesInSeries')
+    if type(n) is int and type(of) is int and 1 <= n <= of:
+        return n, of
+    return None, None
+
+
 def last_listings(games: list[Json]) -> list[Json]:
     """One listing per gamePk: the last by official date, then start. A postponed game is listed on its first
     date as postponed and again on the day it is played; a suspended one again on the day it is completed."""
@@ -180,6 +194,7 @@ def to_schedule(games: list[Json], season: int, venues: Mapping[int, int]) -> pd
         as_ = _side(g, 'away').get('score') if final else None
         home = _club(g, 'home')
         venue = g['venue']
+        place, of = series_place(g)
         rows.append({
             'game_id': str(g['gamePk']),
             'season': season,
@@ -197,10 +212,12 @@ def to_schedule(games: list[Json], season: int, venues: Mapping[int, int]) -> pd
             'venue_id': venue['id'],
             'venue': venue.get('name'),
             'neutral_site': venue['id'] != venues[home],
+            'series_game': place,
+            'series_games': of,
         })
     df = pd.DataFrame(rows, columns=[*SCHEDULE_COLUMNS, *EXTRA_COLUMNS])
     df['start_utc'] = pd.to_datetime(df['start_utc'], utc=True)
-    for col in ('home_score', 'away_score', 'home_win'):
+    for col in ('home_score', 'away_score', 'home_win', 'series_game', 'series_games'):
         df[col] = df[col].astype('Int64')
     df = df.sort_values(['start_utc', 'game_id'], kind='stable').reset_index(drop=True)
     contract = check_schedule('mlb', df)

@@ -100,6 +100,60 @@
       "find": " and hs != as_ else None,",
       "replace": " else None,",
       "expect_caught_by": "test_an_official_tie_is_final_with_no_winner"
+    },
+    {
+      "id": "mlb-sched-series-place-dropped",
+      "target": "src/sports/mlb/schedule.py",
+      "tests": "tests/test_mlb_schedule.py",
+      "why": "the series place is never kept, so the board can show no series line at all.",
+      "find": "    if type(n) is int and type(of) is int and 1 <= n <= of:\n        return n, of\n",
+      "replace": "    if type(n) is int and type(of) is int and 1 <= n <= of:\n        return None, None\n",
+      "expect_caught_by": "test_each_game_keeps_its_place_in_its_series"
+    },
+    {
+      "id": "mlb-sched-series-past-the-end",
+      "target": "src/sports/mlb/schedule.py",
+      "tests": "tests/test_mlb_schedule.py",
+      "why": "a place past its series' length (2025's 4 of 3) is kept, so the board says game 4 of 3.",
+      "find": "1 <= n <= of:",
+      "replace": "1 <= n:",
+      "expect_caught_by": "test_a_place_that_makes_no_sense_is_left_empty_and_the_game_still_loads"
+    },
+    {
+      "id": "mlb-sched-series-game-zero",
+      "target": "src/sports/mlb/schedule.py",
+      "tests": "tests/test_mlb_schedule.py",
+      "why": "a place of game 0 is kept, so the board says game 0 of 3.",
+      "find": "1 <= n <= of:",
+      "replace": "0 <= n <= of:",
+      "expect_caught_by": "test_a_place_that_makes_no_sense_is_left_empty_and_the_game_still_loads"
+    },
+    {
+      "id": "mlb-sched-series-bool-kept",
+      "target": "src/sports/mlb/schedule.py",
+      "tests": "tests/test_mlb_schedule.py",
+      "why": "a true/false value passes as a whole number, so the board says game True of 3.",
+      "find": "if type(n) is int and type(of) is int",
+      "replace": "if isinstance(n, int) and isinstance(of, int)",
+      "expect_caught_by": "test_a_place_that_makes_no_sense_is_left_empty_and_the_game_still_loads"
+    },
+    {
+      "id": "mlb-sched-series-last-game-dropped",
+      "target": "src/sports/mlb/schedule.py",
+      "tests": "tests/test_mlb_schedule.py",
+      "why": "a series' last game loses its place, so the board shows no line for a finale.",
+      "find": "1 <= n <= of:",
+      "replace": "1 <= n < of:",
+      "expect_caught_by": "test_the_last_game_of_a_series_is_kept"
+    },
+    {
+      "id": "mlb-sched-series-not-int64",
+      "target": "src/sports/mlb/schedule.py",
+      "tests": "tests/test_mlb_schedule.py",
+      "why": "the place stays a float column, so the page writes 2.0 of 4.0.",
+      "find": "    for col in ('home_score', 'away_score', 'home_win', 'series_game', 'series_games'):",
+      "replace": "    for col in ('home_score', 'away_score', 'home_win'):",
+      "expect_caught_by": "test_each_game_keeps_its_place_in_its_series"
     }
   ]
 }

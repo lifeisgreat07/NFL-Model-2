@@ -53,6 +53,33 @@ def test_a_doubleheader_is_two_games_told_apart_by_gamepk():
     assert list(df['game_id']) == ['1', '2'] and list(df['game_number']) == [1, 2]
 
 
+def test_each_game_keeps_its_place_in_its_series():
+    """The board's series line ("game 2 of 4") reads these; a doubleheader is two places in one series."""
+    df = frame(game(pk=1, number=1, dh='Y', seriesGameNumber=2, gamesInSeries=4),
+               game(pk=2, number=2, dh='Y', start='2025-07-05T03:05:00Z', seriesGameNumber=3, gamesInSeries=4))
+    assert list(df['series_game']) == [2, 3] and list(df['series_games']) == [4, 4]
+    assert str(df['series_game'].dtype) == 'Int64' and str(df['series_games'].dtype) == 'Int64'
+
+
+@pytest.mark.parametrize('place', [{}, {'seriesGameNumber': 1, 'gamesInSeries': 0},
+                                   {'seriesGameNumber': 4, 'gamesInSeries': 3},
+                                   {'seriesGameNumber': 0, 'gamesInSeries': 3},
+                                   {'seriesGameNumber': '2', 'gamesInSeries': 3},
+                                   {'seriesGameNumber': True, 'gamesInSeries': 3},
+                                   {'seriesGameNumber': 2}],
+                         ids=['missing', 'one-of-none', 'past-the-end', 'game-zero', 'text', 'boolean', 'no-length'])
+def test_a_place_that_makes_no_sense_is_left_empty_and_the_game_still_loads(place):
+    """2023's 716404 reads 1 of 0 and 2025's 776907 reads 4 of 3: shown as no series line, never a stopped load."""
+    df = frame(game(pk=9, **place))
+    assert len(df) == 1 and df.iloc[0]['status'] == 'final'
+    assert pd.isna(df.iloc[0]['series_game']) and pd.isna(df.iloc[0]['series_games'])
+
+
+def test_the_last_game_of_a_series_is_kept():
+    df = frame(game(seriesGameNumber=3, gamesInSeries=3))
+    assert (df.iloc[0]['series_game'], df.iloc[0]['series_games']) == (3, 3)
+
+
 def test_spring_training_exhibition_and_all_star_games_are_left_out():
     df = frame(game(pk=1), game(pk=2, gtype='S'), game(pk=3, gtype='E'), game(pk=4, gtype='A'),
                game(pk=5, gtype='W'))
