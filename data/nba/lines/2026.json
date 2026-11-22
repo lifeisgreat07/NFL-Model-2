@@ -3838,5 +3838,17 @@
   "home_price": 443.0,
   "away_price": -597.0,
   "home_prob": 0.177
+ },
+ {
+  "game_id": "401910028",
+  "home": "SAC",
+  "away": "BOS",
+  "start_utc": "2026-11-22T03:00:00Z",
+  "read_utc": "2026-11-22T01:29:49Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 446.0,
+  "away_price": -600.0,
+  "home_prob": 0.1761
  }
 ]
