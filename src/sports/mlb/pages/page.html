@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" data-sport="mlb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: https://a.espncdn.com https://assets.nhle.com; font-src data:; connect-src 'none'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
+<link rel="canonical" href="https://lifeisgreat07.github.io/NFL-Model-2/mlb/">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "MLB Board, Sportalytics", "url": "https://lifeisgreat07.github.io/NFL-Model-2/mlb/", "isPartOf": {"@type": "WebSite", "name": "Sportalytics", "url": "https://lifeisgreat07.github.io/NFL-Model-2/"}}</script>
+<meta name="theme-color" content="#0B0D10">
+<!-- MLB's pages: the day board (Stage 100 item 1), not yet published. One product
+     name everywhere, as on the NFL board: "<page> — Sportalytics". -->
+<title>MLB Day Board — Sportalytics</title>
+<link rel="icon" href="../assets/favicon-mlb.svg" type="image/svg+xml">
+<link rel="manifest" href="../assets/site.webmanifest">
+<meta name="description" content="Daily MLB picks from two models, one baseball-only and one with the betting market, saved before first pitch and graded in public.">
+<!-- What a link preview shows (Stage 68 item 22): this board's own title,
+     description and address; the site's card image. -->
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon-mlb.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sportalytics">
+<meta property="og:title" content="MLB Day Board — Sportalytics">
+<meta property="og:description" content="Daily MLB picks from two models, one baseball-only and one with the betting market, saved before first pitch and graded in public.">
+<meta property="og:url" content="https://lifeisgreat07.github.io/NFL-Model-2/mlb/">
+<meta property="og:image" content="https://lifeisgreat07.github.io/NFL-Model-2/og-mlb.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Sportalytics, MLB: daily picks from two models, saved before the game and graded in public.">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+{% include "styles.css" %}
+</style>
+<style id="font-faces">
+__FONT_FACES__
+</style>
+<style id="mlb-styles">
+{% include "mlb.css" %}
+</style>
+</head>
+<body class="is-entering">
+<script>
+  (function(){
+    try{
+      var saved = localStorage.getItem('site:theme') || localStorage.getItem('mlb:theme');
+      if(!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) saved = 'light';
+      if(saved === 'light') document.documentElement.setAttribute('data-theme','light');
+      // Stage 80 item 57: compact cards, chosen in the Settings sheet.
+      if(localStorage.getItem('site:cards') === 'compact') document.documentElement.setAttribute('data-cards','compact');
+      if(localStorage.getItem('site:density') === 'compact') document.documentElement.setAttribute('data-density','compact');
+    }catch(e){}
+  })();
+</script>
+{% include "body.html" %}
+<script id="mlb-data" type="application/json">__MLB_JSON__</script>
+<script>
+{% include "escape.js" %}
+{% include "routes.js" %}
+{% include "favs.js" %}
+{% include "prefs.js" %}
+{% include "day_board.js" %}
+{% include "mlb.js" %}
+</script>
+</body>
+</html>

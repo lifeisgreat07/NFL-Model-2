@@ -1,0 +1,62 @@
+/* What MLB's pages add to the shared stylesheet: the day board (Stage 100 item 1, layout A, Mark 2026-11-22),
+   the NHL's and NBA's day board with the sport's own prefix, and the two lines baseball adds to a row: the
+   starting pitchers, and the game's place in its series with a doubleheader's game number. Every selector
+   carries the sport (decision record 0006, rule 4; src/core/isolation.py checks it). Every colour is a shared
+   token, and green (--good) marks only a pick scored right. */
+#game-grid.mlb-board{display:block; max-width:760px;}
+.mlb-day-top{display:flex; flex-wrap:wrap; align-items:baseline; column-gap:var(--s3); margin:0 0 var(--s2);}
+.mlb-day-title{font-size:var(--fs-16); font-weight:700; margin:0; color:var(--text);}
+.mlb-day-summary{margin:0; font-size:var(--fs-13); color:var(--text-2);}
+.mlb-rows{list-style:none; margin:0; padding:0; border-top:1px solid var(--border);}
+.mlb-row-item{border-bottom:1px solid var(--border);}
+.mlb-row{grid-template-columns:3.6rem minmax(0, 1fr) auto minmax(5.2rem, max-content) 16px; min-height:52px;
+  padding-top:var(--s2); padding-bottom:var(--s2);}
+.mlb-row-time{font-size:var(--fs-12); color:var(--text-2); align-self:start; padding-top:2px;}
+.mlb-row-game{min-width:0;}
+.mlb-row-game .at-symbol{color:var(--text-3);}
+.mlb-row-team{white-space:nowrap;}
+/* Baseball's two lines under the clubs: who starts, then the series and a doubleheader's game. */
+.mlb-row-sp, .mlb-row-meta{display:block; font-size:var(--fs-12); color:var(--text-2); margin-top:2px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.mlb-row-meta{color:var(--text-3);}
+/* The tag and the series line each stay whole; the line wraps between them on a phone. */
+.mlb-dh, .mlb-series{white-space:nowrap;}
+.mlb-dh{display:inline-block; border:1px solid var(--border-strong); border-radius:var(--r-full);
+  padding:0 var(--s2); line-height:16px; margin-right:var(--s2); color:var(--text-2);}
+.mlb-row-pick{white-space:nowrap; color:var(--text-2); align-self:start; padding-top:2px;}
+.mlb-row-result{justify-self:end; white-space:nowrap; font-size:var(--fs-13); font-weight:600; align-self:start; padding-top:2px;}
+.mlb-row-result.right{color:var(--good);}
+.mlb-row-result.wrong{color:var(--warn);}
+.mlb-row-result.locked{color:var(--text-2);}
+.mlb-row-result.live{color:var(--accent);}
+.mlb-row-result.open, .mlb-row-result.off{color:var(--text-3); font-weight:500;}
+.mlb-row-detail{padding:0 0 var(--s3);}
+/* A phone: the starters' names wrap rather than being cut, since they are what the row is for. */
+@media (max-width:600px){
+  .mlb-row{grid-template-columns:3.7rem minmax(0, 1fr) auto minmax(4.4rem, max-content) 14px; column-gap:var(--s2);}
+  .mlb-row-time{white-space:nowrap;}
+  .mlb-row-sp, .mlb-row-meta{white-space:normal;}
+  .mlb-row-pick{text-align:right;}
+}
+/* Before the first pick. */
+.mlb-preseason{margin:0 0 var(--s3); padding:var(--s3); border:1px solid var(--border); border-radius:var(--r-lg);
+  background:var(--surface); font-size:var(--fs-14); color:var(--text-2);}
+.mlb-preseason p{margin:0 0 var(--s2);}
+.mlb-preseason p:last-child{margin-bottom:0;}
+.mlb-preseason .mlb-countdown{font-weight:700; color:var(--text);}
+.mlb-preseason b{color:var(--text);}
+.game-card.mlb-not-saved{opacity:.92;}
+.game-card.mlb-not-saved .mlb-wait-note{font-size:var(--fs-13); color:var(--text-2);}
+.mlb-card-status{font-size:var(--fs-12); font-weight:600; color:var(--text-2);}
+.mlb-card-line{font-size:var(--fs-13); color:var(--text-2); margin:2px 0;}
+.mlb-card-line b{color:var(--text);}
+/* An opened card scrolled into view clears the sticky top bar and the fixed bottom nav. */
+@media (max-width:1079px){
+  .mlb-row-detail{scroll-margin:76px 0 calc(88px + var(--safe-bottom));}
+}
+html[data-density="compact"] .mlb-row{min-height:40px;}
+/* On paper the Day Board is its cards, which on screen sit closed inside their rows. */
+@media print{
+  .mlb-row{display:none !important;}
+  .mlb-row-detail{display:block !important;}
+}

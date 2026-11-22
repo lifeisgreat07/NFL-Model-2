@@ -2,8 +2,9 @@
 
 The NHL's and NBA's pages carried 29 byte-identical top-level functions, one
 copy in each sport's script, so a fix to one board could miss the other.
-They live in src/core/day_board.js, which both pages include ahead of their
-own script in the same <script> element.
+They live in src/core/day_board.js, which every day board includes ahead of
+its own script in the same <script> element. MLB's board (Stage 100 item 1)
+is the third, and no pair of the three may share a function.
 
 Run with: pytest tests/test_day_board.py -v
 """
@@ -25,20 +26,24 @@ def own(sport):
     return functions(ROOT / 'src' / 'sports' / sport / 'pages' / f'{sport}.js')
 
 
-def test_no_function_is_copied_between_the_day_boards():
-    nhl, nba = own('nhl'), own('nba')
-    copied = sorted(n for n in nhl if n in nba and nhl[n] == nba[n])
+DAY_SPORTS = ['nhl', 'nba', 'mlb']
+
+
+@pytest.mark.parametrize('one, two', [('nhl', 'nba'), ('nhl', 'mlb'), ('nba', 'mlb')])
+def test_no_function_is_copied_between_the_day_boards(one, two):
+    a, b = own(one), own(two)
+    copied = sorted(n for n in a if n in b and a[n] == b[n])
     assert copied == [], f'move these to src/core/day_board.js: {copied}'
 
 
-@pytest.mark.parametrize('sport', ['nhl', 'nba'])
+@pytest.mark.parametrize('sport', DAY_SPORTS)
 def test_no_sport_redefines_a_shared_function(sport):
     shared = set(functions(BOARD))
     assert len(shared) >= 20, 'the shared script holds the boards\' common functions'
     assert sorted(shared & set(own(sport))) == [], 'a second definition would replace the shared one on that page'
 
 
-@pytest.mark.parametrize('sport', ['nhl', 'nba'])
+@pytest.mark.parametrize('sport', DAY_SPORTS)
 def test_each_page_includes_it_ahead_of_its_own_script(sport):
     page = (ROOT / 'src' / 'sports' / sport / 'pages' / 'page.html').read_text(encoding='utf-8').replace('\r\n', '\n')
     assert '{% include "day_board.js" %}\n{% include "' + sport + '.js" %}' in page
