@@ -321,12 +321,15 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         projected = {}
         # Stage 92 item 7: a goalie page that cannot be read for a day with games locking costs
         # those picks their projected starters, so it is a DEGRADED line; another day's is not.
+        # A page that cannot be fetched at all is the same (OSError: urllib's HTTPError and URLError
+        # are both one), as the injury, odds and roster reads already treat theirs: on 2026-11-21 a 403
+        # from this page ended the 21:00 UTC run before it saved any pick, and six games went unpicked (#796).
         locking_days = set(slate[slate['game_id'].isin(decision.lock)]['slate'].astype(str))
         for day in sorted(days):
             try:
                 rows = goalies.parse_faceoff(get(f'{goalies.SOURCE}/{day}').decode('utf-8', 'replace'), now)
                 attached = goalies.attach_games(rows, sched[sched['slate'] == day].to_dict('records'))
-            except goalies.GoalieSourceError as exc:
+            except (goalies.GoalieSourceError, OSError) as exc:
                 print(f"{'DEGRADED: ' if day in locking_days else ''}goalies for {day}: {exc}")
                 continue
             goalies.record(attached, PATHS.data / 'goalies' / f'{season}.json')
