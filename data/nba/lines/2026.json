@@ -3850,5 +3850,17 @@
   "home_price": 446.0,
   "away_price": -600.0,
   "home_prob": 0.1761
+ },
+ {
+  "game_id": "401910029",
+  "home": "ATL",
+  "away": "DET",
+  "start_utc": "2026-11-22T20:30:00Z",
+  "read_utc": "2026-11-22T16:01:49Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 110.0,
+  "away_price": -130.0,
+  "home_prob": 0.4573
  }
 ]
