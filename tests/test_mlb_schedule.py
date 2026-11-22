@@ -80,6 +80,20 @@ def test_the_last_game_of_a_series_is_kept():
     assert (df.iloc[0]['series_game'], df.iloc[0]['series_games']) == (3, 3)
 
 
+def test_a_start_the_league_has_not_set_is_marked():
+    """Opening Day 2027's CLE at CHC is listed at 08:33 UTC with startTimeTBD: a placeholder, not a time."""
+    df = frame(game(pk=1, coded='S', hs=None, as_=None, status={'codedGameState': 'S', 'startTimeTBD': True}),
+               game(pk=2, coded='S', hs=None, as_=None, status={'codedGameState': 'S', 'startTimeTBD': False}))
+    assert list(df['start_time_tbd']) == [True, False]
+
+
+@pytest.mark.parametrize('flag', ['missing', 'true-as-text', 'one'])
+def test_only_an_explicit_true_marks_a_start_as_not_set(flag):
+    status = {'codedGameState': 'F'} | ({} if flag == 'missing' else {'startTimeTBD': 'true' if flag == 'true-as-text' else 1})
+    df = frame(game(pk=3, status=status))
+    assert list(df['start_time_tbd']) == [False]
+
+
 def test_spring_training_exhibition_and_all_star_games_are_left_out():
     df = frame(game(pk=1), game(pk=2, gtype='S'), game(pk=3, gtype='E'), game(pk=4, gtype='A'),
                game(pk=5, gtype='W'))
