@@ -1,0 +1,42 @@
+{
+ "game_id": "2026020372",
+ "season": 2026,
+ "slate": "2026-11-21",
+ "start_utc": "2026-11-22T03:00:00Z",
+ "home": "SJS",
+ "away": "SEA",
+ "model_a": 0.498,
+ "model_b": 0.5255,
+ "neutral_site": false,
+ "price_used": true,
+ "price_note": null,
+ "features": {
+  "goal_matchup": -0.387014,
+  "shot_matchup": 0.128498,
+  "b2b_matchup": 0.0
+ },
+ "goalies": {
+  "home": 8477968,
+  "away": 8475831,
+  "used": false
+ },
+ "market": {
+  "home_price": -118.0,
+  "away_price": -102.0,
+  "home_prob": 0.5174,
+  "read_utc": "2026-11-22T00:45:29Z"
+ },
+ "saved_utc": "2026-11-22T00:45:29Z",
+ "code": "nhl-day-sport-v3",
+ "registry": "experiments/nhl/stage105_v3/registry.json",
+ "H_days": 120.0,
+ "K_shots": null,
+ "never_a_pick": true,
+ "training_through": "2026-11-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14761,
+  "training_games_priced": 7718,
+  "training_ids_sha256": "4cf03b036649c54c92ad1c050e6f6ea4744d663aab3cb7c4be958c65e0b91b01"
+ }
+}

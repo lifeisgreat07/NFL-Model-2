@@ -1,0 +1,42 @@
+{
+ "game_id": "2026020371",
+ "season": 2026,
+ "slate": "2026-11-21",
+ "start_utc": "2026-11-22T03:00:00Z",
+ "home": "VAN",
+ "away": "MIN",
+ "model_a": 0.2626,
+ "model_b": 0.2666,
+ "neutral_site": false,
+ "price_used": true,
+ "price_note": null,
+ "features": {
+  "goal_matchup": -2.246088,
+  "shot_matchup": -7.057533,
+  "b2b_matchup": 0.0
+ },
+ "goalies": {
+  "home": 8482447,
+  "away": 8482661,
+  "used": false
+ },
+ "market": {
+  "home_price": 250.0,
+  "away_price": -310.0,
+  "home_prob": 0.2742,
+  "read_utc": "2026-11-22T00:45:29Z"
+ },
+ "saved_utc": "2026-11-22T00:45:29Z",
+ "code": "nhl-day-sport-v3",
+ "registry": "experiments/nhl/stage105_v3/registry.json",
+ "H_days": 120.0,
+ "K_shots": null,
+ "never_a_pick": true,
+ "training_through": "2026-11-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14761,
+  "training_games_priced": 7718,
+  "training_ids_sha256": "4cf03b036649c54c92ad1c050e6f6ea4744d663aab3cb7c4be958c65e0b91b01"
+ }
+}

@@ -1,0 +1,110 @@
+{
+ "game_id": "2026020371",
+ "season": 2026,
+ "slate": "2026-11-21",
+ "start_utc": "2026-11-22T03:00:00Z",
+ "home": "VAN",
+ "away": "MIN",
+ "model_a": 0.2518,
+ "model_b": 0.2671,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -2.246088,
+  "shot_matchup": -7.057533,
+  "goalie_matchup_2000": -0.009459
+ },
+ "market": {
+  "game_id": "2026020371",
+  "start_utc": "2026-11-22T03:00:00Z",
+  "home": "VAN",
+  "away": "MIN",
+  "book": "DraftKings",
+  "home_price": 250.0,
+  "away_price": -310.0,
+  "home_prob": 0.2742,
+  "read_utc": "2026-11-22T00:45:29Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482447,
+   "name": "Leevi Merilainen",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/patersonjeff/status/2124191699077636578"
+  },
+  "away": {
+   "player_id": 8482661,
+   "name": "Jesper Wallstedt",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JoeSmithNHL/status/2124211274636771640"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-21",
+  "read_utc": "2026-11-22T00:45:29Z",
+  "home": [
+   {
+    "name": "Brendan Gallagher",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elias Pettersson",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Guillaume Brisebois",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mackenzie MacEachern",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thatcher Demko",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Filip Gustavsson",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Olli Maatta",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quinn Hughes",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Yakov Trenin",
+    "position": "C",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-22T00:45:29Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14761,
+  "training_games_priced": 7727,
+  "training_ids_sha256": "4cf03b036649c54c92ad1c050e6f6ea4744d663aab3cb7c4be958c65e0b91b01"
+ },
+ "code_sha256": "2b02235a8ec7108b3fb80ff896bd0a894fa5fc3bdeac762dc153f46d145d9106",
+ "code_commit": "91f9cf03ad4fa3a0f5b05b9826568b41727fb520"
+}

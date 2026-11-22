@@ -10648,5 +10648,35 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020373",
   "start_utc": "2026-11-22T17:30:00Z"
+ },
+ {
+  "date": "2026-11-22",
+  "home": "STL",
+  "home_goalie": "Jordan Binnington",
+  "home_status": null,
+  "home_report": null,
+  "away": "EDM",
+  "away_goalie": "Tristan Jarry",
+  "away_status": null,
+  "away_report": null,
+  "read_utc": "2026-11-22T00:45:29Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020375",
+  "start_utc": "2026-11-23T00:00:00Z"
+ },
+ {
+  "date": "2026-11-22",
+  "home": "VAN",
+  "home_goalie": "Nikita Tolopilo",
+  "home_status": "Likely",
+  "home_report": "https://x.com/patersonjeff/status/2124241353253224557",
+  "away": "CHI",
+  "away_goalie": "Drew Commesso",
+  "away_status": "Likely",
+  "away_report": "https://x.com/MarkLazerus/status/2124233283667886277",
+  "read_utc": "2026-11-22T00:45:29Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020377",
+  "start_utc": "2026-11-23T01:00:00Z"
  }
 ]

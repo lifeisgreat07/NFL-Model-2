@@ -1,0 +1,95 @@
+{
+ "game_id": "2026020372",
+ "season": 2026,
+ "slate": "2026-11-21",
+ "start_utc": "2026-11-22T03:00:00Z",
+ "home": "SJS",
+ "away": "SEA",
+ "model_a": 0.5144,
+ "model_b": 0.5346,
+ "pick": "SJS",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.387014,
+  "shot_matchup": 0.128498,
+  "goalie_matchup_2000": 0.000833
+ },
+ "market": {
+  "game_id": "2026020372",
+  "start_utc": "2026-11-22T03:00:00Z",
+  "home": "SJS",
+  "away": "SEA",
+  "book": "DraftKings",
+  "home_price": -118.0,
+  "away_price": -102.0,
+  "home_prob": 0.5174,
+  "read_utc": "2026-11-22T00:45:29Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8477968,
+   "name": "Alex Nedeljkovic",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/CurtisPashelka/status/2124209232644133365"
+  },
+  "away": {
+   "player_id": 8475831,
+   "name": "Philipp Grubauer",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-21",
+  "read_utc": "2026-11-22T00:45:29Z",
+  "home": [
+   {
+    "name": "Igor Chernyshov",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kiefer Sherwood",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Jake O'Brien",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jared McCann",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-22T00:45:29Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14761,
+  "training_games_priced": 7727,
+  "training_ids_sha256": "4cf03b036649c54c92ad1c050e6f6ea4744d663aab3cb7c4be958c65e0b91b01"
+ },
+ "code_sha256": "2b02235a8ec7108b3fb80ff896bd0a894fa5fc3bdeac762dc153f46d145d9106",
+ "code_commit": "91f9cf03ad4fa3a0f5b05b9826568b41727fb520"
+}

@@ -4306,5 +4306,17 @@
   "home_prob": 0.5996,
   "read_utc": "2026-11-21T20:20:33Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020371",
+  "start_utc": "2026-11-22T03:00:00Z",
+  "home": "VAN",
+  "away": "MIN",
+  "book": "DraftKings",
+  "home_price": 250.0,
+  "away_price": -310.0,
+  "home_prob": 0.2742,
+  "read_utc": "2026-11-22T00:45:29Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]
