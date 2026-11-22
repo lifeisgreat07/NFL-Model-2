@@ -4843,11 +4843,11 @@
    "start_utc": "2026-11-22T17:30:00Z",
    "home": "NYR",
    "away": "CAR",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 2,
+   "away_score": 5,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
