@@ -1,0 +1,115 @@
+{
+ "game_id": "2026020376",
+ "season": 2026,
+ "slate": "2026-11-22",
+ "start_utc": "2026-11-23T00:00:00Z",
+ "home": "DAL",
+ "away": "PIT",
+ "model_a": 0.6096,
+ "model_b": 0.6899,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.61328,
+  "shot_matchup": 0.288018,
+  "goalie_matchup_2000": 0.004115
+ },
+ "market": {
+  "game_id": "2026020376",
+  "start_utc": "2026-11-23T00:00:00Z",
+  "home": "DAL",
+  "away": "PIT",
+  "book": "DraftKings",
+  "home_price": -230.0,
+  "away_price": 190.0,
+  "home_prob": 0.669,
+  "read_utc": "2026-11-22T21:01:38Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479979,
+   "name": "Jake Oettinger",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/BruceLeVinePuck/status/2124529991132360895"
+  },
+  "away": {
+   "player_id": 8481668,
+   "name": "Arturs Silovs",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-22",
+  "read_utc": "2026-11-22T21:01:38Z",
+  "home": [
+   {
+    "name": "Kyle Capobianco",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lian Bichsel",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Duchene",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Oskar Back",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Myers",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Bryan Rust",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elmer Soderblom",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Evgeni Malkin",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Nick Robertson",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Graves",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-22T21:01:38Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-21",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14775,
+  "training_games_priced": 7741,
+  "training_ids_sha256": "f374020cae04028be8191d58f7b73031c63d0a31ad239372f82b8bf3691f9d28"
+ },
+ "code_sha256": "2b02235a8ec7108b3fb80ff896bd0a894fa5fc3bdeac762dc153f46d145d9106",
+ "code_commit": "c0b8e3608496a312496689501e778c44c9cd3cd9"
+}

@@ -1,0 +1,110 @@
+{
+ "game_id": "2026020377",
+ "season": 2026,
+ "slate": "2026-11-22",
+ "start_utc": "2026-11-23T01:00:00Z",
+ "home": "VAN",
+ "away": "CHI",
+ "model_a": 0.523,
+ "model_b": 0.4842,
+ "pick": "CHI",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.181833,
+  "shot_matchup": -0.0458,
+  "goalie_matchup_2000": -0.00037
+ },
+ "market": {
+  "game_id": "2026020377",
+  "start_utc": "2026-11-23T01:00:00Z",
+  "home": "VAN",
+  "away": "CHI",
+  "book": "DraftKings",
+  "home_price": -105.0,
+  "away_price": -115.0,
+  "home_prob": 0.4892,
+  "read_utc": "2026-11-22T21:01:38Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8484268,
+   "name": "Nikita Tolopilo",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/patersonjeff/status/2124241353253224557"
+  },
+  "away": {
+   "player_id": 8482123,
+   "name": "Drew Commesso",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/MarkLazerus/status/2124233283667886277"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-22",
+  "read_utc": "2026-11-22T21:01:38Z",
+  "home": [
+   {
+    "name": "Brendan Gallagher",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elias Pettersson",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Guillaume Brisebois",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mackenzie MacEachern",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thatcher Demko",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Anton Frondell",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Bowen Byram",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Connor Bedard",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Wyatt Kaiser",
+    "position": "D",
+    "status": "Suspension"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-22T21:01:38Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-21",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14775,
+  "training_games_priced": 7741,
+  "training_ids_sha256": "f374020cae04028be8191d58f7b73031c63d0a31ad239372f82b8bf3691f9d28"
+ },
+ "code_sha256": "2b02235a8ec7108b3fb80ff896bd0a894fa5fc3bdeac762dc153f46d145d9106",
+ "code_commit": "c0b8e3608496a312496689501e778c44c9cd3cd9"
+}

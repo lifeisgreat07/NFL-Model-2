@@ -1858,5 +1858,29 @@
   "pick": "CAR",
   "result": "correct",
   "saved_utc": "2026-11-22T14:01:45Z"
+ },
+ {
+  "game_id": "2026020374",
+  "pick": "TBL",
+  "result": "pending",
+  "saved_utc": "2026-11-22T21:01:38Z"
+ },
+ {
+  "game_id": "2026020375",
+  "pick": "STL",
+  "result": "pending",
+  "saved_utc": "2026-11-22T21:01:38Z"
+ },
+ {
+  "game_id": "2026020376",
+  "pick": "DAL",
+  "result": "pending",
+  "saved_utc": "2026-11-22T21:01:38Z"
+ },
+ {
+  "game_id": "2026020377",
+  "pick": "CHI",
+  "result": "pending",
+  "saved_utc": "2026-11-22T21:01:38Z"
  }
 ]

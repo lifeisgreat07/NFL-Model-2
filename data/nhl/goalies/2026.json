@@ -10843,5 +10843,50 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020384",
   "start_utc": "2026-11-24T03:00:00Z"
+ },
+ {
+  "date": "2026-11-22",
+  "home": "TBL",
+  "home_goalie": "Dennis Hildeby",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/BenjaminJReport/status/2124604985748897882",
+  "away": "BUF",
+  "away_goalie": "Ukko-Pekka Luukkonen",
+  "away_status": null,
+  "away_report": null,
+  "read_utc": "2026-11-22T21:01:38Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020374",
+  "start_utc": "2026-11-22T22:00:00Z"
+ },
+ {
+  "date": "2026-11-22",
+  "home": "DAL",
+  "home_goalie": "Jake Oettinger",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/BruceLeVinePuck/status/2124529991132360895",
+  "away": "PIT",
+  "away_goalie": "Arturs Silovs",
+  "away_status": null,
+  "away_report": null,
+  "read_utc": "2026-11-22T21:01:38Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020376",
+  "start_utc": "2026-11-23T00:00:00Z"
+ },
+ {
+  "date": "2026-11-22",
+  "home": "STL",
+  "home_goalie": "Joel Hofer",
+  "home_status": "Confirmed",
+  "home_report": "https://thehockeynews.com/nhl/st-louis-blues/game-day/11-21-26-devils-blues-gameday-lineup",
+  "away": "EDM",
+  "away_goalie": "Tristan Jarry",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/EdmontonOilers/status/2124588017150992870",
+  "read_utc": "2026-11-22T21:01:38Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020375",
+  "start_utc": "2026-11-23T00:00:00Z"
  }
 ]

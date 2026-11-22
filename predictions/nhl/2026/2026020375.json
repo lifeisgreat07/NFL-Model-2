@@ -1,0 +1,115 @@
+{
+ "game_id": "2026020375",
+ "season": 2026,
+ "slate": "2026-11-22",
+ "start_utc": "2026-11-23T00:00:00Z",
+ "home": "STL",
+ "away": "EDM",
+ "model_a": 0.5134,
+ "model_b": 0.5516,
+ "pick": "STL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.35393,
+  "shot_matchup": -1.902205,
+  "goalie_matchup_2000": 0.005497
+ },
+ "market": {
+  "game_id": "2026020375",
+  "start_utc": "2026-11-23T00:00:00Z",
+  "home": "STL",
+  "away": "EDM",
+  "book": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325,
+  "read_utc": "2026-11-22T21:01:38Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480981,
+   "name": "Joel Hofer",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://thehockeynews.com/nhl/st-louis-blues/game-day/11-21-26-devils-blues-gameday-lineup"
+  },
+  "away": {
+   "player_id": 8477465,
+   "name": "Tristan Jarry",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/EdmontonOilers/status/2124588017150992870"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-22",
+  "read_utc": "2026-11-22T21:01:38Z",
+  "home": [
+   {
+    "name": "Connor McMichael",
+    "position": "LW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Dillon Dube",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Torey Krug",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Tucker",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Nugent-Hopkins",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Zach Hyman",
+    "position": "LW",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-22T21:01:38Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-21",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14775,
+  "training_games_priced": 7741,
+  "training_ids_sha256": "f374020cae04028be8191d58f7b73031c63d0a31ad239372f82b8bf3691f9d28"
+ },
+ "code_sha256": "2b02235a8ec7108b3fb80ff896bd0a894fa5fc3bdeac762dc153f46d145d9106",
+ "code_commit": "c0b8e3608496a312496689501e778c44c9cd3cd9"
+}
