@@ -1838,19 +1838,25 @@
  {
   "game_id": "2026020370",
   "pick": "UTA",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-22T00:45:29Z"
  },
  {
   "game_id": "2026020371",
   "pick": "MIN",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-22T00:45:29Z"
  },
  {
   "game_id": "2026020372",
   "pick": "SJS",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-22T00:45:29Z"
+ },
+ {
+  "game_id": "2026020373",
+  "pick": "CAR",
+  "result": "pending",
+  "saved_utc": "2026-11-22T14:01:45Z"
  }
 ]
