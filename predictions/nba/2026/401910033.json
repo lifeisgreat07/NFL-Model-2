@@ -1,0 +1,99 @@
+{
+ "game_id": "401910033",
+ "season": 2026,
+ "slate": "2026-11-22",
+ "start_utc": "2026-11-23T00:00:00Z",
+ "home": "UTAH",
+ "away": "DAL",
+ "model_a": 0.4261,
+ "model_b": 0.4506,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9089,
+  "away": 0.9856
+ },
+ "features": {
+  "point_matchup": -3.443997,
+  "efficiency_matchup": -3.31974,
+  "availability_matchup": -0.076726
+ },
+ "market": {
+  "game_id": "401910033",
+  "home": "UTAH",
+  "away": "DAL",
+  "start_utc": "2026-11-23T00:00:00Z",
+  "read_utc": "2026-11-22T21:31:33Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 114.0,
+  "away_price": -135.0,
+  "home_prob": 0.4486
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-22T21:31:33Z",
+  "home": [
+   {
+    "athlete_id": "4277961",
+    "name": "Jaren Jackson Jr.",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102530",
+    "name": "Jusuf Nurkic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066336",
+    "name": "Lauri Markkanen",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4683688",
+    "name": "Dereck Lively II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4278078",
+    "name": "P.J. Washington",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5279129",
+    "name": "Sergio de Larrea",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5148538",
+    "name": "Tarik Biberovic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5106040",
+    "name": "Tobi Lawal",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4896372",
+    "name": "Walter Clayton Jr.",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-22T21:31:33Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-21",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14299,
+  "training_games_priced": 14258,
+  "training_ids_sha256": "f9f264fb11e9e2e742e86e8713a07d25ffdb1fc5b6f0d96cc230fe9e21959c77"
+ },
+ "code_sha256": "61d30e4282c5d50a026b17a156e179a3dd630ac06cf927d0468315995febd62e",
+ "code_commit": "2d8394f3e1450031dcecb9f53db38add21479c29"
+}
