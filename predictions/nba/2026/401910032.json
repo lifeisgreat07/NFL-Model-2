@@ -1,0 +1,84 @@
+{
+ "game_id": "401910032",
+ "season": 2026,
+ "slate": "2026-11-22",
+ "start_utc": "2026-11-23T00:00:00Z",
+ "home": "CHI",
+ "away": "DEN",
+ "model_a": 0.3111,
+ "model_b": 0.2164,
+ "pick": "DEN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8982,
+  "away": 0.9728
+ },
+ "features": {
+  "point_matchup": -7.097362,
+  "efficiency_matchup": -6.661407,
+  "availability_matchup": -0.074648
+ },
+ "market": {
+  "game_id": "401910032",
+  "home": "CHI",
+  "away": "DEN",
+  "start_utc": "2026-11-23T00:00:00Z",
+  "read_utc": "2026-11-22T21:31:33Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 340.0,
+  "away_price": -437.0,
+  "home_prob": 0.2183
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-22T21:31:33Z",
+  "home": [
+   {
+    "athlete_id": "5095151",
+    "name": "Caleb Wilson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4397189",
+    "name": "Jalen Smith",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4278067",
+    "name": "Nic Claxton",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2595516",
+    "name": "Norman Powell",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431687",
+    "name": "Patrick Williams",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4432181",
+    "name": "Julian Strawther",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-22T21:31:33Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-21",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14299,
+  "training_games_priced": 14258,
+  "training_ids_sha256": "f9f264fb11e9e2e742e86e8713a07d25ffdb1fc5b6f0d96cc230fe9e21959c77"
+ },
+ "code_sha256": "61d30e4282c5d50a026b17a156e179a3dd630ac06cf927d0468315995febd62e",
+ "code_commit": "2d8394f3e1450031dcecb9f53db38add21479c29"
+}
