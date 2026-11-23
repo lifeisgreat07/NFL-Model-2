@@ -37,8 +37,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
+import time
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta
@@ -164,14 +166,28 @@ def late_copies(now: datetime, root: Path = ROOT) -> tuple[list[str], list[str]]
     return lines, close
 
 
-def gh_api(path: str) -> list[dict[str, Any]]:
-    """Every item of a paginated list endpoint, one JSON object a line."""
+#: Seconds to wait before each retry of a call GitHub answered with a server error (HTTP 5xx). The digest failed on
+#: one 502 on 2026-10-19 and again on 2026-11-16 (#747); a 5xx is GitHub's own outage, usually gone in seconds. Any
+#: other failure is not retried: a 4xx or a broken query answers the same the second time.
+RETRY_WAITS = (10, 30, 30)
+SERVER_ERROR = re.compile(r'HTTP 5\d\d')
+
+
+def gh_api(path: str, run: Callable[..., Any] = subprocess.run,
+           sleep: Callable[[float], None] = time.sleep) -> list[dict[str, Any]]:
+    """Every item of a paginated list endpoint, one JSON object a line. A server error is retried after each of
+    `RETRY_WAITS`; any other failure, or a server error after the last wait, raises."""
     key = 'jobs' if '/jobs' in path else 'workflow_runs'
-    r = subprocess.run(['gh', 'api', '--paginate', path, '--jq', f'.{key}[] | tojson'],
-                       capture_output=True, text=True)
-    if r.returncode:
-        raise RuntimeError(f'gh api {path} failed: {(r.stderr or r.stdout).strip()}')
-    return [json.loads(line) for line in r.stdout.splitlines() if line.strip()]
+    for wait in (*RETRY_WAITS, None):
+        r = run(['gh', 'api', '--paginate', path, '--jq', f'.{key}[] | tojson'], capture_output=True, text=True)
+        if not r.returncode:
+            return [json.loads(line) for line in r.stdout.splitlines() if line.strip()]
+        message = (r.stderr or r.stdout).strip()
+        if wait is None or not SERVER_ERROR.search(message):
+            raise RuntimeError(f'gh api {path} failed: {message}')
+        print(f'gh api {path}: {message}; retrying in {wait} s')
+        sleep(wait)
+    raise AssertionError('unreachable')
 
 
 def main(argv: Sequence[str] | None = None, now: datetime | None = None, api: Api = gh_api,
