@@ -5,7 +5,7 @@
   "viewport": "390x844",
   "theme": "light",
   "file": "home-390x844-light-base.png",
-  "bytes": 287202,
+  "bytes": 287775,
   "parked": 2
  },
  {
@@ -14,7 +14,7 @@
   "viewport": "390x844",
   "theme": "dark",
   "file": "home-390x844-dark-base.png",
-  "bytes": 287481,
+  "bytes": 288121,
   "parked": 2
  },
  {
@@ -23,7 +23,7 @@
   "viewport": "1440x900",
   "theme": "light",
   "file": "home-1440x900-light-base.png",
-  "bytes": 263935,
+  "bytes": 265753,
   "parked": 2
  },
  {
@@ -32,7 +32,7 @@
   "viewport": "1440x900",
   "theme": "dark",
   "file": "home-1440x900-dark-base.png",
-  "bytes": 264300,
+  "bytes": 265995,
   "parked": 2
  }
 ]
