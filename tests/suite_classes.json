@@ -19,6 +19,7 @@
   "tests/test_agent_log_page.py": "mixed",
   "tests/test_agents_at_work.py": "template/JS",
   "tests/test_alerts.py": "mixed",
+  "tests/test_alerts_raised.py": "workflow/docs/tests-of-tests",
   "tests/test_announced_qb_check.py": "isolated behavioural",
   "tests/test_app_parts.py": "template/JS",
   "tests/test_architecture_diagram.py": "workflow/docs/tests-of-tests",
