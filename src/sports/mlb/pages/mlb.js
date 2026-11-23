@@ -319,9 +319,79 @@ function renderStandings(){
   }).join('');
 }
 
+/* ---------- power ratings (Stage 100 item 2; layout C, Mark 2026-11-23) ----------
+   Two views behind chips. Clubs: the NHL's and NBA's table, each club's run rating as a bar about zero. Starters:
+   every pitcher with enough starts this season, by runs allowed per 27 outs, best first; a club filter, a sort, and
+   the first STARTERS_SHOWN until "Show all" (a season has 250 or so). */
+const STARTERS_SHOWN = 40;
+const RATINGS = {view: 'clubs', club: '', sort: 'best', all: false};
+function plusMinus(x, digits){ return (x > 0 ? '+' : x < 0 ? '-' : '') + Math.abs(x).toFixed(digits); }
+function startersShown(starters, club, sort, all){
+  const mine = starters.filter(s => !club || s.club === club);
+  const order = sort === 'starts' ? [...mine].sort((a, b) => b.starts - a.starts || a.rate - b.rate) : mine;
+  return {rows: all ? order : order.slice(0, STARTERS_SHOWN), of: order.length};
+}
+function clubsTable(r){
+  const scale = Math.max(...r.clubs.map(c => Math.abs(c.runs)), 0.01);
+  const rows = r.clubs.map((c, i) => {
+    const w = Math.abs(c.runs) / scale * 50, code = clubCode(c.team);
+    return `<tr><td class="rank">${i + 1}</td><td><div class="team-cell"><span class="team-abbr">${code}</span>`
+      + `<span class="team-full">${escapeHtml((BD.teams[code] || {}).name || code)}</span></div></td>`
+      + `<td class="num"><div class="net-cell-inner"><div class="srs-bar-track diverging" title="${plusMinus(c.runs, 2)} runs a game">`
+      + `<div class="srs-bar-fill" style="left:${c.runs >= 0 ? 50 : 50 - w}%; width:${w}%;"></div></div>`
+      + `<span class="net-value">${plusMinus(c.runs, 2)}</span></div></td></tr>`;
+  }).join('');
+  return '<div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Club ratings</caption>'
+    + `<thead><tr><th scope="col">#</th><th scope="col">Club</th><th scope="col" style="text-align:center;">`
+    + `<div class="net-head"><span>Runs a game</span><div class="net-head-row"><div class="net-axis" aria-hidden="true">`
+    + `<span class="ax-min">${plusMinus(-scale, 2)}</span><span class="ax-zero">0</span><span class="ax-max">${plusMinus(scale, 2)}</span>`
+    + `</div><span></span></div></div></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function startersTable(r){
+  const shown = startersShown(r.starters, RATINGS.club, RATINGS.sort, RATINGS.all);
+  const clubs = [...new Set(r.starters.map(s => clubCode(s.club)))].sort();
+  const controls = '<div class="mlb-rating-controls">'
+    + `<label>Club <select class="btn" data-ratings-club><option value="">All ${clubs.length}</option>`
+    + clubs.map(c => `<option value="${c}"${c === RATINGS.club ? ' selected' : ''}>${c}</option>`).join('') + '</select></label>'
+    + `<label>Sort <select class="btn" data-ratings-sort><option value="best"${RATINGS.sort === 'best' ? ' selected' : ''}>Best first</option>`
+    + `<option value="starts"${RATINGS.sort === 'starts' ? ' selected' : ''}>Most starts</option></select></label></div>`;
+  const rows = shown.rows.map((s, i) => `<tr><td class="rank">${i + 1}</td>`
+    + `<th scope="row">${escapeHtml(s.name || s.player_id)}</th><td>${clubCode(s.club)}</td>`
+    + `<td class="num">${s.rate.toFixed(2)}</td><td class="num">${plusMinus(r.league_rate - s.rate, 2)}</td>`
+    + `<td class="num">${s.starts}</td></tr>`).join('');
+  const more = shown.rows.length < shown.of
+    ? `<p class="mlb-rating-more">Showing ${shown.rows.length} of ${shown.of} · <button type="button" class="btn-link" data-ratings-all>Show all</button></p>` : '';
+  return controls + '<div class="table-wrap"><table class="metrics-table mlb-table"><caption class="visually-hidden">Starting pitchers</caption>'
+    + '<thead><tr><th scope="col">#</th><th scope="col">Pitcher</th><th scope="col">Club</th>'
+    + '<th scope="col" class="num">Runs per 9</th><th scope="col" class="num">Better than league</th>'
+    + `<th scope="col" class="num">Starts</th></tr></thead><tbody>${rows}</tbody></table></div>${more}`;
+}
+function renderRatings(){
+  const r = BD.ratings, el = document.getElementById('ratings-body');
+  if(!r){ el.innerHTML = stateHtml('waiting', 'No ratings yet', 'The daily run writes them once games are played.'); return; }
+  const chip = (v, label) => `<button type="button" class="btn btn-chip${RATINGS.view === v ? ' active' : ''}" `
+    + `aria-pressed="${RATINGS.view === v}" data-ratings-view="${v}">${label}</button>`;
+  const lede = RATINGS.view === 'clubs'
+    ? `<p class="mlb-lede">As of ${escapeHtml(dayText(r.as_of))}. A club&#39;s rating is how many runs a game better than an average club it has been, fitted to every earlier game&#39;s run margin, recent games counting more and every club pulled a little toward average.</p>`
+    : `<p class="mlb-lede">As of ${escapeHtml(dayText(r.as_of))}. A starter&#39;s rating is the runs he allows per 27 outs (nine innings), recent outings counting more and pulled toward the league&#39;s ${r.league_rate.toFixed(2)} by ${Number(r.K_outs).toLocaleString('en-US')} outs, so a pitcher with few innings sits near average. Listed: pitchers with ${r.min_starts} or more starts this season.</p>`;
+  el.innerHTML = `<div class="mlb-rating-chips" role="group" aria-label="Ratings to show">${chip('clubs', 'Clubs')}${chip('starters', 'Starters')}</div>`
+    + lede + (RATINGS.view === 'clubs' ? clubsTable(r) : startersTable(r));
+}
+document.getElementById('ratings-body').addEventListener('click', e => {
+  const view = e.target.closest('[data-ratings-view]');
+  if(view){ RATINGS.view = view.dataset.ratingsView; renderRatings(); return; }
+  if(e.target.closest('[data-ratings-all]')){ RATINGS.all = true; renderRatings(); }
+});
+document.getElementById('ratings-body').addEventListener('change', e => {
+  if(e.target.matches('[data-ratings-club]')){ RATINGS.club = e.target.value; RATINGS.all = false; }
+  else if(e.target.matches('[data-ratings-sort]')) RATINGS.sort = e.target.value;
+  else return;
+  renderRatings();
+});
+
 /* ---------- the page around the board ----------
-   The board and the standings so far; the others arrive with Stage 100 item 2, and each button for the page shown
-   carries aria-current, as on the other sports. */
+   The board, the standings and the ratings so far; the others arrive with Stage 100 item 2, and each button for the
+   page shown carries aria-current, as on the other sports. */
 const BASE_TITLE = document.title;
 function showMlbPage(name, opts){
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
@@ -374,6 +444,7 @@ document.getElementById('board-updated').textContent = `Updated ${BUILT} ET${BD.
 mlbThemeLabel();
 renderBoard();
 renderStandings();
+renderRatings();
 /* A star redraws the board with its club's games first. */
 installFavStars(renderBoard);
 /* #board/<day> and #game/<id>, as on the other day boards (src/core/routes.js). */

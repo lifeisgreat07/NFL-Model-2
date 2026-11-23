@@ -74,3 +74,10 @@ html[data-density="compact"] .mlb-row{min-height:40px;}
 .mlb-table tr.mlb-wc-line > *{border-bottom:2px solid var(--accent);}
 @container (max-width: 560px){ .mlb-div-grid .mlb-club-full{display:none;} .mlb-div-grid .mlb-club-abbr{display:inline;} }
 @media (max-width:600px){ .mlb-table th, .mlb-table td{padding-left:var(--s2); padding-right:var(--s2);} }
+
+/* Power Ratings (Stage 100 item 2; layout C): chips for Clubs and Starters, and the starters' club filter and sort. */
+.mlb-rating-chips{display:flex; gap:var(--s2); margin:0 0 var(--s4);}
+.mlb-rating-controls{display:flex; flex-wrap:wrap; gap:var(--s4); align-items:center; margin:0 0 var(--s2);
+  font-size:var(--fs-13); color:var(--text-2);}
+.mlb-rating-controls label{display:inline-flex; gap:var(--s2); align-items:center;}
+.mlb-rating-more{margin:var(--s3) 0 0; font-size:var(--fs-13); color:var(--text-2);}
