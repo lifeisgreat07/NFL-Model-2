@@ -1,0 +1,17 @@
+[
+ {"date": "2026-11-13", "title": "A suspended game is dated when it finished, and two kinds of price are left out",
+  "text": "Audit 8 found that a suspended game, which keeps its first official date, fed every rating between that date and the day it was completed (47 games in 2010-2025). Each game is now dated on the day it finished. Prices from AccuScore, which publishes a model's output rather than a book's, and two-way prices whose implied chances do not sum to between 1.00 and 1.20, are no longer used. Both changes came before any confirmation-season result (experiments/mlb/stage98/registry.json).",
+  "amendments": ["2026-11-13 protocol.walk_forward", "2026-11-13 data.market"]},
+ {"date": "2026-11-13", "title": "Model B keeps its intercept at a neutral park",
+  "text": "Model A drops its fitted home edge on a game at a neutral park, as registered. Model B no longer does: it standardises its features, so its intercept is not the home edge, and the market price already carries the site, so dropping it took the home edge off twice (experiments/mlb/stage98/registry.json).",
+  "amendments": ["2026-11-13 protocol.neutral_site"]},
+ {"date": "2026-11-13", "title": "Three things said aloud",
+  "text": "The amendments of 2026-11-12 said they came before any result. One figure had been printed before them: Model A's log loss on the second half of 2025, a confirmation season, while the feature code was being timed; it was not kept. The Retrosheet check compares regular-season games only, so the postseason is used unchecked. And the confirmation runs once: the code refuses to run it again, or with a setting outside the registered grid (experiments/mlb/stage98/registry.json).",
+  "amendments": ["2026-11-13 amendments", "2026-11-13 data.fallback_check", "2026-11-13 protocol.confirmation"]},
+ {"date": "2026-11-12", "title": "The starter's shrinkage is tuned, and a tied game is neither trained on nor scored",
+  "text": "The starter's shrinkage, fixed at 150 outs when registered, joined the tuning grid (150 to 2,400 outs), and the ridge strength gained 100: the grid grew from 16 settings to 100, searched on the validation seasons only. Two sentences were made explicit as the code already read them, and the one official tie since 2010 (2016-09-29, 1-1) is neither trained on nor scored (experiments/mlb/stage98/registry.json).",
+  "amendments": ["2026-11-12 models.model_a.grid", "2026-11-12 models.model_a.starter_matchup", "2026-11-12 protocol.games"]},
+ {"date": "2026-11-12", "title": "MLB's Model A and Model B, registered",
+  "text": "Model A reads two differences between the clubs: their run ratings and their starting pitchers. Model B adds the market. Both were registered before either was fitted (experiments/mlb/stage98/registry.json), tuned on 2023 and 2024, and are answered once on 2025 and 2026 when Retrosheet's 2026 game log is out. Picks start with the 2027 season.",
+  "amendments": []}
+]

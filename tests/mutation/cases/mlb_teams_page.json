@@ -1,0 +1,37 @@
+{
+  "target": "src/sports/mlb/pages/mlb.js",
+  "tests": "tests/test_mlb_teams_page.py",
+  "cases": [
+    {
+      "id": "mlb-teams-page-result-from-the-home-side",
+      "why": "every result is read from the home club's side, so an away win shows as a loss",
+      "find": "  const mine = g.home === code ? g.hs : g.as, theirs = g.home === code ? g.as : g.hs;\n",
+      "replace": "  const mine = g.hs, theirs = g.as;\n",
+      "expect_caught_by": "test_a_result_is_read_from_the_clubs_side"
+    },
+    {
+      "id": "mlb-teams-page-rank-from-zero",
+      "why": "the best-rated club reads as 0 of 30",
+      "find": "    club ? `Run rating <b>${plusMinus(club.runs, 2)}</b> a game (${rank + 1} of ${r.clubs.length}).` : 'No ratings yet.',\n",
+      "replace": "    club ? `Run rating <b>${plusMinus(club.runs, 2)}</b> a game (${rank} of ${r.clubs.length}).` : 'No ratings yet.',\n",
+      "expect_caught_by": "test_the_facts_give_the_rank_among_the_rated_clubs_and_say_when_nothing_is_there"
+    },
+    {
+      "id": "mlb-teams-page-changes-left-out",
+      "target": "src/sports/mlb/site.py",
+      "why": "the page data carries no changes, so What's Changed says nothing was ever recorded",
+      "find": "            'changes': json.loads((TEMPLATE / 'changes.json').read_text(encoding='utf-8'))}\n",
+      "replace": "            'changes': []}\n",
+      "expect_caught_by": "test_the_page_data_carries_the_changes_newest_first"
+    },
+    {
+      "id": "mlb-teams-page-an-amendment-left-off",
+      "target": "src/sports/mlb/pages/changes.json",
+      "tests": "tests/test_whats_changed_complete.py",
+      "why": "What's Changed drops the audit 8 neutral-site amendment, so the page no longer names every change",
+      "find": "  \"amendments\": [\"2026-11-13 protocol.neutral_site\"]},\n",
+      "replace": "  \"amendments\": []},\n",
+      "expect_caught_by": "test_every_amendment_is_on_the_page_and_the_page_names_no_other"
+    }
+  ]
+}

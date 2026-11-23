@@ -207,7 +207,8 @@ def lab() -> dict[str, Any]:
 
 
 def payload(now: datetime) -> dict[str, Any]:
-    return {'built_utc': now.strftime('%Y-%m-%dT%H:%M:%SZ'), 'board': board(current_season(now)), 'lab': lab()}
+    return {'built_utc': now.strftime('%Y-%m-%dT%H:%M:%SZ'), 'board': board(current_season(now)), 'lab': lab(),
+            'changes': json.loads((TEMPLATE / 'changes.json').read_text(encoding='utf-8'))}
 
 
 #: The parts page.html includes that live outside pages/: the shared stylesheet and the scripts the day boards

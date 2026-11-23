@@ -193,6 +193,7 @@
   "tests/test_mlb_standings.py": "isolated behavioural",
   "tests/test_mlb_standings_page.py": "template/JS",
   "tests/test_mlb_starters.py": "isolated behavioural",
+  "tests/test_mlb_teams_page.py": "template/JS",
   "tests/test_model_colour_comment.py": "isolated behavioural",
   "tests/test_model_lab.py": "isolated behavioural",
   "tests/test_model_lab_cards.py": "isolated behavioural",

@@ -86,3 +86,12 @@ html[data-density="compact"] .mlb-row{min-height:40px;}
    and the tuning row that was kept. */
 .mlb-lab-note{display:inline-block; margin-top:var(--s1); font-size:var(--fs-12); color:var(--text-2);}
 .mlb-table tr.mlb-chosen > *{font-weight:700; color:var(--text);}
+
+/* Teams and What's Changed (Stage 100 item 2): the NHL's club picker and change entries. */
+.mlb-team-select{font:inherit; font-size:var(--fs-14); padding:var(--s1) var(--s2); border:1px solid var(--border-strong);
+  border-radius:8px; background:var(--surface); color:var(--text); min-height:36px; max-width:100%;}
+.mlb-team-label{font-size:var(--fs-13); color:var(--text-2); margin-right:var(--s2);}
+.mlb-team-sub{font-size:var(--fs-14); margin:var(--s5) 0 var(--s2);}
+.mlb-change{border-left:2px solid var(--border-strong); padding-left:var(--s3); margin:0 0 var(--s4);}
+.mlb-change h3{font-size:var(--fs-14); margin:0;}
+.mlb-change .mlb-change-date{font-size:var(--fs-12); color:var(--text-3);}
