@@ -186,6 +186,7 @@
   "tests/test_mlb_history.py": "isolated behavioural",
   "tests/test_mlb_market_history.py": "isolated behavioural",
   "tests/test_mlb_ratings.py": "isolated behavioural",
+  "tests/test_mlb_ratings_page.py": "template/JS",
   "tests/test_mlb_schedule.py": "isolated behavioural",
   "tests/test_mlb_stage98_registry.py": "workflow/docs/tests-of-tests",
   "tests/test_mlb_standings.py": "isolated behavioural",
