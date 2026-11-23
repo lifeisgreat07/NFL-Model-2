@@ -50,8 +50,8 @@
    "id": "nba-page-hides-the-second-baseline",
    "target": "src/core/day_board.js",
    "why": "the page states one baseline while the check holds some picks to another",
-   "find": "${rule.baseline_no_availability_by_look ? `; a pick made without the injury report against the model without it: ${at('baseline_no_availability')}` : ''}",
-   "replace": "",
+   "find": "    + (two ? `<p class=\"${sport}-lede\">A pick made without the injury report is held to the bar without it; a look&#39;s bar is the mean of its picks&#39; own bars.</p>` : '');",
+   "replace": "    + '';",
    "expect_caught_by": "test_the_nba_page_names_both_baselines_and_how_many_picks_are_held_to_the_second"
   },
   {

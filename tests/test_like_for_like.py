@@ -123,11 +123,12 @@ def test_the_daily_run_writes_its_own_baselines():
 @pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 def test_the_nba_page_names_both_baselines_and_how_many_picks_are_held_to_the_second():
     rule = spec()
-    looks = run('nba', f'driftLooks({json.dumps(rule)})')
-    # Stage 95 item 31: both models' figures, look by look.
+    looks = run('nba', f"driftLooksTable({json.dumps(rule)}, null, 'nba')")
+    # Stage 95 item 31: both models' figures, look by look (in the table since open item 6, 2026-11-23).
     a, na = rule['baseline_by_look'], rule['baseline_no_availability_by_look']
-    assert f"pooled (100, {a['100']:.4f}; 200, {a['200']:.4f};" in looks
-    assert f"against the model without it: 100, {na['100']:.4f}; 200, {na['200']:.4f};" in looks
+    for n in ('100', '200'):
+        assert f'<th scope="row">{n}</th><td class="num">{a[n]:.4f}</td><td class="num">{na[n]:.4f}</td>' in looks
+    assert 'A pick made without the injury report is held to the bar without it' in looks
     d = {'games': 107, 'mean_log_loss': 0.6251, 'baseline': 0.6000, 'without_availability': 15,
          'flagged': False, 'looks': [{'games': 100, 'lower_bound': 0.5502, 'flagged': False}], 'next_look': 200}
     out = run('nba', f'driftStatus({json.dumps(d)}, {json.dumps(rule)})')
@@ -140,10 +141,12 @@ def test_the_nhl_page_keeps_its_one_baseline():
     rule = json.loads((ROOT / 'data' / 'nhl' / 'drift_baseline.json').read_text(encoding='utf-8'))
     assert 'baseline_no_availability' not in rule
     looks = run('nhl', f'driftLooks({json.dumps(rule)})')
-    # Stage 95 item 31: one model, its figure look by look.
+    # Stage 95 item 31: one model, its figure look by look (in the table since open item 6, 2026-11-23).
     assert "above the backtest&#39;s log loss over a season&#39;s first that many games" in looks
-    assert f"(100, {rule['baseline_by_look']['100']:.4f}; 200, {rule['baseline_by_look']['200']:.4f};" in looks
-    assert 'without the injury report' not in looks
+    table = run('nhl', f"driftLooksTable({json.dumps(rule)}, null, 'nhl')")
+    for n in ('100', '200'):
+        assert f'<th scope="row">{n}</th><td class="num">{rule["baseline_by_look"][n]:.4f}</td><td>Not yet</td>' in table
+    assert 'without the injury report' not in looks + table
     d = {'games': 194, 'mean_log_loss': 0.6561, 'baseline': 0.6753, 'flagged': False, 'looks': [], 'next_look': 200}
     assert 'against 0.6753 in the backtest.' in run('nhl', f'driftStatus({json.dumps(d)}, {json.dumps(rule)})')
 

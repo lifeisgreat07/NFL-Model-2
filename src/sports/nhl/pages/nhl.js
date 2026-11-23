@@ -719,7 +719,7 @@ function renderReliability(){
   const saved = Object.keys(DATA.picks).length;
   const status = driftStatus(d, rule);
   el.innerHTML = `<h2 class="section-title">The drift check</h2><p class="nhl-lede">${status}</p>
-    ${rule && rule.rule.checkpoints ? `<p class="nhl-lede">The rule was registered before the season (<a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/experiments/nhl/stage58/registry.json">the registration</a>) and amended on Nov 4 and Nov 11, 2026: ${driftLooks(rule)}</p>` : ''}
+    ${rule && rule.rule.checkpoints ? `<p class="nhl-lede">The rule was registered before the season (<a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/experiments/nhl/stage58/registry.json">the registration</a>) and amended on Nov 4 and Nov 11, 2026: ${driftLooks(rule)}</p>${driftLooksTable(rule, d, 'nhl')}` : ''}
     ${spreadHtml(DATA.spread, 'nhl')}
     <p class="nhl-lede">The forward test, the live picks scored against the market and the base rate, is on <a href="#accuracy">Season Accuracy</a>, beside the record it is judged instead of.</p>
     <h2 class="section-title">The projected starter against the actual one</h2>

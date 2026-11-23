@@ -196,7 +196,8 @@ def run(sport, call):
     # Stage 95 item 33: driftStatus says the leak line through leakNote.
     prog = (function_source(js, 'pct') if 'function pct' in js else '') + function_source(js, 'leakNote') \
         + function_source(js, 'driftStatus') \
-        + function_source(js, 'driftLooks') + f'process.stdout.write({call});'
+        + function_source(js, 'driftLooks') + function_source(js, 'driftLooksTable') \
+        + f'process.stdout.write({call});'
     return subprocess.run([NODE, '-e', prog], capture_output=True, text=True, check=True).stdout
 
 
@@ -212,8 +213,11 @@ def test_the_page_states_the_registered_looks(sport):
     out = run(sport, f'driftLooks({json.dumps(rule)})')
     assert 'looks only at 100, 200, 400, 800 and 1,200 graded games' in out
     assert 'one-sided 99% lower bound' in out and 'one-sided 95% shared among the 5 looks' in out
-    for n in rule['rule']['checkpoints']:   # Stage 95 item 31: each look's own baseline is printed
-        assert f"{rule['baseline_by_look'][str(n)]:.4f}" in out
+    assert '(each look&#39;s figure is in the table below)' in out
+    # Stage 95 item 31: each look's own baseline is printed, now in the table (open item 6, 2026-11-23).
+    table = run(sport, f"driftLooksTable({json.dumps(rule)}, null, '{sport}')")
+    for n in rule['rule']['checkpoints']:
+        assert f"<th scope=\"row\">{n:,}</th><td class=\"num\">{rule['baseline_by_look'][str(n)]:.4f}</td>" in table
 
 
 @pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
@@ -231,4 +235,56 @@ def test_the_status_says_when_the_check_last_looked_and_will_look_next(sport):
 def test_both_pages_print_the_looks_beside_the_status():
     assert '${driftLooks(rule)}' in function_source(page('nhl'), 'renderReliability')
     assert '${driftLooks(BD.drift_rule)}' in function_source(page('nba'), 'renderReliability')
+    # Open item 6 (2026-11-23): the table of the looks follows the paragraph on both pages.
+    assert "${driftLooks(rule)}</p>${driftLooksTable(rule, d, 'nhl')}" in function_source(page('nhl'), 'renderReliability')
+    assert ("${driftLooks(BD.drift_rule)}</p>${driftLooksTable(BD.drift_rule, BD.drift, 'nba')}"
+            in function_source(page('nba'), 'renderReliability'))
     assert 'const status = driftStatus(d, rule);' in function_source(page('nhl'), 'renderReliability')
+
+
+# --- the looks as a table (open item 6, option B, 2026-11-23) -------------------------------------------------
+
+NBA_LIVE = {'games': 241, 'flagged': False, 'next_look': 400,
+            'looks': [{'games': 100, 'lower_bound': 0.5767, 'baseline': 0.6290, 'flagged': False},
+                      {'games': 200, 'lower_bound': 0.5274, 'baseline': 0.5975, 'flagged': False}]}
+
+
+def rows(html):
+    return re.findall(r'<tr><th scope="row">([\d,]+)</th>(.*?)</tr>', html)
+
+
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
+def test_each_look_says_where_it_stands():
+    """The NBA on 2026-11-23: two looks made and clear, the next at 400 with 159 picks to go, two not yet."""
+    rule = json.loads((ROOT / 'data' / 'nba' / 'drift_baseline.json').read_text(encoding='utf-8'))
+    out = run('nba', f"driftLooksTable({json.dumps(rule)}, {json.dumps(NBA_LIVE)}, 'nba')")
+    got = {n: re.sub(r'<[^>]+>', '|', cells).strip('|').split('|')[-1] for n, cells in rows(out)}
+    assert got == {'100': 'Clear: 0.5767 under 0.6290', '200': 'Clear: 0.5274 under 0.5975',
+                   '400': 'Next: 159 graded picks to go', '800': 'Not yet', '1,200': 'Not yet'}
+
+
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
+def test_a_flagged_look_says_so_in_bold_and_above_its_bar():
+    rule = json.loads((ROOT / 'data' / 'nba' / 'drift_baseline.json').read_text(encoding='utf-8'))
+    d = dict(NBA_LIVE, flagged=True, looks=[{'games': 100, 'lower_bound': 0.6401, 'baseline': 0.6290, 'flagged': True}],
+             games=150, next_look=200)
+    out = run('nba', f"driftLooksTable({json.dumps(rule)}, {json.dumps(d)}, 'nba')")
+    assert '<td><b>Flagged</b>: 0.6401 above 0.6290</td>' in out
+    assert '<td>Next: 50 graded picks to go</td>' in out
+
+
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
+@pytest.mark.parametrize('sport, columns', [('nba', 4), ('nhl', 3)])
+def test_the_nba_shows_its_second_bar_and_the_nhl_its_one(sport, columns):
+    rule = json.loads((ROOT / 'data' / sport / 'drift_baseline.json').read_text(encoding='utf-8'))
+    out = run(sport, f"driftLooksTable({json.dumps(rule)}, null, '{sport}')")
+    assert out.count('<th scope="col"') == columns
+    assert ('Bar, no report' in out) == (sport == 'nba') and ('held to the bar without it' in out) == (sport == 'nba')
+    assert all(cells.endswith('<td>Not yet</td>') for _, cells in rows(out)), 'no result yet: every look waits'
+    assert f'metrics-table {sport}-table' in out
+
+
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
+def test_no_table_without_the_per_look_figures():
+    old = {'rule': {'checkpoints': [100, 200]}, 'baseline': {'value': 0.6}}
+    assert run('nhl', f"driftLooksTable({json.dumps(old)}, null, 'nhl')") == ''
