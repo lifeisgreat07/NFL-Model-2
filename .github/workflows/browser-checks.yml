@@ -179,6 +179,19 @@ jobs:
         timeout-minutes: 30
         run: python tests/browser/check_page.py "$RUNNER_TEMP/states/nba.html" --axe node_modules/axe-core/axe.min.js
 
+      # Stage 100 item 4: MLB's pages, built by the real builder from the
+      # committed backtest and history (src/sports/mlb/site.py), checked
+      # before they are published (Stage 101) as the NBA's were. The
+      # first run found two Model Lab tables and one Methodology table
+      # out of the Tab order at 390 px. tests/test_mlb_browser_checks.py.
+      - name: Build MLB's pages
+        timeout-minutes: 30
+        run: python -m src.sports.mlb.site --out "$RUNNER_TEMP/states/mlb.html"
+
+      - name: Check MLB's pages
+        timeout-minutes: 30
+        run: python tests/browser/check_page.py "$RUNNER_TEMP/states/mlb.html" --axe node_modules/axe-core/axe.min.js
+
       # Stage 77 item 32: the NBA board's eyebrow names the week it shows,
       # with the clock fixed on the 13th, opening night and the 27th.
       - name: Prove the NBA eyebrow check can fail
@@ -229,7 +242,7 @@ jobs:
 
       - name: Check the sport switcher fits with the league marks
         timeout-minutes: 30
-        run: python tests/browser/check_switcher_fit.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
+        run: python tests/browser/check_switcher_fit.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html" "$RUNNER_TEMP/states/mlb.html"
 
       # Audit 9 D1: every sidebar control can be reached in a laptop-sized
       # window (1366x657, 1280x720), with the foot pinned.
@@ -239,7 +252,7 @@ jobs:
 
       - name: Check every sidebar control can be reached in a laptop window
         timeout-minutes: 30
-        run: python tests/browser/check_sidebar_reach.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
+        run: python tests/browser/check_sidebar_reach.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html" "$RUNNER_TEMP/states/mlb.html"
 
       # Stage 79 item 46: the NHL's Accuracy and the NBA's Checking the AI's
       # work draw the race, the trend and the calibration diagram.
@@ -259,7 +272,7 @@ jobs:
 
       - name: Check nothing marked hidden is drawn
         timeout-minutes: 30
-        run: python tests/browser/check_hidden.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
+        run: python tests/browser/check_hidden.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html" "$RUNNER_TEMP/states/mlb.html"
 
       # Stage 79 item 45: one chart style, and no chart text under 11 px on
       # any sport's page.

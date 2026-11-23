@@ -14,6 +14,36 @@ const DATA = JSON.parse(document.getElementById('mlb-data').textContent);
 const ET = 'America/New_York';
 const BD = DATA.board;
 
+/* ---------- tables that scroll ----------
+   The NFL board's rule (src/dashboard/app.js, Stage 12), as the NBA's page
+   has it (Stage 100 item 4: axe found MLB's Model Lab and Methodology
+   tables out of the Tab order at 390px): a table wider than
+   its box gets the box into the Tab order as a named region, so a keyboard
+   user can scroll it (WCAG 2.1.1; axe's scrollable-region-focusable). */
+const FOCUSABLE_INSIDE = 'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+function scrollStopLabel(el){
+  const cap = el.querySelector('caption');
+  let heading = null;
+  for(let node = el; node && !heading && !node.matches('.page'); node = node.parentElement){
+    for(let sib = node.previousElementSibling; sib; sib = sib.previousElementSibling){
+      if(sib.matches('h2, h3, h4')){ heading = sib; break; }
+    }
+  }
+  const name = (cap || heading) ? (cap || heading).textContent.trim().replace(/\s+/g, ' ') : '';
+  return (name ? `Table: ${name}` : 'Table') + ', scrolls sideways';
+}
+(function(){
+  let queued = false;
+  const later = () => { if(queued) return; queued = true; requestAnimationFrame(() => { queued = false; fitTables(); }); };
+  window.addEventListener('resize', later);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(later);
+  const root = document.querySelector('main');
+  if(root && window.MutationObserver){
+    new MutationObserver(later).observe(root, {childList: true, subtree: true, attributes: true, attributeFilter: ['class']});
+  }
+  later();
+})();
+
 /* ---------- days and weeks ---------- */
 function dayDate(day){ return new Date(`${day}T12:00:00Z`); }
 function dayIso(d){ return d.toISOString().slice(0, 10); }
