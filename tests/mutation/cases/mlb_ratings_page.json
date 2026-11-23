@@ -1,0 +1,58 @@
+{
+  "target": "src/sports/mlb/pages/mlb.js",
+  "tests": "tests/test_mlb_ratings_page.py",
+  "cases": [
+    {
+      "id": "mlb-ratings-page-never-shows-all",
+      "why": "Show all changes nothing, so starters past the fortieth can never be seen",
+      "find": "  return {rows: all ? order : order.slice(0, STARTERS_SHOWN), of: order.length};\n",
+      "replace": "  return {rows: order.slice(0, STARTERS_SHOWN), of: order.length};\n",
+      "expect_caught_by": "test_the_first_forty_then_all"
+    },
+    {
+      "id": "mlb-ratings-page-club-filter-ignored",
+      "why": "choosing a club still lists every club's starters",
+      "find": "  const mine = starters.filter(s => !club || s.club === club);\n",
+      "replace": "  const mine = starters;\n",
+      "expect_caught_by": "test_a_club_shows_only_its_starters_and_most_starts_sorts_by_starts_then_rate"
+    },
+    {
+      "id": "mlb-ratings-page-most-starts-unsorted",
+      "why": "Most starts leaves the list best first",
+      "find": "  const order = sort === 'starts' ? [...mine].sort((a, b) => b.starts - a.starts || a.rate - b.rate) : mine;\n",
+      "replace": "  const order = mine;\n",
+      "expect_caught_by": "test_a_club_shows_only_its_starters_and_most_starts_sorts_by_starts_then_rate"
+    },
+    {
+      "id": "mlb-ratings-page-unicode-minus",
+      "why": "a negative rating is printed with a typographic minus, unlike every other page's figures",
+      "find": "function plusMinus(x, digits){ return (x > 0 ? '+' : x < 0 ? '-' : '') + Math.abs(x).toFixed(digits); }\n",
+      "replace": "function plusMinus(x, digits){ return (x > 0 ? '+' : x < 0 ? '−' : '') + Math.abs(x).toFixed(digits); }\n",
+      "expect_caught_by": "test_a_rating_is_signed_with_a_plain_minus"
+    },
+    {
+      "id": "mlb-ratings-page-every-starter-listed",
+      "target": "src/sports/mlb/page_inputs.py",
+      "why": "a pitcher with one or two starts is listed, so an opener's few outs rank him among the best",
+      "find": "    listed = sorted((p for p, n in count.items() if n >= MIN_STARTS), key=lambda p: (rated.starter(p), p))\n",
+      "replace": "    listed = sorted((p for p, n in count.items()), key=lambda p: (rated.starter(p), p))\n",
+      "expect_caught_by": "test_clubs_go_best_first_and_starters_by_rate_with_enough_starts"
+    },
+    {
+      "id": "mlb-ratings-page-first-club-kept",
+      "target": "src/sports/mlb/page_inputs.py",
+      "why": "a traded pitcher stays with the club of his first start, not his latest",
+      "find": "        if p not in latest or day >= latest[p][0]:\n",
+      "replace": "        if p not in latest:\n",
+      "expect_caught_by": "test_a_starters_club_is_his_latest_starts_and_a_name_may_be_missing"
+    },
+    {
+      "id": "mlb-ratings-page-ids-not-codes",
+      "target": "src/sports/mlb/site.py",
+      "why": "the page gets Stats API ids, so every club reads as '?'",
+      "find": "    return {**doc, 'clubs': [{**c, 'team': abbr(c['team'])} for c in doc['clubs']],\n            'starters': [{**s, 'club': abbr(s['club'])} for s in doc['starters']]}\n",
+      "replace": "    return doc\n",
+      "expect_caught_by": "test_the_build_names_each_club_by_its_code"
+    }
+  ]
+}
