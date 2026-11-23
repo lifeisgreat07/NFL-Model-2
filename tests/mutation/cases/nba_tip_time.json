@@ -58,8 +58,8 @@
    "id": "nba-tip-home-drops-unset",
    "target": "src/site/home.py",
    "why": "the home page is never told which starts are not set.",
-   "find": "if g.get('game_type') in game_types and g.get('start_utc') and g.get('time_valid') is False})",
-   "replace": "if False})",
+   "find": "                    and (g.get('time_valid') is False or g.get('start_time_tbd') is True)})",
+   "replace": "                    and False})",
    "expect_caught_by": "test_the_home_page_lists_the_unset_starts"
   },
   {
