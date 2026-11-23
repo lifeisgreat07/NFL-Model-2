@@ -60,3 +60,17 @@ html[data-density="compact"] .mlb-row{min-height:40px;}
   .mlb-row{display:none !important;}
   .mlb-row-detail{display:block !important;}
 }
+
+/* Standings (Stage 100 item 3; layout B): the NHL's division tables, three to a row, and each league's wild card
+   race beside them; a line under the race's third club. Each table names a club in full, and by its code where
+   the table is narrow. */
+.mlb-lede{max-width:72ch; color:var(--text-2); margin:0 0 var(--s4);}
+.mlb-div-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:var(--s5); margin-bottom:var(--s5);}
+.mlb-div-grid h3{font-size:var(--fs-14); margin:0 0 var(--s2);}
+.mlb-div-grid > div{container-type:inline-size; min-width:0;}
+.mlb-table td.num, .mlb-table th.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.mlb-table tbody th{text-transform:none; letter-spacing:0; font-size:var(--fs-13); font-weight:600; color:var(--text); white-space:nowrap;}
+.mlb-table .mlb-club-abbr{display:none;}
+.mlb-table tr.mlb-wc-line > *{border-bottom:2px solid var(--accent);}
+@container (max-width: 560px){ .mlb-div-grid .mlb-club-full{display:none;} .mlb-div-grid .mlb-club-abbr{display:inline;} }
+@media (max-width:600px){ .mlb-table th, .mlb-table td{padding-left:var(--s2); padding-right:var(--s2);} }
