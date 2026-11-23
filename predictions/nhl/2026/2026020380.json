@@ -1,0 +1,100 @@
+{
+ "game_id": "2026020380",
+ "season": 2026,
+ "slate": "2026-11-23",
+ "start_utc": "2026-11-24T00:30:00Z",
+ "home": "OTT",
+ "away": "CGY",
+ "model_a": 0.6915,
+ "model_b": 0.7057,
+ "pick": "OTT",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 1.132052,
+  "shot_matchup": 4.714971,
+  "goalie_matchup_2000": 0.002711
+ },
+ "market": {
+  "game_id": "2026020380",
+  "start_utc": "2026-11-24T00:30:00Z",
+  "home": "OTT",
+  "away": "CGY",
+  "book": "DraftKings",
+  "home_price": -258.0,
+  "away_price": 210.0,
+  "home_prob": 0.6908,
+  "read_utc": "2026-11-23T21:01:45Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476999,
+   "name": "Linus Ullmark",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/AndrewWilimek/status/2124901140546388086?a=gMWd5UlOdJJoilQcg8Q&s=20"
+  },
+  "away": {
+   "player_id": 8482445,
+   "name": "Devin Cooley",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/dwillsnhl/status/2124903823894552729?a=eHPvz2AjqnhqR5FUC88&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-22",
+  "read_utc": "2026-11-23T21:01:45Z",
+  "home": [
+   {
+    "name": "Andre Burakovsky",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Hayden Hodgson",
+    "position": "RW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Warren Foegele",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Eklund",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Jonathan Huberdeau",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kevin Bahl",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Martin Pospisil",
+    "position": "C",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-23T21:01:45Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-22",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14780,
+  "training_games_priced": 7745,
+  "training_ids_sha256": "9fcda93afc00f3862ebbed041d6798c6981d9407947be344f8e2f143cdbbd42e"
+ },
+ "code_sha256": "203a4c7014041e2a60f5908aefad9ac4ec7035fe156c42153525b9ac57e7d339",
+ "code_commit": "f6d394f5425d2fda0191576f09954df69db7b409"
+}

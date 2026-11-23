@@ -43,14 +43,15 @@ def run_mark(sport):
 
 
 def test_each_card_mark_is_hot_linked_in_both_themes_with_our_icon_behind_it():
-    for sport in SPORTS:
+    # MLB's card (Stage 100 item 4, dark until Stage 101) carries its mark too.
+    for sport in SPORTS + ('mlb',):
         html = run_mark(sport)
         srcs = re.findall(r'<img class="(lgm-[ld])" src="([^"]+)"', html)
         assert srcs == [('lgm-l', f'{CDN}500/{sport}.png&amp;w=56&amp;h=56'),
                         ('lgm-d', f'{CDN}500-dark/{sport}.png&amp;w=56&amp;h=56')], sport
         assert '<span class="lgm-own"><svg class="home-icon"' in html, f'{sport}: no icon to fall back on'
         assert html.startswith('<span class="lgm" aria-hidden="true">'), 'the name beside it is read; the mark is not'
-    assert run_mark('mlb') == '', 'a sport with no page has no mark'
+    assert run_mark('march') == '', 'a card with no icon of ours has no mark'
 
 
 def test_the_switcher_on_the_home_page_carries_each_leagues_mark_before_its_name():

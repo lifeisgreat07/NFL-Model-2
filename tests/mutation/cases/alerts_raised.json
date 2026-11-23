@@ -1,0 +1,13 @@
+{
+  "target": ".github/workflows/nfl-nightly-canary.yml",
+  "tests": "tests/test_alerts_raised.py",
+  "cases": [
+    {
+      "id": "nfl-canary-raise-dropped",
+      "why": "the NFL canary's failure step stops raising its alert while the recovery step still closes it, so a broken source is silent",
+      "find": "python -m src.core.alerts --title \"NFL: Nightly canary failing\" --body-file canary-report.md",
+      "replace": "echo \"NFL: Nightly canary failing\"",
+      "expect_caught_by": "test_every_alert_a_workflow_resolves_it_also_raises"
+    }
+  ]
+}
