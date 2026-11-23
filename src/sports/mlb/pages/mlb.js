@@ -389,10 +389,90 @@ document.getElementById('ratings-body').addEventListener('change', e => {
   renderRatings();
 });
 
+/* ---------- model lab and methodology (Stage 100 item 2) ----------
+   Read from the registration (experiments/mlb/stage98/registry.json), its tuning, and the confirmation once it has
+   run (`python -m src.sports.mlb.backtest confirm`, once, when Retrosheet posts the 2026 game log). Before then each
+   question is DEFERRED and says what it waits for. */
+const LAB = DATA.lab;
+const REGISTRY_URL = 'https://github.com/lifeisgreat07/NFL-Model-2/blob/main/experiments/mlb/stage98/registry.json';
+const MODEL_NAMES = {model_a: 'Model A', model_b: 'Model B', market: 'The market', base_rate: 'Home-win base rate',
+  model_a_no_starter: 'Model A without the starter'};
+function seasonsText(list){ return list.length > 1 ? `${list[0]} and ${list[list.length - 1]}` : String(list[0]); }
+function labLevel(p){ return 1 - p.alpha / p.budget_m; }
+function signed4(x){ return (x > 0 ? '+' : x < 0 ? '-' : '') + Math.abs(x).toFixed(4); }
+/* A tuned setting at either end of the range the registration searched is said so: a wider search could have gone
+   further that way (as the NBA's page says of its ridge strength). */
+function gridEdges(grid, chosen){
+  return Object.keys(grid).filter(k => {
+    const v = grid[k], c = chosen[k];
+    return v.length > 1 && (c === Math.min(...v) || c === Math.max(...v));
+  }).map(k => ({key: k, value: chosen[k], end: chosen[k] === Math.min(...grid[k]) ? 'smallest' : 'largest'}));
+}
+const GRID_LABEL = {H_days: 'half-life (days)', lambda: 'ridge strength', K_outs: 'starter shrinkage (outs)'};
+function questionRow(q, answer){
+  const head = `<th scope="row">${q.id}</th><td><b>${escapeHtml(q.title)}</b><br>${escapeHtml(q.question)}</td>`;
+  if(!answer){
+    const tag = q.kind === 'measurement' ? 'a measurement' : '<span class="conf-tag tag-neutral">DEFERRED</span>';
+    const expected = q.expected ? `<br><span class="mlb-lab-note">Expected when registered: ${escapeHtml(q.expected)}</span>` : '';
+    return `<tr>${head}<td class="num">-</td><td class="num">-</td><td>${tag}${expected}</td></tr>`;
+  }
+  const decision = answer.label ? `<span class="conf-tag tag-neutral">${escapeHtml(answer.label)}</span>` : 'a measurement';
+  return `<tr>${head}<td class="num">${signed4(answer.diff)}</td><td class="num"><span class="lab-lead">${intervalGlyph(answer.diff, answer.low, answer.high)}</span>`
+    + `[${signed4(answer.low)}, ${signed4(answer.high)}]</td><td>${decision}</td></tr>`;
+}
+function renderModelLab(){
+  const el = document.getElementById('modellab-body');
+  if(!LAB){ el.innerHTML = stateHtml('waiting', 'Not built yet', ''); return; }
+  const p = LAB.protocol, conf = LAB.confirmation, t = LAB.tuning;
+  const waiting = conf ? '' : `<p class="mlb-lede"><b>Not answered yet.</b> The confirmation runs once, when Retrosheet posts its ${Math.max(...p.confirmation_seasons)} game log: every season is checked against it before the backtest reads it. Until then each question is DEFERRED.</p>`;
+  const answers = (conf && conf.questions) || {};
+  const rows = LAB.questions.map(q => questionRow(q, answers[q.id])).join('');
+  const scores = conf ? `<h2 class="section-title">Scores on ${seasonsText(conf.seasons)}</h2>
+    <div class="table-wrap"><table class="metrics-table mlb-table"><caption class="visually-hidden">Scores on the confirmation seasons</caption>
+    <thead><tr><th scope="col">Forecast</th><th scope="col" class="num">Games</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead>
+    <tbody>${Object.entries(conf.scores).map(([k, s]) => `<tr><th scope="row">${MODEL_NAMES[k] || escapeHtml(k)}</th><td class="num">${s.games.toLocaleString('en-US')}</td><td class="num">${s.log_loss.toFixed(4)}</td><td class="num">${s.brier.toFixed(4)}</td><td class="num">${(s.accuracy * 100).toFixed(1)}%</td></tr>`).join('')}</tbody></table></div>
+    <p class="mlb-lede">Accuracy is printed, never decides: at this many games it moves by a game or two between machines, where log loss does not.</p>` : '';
+  const tuning = t ? (() => {
+    const on = g => g.H_days === t.chosen.H_days && g.lambda === t.chosen.lambda && g.K_outs === t.chosen.K_outs;
+    const edges = gridEdges(LAB.grid, t.chosen).map(e => `the ${GRID_LABEL[e.key] || e.key}, ${e.value.toLocaleString('en-US')}, is the ${e.end} the grid searched`);
+    const edgeText = edges.length ? `<p class="mlb-lede"><b>At the edge of the grid.</b> In the chosen setting ${edges.join('; ')}. A wider search might have gone further that way; that is for next season&#39;s registration, not a change to this one.</p>` : '';
+    return `<h2 class="section-title">Tuning on ${seasonsText(t.seasons)}</h2>
+    <p class="mlb-lede">Model A&#39;s log loss over the validation seasons for each registered setting: ${t.searched} were searched, and the ${t.best.length} best are listed. The lowest was kept and fixed before any confirmation season was scored.</p>
+    <div class="table-wrap"><table class="metrics-table mlb-table"><caption class="visually-hidden">The tuning grid's best settings</caption>
+    <thead><tr><th scope="col" class="num">Half-life (days)</th><th scope="col" class="num">Ridge</th><th scope="col" class="num">Starter shrinkage (outs)</th><th scope="col" class="num">Log loss</th><th scope="col"></th></tr></thead>
+    <tbody>${t.best.map(g => `<tr${on(g) ? ' class="mlb-chosen"' : ''}><td class="num">${g.H_days}</td><td class="num">${g.lambda}</td><td class="num">${g.K_outs}</td><td class="num">${g.log_loss.toFixed(5)}</td><td>${on(g) ? 'chosen' : ''}</td></tr>`).join('')}</tbody></table></div>${edgeText}`;
+  })() : '';
+  el.innerHTML = `<p class="mlb-lede">Registered on ${escapeHtml(dayText(LAB.registered))}, before any MLB model was fitted (<a href="${REGISTRY_URL}">the registration</a>): tuned on ${seasonsText(p.validation_seasons)}, then answered once on ${seasonsText(p.confirmation_seasons)}. A difference below zero means the first model forecast better. Each interval resamples whole game days and is ${(labLevel(p) * 100).toFixed(2)}% sure, wider than the usual 95% because ${p.budget_m} questions share that 95%; a result counts only when the interval excludes zero.</p>
+    ${waiting}
+    <div class="table-wrap"><table class="metrics-table mlb-table"><caption class="visually-hidden">The backtest's questions</caption>
+    <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Decision</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>${scores}${tuning}`;
+}
+function renderMethod(){
+  const el = document.getElementById('method-body');
+  if(!LAB){ el.innerHTML = stateHtml('waiting', 'Not built yet', ''); return; }
+  const p = LAB.protocol, c = (LAB.tuning || {}).chosen;
+  const set = c ? ` (half as much every ${c.H_days} days; ridge strength ${c.lambda}; ${c.K_outs.toLocaleString('en-US')} outs of shrinkage)` : '';
+  const cov = LAB.coverage.map(r => `<tr><th scope="row">${r.season}</th><td class="num">${r.games.toLocaleString('en-US')}</td><td class="num">${r.priced.toLocaleString('en-US')}</td><td>${r.checked ? 'yes' : 'not yet'}</td></tr>`).join('');
+  el.innerHTML = `
+    <p class="mlb-lede"><b>Model A</b> reads two numbers about a game, each favouring the home club when positive. One is the clubs&#39; run ratings, home minus away, from a ridge regression of every earlier game&#39;s run margin, recent games counting more${set}. The other is the starting pitchers: the away starter&#39;s runs allowed per 27 outs minus the home starter&#39;s, each pulled toward the league&#39;s rate until he has pitched enough. A logistic regression turns the two into a home-win probability. A game at a neutral park gets no fitted home edge.</p>
+    <p class="mlb-lede"><b>Model B</b> is Model A plus the market: the logit of ESPN&#39;s moneyline with the bookmaker&#39;s margin taken out, trained only on games that had a price.</p>
+    <p class="mlb-lede"><b>The test.</b> Every regular-season and postseason game from ${p.training_from_season} on. Before each game day both models are refitted on every earlier game and predict that day&#39;s games, so nothing a game did is known before it. The settings were chosen on ${seasonsText(p.validation_seasons)} only, then fixed, and ${seasonsText(p.confirmation_seasons)} are scored once. ${p.budget_m} questions share a ${(p.alpha * 100).toFixed(0)}% error budget, so each interval is at ${(labLevel(p) * 100).toFixed(2)}%. Log loss decides; accuracy is printed, never decides. The answers are on <a href="#modellab">Model Lab</a>.</p>
+    <p class="mlb-lede"><b>The live picks</b> start with the ${p.forward_holdout_season} season, under a forward test registered before the first is saved: each game&#39;s pick saved before first pitch and never changed.</p>
+    <p class="mlb-lede"><b>What the backtest knew that a live pick will not:</b> who actually started, from the box score. A live pick knows only the probable pitcher announced before the game. The registration measures that gap (M2) once 200 live games are graded.</p>
+    <p class="mlb-lede"><b>Not in this registration</b>, each needing its own: ${LAB.not_registered.map(escapeHtml).join(' ')}</p>
+    <h2 class="section-title">The games</h2>
+    <p class="mlb-lede">Results, starters and venues are the MLB Stats API&#39;s, every season checked against Retrosheet&#39;s game logs before the backtest reads it. Prices are ESPN&#39;s, without a provider that publishes a model&#39;s output rather than a book&#39;s price.</p>
+    <div class="table-wrap"><table class="metrics-table mlb-table"><caption class="visually-hidden">Games and prices per season</caption>
+    <thead><tr><th scope="col">Season</th><th scope="col" class="num">Games</th><th scope="col" class="num">With a price</th><th scope="col">Checked against Retrosheet</th></tr></thead>
+    <tbody>${cov}</tbody></table></div>`;
+}
+
 /* ---------- the page around the board ----------
-   The board, the standings and the ratings so far; the others arrive with Stage 100 item 2, and each button for the
-   page shown carries aria-current, as on the other sports. */
+   Each button for the page shown carries aria-current, as on the other sports. On a phone the pages past the first
+   three sit in the More sheet (OVERFLOW_PAGES), whose button is lit while one of them is shown. */
 const BASE_TITLE = document.title;
+const OVERFLOW_PAGES = ['modellab', 'method'];
 function showMlbPage(name, opts){
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
   document.querySelectorAll('[data-page]').forEach(b => {
@@ -400,6 +480,9 @@ function showMlbPage(name, opts){
     b.classList.toggle('active', on);
     if(on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
+  const more = document.getElementById('bnav-more-btn');
+  if(more) more.classList.toggle('active', OVERFLOW_PAGES.includes(name));
+  setMoreSheetOpen(false);
   window.scrollTo(0, 0);
   const page = document.getElementById('page-' + name);
   const heading = page && page.querySelector('.page-head h2');
@@ -410,6 +493,21 @@ function showMlbPage(name, opts){
   }
 }
 document.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => showMlbPage(b.dataset.page, {focus: true})));
+/* The More sheet on a phone (src/core/day_board.js setMoreSheetOpen): its button opens and closes it, a tap
+   outside it or Esc closes it, and its own close button hands focus back to the button. */
+document.getElementById('bnav-more-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  setMoreSheetOpen(!document.getElementById('bnav-more-sheet').classList.contains('open'));
+});
+document.addEventListener('click', e => {
+  const sheet = document.getElementById('bnav-more-sheet');
+  if(sheet.classList.contains('open') && !sheet.contains(e.target) && !e.target.closest('#bnav-more-btn')) setMoreSheetOpen(false);
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape') setMoreSheetOpen(false); });
+document.querySelector('#bnav-more-sheet .bnav-more-close').addEventListener('click', () => {
+  setMoreSheetOpen(false);
+  document.getElementById('bnav-more-btn').focus();
+});
 /* A skip link moves focus and nothing else, so the router never reads it as a page. */
 document.querySelectorAll('.skip-link').forEach(a => a.addEventListener('click', e => {
   const target = document.getElementById(a.getAttribute('href').slice(1));
@@ -445,6 +543,8 @@ mlbThemeLabel();
 renderBoard();
 renderStandings();
 renderRatings();
+renderModelLab();
+renderMethod();
 /* A star redraws the board with its club's games first. */
 installFavStars(renderBoard);
 /* #board/<day> and #game/<id>, as on the other day boards (src/core/routes.js). */

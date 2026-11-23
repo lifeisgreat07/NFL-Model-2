@@ -184,6 +184,7 @@
   "tests/test_mlb_colours.py": "isolated behavioural",
   "tests/test_mlb_data_probe.py": "mixed",
   "tests/test_mlb_history.py": "isolated behavioural",
+  "tests/test_mlb_lab_page.py": "template/JS",
   "tests/test_mlb_market_history.py": "isolated behavioural",
   "tests/test_mlb_ratings.py": "isolated behavioural",
   "tests/test_mlb_ratings_page.py": "template/JS",

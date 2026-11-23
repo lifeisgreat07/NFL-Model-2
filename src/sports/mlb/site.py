@@ -23,6 +23,7 @@ Run by hand: python -m src.sports.mlb.site --out site/mlb/index.html
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 from datetime import UTC, datetime
 from pathlib import Path
@@ -39,7 +40,7 @@ from src.core.page_fill import (
     safe_json,
 )
 from src.core.sport import sport_paths
-from src.sports.mlb import colours, teams
+from src.sports.mlb import backtest, colours, history, teams
 from src.sports.mlb.schedule import current_season
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -158,8 +159,55 @@ def board(season: int) -> dict[str, Any]:
     }
 
 
+#: The tuning grid's best settings Model Lab lists; the page says how many were searched.
+TUNING_SHOWN = 10
+
+
+def coverage() -> list[dict[str, Any]]:
+    """Per season of the registration's history: the games the backtest reads, those with a price it keeps
+    (`backtest.load_market`'s filters), and whether the season is checked against Retrosheet yet."""
+    p = backtest.registry()['protocol']
+    first, last = p['training_from_season'], max(p['confirmation_seasons'])
+    folder = history.HISTORY
+    priced = set(backtest.load_market(first, last, folder)['game_id'].astype(str))
+    checked = backtest.checked_seasons(folder)
+    out = []
+    for season in range(first, last + 1):
+        path = folder / f'games_{season}.csv'
+        if not path.exists():
+            continue
+        with path.open(encoding='utf-8', newline='') as f:
+            ids = [row['game_id'] for row in csv.DictReader(f)]
+        out.append({'season': season, 'games': len(ids), 'priced': sum(i in priced for i in ids),
+                    'checked': season in checked})
+    return out
+
+
+def lab() -> dict[str, Any]:
+    """What Model Lab and Methodology read: the registration's protocol and questions, the tuning, the confirmation
+    once it has run (`python -m src.sports.mlb.backtest confirm`, once), and the history's coverage."""
+    reg = backtest.registry()
+    p = reg['protocol']
+    tuning = _maybe(backtest.RESULTS / 'tuning.json')
+    grid = reg['models']['model_a']['grid']
+    return {
+        'registered': reg['registered'],
+        'protocol': {k: p[k] for k in ('training_from_season', 'validation_seasons', 'confirmation_seasons',
+                                       'forward_holdout_season', 'alpha', 'budget_m')},
+        'grid': grid,
+        'questions': [{k: q.get(k) for k in ('id', 'kind', 'title', 'question', 'expected')}
+                      for q in reg['hypotheses']],
+        'tuning': None if tuning is None else {
+            'seasons': tuning['seasons'], 'chosen': tuning['chosen'], 'searched': len(tuning['grid']),
+            'best': sorted(tuning['grid'], key=lambda g: g['log_loss'])[:TUNING_SHOWN]},
+        'confirmation': _maybe(backtest.RESULTS / 'confirmation.json'),
+        'coverage': coverage(),
+        'not_registered': reg['not_in_this_registration'],
+    }
+
+
 def payload(now: datetime) -> dict[str, Any]:
-    return {'built_utc': now.strftime('%Y-%m-%dT%H:%M:%SZ'), 'board': board(current_season(now))}
+    return {'built_utc': now.strftime('%Y-%m-%dT%H:%M:%SZ'), 'board': board(current_season(now)), 'lab': lab()}
 
 
 #: The parts page.html includes that live outside pages/: the shared stylesheet and the scripts the day boards
