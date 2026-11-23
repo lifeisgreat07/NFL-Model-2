@@ -4,49 +4,49 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-17 (session 1117, overnight with Mark asleep: #772 to #787, less the closed #777, #780 and #782)
+Last updated: 2026-11-23 (session 1122: Sunday 2026-11-22 with Mark, then overnight with Mark asleep; #798 to #808)
 
 ---
 
 ## Right now
 
 **Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked figure, split five ways by `tests/suite_classes.json` (`session_wrapup --suite-line` writes it). NFL in `src/sports/nfl/`, shared modules in `src/core/`.
-**Sportalytics** (Stage 67) is live: home `/`, NFL `/nfl/` (Model **v2.6**), NHL `/nhl/`, NBA `/nba/` (picks saved twice a day). MLB is being built (Stages 97 to 101), not shown. March Madness (Stage 103): the bracket's exact round odds, filled bracket, lock and grading (#783) and its page and home card (#787) are built; the page and card appear only from the lock to 15 April.
+**Sportalytics** (Stage 67) is live: home `/`, NFL `/nfl/` (Model **v2.6**), NHL `/nhl/`, NBA `/nba/` (picks saved twice a day). **MLB's day board is built and tested but not published** (Stage 100 item 1, #808: `src/sports/mlb/site.py` and `pages/`, layout A, Board tab only, no picks until Stage 101 defines the pick file; `build.SPORTS` does not list MLB). March Madness (Stage 103) is built; its page and card appear only from the lock to 15 April.
 
-**Run tests now has 35 minutes (#748)**: the suite took 17-27 min on CI and main was cancelled at 20.3. **Booth audits run one at a time**, and a diff of about a hundred files runs out of the 20-minute job time. Split a big change rather than re-running it. Do not change booth-pr-audit.yml until Mark decides.
+**Run tests has 35 minutes (#748)**; it took 17-28 min tonight. **Booth audits run one at a time**; it timed out twice on #799 (Mark: merge) and its report check failed once on #805 (a re-run passed). Do not change booth-pr-audit.yml until Mark decides.
 
 **Merge rule (Mark):** Booth SAFE TO MERGE, 0 discrepancies, audited head = PR head, every check green; `merge_item.py PR WT_NAME
 BRANCH "Title"`; re-run a failed or timed-out audit once. **At the final head, before opening:** prechecks (ruff, both mypy),
 every figure and mutation case by exact id, the suite (the session archive's prep and go scripts; CLAUDE.local.md has the paths).
 A body that must change after opening: close the PR and open a new one from the same branch.
-**Mark: "you can handle merges"**: 0 discrepancies and all green merges even if Booth says NEEDS HUMAN REVIEW only for
-a claim it did not re-run. **Mutation scope = every case whose target or tests file the branch changes** (session
-archive scope_by_target.py; full_prep.ps1 -Scope).
+**Stacked branches (session 1122):** after the PR below merges, merge main into the next branch, re-prep, then open, and check the new PR's `mergeable` at once (GitHub marked #801 and #802 conflicting and ran no checks though `git merge-tree` was clean).
+**Mutation scope = every case whose target or tests file the branch changes** (session archive scope_by_target.py; full_prep.ps1 -Scope).
 **Rules on main that bind every branch:** every workflow installs with `pip install --require-hashes -r requirements.lock`;
 every python or pip step of an alerting scheduled job has its own `timeout-minutes`; src/core, src/site, src/sports/nhl,
 src/sports/nba and src/sports/mlb pass `mypy --strict`; **a new test file needs a line in `tests/suite_classes.json`**, and two
 branches adding lines beside each other conflict there, so merge main before opening; **no test skips on a missing node by
-hand**: `require_tool('node')`; **every mutation case names its real file**.
+hand**: `require_tool('node')`; **every mutation case names its real file**; **a new page meets every page guard at once**
+(CSP `PAGES`, `SPORT_SHEETS`, Spotter's `RULES` and spotter.yml paths, the day boards' three-way copy guard).
 
-**Single next action:** Mark reads the session 1117 closing section of NEXT_SESSION_NFL.md (the choices made for him). Then MLB (Stages 99 to 101) by the order of work; for March, a dry run of the lock on ESPN's boards the Sunday the bracket is out (docs/ncaam-data.md section 6), then `python -m src.sports.ncaam.bracket lock 2027 ...` once.
+**Single next action:** check that Tuesday's Weekly update (2026-11-24, 11:00 UTC) ran: it locks all of week 12, because GB at LA kicks off Wednesday, before Thursday's usual lock; if it failed, dispatch it by hand before Wednesday 20:00 ET. Then MLB Stage 100 item 3 (standings odds by simulation, independent of the pages), then item 2 (the other pages, options rendered first).
 
-**Audit 9** (design, Fable 5.2, Mark 2026-11-15): M1 B, M2 A, M3 A, M4 collapse chosen 2026-11-16; every finding merged (#751-#786) but D15's NBA drift paragraph as a table, left for Mark to see rendered. **The order of work (Mark, 2026-11-11, 2026-11-13):** the v2 shadow (done) and v3 (registered #732, writers open); 97-101 (MLB); 103. **Audit 8** (Fable 5.2, run by Mark 2026-11-13) is answered: B1, B2, S1-S6 merged (#735, #736, #737, #734). Stages 102 and 104, Stage 95 items 31 to 35, Stages 97 and 98 are done.
+**Audit 9** is done: the last part, the drift paragraph as a table, merged as option B on Mark's behalf (#807). **The order of work (Mark, 2026-11-11, 2026-11-13):** the v2 shadow (done) and v3 (registered #732, writers open); 97-101 (MLB); 103. **Audit 8** is answered. Stages 102 and 104, Stage 95 items 31 to 35, Stages 97 and 98 are done.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| v2 shadow, forward test | Writers live (#721, #722); saves only the picks its own run saved (#736, audit 8 B2; NHL 2026020307 and 2026020308 excluded); Model B keeps its intercept on a neutral site and Kalshi prices pass item 29 (#737) | Decided once after the 2026 regular season |
-| v3 shadow (Stage 105) | Registered (#732): b2b_matchup both sports, NBA star-weighted availability (p = 2); writers live (#740 NHL, #741 NBA: Booth timed out twice on #741, Mark chose to merge) | Decided once after the 2026 regular season |
-| MLB Stage 99 (model and backtest) | History 2010-2026 and tuning (#728), market (#729), confirmation code (#730), audit 8 fixes (#735: completion dating, re-tuned H 120 / lambda 10 / K 150; no AccuScore; once-only confirm) | Retrosheet's 2026 log, then `python -m src.sports.mlb.backtest confirm`, once |
-| NCAAM Stage 103 | Collector, history and seeds; registration (#743); ratings, hoopR check, tuning (#750); grid extended by amendment, H 120 / lambda 0.1 (#753); market and confirmation code (#755); confirmation run once (#760): H1 and H2 INCONCLUSIVE, so Model A makes the bracket; **odds, filled bracket, lock and grading (#783); the page and home card (#787)** | The lock between Selection Sunday and the First Four: dry-run the field read first (seeds of unplayed games, the semifinals are given) |
-| MLB canary workflow, probables timing | Canary module only | Stage 101's daily run; probables timing measured in spring training 2027 |
-| `fix-home-theme-button`: tests/browser/check_theme.py presses the home page's theme button | Not opened | Rebase on main keeping only check_theme.py; NEEDS HUMAN REVIEW by nature, so Mark's call |
+| v2 and v3 shadows (Stage 95, Stage 105) | Writers live (#721, #722; #740, #741); each saves only the picks its own run saved (#736) | Decided once after the 2026 regular season |
+| MLB Stage 99 (model and backtest) | History, tuning, market, confirmation code, audit 8 fixes (#728-#735) | Retrosheet's 2026 log (gl2026.zip was 404 on 2026-11-22), then `python -m src.sports.mlb.backtest confirm`, once |
+| MLB Stage 100 | Item 1 done: series place (#800), unset start (#805), the board (#808), not published | Items 3 (standings odds), 2 (other pages, rendered options first), 4 (home card countdown, browser checks, isolation read-set) |
+| MLB Stage 101 | Not started: forward-test registration, daily run writing `results/mlb/schedule_<season>.json` and the pick file, canary, starters routine, going live | Opening Day 2027 (Thu Mar 25); probables timing measured in spring training |
+| NCAAM Stage 103 | Everything built (#743-#787) | The lock between Selection Sunday and the First Four: dry-run the field read first |
+| NFL week 12 | Locks on Tuesday's run (GB at LA, Wednesday 20:00 ET) | A QB override must be merged before Tue 06:00 ET; AUTO_MERGE_OVERRIDES is off |
 | #582 Booth post job (Stage 82 item 4) | Green; Human review | Mark merges; then 82 item 5 |
-| #664's auto-merge | Merged, off | **Mark sets AUTO_MERGE_OVERRIDES=true** when he wants it |
-| #570, #575 (Dependabot) | Fail tests and Booth | Mark: a Dependabot secret; which updates to take |
+| AUTO_MERGE_OVERRIDES | Off; weeks 10 and 11 locked without their override PRs (#706, #791); #692 and #756 are those PRs, stale | **Mark sets AUTO_MERGE_OVERRIDES=true** when he wants it; closes #692 and #756 |
+| #683 (Dependabot, the actions group, 7 major bumps; replaces #570/#575) | Fails tests, Booth, preflight, probe | Mark: a Dependabot secret; which updates to take |
 | Stage 88 item 1 (actions): one dispatch of each writer | Not done | Mark (dispatching the Weekly update can lock a week) |
-| Leftover branches | `s96-require-tool`, `s96-require-tool-2`, `s87-app-targets-1` | Mark: delete them |
+| Open alerts | #747 Line Judge digest failing since 2026-11-16; #797 NHL canary on the goalie page (the run itself now degrades, #799); #794 is spam (an outside link: do not open) | Mark |
 
 ## Known and deliberately not fixed
 
