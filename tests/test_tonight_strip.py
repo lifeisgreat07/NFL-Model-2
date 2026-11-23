@@ -242,7 +242,7 @@ def test_each_card_asks_for_its_own_best_pick():
     assert "if(best) rows.push([`Strongest ${kind}, Week ${wk}`, best]);" in HOME_JS
     assert "const best = bestPick(slateOf(START_SPORT[start]).filter(r => r.k === 'pick' && dayKey(Date.parse(r.t)) === dayKey(NOW)), atClock);" in HOME_JS
     assert "if(best) rows.push([`Best pick ${evening ? 'tonight' : 'today'}`, best]);" in HOME_JS
-    assert "const START_SPORT = {'puck drop': 'nhl', 'tip-off': 'nba'};" in HOME_JS
+    assert "const START_SPORT = {'puck drop': 'nhl', 'tip-off': 'nba', 'first pitch': 'mlb'};" in HOME_JS
 
 
 # ---------- the build puts it on every page ----------

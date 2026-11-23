@@ -1,0 +1,78 @@
+{
+ "game_id": "401910039",
+ "season": 2026,
+ "slate": "2026-11-23",
+ "start_utc": "2026-11-24T00:30:00Z",
+ "home": "TOR",
+ "away": "MIL",
+ "model_a": 0.7629,
+ "model_b": 0.7948,
+ "pick": "TOR",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8852,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": 7.405798,
+  "efficiency_matchup": 7.123698,
+  "availability_matchup": -0.114805
+ },
+ "market": {
+  "game_id": "401910039",
+  "home": "TOR",
+  "away": "MIL",
+  "start_utc": "2026-11-24T00:30:00Z",
+  "read_utc": "2026-11-23T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -467.0,
+  "away_price": 360.0,
+  "home_prob": 0.7912
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-23T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "5093267",
+    "name": "Collin Murray-Boyles",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4432737",
+    "name": "Jaden Bradley",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6450",
+    "name": "Kawhi Leonard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432586",
+    "name": "Nate Bittle",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4395625",
+    "name": "RJ Barrett",
+    "status": "Out"
+   }
+  ],
+  "away": []
+ },
+ "saved_utc": "2026-11-23T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-22",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14306,
+  "training_games_priced": 14265,
+  "training_ids_sha256": "54f1e4f8d4a3b92adec37c0ecb0dea8c6f95b24e09e72068cd8757f2e83cf31a"
+ },
+ "code_sha256": "8f64049279069421c307a139a44f8e1b78e4fc90b3a204bd6485b1ab292dbc16",
+ "code_commit": "36a34623012d5d69920e31938075fb61876031e0"
+}

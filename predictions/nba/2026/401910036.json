@@ -1,0 +1,104 @@
+{
+ "game_id": "401910036",
+ "season": 2026,
+ "slate": "2026-11-23",
+ "start_utc": "2026-11-24T00:00:00Z",
+ "home": "CHA",
+ "away": "MEM",
+ "model_a": 0.4957,
+ "model_b": 0.4129,
+ "pick": "MEM",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.83,
+  "away": 0.8313
+ },
+ "features": {
+  "point_matchup": -2.169358,
+  "efficiency_matchup": -2.204552,
+  "availability_matchup": -0.001308
+ },
+ "market": {
+  "game_id": "401910036",
+  "home": "CHA",
+  "away": "MEM",
+  "start_utc": "2026-11-24T00:00:00Z",
+  "read_utc": "2026-11-23T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 131.0,
+  "away_price": -155.0,
+  "home_prob": 0.416
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-23T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4433287",
+    "name": "Brandon Miller",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3032979",
+    "name": "Dennis Schroder",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066218",
+    "name": "Grant Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3135045",
+    "name": "Grayson Allen",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061575",
+    "name": "Kon Knueppel",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5041935",
+    "name": "Cameron Boozer",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105550",
+    "name": "GG Jackson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2991070",
+    "name": "Jerami Grant",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105462",
+    "name": "Richie Saunders",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431785",
+    "name": "Scotty Pippen Jr.",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-23T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-22",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14306,
+  "training_games_priced": 14265,
+  "training_ids_sha256": "54f1e4f8d4a3b92adec37c0ecb0dea8c6f95b24e09e72068cd8757f2e83cf31a"
+ },
+ "code_sha256": "8f64049279069421c307a139a44f8e1b78e4fc90b3a204bd6485b1ab292dbc16",
+ "code_commit": "36a34623012d5d69920e31938075fb61876031e0"
+}
