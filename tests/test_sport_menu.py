@@ -139,3 +139,26 @@ def test_the_search_box_reads_the_current_pages_name_and_not_its_record():
 def test_the_note_and_an_empty_record_hide_until_there_is_a_record():
     assert '  .sm-rec:empty{display:none;}\n' in CSS
     assert '  .sm-list:not(:has(.sm-rec:not(:empty))) .sm-note{display:none;}\n' in CSS
+
+
+#: Each sport's page markup, published or not (MLB's page is built and tested before it is published, Stage 100).
+SPORT_BODIES = {'nfl': ROOT / 'src' / 'dashboard' / 'body.html',
+                'nhl': ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'body.html',
+                'nba': ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'body.html',
+                'mlb': ROOT / 'src' / 'sports' / 'mlb' / 'pages' / 'body.html'}
+
+
+def test_every_sport_pages_menus_list_home_each_published_sport_and_itself_once():
+    """MLB's page was made from the NBA's and its menus read Home, NFL, NHL, MLB, MLB: the NBA's entry had become a
+    second MLB (found 2026-11-23). Every sport page's two menus list Home, then each published sport once in the
+    build's order, then the page's own sport if it is not published yet, marked as the current page."""
+    for sport, path in SPORT_BODIES.items():
+        t = path.read_text(encoding='utf-8')
+        menus = re.findall(r'<div class="sm-list">(.*?)</div>', t, re.S)
+        assert len(menus) == 2, sport
+        want = ['../'] + [f'../{s}/' for s in build.SPORTS] + ([] if sport in build.SPORTS else [f'../{sport}/'])
+        for menu in menus:
+            hrefs = re.findall(r'<a href="([^"]+)"', menu)
+            current = re.findall(r'<a href="([^"]+)" aria-current="page"', menu)
+            assert hrefs == want, f'{sport}: {hrefs}'
+            assert current == [f'../{sport}/'], f'{sport}: current {current}'
