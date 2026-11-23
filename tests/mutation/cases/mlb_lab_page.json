@@ -53,6 +53,13 @@
       "find": "        out.append({'season': season, 'games': len(ids), 'priced': sum(i in priced for i in ids),\n",
       "replace": "        out.append({'season': season, 'games': len(ids), 'priced': len(ids),\n",
       "expect_caught_by": "test_the_coverage_counts_the_history_files_and_the_prices_the_backtest_keeps"
+    },
+    {
+      "id": "mlb-lab-page-postseason-figure-wrong",
+      "why": "Methodology prints a figure for the unchecked postseason that the registration does not say, as the first draft did",
+      "find": "the postseason, 32 to 53 games a season, is used unchecked",
+      "replace": "the postseason, 32 to 87 games a season, is used unchecked",
+      "expect_caught_by": "test_what_methodology_says_of_the_amendments_is_what_they_say"
     }
   ]
 }

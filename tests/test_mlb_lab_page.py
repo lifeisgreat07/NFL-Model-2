@@ -104,3 +104,16 @@ const h = {id: 'H3', kind: 'hypothesis', title: 'T', question: 'Q?', expected: '
 console.log(JSON.stringify(questionRow(h, {diff: -0.0012, low: -0.003, high: 0.0007, label: 'INCONCLUSIVE'})));""",
                    shared=['plainSigned', 'intervalGlyph'])
     assert '-0.0012' in out and '[-0.0030, +0.0007]' in out and 'INCONCLUSIVE' in out and 'Expected' not in out
+
+
+def test_what_methodology_says_of_the_amendments_is_what_they_say():
+    """The page's figures and claims about the registration's amendments are in the amendments: the postseason left
+    unchecked (S4) and Model B keeping its intercept at a neutral park (S1). A first draft printed "32 to 87 games a
+    season" where S4 says 32 to 53 a season and 87 over two."""
+    method = function_source(JS, 'renderMethod', at_line_start=True)
+    changes = {a['entry']: a['change'] for a in backtest.registry()['amendments']}
+    m = re.search(r'the postseason, (\d+) to (\d+) games a season, is used unchecked', method)
+    assert m and f'{m.group(1)} to {m.group(2)} games a season' in changes['data.fallback_check']
+    assert 'Model A drops its fitted home edge' in method and 'keeps its fitted intercept at a neutral park' in method
+    assert "Model A's forecast loses the fitted intercept" in changes['protocol.neutral_site']
+    assert "Model B's no longer does" in changes['protocol.neutral_site']
