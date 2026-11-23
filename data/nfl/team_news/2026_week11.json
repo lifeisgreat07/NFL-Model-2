@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 11,
-  "read_at": "2026-11-22T21:47:47Z",
+  "read_at": "2026-11-23T09:51:08Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-11-22T15:12:52Z"
+    "depth_chart_snapshot": "2026-11-23T07:01:28Z"
   },
   "teams": {
     "HOU": {
@@ -338,7 +338,7 @@
         }
       ],
       "doubtful": [],
-      "questionable_starters": 4
+      "questionable_starters": 3
     },
     "NYJ": {
       "qb": {
