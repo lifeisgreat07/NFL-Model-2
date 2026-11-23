@@ -58,6 +58,27 @@
    "find": "    - cron: '23 8 * * 1'\n",
    "replace": "    - cron: '23 4 * * 1'\n",
    "expect_caught_by": "test_the_workflow_runs_monday_after_the_last_refresh_slot"
+  },
+  {
+   "id": "ljd-no-retry-on-server-error",
+   "why": "a GitHub 5xx ends the digest at once, as on 2026-11-16 (#747)",
+   "find": "        if wait is None or not SERVER_ERROR.search(message):\n",
+   "replace": "        if True:\n",
+   "expect_caught_by": "test_a_github_server_error_is_retried_and_the_answer_used"
+  },
+  {
+   "id": "ljd-retries-every-failure",
+   "why": "a 404 or a broken query is retried too, waiting over a minute to fail the same way",
+   "find": "        if wait is None or not SERVER_ERROR.search(message):\n",
+   "replace": "        if wait is None:\n",
+   "expect_caught_by": "test_any_other_failure_is_not_retried"
+  },
+  {
+   "id": "ljd-retries-forever",
+   "why": "a server error that never clears is retried without end instead of failing after the last wait",
+   "find": "        if wait is None or not SERVER_ERROR.search(message):\n",
+   "replace": "        if not SERVER_ERROR.search(message):\n",
+   "expect_caught_by": "test_a_server_error_that_does_not_clear_fails_after_the_last_wait"
   }
  ]
 }
