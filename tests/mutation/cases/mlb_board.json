@@ -1,0 +1,123 @@
+{
+  "target": "src/sports/mlb/site.py",
+  "tests": "tests/test_mlb_board.py",
+  "cases": [
+    {
+      "id": "mlb-board-series-reaches-back-too-far",
+      "target": "src/sports/mlb/site.py",
+      "tests": "tests/test_mlb_board.py",
+      "why": "the same clubs' series from weeks before is counted as this one.",
+      "find": "week_before = _shift(start, -7)",
+      "replace": "week_before = _shift(start, -60)",
+      "expect_caught_by": "test_the_same_clubs_earlier_in_the_season_are_another_series"
+    },
+    {
+      "id": "mlb-board-series-ignores-the-home-club",
+      "target": "src/sports/mlb/site.py",
+      "tests": "tests/test_mlb_board.py",
+      "why": "the return series at the other club's park is counted as this one.",
+      "find": "if (g is game or str(g.get('home')) != str(game.get('home')) or str(g.get('away'))",
+      "replace": "if (g is game or str(g.get('away'))",
+      "expect_caught_by": "test_the_other_clubs_series_and_the_return_series_are_not_counted"
+    },
+    {
+      "id": "mlb-board-series-counts-a-tie",
+      "target": "src/sports/mlb/site.py",
+      "tests": "tests/test_mlb_board.py",
+      "why": "an official tie is counted as a home win, so a series reads 1-0 after a game nobody won.",
+      "find": "if g.get('status') == 'final' and g.get('home_win') in (0, 1):",
+      "replace": "if g.get('status') == 'final':\n            g = {**g, 'home_win': g.get('home_win') or 1}",
+      "expect_caught_by": "test_a_final_with_no_winner_is_not_counted"
+    },
+    {
+      "id": "mlb-board-series-nonsense-place-kept",
+      "target": "src/sports/mlb/site.py",
+      "tests": "tests/test_mlb_board.py",
+      "why": "a place past the series' end is shown, so the board says game 5 of 4.",
+      "find": "if n is None or of is None or not 1 <= n <= of:",
+      "replace": "if n is None or of is None:",
+      "expect_caught_by": "test_no_place_or_one_that_makes_no_sense_is_no_series_line"
+    },
+    {
+      "id": "mlb-board-split-game-two-after-game-one",
+      "target": "src/sports/mlb/site.py",
+      "tests": "tests/test_mlb_board.py",
+      "why": "a split doubleheader's unset game 2 reads 'after game 1', though it has its own ticket and time.",
+      "find": "('after' if g.get('double_header') == 'Y' and number == 2 else 'tbd')",
+      "replace": "('after' if g.get('double_header') in DOUBLEHEADER and number == 2 else 'tbd')",
+      "expect_caught_by": "test_a_doubleheaders_game_and_an_unset_start"
+    },
+    {
+      "id": "mlb-board-unset-start-shown",
+      "target": "src/sports/mlb/site.py",
+      "tests": "tests/test_mlb_board.py",
+      "why": "an unset start is marked set, so the board prints the 3:33 AM placeholder.",
+      "find": "if g.get('start_time_tbd') is True else 'set'",
+      "replace": "if False else 'set'",
+      "expect_caught_by": "test_a_doubleheaders_game_and_an_unset_start"
+    },
+    {
+      "id": "mlb-board-unknown-club-drawn",
+      "target": "src/sports/mlb/site.py",
+      "tests": "tests/test_mlb_board.py",
+      "why": "an unknown club's id reaches the page as its code.",
+      "find": "return teams.NAMES[str(club)][0] if str(club) in teams.NAMES else '?'",
+      "replace": "return teams.NAMES[str(club)][0] if str(club) in teams.NAMES else str(club)",
+      "expect_caught_by": "test_clubs_are_codes_and_an_unknown_club_is_a_question_mark"
+    },
+    {
+      "id": "mlb-board-picks-invented",
+      "target": "src/sports/mlb/site.py",
+      "tests": "tests/test_mlb_board.py",
+      "why": "the board invents an empty pick for each game before Stage 101 defines the file.",
+      "find": "        'picks': {},",
+      "replace": "        'picks': {str(g['game_id']): {} for g in games},",
+      "expect_caught_by": "test_no_game_has_a_pick_until_stage_101_defines_the_file"
+    },
+    {
+      "id": "mlb-board-series-leader-swapped",
+      "target": "src/sports/mlb/pages/mlb.js",
+      "tests": "tests/test_mlb_board.py",
+      "why": "the series line names the trailing club as the leader.",
+      "find": "const lead = s.home_won > s.away_won ? g.home : g.away;",
+      "replace": "const lead = s.home_won > s.away_won ? g.away : g.home;",
+      "expect_caught_by": "test_the_series_line_names_the_leader_or_says_tied"
+    },
+    {
+      "id": "mlb-board-unnamed-starter-blank",
+      "target": "src/sports/mlb/pages/mlb.js",
+      "tests": "tests/test_mlb_board.py",
+      "why": "a club with no starter named shows nothing, so the line reads 'Joe Ryan v '.",
+      "find": "(name ? escapeHtml(name) : 'to be named')",
+      "replace": "(name ? escapeHtml(name) : '')",
+      "expect_caught_by": "test_the_starters_are_away_first_and_an_unnamed_one_says_so"
+    },
+    {
+      "id": "mlb-board-starter-unescaped",
+      "target": "src/sports/mlb/pages/mlb.js",
+      "tests": "tests/test_mlb_board.py",
+      "why": "a starter's name is drawn as markup.",
+      "find": "(name ? escapeHtml(name) : 'to be named')",
+      "replace": "(name ? name : 'to be named')",
+      "expect_caught_by": "test_the_starters_are_away_first_and_an_unnamed_one_says_so"
+    },
+    {
+      "id": "mlb-board-placeholder-time-printed",
+      "target": "src/sports/mlb/pages/mlb.js",
+      "tests": "tests/test_mlb_board.py",
+      "why": "an unset start prints its placeholder time, 4:33 AM ET on Opening Day.",
+      "find": "  if(g.time === 'tbd' || !g.start) return 'TBD';\n  return FMT_HOUR",
+      "replace": "  if(!g.start) return 'TBD';\n  return FMT_HOUR",
+      "expect_caught_by": "test_an_unset_start_is_never_printed_as_a_time"
+    },
+    {
+      "id": "mlb-board-unset-starts-first",
+      "target": "src/sports/mlb/pages/mlb.js",
+      "tests": "tests/test_mlb_board.py",
+      "why": "unset starts sort first by their placeholder, above the day's real first pitch.",
+      "find": "const late = g => (g.time === 'tbd' || !g.start ? 1 : 0);",
+      "replace": "const late = g => 0;",
+      "expect_caught_by": "test_a_day_lists_unset_starts_last_and_game_two_after_game_one"
+    }
+  ]
+}

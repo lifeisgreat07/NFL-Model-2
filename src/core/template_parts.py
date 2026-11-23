@@ -156,6 +156,7 @@ SPORT_SHEETS = (
     ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.css',
     ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.css',
     ROOT / 'src' / 'sports' / 'ncaam' / 'pages' / 'march.css',
+    ROOT / 'src' / 'sports' / 'mlb' / 'pages' / 'mlb.css',
 )
 
 

@@ -39,7 +39,8 @@ def policy(connect):
 
 CSP = policy("'none'")
 SPORT_PAGES = ['src/dashboard/page.html', 'src/sports/nhl/pages/page.html', 'src/sports/nba/pages/page.html']
-PAGES = SPORT_PAGES + ['src/site/home/page.html', 'src/sports/ncaam/pages/page.html']
+# MLB's board (Stage 100) reaches no host until its live scores come with Stage 101.
+PAGES = SPORT_PAGES + ['src/site/home/page.html', 'src/sports/ncaam/pages/page.html', 'src/sports/mlb/pages/page.html']
 
 
 def meta(rel):

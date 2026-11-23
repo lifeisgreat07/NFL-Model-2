@@ -179,6 +179,7 @@
   "tests/test_missed_dispatch.py": "mixed",
   "tests/test_missed_picks.py": "mixed",
   "tests/test_missed_slots.py": "mixed",
+  "tests/test_mlb_board.py": "template/JS",
   "tests/test_mlb_canary.py": "isolated behavioural",
   "tests/test_mlb_colours.py": "isolated behavioural",
   "tests/test_mlb_data_probe.py": "mixed",
