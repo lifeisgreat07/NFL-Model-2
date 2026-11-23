@@ -1,0 +1,20 @@
+{
+  "target": ".github/workflows/booth-pr-audit.yml",
+  "tests": "tests/test_booth_timeout.py",
+  "cases": [
+    {
+      "id": "booth-timeout-back-to-20",
+      "why": "Booth's audit is cut off at 20 minutes again, so a large pull request like #809 is cancelled before it reports",
+      "find": "    timeout-minutes: 35\n",
+      "replace": "    timeout-minutes: 20\n",
+      "expect_caught_by": "test_the_audit_has_room_for_a_large_pull_request"
+    },
+    {
+      "id": "booth-turns-left-at-120",
+      "why": "the clock is raised but the turn cap is not, so a long audit stops on turns with fifteen minutes to spare",
+      "find": "            --max-turns 210\n",
+      "replace": "            --max-turns 120\n",
+      "expect_caught_by": "test_the_turn_cap_lands_inside_the_clock"
+    }
+  ]
+}

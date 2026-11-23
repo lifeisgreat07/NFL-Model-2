@@ -135,3 +135,41 @@ def test_the_workflow_posts_through_the_module_with_only_what_it_needs():
     block = re.search(r'\npermissions:\n((?:  .*\n)+)', text).group(1)
     assert sorted(block.split()) == sorted(['contents:', 'read', 'issues:', 'write', 'actions:', 'read'])
     assert 'contents: write' not in text and 'claude-code-action' not in text
+
+
+class FakeGh:
+    """Stands in for subprocess.run: answers each call with the next (returncode, stdout, stderr)."""
+
+    def __init__(self, *answers):
+        self.answers = list(answers)
+        self.calls = 0
+
+    def __call__(self, *args, **kwargs):
+        from types import SimpleNamespace
+        self.calls += 1
+        code, out, err = self.answers.pop(0)
+        return SimpleNamespace(returncode=code, stdout=out, stderr=err)
+
+
+def test_a_github_server_error_is_retried_and_the_answer_used():
+    # #747: one 502 from GitHub ended the 2026-11-16 digest.
+    waits = []
+    gh = FakeGh((1, '', 'gh: Server Error (HTTP 502)'), (0, '{"id": 7}\n', ''))
+    assert dg.gh_api('repos/{owner}/{repo}/actions/runs/1/jobs', run=gh, sleep=waits.append) == [{'id': 7}]
+    assert gh.calls == 2 and waits == [10]
+
+
+def test_a_server_error_that_does_not_clear_fails_after_the_last_wait():
+    waits = []
+    gh = FakeGh(*[(1, '', 'gh: Server Error (HTTP 503)')] * 4)
+    with pytest.raises(RuntimeError, match='HTTP 503'):
+        dg.gh_api('repos/{owner}/{repo}/actions/runs', run=gh, sleep=waits.append)
+    assert gh.calls == 4 and waits == list(dg.RETRY_WAITS)
+
+
+def test_any_other_failure_is_not_retried():
+    waits = []
+    gh = FakeGh((1, '', 'gh: Not Found (HTTP 404)'))
+    with pytest.raises(RuntimeError, match='HTTP 404'):
+        dg.gh_api('repos/{owner}/{repo}/actions/runs', run=gh, sleep=waits.append)
+    assert gh.calls == 1 and waits == []
