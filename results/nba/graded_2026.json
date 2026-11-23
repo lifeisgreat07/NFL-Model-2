@@ -1703,35 +1703,35 @@
  {
   "game_id": "401910031",
   "pick": "ORL",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-11-22T21:31:33Z"
  },
  {
   "game_id": "401910032",
   "pick": "DEN",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-22T21:31:33Z"
  },
  {
   "game_id": "401910033",
   "pick": "DAL",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-22T21:31:33Z"
  },
  {
   "game_id": "401910034",
   "pick": "NY",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-22T21:31:33Z"
  },
  {
   "game_id": "401910035",
   "pick": "BOS",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-11-22T21:31:33Z"
  }
