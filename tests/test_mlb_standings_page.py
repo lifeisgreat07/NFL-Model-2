@@ -55,6 +55,12 @@ def test_the_build_names_each_club_by_its_code(tmp_path, monkeypatch):
     assert {t['league'] for t in s['teams']} == {'AL', 'NL'} and len({t['division'] for t in s['teams']}) == 6
 
 
+def test_the_page_says_fixed_chances_make_the_odds_too_sure():
+    """As the NHL's and NBA's standings say: chances held fixed all season make 0% and 100% mean less than they look."""
+    fn = function_source(JS, 'renderStandings', at_line_start=True)
+    assert 'makes these odds surer than' in fn and 'no simulated season went' in fn
+
+
 def test_the_page_has_the_standings_page_and_both_buttons():
     assert BODY.count('data-page="standings"') == 2 and 'id="page-standings"' in BODY
     assert 'id="standings-body"' in BODY

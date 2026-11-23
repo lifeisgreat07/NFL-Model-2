@@ -309,7 +309,9 @@ function renderStandings(){
     + `${Number(s.simulations).toLocaleString('en-US')} times. Three division winners and three wild cards per league `
     + 'reach the postseason; the top two seeds skip the Wild Card Series. The wild card race lists the clubs not leading '
     + 'a division, by record, with a line under the third; MLB&#39;s tiebreakers are applied in the simulation, not to '
-    + 'this order.</p>';
+    + 'this order. Each game&#39;s chance is held fixed for the rest of the season, which makes these odds surer than '
+    + 'they should be, most of all early on: real clubs change, and 0% or 100% means only that no simulated season went '
+    + 'the other way.</p>';
   el.innerHTML = head + Object.entries(LEAGUES).map(([lg, name]) => {
     const divs = ['East', 'Central', 'West'].map(d => `${lg} ${d}`);
     return `<h2 class="section-title">${name}</h2><div class="mlb-div-grid">`
