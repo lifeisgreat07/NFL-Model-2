@@ -66,7 +66,12 @@ def run_twice(daily, now, get, capsys):
 
 
 @pytest.mark.slow
-def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
+@pytest.mark.parametrize('goalie_page', ['unreadable', 'forbidden'])
+def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys, goalie_page):
+    """`forbidden`: the goalie page answers 403, as it did at 21:00 UTC on 2026-11-21 (#796). The run still
+    saves every pick, on each club's last starter, and says DEGRADED for the day."""
+    import urllib.error
+
     from src.sports.nhl import daily, goalies, history, injuries, market
 
     season = 2026
@@ -83,6 +88,8 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
         if url == market.SOURCE:
             return b'{"games": []}'
         if url.startswith(goalies.SOURCE):
+            if goalie_page == 'forbidden':
+                raise urllib.error.HTTPError(url, 403, 'Forbidden', None, None)
             return b'<html></html>'
         if 'roster' in url:
             return b'{"goalies": []}'
@@ -94,6 +101,7 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     picks = sorted((tmp_path / 'predictions' / str(season)).glob('*.json'))
     locked = [line for line in first.splitlines() if line.startswith('saved ')]
     assert picks and len(picks) == len(locked)
+    assert 'DEGRADED: goalies for 2026-10-10' in first, first[-2000:]
     for p in picks:
         rec = json.loads(p.read_text(encoding='utf-8'))
         assert rec['pick_model'] == 'model_a' and rec['model_b'] is None and rec['market'] is None
