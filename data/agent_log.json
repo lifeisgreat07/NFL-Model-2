@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-11-23T03:52:03Z",
+  "generated_utc": "2026-11-23T07:08:19Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 817,
+    "audits_total": 819,
     "audits_superseded": 146,
-    "pull_requests_audited": 671,
+    "pull_requests_audited": 673,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 4915,
+    "claims_checked": 4928,
     "discrepancies_found": 38,
-    "unverifiable": 543,
+    "unverifiable": 546,
     "pull_requests_with_a_discrepancy": 27,
     "reports_disagreeing_with_themselves": 44
   },
@@ -14422,9 +14422,71 @@
       "implicated": [],
       "inconsistencies": [],
       "superseded": false
+    },
+    {
+      "pr": 803,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/803#issuecomment-7091993534",
+      "posted_utc": "2026-11-23T04:56:58Z",
+      "head": "3f5fae2",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 7,
+      "confirmed": 5,
+      "discrepancies": 0,
+      "unverifiable": 2,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 804,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/804#issuecomment-7093592789",
+      "posted_utc": "2026-11-23T06:42:11Z",
+      "head": "a39bb40",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 6,
+      "confirmed": 5,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
     }
   ],
   "recent": [
+    {
+      "agent": "Booth",
+      "pr": 804,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/804#issuecomment-7093592789",
+      "when": "2026-11-23T06:42:11Z",
+      "says": "SAFE TO MERGE: 5 of 6 claims confirmed, 0 wrong, 1 unverifiable"
+    },
+    {
+      "agent": "Scout",
+      "pr": null,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45125708406",
+      "when": "2026-11-23T06:40:36Z",
+      "says": "found nothing to fix in the description"
+    },
+    {
+      "agent": "Booth",
+      "pr": 803,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/803#issuecomment-7091993534",
+      "when": "2026-11-23T04:56:58Z",
+      "says": "NEEDS HUMAN REVIEW: 5 of 7 claims confirmed, 0 wrong, 2 unverifiable"
+    },
+    {
+      "agent": "Scout",
+      "pr": null,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45114652315",
+      "when": "2026-11-23T04:55:21Z",
+      "says": "found nothing to fix in the description"
+    },
     {
       "agent": "Booth",
       "pr": 800,
@@ -14508,34 +14570,6 @@
       "when": "2026-11-17T12:41:27Z",
       "agent": "Spotter",
       "says": "#### What changed Only one page was rendered: `nfl`."
-    },
-    {
-      "agent": "Scout",
-      "pr": null,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/44085061019",
-      "when": "2026-11-17T12:38:37Z",
-      "says": "found nothing to fix in the description"
-    },
-    {
-      "agent": "Scout",
-      "pr": 683,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/44078524857",
-      "when": "2026-11-17T11:56:33Z",
-      "says": "found the description needs fixing before an audit"
-    },
-    {
-      "agent": "Scout",
-      "pr": 683,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/44078190938",
-      "when": "2026-11-17T11:54:19Z",
-      "says": "found the description needs fixing before an audit"
-    },
-    {
-      "pr": 785,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/785#issuecomment-6947046582",
-      "when": "2026-11-17T11:42:38Z",
-      "agent": "Spotter",
-      "says": "#### What changed **NBA.** The only difference I can see is in the small grey line under the page intro."
     }
   ]
 }

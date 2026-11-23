@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 11,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-23T01:47:44Z",
+  "read_at": "2026-11-23T05:37:40Z",
   "games": [
     {
       "away": "IND",
@@ -117,9 +117,9 @@
     {
       "away": "MIN",
       "home": "SF",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 10,
+      "home_score": 35,
       "spread_line": 4.5,
       "neutral_site": true,
       "venue": "Estadio Banorte"
