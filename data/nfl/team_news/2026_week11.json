@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 11,
-  "read_at": "2026-11-21T13:27:18Z",
+  "read_at": "2026-11-22T21:47:47Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-11-21T07:02:04Z"
+    "depth_chart_snapshot": "2026-11-22T15:12:52Z"
   },
   "teams": {
     "HOU": {
@@ -118,7 +118,7 @@
         }
       ],
       "doubtful": [],
-      "questionable_starters": 1
+      "questionable_starters": 2
     },
     "BAL": {
       "qb": {
@@ -173,9 +173,19 @@
       "injury_report": "published",
       "out": [
         {
+          "name": "Erik McCoy",
+          "position": "C",
+          "injury": "Biceps"
+        },
+        {
           "name": "Martin Emerson",
           "position": "CB",
           "injury": "Concussion"
+        },
+        {
+          "name": "Taliese Fuaga",
+          "position": "T",
+          "injury": "Knee"
         }
       ],
       "doubtful": [],
@@ -189,11 +199,6 @@
       },
       "injury_report": "published",
       "out": [
-        {
-          "name": "DaRon Bland",
-          "position": "CB",
-          "injury": "Ankle"
-        },
         {
           "name": "Jake Ferguson",
           "position": "TE",
@@ -231,13 +236,7 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [
-        {
-          "name": "Cade Mays",
-          "position": "C",
-          "injury": "Ankle"
-        }
-      ],
+      "out": [],
       "doubtful": [],
       "questionable_starters": 1
     },
@@ -267,9 +266,19 @@
       "injury_report": "published",
       "out": [
         {
+          "name": "Jaylon Moore",
+          "position": "T",
+          "injury": "Ankle"
+        },
+        {
           "name": "Kenneth Walker III",
           "position": "RB",
           "injury": "Groin"
+        },
+        {
+          "name": "Trey Smith",
+          "position": "G",
+          "injury": "Concussion"
         }
       ],
       "doubtful": [],
@@ -304,7 +313,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Robert Hainsey",
+          "position": "C",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -323,7 +338,7 @@
         }
       ],
       "doubtful": [],
-      "questionable_starters": 3
+      "questionable_starters": 4
     },
     "NYJ": {
       "qb": {
@@ -371,13 +386,7 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [
-        {
-          "name": "Zack Baun",
-          "position": "LB",
-          "injury": "Back"
-        }
-      ],
+      "out": [],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -423,7 +432,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 3
     },
     "CIN": {
       "qb": {
@@ -432,9 +441,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Dalton Risner",
+          "position": "G",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     }
   }
 }
