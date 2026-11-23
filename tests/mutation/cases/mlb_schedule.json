@@ -154,6 +154,24 @@
       "find": "    for col in ('home_score', 'away_score', 'home_win', 'series_game', 'series_games'):",
       "replace": "    for col in ('home_score', 'away_score', 'home_win'):",
       "expect_caught_by": "test_each_game_keeps_its_place_in_its_series"
+    },
+    {
+      "id": "mlb-sched-tbd-dropped",
+      "target": "src/sports/mlb/schedule.py",
+      "tests": "tests/test_mlb_schedule.py",
+      "why": "a start the league has not set is read as set, so the board prints 4:33 AM for a placeholder.",
+      "find": "            'start_time_tbd': (g.get('status') or {}).get('startTimeTBD') is True,",
+      "replace": "            'start_time_tbd': False,",
+      "expect_caught_by": "test_a_start_the_league_has_not_set_is_marked"
+    },
+    {
+      "id": "mlb-sched-tbd-truthy",
+      "target": "src/sports/mlb/schedule.py",
+      "tests": "tests/test_mlb_schedule.py",
+      "why": "any truthy value marks a start as not set, so a malformed flag hides a real time.",
+      "find": "get('startTimeTBD') is True,",
+      "replace": "get('startTimeTBD') not in (None, False),",
+      "expect_caught_by": "test_only_an_explicit_true_marks_a_start_as_not_set"
     }
   ]
 }

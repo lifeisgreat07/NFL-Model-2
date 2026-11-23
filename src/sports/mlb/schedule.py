@@ -29,7 +29,12 @@ innings included, and <NA> for an official tie (the Stats API's `isTie`, such as
 game of 2010-2026 carries both; two do not make sense (2023's 716404 reads 1 of 0, 2025's 776907 reads 4 of 3), so a
 place that is missing, not a whole number, or not 1 to N of N is left empty (<NA>) rather than stopping the load:
 nothing that decides a pick reads it, and an empty place only means the board shows no series line for that game.
-A season cached before these two columns existed is read back without them.
+`start_time_tbd` is True when the league has not set the game's start (the Stats API's `status.startTimeTBD`):
+its `start_utc` is then a placeholder, 3:33 AM at the park, or for game 2 of a one-ticket doubleheader an estimate,
+since that game starts when game 1 ends. Every game of 2010-2027 carries the flag as true or false; only an explicit
+true counts, so a game without it keeps its time, as the NBA's board treats ESPN's timeValid. The board prints
+"TBD" (or "after game 1") rather than the placeholder.
+A season cached before these columns existed is read back without them.
 
 Anything this file does not recognise (a state, a game type, a missing
 field, a tied final) stops the load with every problem named:
@@ -77,7 +82,7 @@ CODED_STATE: Mapping[str, GameStatus] = {
 
 #: The columns this file adds to the core's.
 EXTRA_COLUMNS = ('game_type', 'game_number', 'double_header', 'venue_id', 'venue', 'neutral_site',
-                 'series_game', 'series_games')
+                 'series_game', 'series_games', 'start_time_tbd')
 
 #: A date as the Stats API writes it.
 DATE = re.compile(r'\d{4}-\d{2}-\d{2}')
@@ -214,6 +219,7 @@ def to_schedule(games: list[Json], season: int, venues: Mapping[int, int]) -> pd
             'neutral_site': venue['id'] != venues[home],
             'series_game': place,
             'series_games': of,
+            'start_time_tbd': (g.get('status') or {}).get('startTimeTBD') is True,
         })
     df = pd.DataFrame(rows, columns=[*SCHEDULE_COLUMNS, *EXTRA_COLUMNS])
     df['start_utc'] = pd.to_datetime(df['start_utc'], utc=True)
