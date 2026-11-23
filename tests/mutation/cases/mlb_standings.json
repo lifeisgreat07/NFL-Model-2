@@ -1,0 +1,55 @@
+{
+  "target": "src/sports/mlb/standings.py",
+  "tests": "tests/test_mlb_standings.py",
+  "cases": [
+    {
+      "id": "mlb-standings-no-club-over-each",
+      "why": "three clubs level skip the rule that a club with a better record against each of the others goes first",
+      "find": "    if over_each:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_three_clubs_level_a_club_better_than_each_of_the_others_goes_first"
+    },
+    {
+      "id": "mlb-standings-two-left-level-do-not-start-again",
+      "why": "when a step leaves two of three clubs level, they carry on to the division step instead of going back to their head-to-head record",
+      "find": "            return best(leaders, rec, lots)\n",
+      "replace": "            group = leaders\n",
+      "expect_caught_by": "test_three_clubs_level_go_by_games_among_them_and_two_left_level_go_back_to_head_to_head"
+    },
+    {
+      "id": "mlb-standings-no-division-step",
+      "why": "a tie level head to head skips each club's record in its division and goes straight to the league",
+      "find": "        lambda t: rec.pct_against(t, group), rec.division_pct, rec.league_pct, lambda t: lots[t]]\n",
+      "replace": "        lambda t: rec.pct_against(t, group), rec.league_pct, lambda t: lots[t]]\n",
+      "expect_caught_by": "test_two_clubs_level_go_by_head_to_head_then_division_then_league_then_lots"
+    },
+    {
+      "id": "mlb-standings-best-six-by-record",
+      "why": "the six best records take the places, so a division winner with a worse record than three other clubs misses out and none is seeded first",
+      "find": "    return ordered(winners, rec, lots) + ordered(rest, rec, lots)[:WILD_CARDS]\n",
+      "replace": "    return ordered(list(LEAGUE_CLUBS[league]), rec, lots)[:len(winners) + WILD_CARDS]\n",
+      "expect_caught_by": "test_a_division_winner_is_seeded_above_a_wild_card_with_a_better_record"
+    },
+    {
+      "id": "mlb-standings-ten-club-field",
+      "why": "two wild cards per league, as from 2012 to 2021, so the field is five a league",
+      "find": "WILD_CARDS = 3\n",
+      "replace": "WILD_CARDS = 2\n",
+      "expect_caught_by": "test_each_league_fills_three_division_places_three_wild_cards_and_two_byes"
+    },
+    {
+      "id": "mlb-standings-tie-is-a-home-win",
+      "why": "an official tie counts as a home win",
+      "find": "    home_won, away_won = hs > as_, as_ > hs\n",
+      "replace": "    home_won, away_won = hs >= as_, as_ > hs\n",
+      "expect_caught_by": "test_an_official_tie_counts_for_neither_club"
+    },
+    {
+      "id": "mlb-standings-missing-club-allowed",
+      "why": "a schedule missing a club is simulated without it instead of stopping",
+      "find": "    if absent:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_a_schedule_missing_a_club_stops_the_simulation"
+    }
+  ]
+}
