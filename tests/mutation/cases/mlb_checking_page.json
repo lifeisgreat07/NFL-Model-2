@@ -1,0 +1,29 @@
+{
+  "target": "experiments/mlb/stage98/results/tuning.json",
+  "tests": "tests/test_mlb_checking_page.py",
+  "cases": [
+    {
+      "id": "mlb-checking-page-tuning-kept-another-setting",
+      "why": "the committed tuning keeps a setting that is not the lowest, which Checking the AI's work says the tests forbid",
+      "find": " \"chosen\": {\n  \"H_days\": 120,\n",
+      "replace": " \"chosen\": {\n  \"H_days\": 60,\n",
+      "expect_caught_by": "test_the_committed_tuning_searched_every_registered_setting_on_the_validation_seasons_and_kept_the_lowest"
+    },
+    {
+      "id": "mlb-checking-page-tuning-on-a-confirmation-season",
+      "why": "the committed tuning names a confirmation season among the seasons it searched",
+      "find": " \"seasons\": [\n  2023,\n  2024\n ],\n",
+      "replace": " \"seasons\": [\n  2023,\n  2025\n ],\n",
+      "expect_caught_by": "test_the_committed_tuning_searched_every_registered_setting_on_the_validation_seasons_and_kept_the_lowest"
+    },
+    {
+      "id": "mlb-checking-page-reliability-not-in-more",
+      "target": "src/sports/mlb/pages/mlb.js",
+      "tests": "tests/test_mlb_lab_page.py",
+      "why": "Checking the AI's work is in the More sheet but the More button does not light while it is shown",
+      "find": "const OVERFLOW_PAGES = ['teams', 'modellab', 'method', 'reliability', 'changes'];\n",
+      "replace": "const OVERFLOW_PAGES = ['teams', 'modellab', 'method', 'changes'];\n",
+      "expect_caught_by": "test_both_pages_have_their_buttons_and_sit_in_the_more_sheet"
+    }
+  ]
+}
