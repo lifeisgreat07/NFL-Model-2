@@ -125,3 +125,52 @@ def test_the_weekly_workflow_alerts_on_the_degraded_line_and_closes_on_the_ok_li
     assert f'python -m src.core.alerts --title "{TITLE}"' in raise_part
     assert f"grep -q '^{rs.OK.split(':')[0]}:' weekly-update.log" in resolve_part
     assert f'python -m src.core.alerts --resolve --title "{TITLE}"' in resolve_part
+
+
+# --- the history keeps the latest re-computation of its latest week (#790) -------------
+
+def history_after(tmp_path, monkeypatch, start, ratings, week):
+    monkeypatch.setattr(wu, 'DATA_DIR', tmp_path)
+    (tmp_path / 'team_history_2026.json').write_text(json.dumps(start))
+    wu.append_live_history(ratings, 2026, week)
+    return json.loads((tmp_path / 'team_history_2026.json').read_text())
+
+
+def point(week, off, deff):
+    return {'week': week, 'net': round(off - deff, 4), 'off': off, 'def': deff}
+
+
+def test_a_new_week_is_appended(tmp_path, monkeypatch):
+    out = history_after(tmp_path, monkeypatch, {'BUF': [point(9, 0.12, -0.01)]}, {'BUF': (0.1161, -0.0086)}, 10)
+    assert out == {'BUF': [point(9, 0.12, -0.01), point(10, 0.1161, -0.0086)]}
+
+
+def test_a_re_computed_latest_week_replaces_its_point(tmp_path, monkeypatch):
+    """2026-11-19: Thursday re-computed week 10 on revised play-by-play; BUF moved from 0.1418 to 0.1246."""
+    start = {'BUF': [point(9, 0.12, -0.01), point(10, 0.1297, -0.0121)]}
+    out = history_after(tmp_path, monkeypatch, start, {'BUF': (0.1161, -0.0086)}, 10)
+    assert out == {'BUF': [point(9, 0.12, -0.01), point(10, 0.1161, -0.0086)]}
+    assert out['BUF'][-1]['net'] == 0.1247 and len(out['BUF']) == 2
+
+
+def test_a_week_before_the_latest_is_never_changed(tmp_path, monkeypatch):
+    start = {'BUF': [point(9, 0.12, -0.01), point(10, 0.1297, -0.0121)]}
+    out = history_after(tmp_path, monkeypatch, start, {'BUF': (0.5, 0.1)}, 9)
+    assert out == start
+
+
+def test_the_latest_is_the_season_s_not_the_team_s(tmp_path, monkeypatch):
+    """A team whose newest point is an older week (it was missing from the latest) is not rewritten there."""
+    start = {'BUF': [point(9, 0.12, -0.01)], 'MIA': [point(9, 0.0, 0.0), point(10, 0.01, 0.0)]}
+    out = history_after(tmp_path, monkeypatch, start, {'BUF': (0.5, 0.1)}, 9)
+    assert out['BUF'] == [point(9, 0.12, -0.01)]
+
+
+def test_the_snapshot_and_history_agree_after_a_thursday_re_computation(tmp_path, monkeypatch):
+    """Both writers for real, then the run's own check: the 2026-11-19 sequence ends OK, not DEGRADED."""
+    monkeypatch.setattr(wu, 'DATA_DIR', tmp_path)
+    (tmp_path / 'team_history_2026.json').write_text(json.dumps({'BUF': [point(10, 0.1297, -0.0121)]}))
+    thursday = {'BUF': (0.1161, -0.0086)}
+    wu.save_current_ratings(thursday)
+    wu.append_live_history(thursday, 2026, 10)
+    assert rs.check(tmp_path, 2026) == []
