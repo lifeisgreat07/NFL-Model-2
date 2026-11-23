@@ -19,8 +19,14 @@ and percentage, and compares them with predictions/:
   percent (0.8047 shows 80%). Within CARD_EVEN_BAND points of 50 (read from
   app.js) the row says Toss-up.
 
-A board with no saved pick on it (an NBA Monday morning) steps back a week
-once, so the check always compares something.
+A board with no saved pick on it steps back to the latest day that has one, so
+the check always compares something: on a day board, through the week's day
+chips from the latest day back, then a week back and its chips the same way;
+on the NFL's week board, a week back. Every view it opens on the way is
+checked too. Until 2026-11-23 it stepped back one week, to that week's first
+day: just after midnight ET on a Monday (a new week, no pick saved yet) that
+was Monday 2026-11-16, whose two late NHL games had gone unpicked (#769), and
+the self-test failed every pull request opened that night.
 
 `--self-test` copies predictions/ and swaps the side of one pick the board
 shows, as a rewind to an older file would, and fails unless that row is
@@ -39,8 +45,6 @@ import shutil
 import sys
 from pathlib import Path
 
-from playwright.async_api import async_playwright
-
 ROOT = Path(__file__).resolve().parents[2]
 # The workflow runs this file as a script, where the repository root is not on the path; the dashboard's script
 # is read through src/core/template_parts.py, which joins its parts (Stage 87 item 4).
@@ -52,6 +56,10 @@ ROWS = """(sport) => [...document.querySelectorAll(`.${sport}-row`)].filter(r =>
   return {id: sport === 'nfl' ? (card && card.dataset.game) : (r.getAttribute('aria-controls') || '').replace(`${sport}-detail-`, ''),
           pick: r.querySelector(`.${sport}-row-pick`).textContent.trim()};
 })"""
+#: The days a day board's strip offers (an NFL week board has none).
+CHIP_DAYS = "(sport) => [...document.querySelectorAll(`.${sport}-day-chip`)].map(b => b.dataset.day)"
+#: How many weeks back the check looks for a day with a saved pick.
+WEEKS_BACK = 2
 PICK = re.compile(r'^([A-Z]{2,4}) (\d+)%')
 EVEN_BAND = float(re.search(r'const CARD_EVEN_BAND = ([\d.]+);',
                             APP_SCRIPT.read_text(encoding='utf-8')).group(1))
@@ -115,8 +123,46 @@ def compare(sport, rows, pred):
     return report, compared
 
 
+def days_back(days):
+    """A strip's days, latest first."""
+    return sorted(set(days), reverse=True)
+
+
+async def find_compared(page, sport, pred):
+    """(problems, compared ids) from the board as opened, or, when it shows no saved pick, from the latest day
+    back that does: this week's day chips latest first, then a week back and its chips, WEEKS_BACK weeks at most.
+    Every view opened on the way is checked, and its problems kept."""
+    async def look():
+        return compare(sport, await page.evaluate(ROWS, sport), pred)
+
+    report, compared = await look()
+    for week in range(WEEKS_BACK + 1):
+        if compared:
+            break
+        for day in days_back(await page.evaluate(CHIP_DAYS, sport)):
+            await page.locator(f'.{sport}-day-chip[data-day="{day}"]').click()
+            await page.wait_for_timeout(100)
+            found, compared = await look()
+            report += found
+            if compared:
+                break
+        prev = page.locator('#week-prev')
+        if compared or week == WEEKS_BACK or not await prev.count() or await prev.is_disabled():
+            break
+        await prev.click()
+        await page.wait_for_timeout(100)
+        # A day board opens a week on its first day; its strip is tried latest first above. A week board (the
+        # NFL's) has no strip, so the week it opens is its one view.
+        if not await page.evaluate(CHIP_DAYS, sport):
+            found, compared = await look()
+            report += found
+    # The strip includes the day the board opened on, so a problem there is seen twice.
+    return list(dict.fromkeys(report)), compared
+
+
 async def check(pages, pred, seen=None):
     """Problems found; `seen`, when given, collects each sport's compared row ids."""
+    from playwright.async_api import async_playwright
     report = []
     async with async_playwright() as p:
         browser = await p.chromium.launch()
@@ -126,11 +172,7 @@ async def check(pages, pred, seen=None):
             await page.route(lambda u: u.startswith(('http://', 'https://')), lambda r: r.abort())
             await page.goto(Path(path).resolve().as_uri())
             await page.wait_for_timeout(300)
-            found, compared = compare(sport, await page.evaluate(ROWS, sport), pred)
-            if not compared and await page.locator('#week-prev').count():
-                await page.locator('#week-prev').click()
-                await page.wait_for_timeout(100)
-                found, compared = compare(sport, await page.evaluate(ROWS, sport), pred)
+            found, compared = await find_compared(page, sport, pred)
             report += found
             if seen is not None:
                 seen[sport] = compared
