@@ -44,6 +44,7 @@
   "tests/test_booth_prompt.py": "workflow/docs/tests-of-tests",
   "tests/test_booth_regression_workflow.py": "workflow/docs/tests-of-tests",
   "tests/test_booth_report_posted.py": "mixed",
+  "tests/test_booth_timeout.py": "workflow/docs/tests-of-tests",
   "tests/test_booth_verdict.py": "isolated behavioural",
   "tests/test_bootstrap_brier_gap.py": "isolated behavioural",
   "tests/test_browser_checks.py": "mixed",
