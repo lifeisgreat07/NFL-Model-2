@@ -81,6 +81,30 @@ def test_a_mark_that_fails_falls_back_and_the_theme_shows_one_version():
     assert home['.lgm-sm.lgm-failed'] == 'display:none;', 'a home pill whose mark failed shows its name only'
 
 
+def specificity(selector):
+    """(ids, classes and attributes, elements) of one simple CSS selector, enough for the rules read here."""
+    s = re.sub(r'\[[^\]]*\]', ' [a] ', selector)
+    return (s.count('#'), s.count('.') + s.count('[a]'),
+            len(re.findall(r'(?:^|[\s>+~])([a-z][a-z0-9-]*)', s)))
+
+
+def test_a_failed_mark_is_hidden_in_both_themes():
+    """Spotter on #808: in the light theme a card's failed mark stayed on screen beside our icon, because the rule
+    showing the light mark outranked the one hiding a failed mark. Every rule that shows a mark must be outranked
+    by a rule hiding it once failed, in the same theme."""
+    sheets = {**rules(SHARED_CSS), **rules(CSS)}
+    shows = [s for s, b in sheets.items() if '.lgm' in s and 'lgm-failed' not in s and 'display:block' in b
+             and re.search(r'(img|\.lgm-[ld])$', s)]
+    hides = [s for s, b in sheets.items() if 'lgm-failed' in s and b == 'display:none;' and not s.endswith('.lgm-failed')]
+    assert shows, 'no rule shows a mark: the selectors here no longer match the sheets'
+    for show in shows:
+        theme = re.match(r'(\[data-theme="\w+"\])', show)
+        mark = show.split()[-1]
+        beat = [h for h in hides if (not theme or h.startswith(theme.group(1)))
+                and (h.endswith(' img') or h.endswith(mark)) and specificity(h) > specificity(show)]
+        assert beat, f'a failed mark still shows under {show!r}'
+
+
 def test_every_sport_pages_switchers_carry_the_marks_and_hide_a_failed_one():
     for page, path in BODIES.items():
         t = path.read_text(encoding='utf-8')
