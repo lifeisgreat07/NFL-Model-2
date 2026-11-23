@@ -14,7 +14,9 @@ files included (an import opens its module), and the test reads the list:
 - **the NHL's build** opens no other sport's folder either, and nothing of the
   repository's but its own package, the core, its own folders, the shared
   stylesheet and the self-hosted font (until Stage 53 moves the stylesheet
-  into the shared shell).
+  into the shared shell);
+- **MLB's build** likewise (Stage 100 item 4), though its page is not yet
+  published.
 
 A file the build never opens cannot move a byte of its page, so an NHL change
 cannot change the NFL's page, and the reverse, while these hold.
@@ -161,3 +163,40 @@ def test_the_nba_build_opens_only_its_own_files_and_the_shared_ones(tmp_path: Pa
     stray = [p.as_posix() for p in opened
              if not p.as_posix().startswith(allowed) and owner(p, codes) != 'nba']
     assert not stray, f"the NBA's build opened files that are neither its own nor shared: {stray}"
+
+
+def test_the_mlb_build_opens_only_its_own_files_and_the_shared_ones(tmp_path: Path) -> None:
+    """Stage 100 item 4: MLB's page, built though not yet published, opens nothing of another sport's and
+    nothing of the repository's but its own package, the core, its own folders (the history and the registration
+    its Model Lab and Methodology read), the shared stylesheet and the font. Its results folder is a scratch copy
+    holding a schedule, so the test does not depend on a daily run (Stage 101 writes the real one)."""
+    codes = isolation.sports(ROOT)
+    scratch = tmp_path / 'repo'
+    sched = {'as_of': '2027-03-01', 'games': [
+        {'game_id': '1', 'season': 2027, 'slate': '2027-03-25', 'start_utc': '2027-03-25T23:05:00Z', 'home': '147',
+         'away': '111', 'status': 'scheduled', 'game_type': 'regular', 'home_score': None, 'away_score': None,
+         'home_win': None, 'game_number': 1, 'double_header': 'N', 'series_game': 1, 'series_games': 3,
+         'start_time_tbd': False}]}
+    (scratch / 'results' / 'mlb').mkdir(parents=True)
+    (scratch / 'results' / 'mlb' / 'schedule_2027.json').write_text(json.dumps(sched), encoding='utf-8')
+    driver = tmp_path / 'driver.py'
+    driver.write_text(textwrap.dedent(f'''
+        from datetime import UTC, datetime
+        from pathlib import Path
+        from src.core.sport import SportPaths
+        from src.sports.mlb import site
+        site.PATHS = SportPaths('mlb', root=Path({str(scratch)!r}))
+        raise SystemExit(site.main(['--out', {str(tmp_path / 'mlb.html')!r}], now=datetime(2027, 3, 1, tzinfo=UTC)))
+    '''), encoding='utf-8')
+    opened = read_set(str(driver), [], tmp_path / 'mlb.json')
+    assert (tmp_path / 'mlb.html').exists()
+    seen = {p.as_posix() for p in opened}
+    assert {'src/sports/mlb/site.py', 'src/dashboard/styles.css',
+            'experiments/mlb/stage98/registry.json'} <= seen, 'the hook did not record the build'
+    foreign = [p.as_posix() for p in opened if owner(p, codes) not in (None, 'mlb')]
+    assert not foreign, f"MLB's build opened another sport's files: {foreign}"
+    allowed = ('src/sports/mlb/', 'src/core/', 'src/__init__', 'src/__pycache__/', 'src/sports/__init__',
+               'src/sports/__pycache__/', 'src/dashboard/styles.css', 'assets/fonts/')
+    stray = [p.as_posix() for p in opened
+             if not p.as_posix().startswith(allowed) and owner(p, codes) != 'mlb']
+    assert not stray, f"MLB's build opened files that are neither its own nor shared: {stray}"
