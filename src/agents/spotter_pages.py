@@ -56,6 +56,9 @@ RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
     # The March Madness bracket page is built only from its lock, in March and April, so
     # there is nothing to photograph the rest of the year.
     ('src/sports/ncaam/pages/', ()),
+    # MLB's board (Stage 100) is built and tested but not published until Stage 101, so no page is
+    # photographed from its files yet; Stage 101 gives it its own page here.
+    ('src/sports/mlb/pages/', ()),
     ('assets/favicon-nhl.svg', ('nhl',)),
     ('assets/favicon-nba.svg', ('nba',)),
     ('assets/favicon.svg', ('home', 'nfl')),
