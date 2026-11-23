@@ -1,0 +1,15 @@
+{
+  "target": "src/sports/nhl/daily.py",
+  "tests": "tests/test_daily_end_to_end.py",
+  "cases": [
+    {
+      "id": "nhl-goalie-fetch-ends-the-run",
+      "target": "src/sports/nhl/daily.py",
+      "tests": "tests/test_daily_end_to_end.py",
+      "why": "a goalie page that cannot be fetched (a 403) ends the run before any pick is saved, as on 2026-11-21.",
+      "find": "            except (goalies.GoalieSourceError, OSError) as exc:",
+      "replace": "            except goalies.GoalieSourceError as exc:",
+      "expect_caught_by": "test_the_nhl_daily_run_end_to_end"
+    }
+  ]
+}

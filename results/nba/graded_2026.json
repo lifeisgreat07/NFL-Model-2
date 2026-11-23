@@ -1689,14 +1689,14 @@
  {
   "game_id": "401910029",
   "pick": "DET",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-11-22T16:01:49Z"
  },
  {
   "game_id": "401910030",
   "pick": "MIA",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-22T21:31:33Z"
  },

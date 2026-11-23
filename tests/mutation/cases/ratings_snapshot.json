@@ -38,6 +38,33 @@
    "find": "          if [ -f weekly-update.log ] && grep -q '^DEGRADED: ratings snapshot:' weekly-update.log; then\n",
    "replace": "          if [ -f weekly-update.log ] && grep -q '^DEGRADED: snapshot:' weekly-update.log; then\n",
    "expect_caught_by": "test_the_weekly_workflow_alerts_on_the_degraded_line_and_closes_on_the_ok_line"
+  },
+  {
+   "id": "ratings-history-keeps-tuesdays-point",
+   "target": "src/sports/nfl/weekly_update.py",
+   "tests": "tests/test_ratings_snapshot.py",
+   "why": "a re-computed latest week keeps Tuesday's point, so the snapshot falls off its own history, as on 2026-11-19.",
+   "find": "        elif week == latest:\n            existing[team][same[0]] = point",
+   "replace": "        elif False:\n            existing[team][same[0]] = point",
+   "expect_caught_by": "test_a_re_computed_latest_week_replaces_its_point"
+  },
+  {
+   "id": "ratings-history-rewrites-any-week",
+   "target": "src/sports/nfl/weekly_update.py",
+   "tests": "tests/test_ratings_snapshot.py",
+   "why": "any week a run passes is rewritten, so the trend's past changes.",
+   "find": "        elif week == latest:",
+   "replace": "        else:",
+   "expect_caught_by": "test_a_week_before_the_latest_is_never_changed"
+  },
+  {
+   "id": "ratings-history-latest-per-team",
+   "target": "src/sports/nfl/weekly_update.py",
+   "tests": "tests/test_ratings_snapshot.py",
+   "why": "the latest week is read per team, so a team missing from the latest week has an older point rewritten.",
+   "find": "    latest = max((e['week'] for points in existing.values() for e in points), default=None)\n    for team, (off, deff) in team_ratings.items():\n        existing.setdefault(team, [])",
+   "replace": "    for team, (off, deff) in team_ratings.items():\n        existing.setdefault(team, [])\n        latest = max((e['week'] for e in existing[team]), default=None)",
+   "expect_caught_by": "test_the_latest_is_the_season_s_not_the_team_s"
   }
  ]
 }

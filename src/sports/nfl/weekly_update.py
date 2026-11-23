@@ -211,18 +211,32 @@ def save_playoff_odds(current_team_ratings: Ratings, season_schedule: pd.DataFra
 def append_live_history(team_ratings: Ratings, season: int, week: int) -> None:
     """Append this week's ratings to a running per-season file, building a
     real in-season trend for the Team Deep-Dive page as the season
-    progresses. Unlike current_ratings.json (a snapshot, overwritten each
-    run), this file accumulates -- one entry per team per week, never
-    overwritten, same pattern as the line-movement archive."""
+    progresses: one entry per team per week.
+
+    The latest week is the one exception to "never overwritten" (Mark,
+    2026-11-22, #790). Thursday's run re-computes the ratings on the same
+    completed games as Tuesday's, writes them to current_ratings.json and
+    makes the week's picks with them. When the play-by-play beneath them is
+    revised in between, the numbers move (BUF 0.1418 to 0.1246 on
+    2026-11-19), and a history that kept Tuesday's point left the snapshot
+    off its own latest week: Power Ratings lost its rank change and the
+    committed-files test went red. So a run that re-computes the history's
+    latest week replaces that week's point with the numbers it wrote to the
+    snapshot. A week before the latest is never changed."""
     path = DATA_DIR / f'team_history_{season}.json'
     existing = {}
     if path.exists():
         with open(path) as f:
             existing = json.load(f)
+    latest = max((e['week'] for points in existing.values() for e in points), default=None)
     for team, (off, deff) in team_ratings.items():
         existing.setdefault(team, [])
-        if not any(e['week'] == week for e in existing[team]):
-            existing[team].append({'week': week, 'net': round(off-deff, 4), 'off': round(off,4), 'def': round(deff,4)})
+        point = {'week': week, 'net': round(off-deff, 4), 'off': round(off,4), 'def': round(deff,4)}
+        same = [i for i, e in enumerate(existing[team]) if e['week'] == week]
+        if not same:
+            existing[team].append(point)
+        elif week == latest:
+            existing[team][same[0]] = point
     with open(path, 'w') as f:
         json.dump(existing, f, indent=2)
     log.info(f"Appended week {week} to data/nfl/team_history_{season}.json")
