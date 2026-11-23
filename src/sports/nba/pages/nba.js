@@ -667,7 +667,7 @@ function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
     <h2 class="section-title">The drift check</h2>
     <p class="nba-lede">${driftStatus(BD.drift, BD.drift_rule)}</p>
-    ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class="nba-lede">The rule is registered in <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/experiments/nba/stage65/registry.json">the live season&#39;s registration</a>, amended on Nov 4, Nov 5 and Nov 11, 2026: ${driftLooks(BD.drift_rule)}</p>` : ''}
+    ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class="nba-lede">The rule is registered in <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/experiments/nba/stage65/registry.json">the live season&#39;s registration</a>, amended on Nov 4, Nov 5 and Nov 11, 2026: ${driftLooks(BD.drift_rule)}</p>${driftLooksTable(BD.drift_rule, BD.drift, 'nba')}` : ''}
     ${spreadHtml(BD.spread, 'nba')}
     <p class="nba-lede">The forward test, the live picks scored against the market and the base rate, is on <a href="#accuracy">Season Accuracy</a>, beside the record it is judged instead of.</p>
     <h2 class="section-title">The injury report against who played</h2>

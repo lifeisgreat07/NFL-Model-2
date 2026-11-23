@@ -1,0 +1,42 @@
+{
+ "target": "src/core/day_board.js",
+ "tests": "tests/test_drift_looks.py",
+ "cases": [
+  {
+   "id": "drift-table-next-miscounted",
+   "target": "src/core/day_board.js",
+   "tests": "tests/test_drift_looks.py",
+   "why": "the next look's picks to go are counted from zero, so the page says 400 to go at 241 graded.",
+   "find": "      const left = Math.max(0, c - graded);",
+   "replace": "      const left = Math.max(0, c);",
+   "expect_caught_by": "test_each_look_says_where_it_stands"
+  },
+  {
+   "id": "drift-table-flag-reads-clear",
+   "target": "src/core/day_board.js",
+   "tests": "tests/test_drift_looks.py",
+   "why": "a flagged look reads Clear, so a flag the season stands on looks like a pass.",
+   "find": "      where = `${l.flagged ? '<b>Flagged</b>' : 'Clear'}: ",
+   "replace": "      where = `${'Clear'}: ",
+   "expect_caught_by": "test_a_flagged_look_says_so_in_bold_and_above_its_bar"
+  },
+  {
+   "id": "drift-table-second-bar-dropped",
+   "target": "src/core/day_board.js",
+   "tests": "tests/test_drift_looks.py",
+   "why": "the NBA's bar without the injury report is not shown, so a pick made without it looks held to the wrong figure.",
+   "find": "  const two = !!rule.baseline_no_availability_by_look;",
+   "replace": "  const two = false;",
+   "expect_caught_by": "test_the_nba_shows_its_second_bar_and_the_nhl_its_one"
+  },
+  {
+   "id": "drift-table-made-looks-wait",
+   "target": "src/core/day_board.js",
+   "tests": "tests/test_drift_looks.py",
+   "why": "a look already made still reads Not yet, so the page hides the looks' results.",
+   "find": "  ((d && d.looks) || []).forEach(l => { done[l.games] = l; });",
+   "replace": "",
+   "expect_caught_by": "test_each_look_says_where_it_stands"
+  }
+ ]
+}

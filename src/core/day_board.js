@@ -314,14 +314,44 @@ function driftLooks(rule){
   if (!rule || !rule.rule.checkpoints) return '';
   const r = rule.rule, cs = r.checkpoints.map(x => Number(x).toLocaleString('en-US'));
   const list = cs.length > 1 ? `${cs.slice(0, -1).join(', ')} and ${cs[cs.length - 1]}` : cs[0];
-  // Stage 95 item 31: each look against the backtest over a season's first that many games.
-  const at = key => r.checkpoints.map(c => `${Number(c).toLocaleString('en-US')}, ${Number(rule[key + '_by_look'][String(c)]).toFixed(4)}`).join('; ');
+  // Open item 6 (2026-11-23): each look's figure is in driftLooksTable's table below the paragraph.
   const base = rule.baseline_by_look
-    ? `log loss over a season&#39;s first that many games, the confirmation seasons pooled (${at('baseline')}${rule.baseline_no_availability_by_look ? `; a pick made without the injury report against the model without it: ${at('baseline_no_availability')}` : ''})`
+    ? `log loss over a season&#39;s first that many games, the confirmation seasons pooled (each look&#39;s figure is in the table below)`
     : rule.baseline_no_availability
     ? `figure for those picks (${rule.baseline.value.toFixed(4)} for a pick made with the injury report, ${rule.baseline_no_availability.value.toFixed(4)} for one made without it)`
     : rule.baseline.value.toFixed(4);
   return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many, resampling whole game days, is above the backtest&#39;s ${base}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
+}
+
+/* Open item 6 (audit 9 D15's last part; option B, 2026-11-23): the looks the paragraph above describes, one row
+   each, with the backtest figure the look is held to (and, on the NBA, the figure without the injury report) and
+   where it stands: its lower bound against the figure once it has looked, the picks still to go for the next. */
+function driftLooksTable(rule, d, sport){
+  if (!rule || !rule.rule.checkpoints || !rule.baseline_by_look) return '';
+  const two = !!rule.baseline_no_availability_by_look;
+  const done = {};
+  ((d && d.looks) || []).forEach(l => { done[l.games] = l; });
+  const graded = d ? d.games : 0, next = d ? d.next_look : null;
+  const fig = (key, c) => Number(rule[key][String(c)]).toFixed(4);
+  const rows = rule.rule.checkpoints.map(c => {
+    const l = done[c];
+    let where;
+    if (l) {
+      const held = l.baseline === undefined ? '' : ` ${l.flagged ? 'above' : 'under'} ${Number(l.baseline).toFixed(4)}`;
+      where = `${l.flagged ? '<b>Flagged</b>' : 'Clear'}: ${Number(l.lower_bound).toFixed(4)}${held}`;
+    } else if (c === next) {
+      const left = Math.max(0, c - graded);
+      where = `Next: ${left} graded pick${left === 1 ? '' : 's'} to go`;
+    } else {
+      where = 'Not yet';
+    }
+    return `<tr><th scope="row">${Number(c).toLocaleString('en-US')}</th><td class="num">${fig('baseline_by_look', c)}</td>`
+      + `${two ? `<td class="num">${fig('baseline_no_availability_by_look', c)}</td>` : ''}<td>${where}</td></tr>`;
+  }).join('');
+  return `<div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The drift check&#39;s looks</caption>`
+    + `<thead><tr><th scope="col">Look</th><th scope="col" class="num">Bar</th>${two ? '<th scope="col" class="num">Bar, no report</th>' : ''}<th scope="col">Result</th></tr></thead>`
+    + `<tbody>${rows}</tbody></table></div>`
+    + (two ? `<p class="${sport}-lede">A pick made without the injury report is held to the bar without it; a look&#39;s bar is the mean of its picks&#39; own bars.</p>` : '');
 }
 
 /* A row's last word, and on a row that src/core/scores.js watches, the word it puts in its place once ESPN has the
