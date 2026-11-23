@@ -1,0 +1,57 @@
+{
+  "target": "src/sports/mlb/pages/mlb.js",
+  "tests": "tests/test_mlb_standings_page.py",
+  "cases": [
+    {
+      "id": "mlb-standings-page-race-keeps-the-leaders",
+      "why": "the wild card race lists the division leaders too, so a leader holds a wild card place",
+      "find": "  const rest = mine.filter(t => !leaders.has(t.team)).sort(byRecord);\n",
+      "replace": "  const rest = mine.filter(t => true).sort(byRecord);\n",
+      "expect_caught_by": "test_the_race_is_the_clubs_not_leading_a_division_by_record_with_games_back_of_the_third"
+    },
+    {
+      "id": "mlb-standings-page-games-back-of-the-second",
+      "why": "games back are counted from the second wild card, not the third",
+      "find": "  const third = rest[2];\n",
+      "replace": "  const third = rest[1];\n",
+      "expect_caught_by": "test_the_race_is_the_clubs_not_leading_a_division_by_record_with_games_back_of_the_third"
+    },
+    {
+      "id": "mlb-standings-page-level-clubs-by-code",
+      "why": "clubs level on record are shown by their code, not by projected wins",
+      "find": "function byRecord(a, b){ return winPct(b) - winPct(a) || b.projected_wins - a.projected_wins || (a.team < b.team ? -1 : 1); }\n",
+      "replace": "function byRecord(a, b){ return winPct(b) - winPct(a) || (a.team < b.team ? -1 : 1); }\n",
+      "expect_caught_by": "test_clubs_level_on_record_are_shown_by_projected_wins"
+    },
+    {
+      "id": "mlb-standings-page-rounds-to-certain",
+      "why": "a chance of 0.4% is printed as 0%, as if no simulated season had gone that way",
+      "find": "  return x < 0.005 ? '&lt;1%' : x > 0.995 ? '&gt;99%' : `${Math.round(x * 100)}%`;\n",
+      "replace": "  return `${Math.round(x * 100)}%`;\n",
+      "expect_caught_by": "test_a_chance_never_rounds_to_certain"
+    },
+    {
+      "id": "mlb-standings-page-divisions-in-file-order",
+      "why": "the divisions follow the file's order, which put the NL West above the NL East",
+      "find": "    const divs = ['East', 'Central', 'West'].map(d => `${lg} ${d}`);\n",
+      "replace": "    const divs = [...new Set(s.teams.filter(t => t.league === lg).map(t => t.division))];\n",
+      "expect_caught_by": "test_each_league_shows_east_central_west_named_as_the_file_names_them"
+    },
+    {
+      "id": "mlb-standings-page-ids-not-codes",
+      "target": "src/sports/mlb/site.py",
+      "why": "the page gets Stats API ids, so every club reads as '?'",
+      "find": "    return {**doc, 'teams': [{**t, 'team': abbr(t['team'])} for t in doc['teams']]}\n",
+      "replace": "    return doc\n",
+      "expect_caught_by": "test_the_build_names_each_club_by_its_code"
+    },
+    {
+      "id": "mlb-standings-page-line-loses-to-the-row-border",
+      "target": "src/sports/mlb/pages/mlb.css",
+      "why": "the line under the third is outranked by the table's own row border and never shows, as in the first render",
+      "find": ".mlb-table tr.mlb-wc-line > *{border-bottom:2px solid var(--accent);}\n",
+      "replace": ".mlb-wc-line > *{border-bottom:2px solid var(--accent);}\n",
+      "expect_caught_by": "test_the_line_under_the_third_outranks_the_tables_own_row_border"
+    }
+  ]
+}

@@ -249,8 +249,76 @@ document.addEventListener('keydown', e => {
   if(step.week) stepWeek(step.by); else stepDay(step.by);
 });
 
+/* ---------- standings (Stage 100 item 3; layout B, Mark 2026-11-23) ----------
+   The NHL's division tables, plus each league's wild card race: the clubs not leading a division, by record, with
+   a line under the third. The race is the table as it stands, not MLB's seeding: level clubs are shown by projected
+   wins, and only the simulation applies MLB's tiebreakers (src/sports/mlb/standings.py). */
+const LEAGUES = {AL: 'American League', NL: 'National League'};
+const RACE_ROWS = 8;
+function chance(x){
+  if(x <= 0) return '0%';
+  if(x >= 1) return '100%';
+  return x < 0.005 ? '&lt;1%' : x > 0.995 ? '&gt;99%' : `${Math.round(x * 100)}%`;
+}
+function winPct(t){ return t.wins_now + t.losses_now ? t.wins_now / (t.wins_now + t.losses_now) : 0; }
+function byRecord(a, b){ return winPct(b) - winPct(a) || b.projected_wins - a.projected_wins || (a.team < b.team ? -1 : 1); }
+function wildCardRace(teams, league){
+  const mine = teams.filter(t => t.league === league);
+  const leaders = new Set([...new Set(mine.map(t => t.division))]
+    .map(d => mine.filter(t => t.division === d).sort(byRecord)[0].team));
+  const rest = mine.filter(t => !leaders.has(t.team)).sort(byRecord);
+  const third = rest[2];
+  return rest.map((t, i) => ({...t, place: i + 1,
+    back: third && i > 2 ? ((third.wins_now - t.wins_now) + (t.losses_now - third.losses_now)) / 2 : 0}));
+}
+function gamesBack(n){ return n > 0 ? String(n) : '–'; }
+function standingsClub(code){
+  const c = clubCode(code);
+  return `<span class="mlb-club-full">${escapeHtml((BD.teams[c] || {}).name || c)}</span><span class="mlb-club-abbr">${c}</span>`;
+}
+function divisionTable(teams, division){
+  const rows = teams.filter(t => t.division === division).sort((a, b) => b.projected_wins - a.projected_wins);
+  return `<div><h3>${escapeHtml(division)}</h3><div class="table-wrap"><table class="metrics-table mlb-table">`
+    + `<caption class="visually-hidden">${escapeHtml(division)}</caption><thead><tr><th scope="col">Club</th>`
+    + '<th scope="col" class="num">W-L</th><th scope="col" class="num">Proj. W</th><th scope="col" class="num">Division</th>'
+    + '<th scope="col" class="num">Postseason</th></tr></thead><tbody>'
+    + rows.map(t => `<tr><th scope="row">${standingsClub(t.team)}</th><td class="num">${t.wins_now}-${t.losses_now}</td>`
+      + `<td class="num">${t.projected_wins.toFixed(1)}</td><td class="num">${chance(t.division_pct)}</td>`
+      + `<td class="num">${chance(t.playoff_pct)}</td></tr>`).join('')
+    + '</tbody></table></div></div>';
+}
+function raceTable(teams, league){
+  const race = wildCardRace(teams, league).slice(0, RACE_ROWS);
+  return `<div><h3>${league} wild card race</h3><div class="table-wrap"><table class="metrics-table mlb-table">`
+    + `<caption class="visually-hidden">${LEAGUES[league]} wild card race</caption><thead><tr><th scope="col">#</th>`
+    + '<th scope="col">Club</th><th scope="col" class="num">W-L</th><th scope="col" class="num">GB</th>'
+    + '<th scope="col" class="num">Proj. W</th><th scope="col" class="num">Wild card</th></tr></thead><tbody>'
+    + race.map(t => `<tr${t.place === 3 ? ' class="mlb-wc-line"' : ''}><td class="rank">${t.place}</td>`
+      + `<th scope="row">${standingsClub(t.team)}</th><td class="num">${t.wins_now}-${t.losses_now}</td>`
+      + `<td class="num">${gamesBack(t.back)}</td><td class="num">${t.projected_wins.toFixed(1)}</td>`
+      + `<td class="num">${chance(t.wildcard_pct)}</td></tr>`).join('')
+    + '</tbody></table></div></div>';
+}
+function renderStandings(){
+  const s = BD.standings, el = document.getElementById('standings-body');
+  if(!s){
+    el.innerHTML = stateHtml('waiting', 'Not simulated yet', 'The daily run simulates the season once games are played.');
+    return;
+  }
+  const head = `<p class="mlb-lede">As of ${escapeHtml(dayText(s.as_of))}: the rest of the regular season played out `
+    + `${Number(s.simulations).toLocaleString('en-US')} times. Three division winners and three wild cards per league `
+    + 'reach the postseason; the top two seeds skip the Wild Card Series. The wild card race lists the clubs not leading '
+    + 'a division, by record, with a line under the third; MLB&#39;s tiebreakers are applied in the simulation, not to '
+    + 'this order.</p>';
+  el.innerHTML = head + Object.entries(LEAGUES).map(([lg, name]) => {
+    const divs = ['East', 'Central', 'West'].map(d => `${lg} ${d}`);
+    return `<h2 class="section-title">${name}</h2><div class="mlb-div-grid">`
+      + divs.map(d => divisionTable(s.teams, d)).join('') + raceTable(s.teams, lg) + '</div>';
+  }).join('');
+}
+
 /* ---------- the page around the board ----------
-   One page so far (the board); the others arrive with Stage 100 item 2, and each button for the page shown
+   The board and the standings so far; the others arrive with Stage 100 item 2, and each button for the page shown
    carries aria-current, as on the other sports. */
 const BASE_TITLE = document.title;
 function showMlbPage(name, opts){
@@ -303,6 +371,7 @@ document.getElementById('built-line').textContent = `Updated ${BUILT} ET`;
 document.getElementById('board-updated').textContent = `Updated ${BUILT} ET${BD.schedule_as_of ? `, schedule as of ${dayText(BD.schedule_as_of)}` : ''}`;
 mlbThemeLabel();
 renderBoard();
+renderStandings();
 /* A star redraws the board with its club's games first. */
 installFavStars(renderBoard);
 /* #board/<day> and #game/<id>, as on the other day boards (src/core/routes.js). */
