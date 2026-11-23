@@ -92,7 +92,11 @@ jobs:
       (github.event.pull_request.draft == false || github.event_name == 'workflow_dispatch')
       && (github.event.action != 'edited' || github.event.changes.body != null)
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    # 35, not 20 (Mark, 2026-11-23): #809's audit, the MLB standings
+    # simulation, was cancelled at 20 minutes on its first run and again on
+    # its re-run, and the MLB pages stacked on it are as large.
+    # tests/test_booth_timeout.py holds it and the turn cap together.
+    timeout-minutes: 35
 
     steps:
       # A dispatch names a PR by number and checks out refs/pull/N/head,
@@ -275,8 +279,14 @@ jobs:
           # it. At roughly 8 turns/minute, 120 turns lands inside the timeout,
           # which is the real backstop: wall-clock is the cost that matters,
           # and turns are a blunt proxy for it.
+          #
+          # 210, not 120 (2026-11-23), with the timeout raised to 35: #809's
+          # two runs reached the 20-minute limit before the 120-turn cap, so
+          # long audits run slower than 8 turns a minute. At 6 a minute, 210
+          # turns still lands inside 35 minutes, and the clock stays the
+          # backstop.
           claude_args: |
-            --max-turns 120
+            --max-turns 210
             --allowedTools "Bash,Read,Glob,Grep"
 
       - name: Fail if Booth posted no report

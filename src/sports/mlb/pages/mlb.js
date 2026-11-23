@@ -249,9 +249,149 @@ document.addEventListener('keydown', e => {
   if(step.week) stepWeek(step.by); else stepDay(step.by);
 });
 
+/* ---------- standings (Stage 100 item 3; layout B, Mark 2026-11-23) ----------
+   The NHL's division tables, plus each league's wild card race: the clubs not leading a division, by record, with
+   a line under the third. The race is the table as it stands, not MLB's seeding: level clubs are shown by projected
+   wins, and only the simulation applies MLB's tiebreakers (src/sports/mlb/standings.py). */
+const LEAGUES = {AL: 'American League', NL: 'National League'};
+const RACE_ROWS = 8;
+function chance(x){
+  if(x <= 0) return '0%';
+  if(x >= 1) return '100%';
+  return x < 0.005 ? '&lt;1%' : x > 0.995 ? '&gt;99%' : `${Math.round(x * 100)}%`;
+}
+function winPct(t){ return t.wins_now + t.losses_now ? t.wins_now / (t.wins_now + t.losses_now) : 0; }
+function byRecord(a, b){ return winPct(b) - winPct(a) || b.projected_wins - a.projected_wins || (a.team < b.team ? -1 : 1); }
+function wildCardRace(teams, league){
+  const mine = teams.filter(t => t.league === league);
+  const leaders = new Set([...new Set(mine.map(t => t.division))]
+    .map(d => mine.filter(t => t.division === d).sort(byRecord)[0].team));
+  const rest = mine.filter(t => !leaders.has(t.team)).sort(byRecord);
+  const third = rest[2];
+  return rest.map((t, i) => ({...t, place: i + 1,
+    back: third && i > 2 ? ((third.wins_now - t.wins_now) + (t.losses_now - third.losses_now)) / 2 : 0}));
+}
+function gamesBack(n){ return n > 0 ? String(n) : '–'; }
+function standingsClub(code){
+  const c = clubCode(code);
+  return `<span class="mlb-club-full">${escapeHtml((BD.teams[c] || {}).name || c)}</span><span class="mlb-club-abbr">${c}</span>`;
+}
+function divisionTable(teams, division){
+  const rows = teams.filter(t => t.division === division).sort((a, b) => b.projected_wins - a.projected_wins);
+  return `<div><h3>${escapeHtml(division)}</h3><div class="table-wrap"><table class="metrics-table mlb-table">`
+    + `<caption class="visually-hidden">${escapeHtml(division)}</caption><thead><tr><th scope="col">Club</th>`
+    + '<th scope="col" class="num">W-L</th><th scope="col" class="num">Proj. W</th><th scope="col" class="num">Division</th>'
+    + '<th scope="col" class="num">Postseason</th></tr></thead><tbody>'
+    + rows.map(t => `<tr><th scope="row">${standingsClub(t.team)}</th><td class="num">${t.wins_now}-${t.losses_now}</td>`
+      + `<td class="num">${t.projected_wins.toFixed(1)}</td><td class="num">${chance(t.division_pct)}</td>`
+      + `<td class="num">${chance(t.playoff_pct)}</td></tr>`).join('')
+    + '</tbody></table></div></div>';
+}
+function raceTable(teams, league){
+  const race = wildCardRace(teams, league).slice(0, RACE_ROWS);
+  return `<div><h3>${league} wild card race</h3><div class="table-wrap"><table class="metrics-table mlb-table">`
+    + `<caption class="visually-hidden">${LEAGUES[league]} wild card race</caption><thead><tr><th scope="col">#</th>`
+    + '<th scope="col">Club</th><th scope="col" class="num">W-L</th><th scope="col" class="num">GB</th>'
+    + '<th scope="col" class="num">Proj. W</th><th scope="col" class="num">Wild card</th></tr></thead><tbody>'
+    + race.map(t => `<tr${t.place === 3 ? ' class="mlb-wc-line"' : ''}><td class="rank">${t.place}</td>`
+      + `<th scope="row">${standingsClub(t.team)}</th><td class="num">${t.wins_now}-${t.losses_now}</td>`
+      + `<td class="num">${gamesBack(t.back)}</td><td class="num">${t.projected_wins.toFixed(1)}</td>`
+      + `<td class="num">${chance(t.wildcard_pct)}</td></tr>`).join('')
+    + '</tbody></table></div></div>';
+}
+function renderStandings(){
+  const s = BD.standings, el = document.getElementById('standings-body');
+  if(!s){
+    el.innerHTML = stateHtml('waiting', 'Not simulated yet', 'The daily run simulates the season once games are played.');
+    return;
+  }
+  const head = `<p class="mlb-lede">As of ${escapeHtml(dayText(s.as_of))}: the rest of the regular season played out `
+    + `${Number(s.simulations).toLocaleString('en-US')} times. Three division winners and three wild cards per league `
+    + 'reach the postseason; the top two seeds skip the Wild Card Series. The wild card race lists the clubs not leading '
+    + 'a division, by record, with a line under the third; MLB&#39;s tiebreakers are applied in the simulation, not to '
+    + 'this order. Each game&#39;s chance is held fixed for the rest of the season, which makes these odds surer than '
+    + 'they should be, most of all early on: real clubs change, and 0% or 100% means only that no simulated season went '
+    + 'the other way.</p>';
+  el.innerHTML = head + Object.entries(LEAGUES).map(([lg, name]) => {
+    const divs = ['East', 'Central', 'West'].map(d => `${lg} ${d}`);
+    return `<h2 class="section-title">${name}</h2><div class="mlb-div-grid">`
+      + divs.map(d => divisionTable(s.teams, d)).join('') + raceTable(s.teams, lg) + '</div>';
+  }).join('');
+}
+
+/* ---------- power ratings (Stage 100 item 2; layout C, Mark 2026-11-23) ----------
+   Two views behind chips. Clubs: the NHL's and NBA's table, each club's run rating as a bar about zero. Starters:
+   every pitcher with enough starts this season, by runs allowed per 27 outs, best first; a club filter, a sort, and
+   the first STARTERS_SHOWN until "Show all" (a season has 250 or so). */
+const STARTERS_SHOWN = 40;
+const RATINGS = {view: 'clubs', club: '', sort: 'best', all: false};
+function plusMinus(x, digits){ return (x > 0 ? '+' : x < 0 ? '-' : '') + Math.abs(x).toFixed(digits); }
+function startersShown(starters, club, sort, all){
+  const mine = starters.filter(s => !club || s.club === club);
+  const order = sort === 'starts' ? [...mine].sort((a, b) => b.starts - a.starts || a.rate - b.rate) : mine;
+  return {rows: all ? order : order.slice(0, STARTERS_SHOWN), of: order.length};
+}
+function clubsTable(r){
+  const scale = Math.max(...r.clubs.map(c => Math.abs(c.runs)), 0.01);
+  const rows = r.clubs.map((c, i) => {
+    const w = Math.abs(c.runs) / scale * 50, code = clubCode(c.team);
+    return `<tr><td class="rank">${i + 1}</td><td><div class="team-cell"><span class="team-abbr">${code}</span>`
+      + `<span class="team-full">${escapeHtml((BD.teams[code] || {}).name || code)}</span></div></td>`
+      + `<td class="num"><div class="net-cell-inner"><div class="srs-bar-track diverging" title="${plusMinus(c.runs, 2)} runs a game">`
+      + `<div class="srs-bar-fill" style="left:${c.runs >= 0 ? 50 : 50 - w}%; width:${w}%;"></div></div>`
+      + `<span class="net-value">${plusMinus(c.runs, 2)}</span></div></td></tr>`;
+  }).join('');
+  return '<div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Club ratings</caption>'
+    + `<thead><tr><th scope="col">#</th><th scope="col">Club</th><th scope="col" style="text-align:center;">`
+    + `<div class="net-head"><span>Runs a game</span><div class="net-head-row"><div class="net-axis" aria-hidden="true">`
+    + `<span class="ax-min">${plusMinus(-scale, 2)}</span><span class="ax-zero">0</span><span class="ax-max">${plusMinus(scale, 2)}</span>`
+    + `</div><span></span></div></div></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function startersTable(r){
+  const shown = startersShown(r.starters, RATINGS.club, RATINGS.sort, RATINGS.all);
+  const clubs = [...new Set(r.starters.map(s => clubCode(s.club)))].sort();
+  const controls = '<div class="mlb-rating-controls">'
+    + `<label>Club <select class="btn" data-ratings-club><option value="">All ${clubs.length}</option>`
+    + clubs.map(c => `<option value="${c}"${c === RATINGS.club ? ' selected' : ''}>${c}</option>`).join('') + '</select></label>'
+    + `<label>Sort <select class="btn" data-ratings-sort><option value="best"${RATINGS.sort === 'best' ? ' selected' : ''}>Best first</option>`
+    + `<option value="starts"${RATINGS.sort === 'starts' ? ' selected' : ''}>Most starts</option></select></label></div>`;
+  const rows = shown.rows.map((s, i) => `<tr><td class="rank">${i + 1}</td>`
+    + `<th scope="row">${escapeHtml(s.name || s.player_id)}</th><td>${clubCode(s.club)}</td>`
+    + `<td class="num">${s.rate.toFixed(2)}</td><td class="num">${plusMinus(r.league_rate - s.rate, 2)}</td>`
+    + `<td class="num">${s.starts}</td></tr>`).join('');
+  const more = shown.rows.length < shown.of
+    ? `<p class="mlb-rating-more">Showing ${shown.rows.length} of ${shown.of} · <button type="button" class="btn-link" data-ratings-all>Show all</button></p>` : '';
+  return controls + '<div class="table-wrap"><table class="metrics-table mlb-table"><caption class="visually-hidden">Starting pitchers</caption>'
+    + '<thead><tr><th scope="col">#</th><th scope="col">Pitcher</th><th scope="col">Club</th>'
+    + '<th scope="col" class="num">Runs per 9</th><th scope="col" class="num">Better than league</th>'
+    + `<th scope="col" class="num">Starts</th></tr></thead><tbody>${rows}</tbody></table></div>${more}`;
+}
+function renderRatings(){
+  const r = BD.ratings, el = document.getElementById('ratings-body');
+  if(!r){ el.innerHTML = stateHtml('waiting', 'No ratings yet', 'The daily run writes them once games are played.'); return; }
+  const chip = (v, label) => `<button type="button" class="btn btn-chip${RATINGS.view === v ? ' active' : ''}" `
+    + `aria-pressed="${RATINGS.view === v}" data-ratings-view="${v}">${label}</button>`;
+  const lede = RATINGS.view === 'clubs'
+    ? `<p class="mlb-lede">As of ${escapeHtml(dayText(r.as_of))}. A club&#39;s rating is how many runs a game better than an average club it has been, fitted to every earlier game&#39;s run margin, recent games counting more and every club pulled a little toward average.</p>`
+    : `<p class="mlb-lede">As of ${escapeHtml(dayText(r.as_of))}. A starter&#39;s rating is the runs he allows per 27 outs (nine innings), recent outings counting more and pulled toward the league&#39;s ${r.league_rate.toFixed(2)} by ${Number(r.K_outs).toLocaleString('en-US')} outs, so a pitcher with few innings sits near average. Listed: pitchers with ${r.min_starts} or more starts this season.</p>`;
+  el.innerHTML = `<div class="mlb-rating-chips" role="group" aria-label="Ratings to show">${chip('clubs', 'Clubs')}${chip('starters', 'Starters')}</div>`
+    + lede + (RATINGS.view === 'clubs' ? clubsTable(r) : startersTable(r));
+}
+document.getElementById('ratings-body').addEventListener('click', e => {
+  const view = e.target.closest('[data-ratings-view]');
+  if(view){ RATINGS.view = view.dataset.ratingsView; renderRatings(); return; }
+  if(e.target.closest('[data-ratings-all]')){ RATINGS.all = true; renderRatings(); }
+});
+document.getElementById('ratings-body').addEventListener('change', e => {
+  if(e.target.matches('[data-ratings-club]')){ RATINGS.club = e.target.value; RATINGS.all = false; }
+  else if(e.target.matches('[data-ratings-sort]')) RATINGS.sort = e.target.value;
+  else return;
+  renderRatings();
+});
+
 /* ---------- the page around the board ----------
-   One page so far (the board); the others arrive with Stage 100 item 2, and each button for the page shown
-   carries aria-current, as on the other sports. */
+   The board, the standings and the ratings so far; the others arrive with Stage 100 item 2, and each button for the
+   page shown carries aria-current, as on the other sports. */
 const BASE_TITLE = document.title;
 function showMlbPage(name, opts){
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
@@ -303,6 +443,8 @@ document.getElementById('built-line').textContent = `Updated ${BUILT} ET`;
 document.getElementById('board-updated').textContent = `Updated ${BUILT} ET${BD.schedule_as_of ? `, schedule as of ${dayText(BD.schedule_as_of)}` : ''}`;
 mlbThemeLabel();
 renderBoard();
+renderStandings();
+renderRatings();
 /* A star redraws the board with its club's games first. */
 installFavStars(renderBoard);
 /* #board/<day> and #game/<id>, as on the other day boards (src/core/routes.js). */

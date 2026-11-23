@@ -35,6 +35,8 @@
        + '<path d="M1.6 8.4v3.2a8.4 3.2 0 0 0 16.8 0V8.4"/></g>',
     nba: '<g transform="rotate(-28 10 10)"><circle cx="10" cy="10" r="8.4"/>'
        + '<path stroke-width="1.2" d="M10 1.6v16.8M1.6 10h16.8M4.1 4c2.5 2.3 3 9.2 0 12M15.9 4c-2.5 2.3-3 9.2 0 12"/></g>',
+    mlb: '<g><circle cx="10" cy="10" r="8.4"/>'
+       + '<path stroke-width="1.2" d="M5.2 3.6c2.4 2.2 2.4 10.6 0 12.8M14.8 3.6c-2.4 2.2-2.4 10.6 0 12.8"/></g>',
   };
   const mark = s => `<svg class="ts-mark" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" `
     + `stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PARTS[s] || ''}</svg>`;

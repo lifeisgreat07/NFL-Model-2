@@ -118,6 +118,26 @@ def slim_game(g: Json, games: list[Json]) -> dict[str, Any]:
             'hsp': starter(g.get('home_starter')), 'asp': starter(g.get('away_starter'))}
 
 
+def standings_file(season: int) -> Json:
+    """The standings odds MLB's daily run will write (`src/sports/mlb/standings.py` to_json; Stage 101 writes it),
+    each club by its code; None before the first."""
+    doc = _maybe(PATHS.results / f'standings_{season}.json')
+    if doc is None:
+        return None
+    return {**doc, 'teams': [{**t, 'team': abbr(t['team'])} for t in doc['teams']]}
+
+
+def ratings_file(season: int) -> Json:
+    """The Power Ratings page's file (`src/sports/mlb/page_inputs.py` ratings_json; MLB's daily run writes it in
+    Stage 101), every club by its code; None before the first. A starter the Stats API named no one keeps a blank
+    name, which the page shows as his id."""
+    doc = _maybe(PATHS.results / f'ratings_{season}.json')
+    if doc is None:
+        return None
+    return {**doc, 'clubs': [{**c, 'team': abbr(c['team'])} for c in doc['clubs']],
+            'starters': [{**s, 'club': abbr(s['club'])} for s in doc['starters']]}
+
+
 def board(season: int) -> dict[str, Any]:
     """The board's inputs: the season's games, each with its series line, and the clubs' names and logos."""
     sched = _maybe(PATHS.results / f'schedule_{season}.json')
@@ -130,6 +150,8 @@ def board(season: int) -> dict[str, Any]:
         'games': [slim_game(g, games) for g in games],
         # Stage 101 defines MLB's pick file with its writer; until then no game has a pick.
         'picks': {},
+        'standings': standings_file(season),
+        'ratings': ratings_file(season),
         'teams': {code: {'name': name, 'logo': colours.LOGO['dark'].format(code=colours.LOGO_CODE[club]),
                          'logo_light': colours.LOGO['light'].format(code=colours.LOGO_CODE[club])}
                   for club, (code, name) in teams.NAMES.items()},
