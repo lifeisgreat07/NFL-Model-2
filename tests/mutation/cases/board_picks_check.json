@@ -10,6 +10,33 @@
       "find": "    return [p for p in (pred / sport).glob(f'*/{gid}.json') if p.parent.name.isdigit()]\n",
       "replace": "    return list((pred / sport).glob(f'*/{gid}.json'))\n",
       "expect_caught_by": "test_a_pick_is_read_from_a_season_folder_only"
+    },
+    {
+      "id": "board-check-oldest-day-first",
+      "target": "tests/browser/check_board_picks.py",
+      "tests": "tests/test_board_picks_reads_picks_only.py",
+      "why": "the strip is tried oldest day first, so the check compares a stale day while a later one has picks.",
+      "find": "    return sorted(set(days), reverse=True)",
+      "replace": "    return sorted(set(days))",
+      "expect_caught_by": "test_the_latest_day_with_a_pick_wins_over_an_older_one"
+    },
+    {
+      "id": "board-check-week-back-only",
+      "target": "tests/browser/check_board_picks.py",
+      "tests": "tests/test_board_picks_reads_picks_only.py",
+      "why": "the day chips are skipped and only a week back is tried, as before 2026-11-23: a Monday after midnight finds nothing.",
+      "find": "        for day in days_back(await page.evaluate(CHIP_DAYS, sport)):",
+      "replace": "        for day in []:",
+      "expect_caught_by": "test_a_monday_just_after_midnight_finds_the_sunday_before"
+    },
+    {
+      "id": "board-check-drops-views-on-the-way",
+      "target": "tests/browser/check_board_picks.py",
+      "tests": "tests/test_board_picks_reads_picks_only.py",
+      "why": "a view opened on the way is not checked, so a row showing a pick no file holds goes unreported.",
+      "find": "            found, compared = await look()\n            report += found\n            if compared:\n                break",
+      "replace": "            found, compared = await look()\n            if compared:\n                break",
+      "expect_caught_by": "test_every_view_it_opens_is_checked"
     }
   ]
 }
