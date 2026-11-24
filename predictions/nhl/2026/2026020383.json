@@ -1,0 +1,95 @@
+{
+ "game_id": "2026020383",
+ "season": 2026,
+ "slate": "2026-11-23",
+ "start_utc": "2026-11-24T02:40:00Z",
+ "home": "SEA",
+ "away": "ANA",
+ "model_a": 0.4838,
+ "model_b": 0.5091,
+ "pick": "SEA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.143958,
+  "shot_matchup": -4.999901,
+  "goalie_matchup_2000": 0.003913
+ },
+ "market": {
+  "game_id": "2026020383",
+  "start_utc": "2026-11-24T02:40:00Z",
+  "home": "SEA",
+  "away": "ANA",
+  "book": "DraftKings",
+  "home_price": -118.0,
+  "away_price": -102.0,
+  "home_prob": 0.5174,
+  "read_utc": "2026-11-23T21:01:45Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8478916,
+   "name": "Joey Daccord",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/Benton_Mike/status/2124923308877705526"
+  },
+  "away": {
+   "player_id": 8480843,
+   "name": "Lukas Dostal",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-22",
+  "read_utc": "2026-11-23T21:01:45Z",
+  "home": [
+   {
+    "name": "Jake O'Brien",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jared McCann",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "A.J. Greer",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Beckett Sennecke",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Leo Carlsson",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Ryan Poehling",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-23T21:01:45Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-22",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14780,
+  "training_games_priced": 7745,
+  "training_ids_sha256": "9fcda93afc00f3862ebbed041d6798c6981d9407947be344f8e2f143cdbbd42e"
+ },
+ "code_sha256": "203a4c7014041e2a60f5908aefad9ac4ec7035fe156c42153525b9ac57e7d339",
+ "code_commit": "f6d394f5425d2fda0191576f09954df69db7b409"
+}

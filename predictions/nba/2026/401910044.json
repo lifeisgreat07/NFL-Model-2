@@ -1,0 +1,79 @@
+{
+ "game_id": "401910044",
+ "season": 2026,
+ "slate": "2026-11-23",
+ "start_utc": "2026-11-24T03:00:00Z",
+ "home": "LAL",
+ "away": "UTAH",
+ "model_a": 0.8052,
+ "model_b": 0.8549,
+ "pick": "LAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9027,
+  "away": 0.8712
+ },
+ "features": {
+  "point_matchup": 7.692411,
+  "efficiency_matchup": 7.379046,
+  "availability_matchup": 0.031432
+ },
+ "market": {
+  "game_id": "401910044",
+  "home": "LAL",
+  "away": "UTAH",
+  "start_utc": "2026-11-24T03:00:00Z",
+  "read_utc": "2026-11-23T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -800.0,
+  "away_price": 558.0,
+  "home_prob": 0.854
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-23T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4066457",
+    "name": "Austin Reaves",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4277961",
+    "name": "Jaren Jackson Jr.",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4397077",
+    "name": "Jaxson Hayes",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102530",
+    "name": "Jusuf Nurkic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066336",
+    "name": "Lauri Markkanen",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-23T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-22",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14306,
+  "training_games_priced": 14265,
+  "training_ids_sha256": "54f1e4f8d4a3b92adec37c0ecb0dea8c6f95b24e09e72068cd8757f2e83cf31a"
+ },
+ "code_sha256": "8f64049279069421c307a139a44f8e1b78e4fc90b3a204bd6485b1ab292dbc16",
+ "code_commit": "36a34623012d5d69920e31938075fb61876031e0"
+}

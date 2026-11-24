@@ -34,6 +34,10 @@ def test_checking_says_what_the_tuning_test_holds_and_counts_the_amendments():
     fn = function_source(JS, 'renderReliability', at_line_start=True)
     assert 'the tuning searched every registered setting, on the validation seasons only, and kept the lowest' in fn
     assert site.lab()['amendments'] == len(backtest.registry()['amendments'])
+    # The page said Booth "re-runs" the confirmation, which the code refuses to run twice (found before opening).
+    assert 'it runs once: the code refuses to run it again' in fn and 're-runs' not in fn
+    source = Path(backtest.__file__).read_text(encoding='utf-8')
+    assert 'the confirmation is run once and never rewritten' in source, 'the page says a refusal the code lost'
 
 
 def test_accuracy_says_nothing_is_graded_until_opening_day():

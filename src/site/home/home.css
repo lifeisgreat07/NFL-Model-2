@@ -78,6 +78,9 @@ body{ flex-direction:column; }
 .home-sport .lgm{ width:26px; height:26px; }
 .lgm .lgm-own{ display:none; }
 .lgm.lgm-failed img{ display:none; }
+/* The light theme's rule showing the light mark (styles.css) outranks the line above, so a failed light mark stayed on
+   screen beside our icon (Spotter, #808); this one outranks it in turn. */
+[data-theme="light"] .lgm.lgm-failed .lgm-l{ display:none; }
 .lgm.lgm-failed .lgm-own{ display:inline-flex; }
 .lgm-sm.lgm-failed{ display:none; }
 .home-status{ font-size:var(--fs-11); font-weight:700; letter-spacing:var(--track-label); text-transform:uppercase; color:var(--accent); }

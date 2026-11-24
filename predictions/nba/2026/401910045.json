@@ -1,0 +1,94 @@
+{
+ "game_id": "401910045",
+ "season": 2026,
+ "slate": "2026-11-23",
+ "start_utc": "2026-11-24T03:00:00Z",
+ "home": "SAC",
+ "away": "SA",
+ "model_a": 0.1527,
+ "model_b": 0.1754,
+ "pick": "SA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9499,
+  "away": 0.9032
+ },
+ "features": {
+  "point_matchup": -14.720458,
+  "efficiency_matchup": -14.382917,
+  "availability_matchup": 0.046748
+ },
+ "market": {
+  "game_id": "401910045",
+  "home": "SAC",
+  "away": "SA",
+  "start_utc": "2026-11-24T03:00:00Z",
+  "read_utc": "2026-11-23T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 443.0,
+  "away_price": -597.0,
+  "home_prob": 0.177
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-23T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4066259",
+    "name": "De'Aaron Fox",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5037871",
+    "name": "Dylan Harper",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5101845",
+    "name": "Jayden Quaintance",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3134916",
+    "name": "Jordan McLaughlin",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6440",
+    "name": "Tobias Harris",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5104157",
+    "name": "Victor Wembanyama",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-23T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-22",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14306,
+  "training_games_priced": 14265,
+  "training_ids_sha256": "54f1e4f8d4a3b92adec37c0ecb0dea8c6f95b24e09e72068cd8757f2e83cf31a"
+ },
+ "code_sha256": "8f64049279069421c307a139a44f8e1b78e4fc90b3a204bd6485b1ab292dbc16",
+ "code_commit": "36a34623012d5d69920e31938075fb61876031e0"
+}

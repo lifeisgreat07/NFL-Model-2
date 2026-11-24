@@ -37,7 +37,7 @@
       "id": "checkout-back-on-a-movable-tag",
       "target": ".github/workflows/deploy-pages.yml",
       "why": "the job that publishes the site checks out with @v6 again: the first step of the job, with its token in reach, is whatever that tag points at today",
-      "find": "      - name: Check out repo\n        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0\n",
+      "find": "      - name: Check out repo\n        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1\n",
       "replace": "      - name: Check out repo\n        uses: actions/checkout@v6\n",
       "expect_caught_by": "test_each_is_pinned_to_a_full_commit_sha"
     },
@@ -61,7 +61,7 @@
       "id": "a-new-action-arrives-on-a-tag",
       "target": ".github/workflows/run-tests.yml",
       "why": "a workflow gains an action no list names, on a movable tag; a scan that checks only the listed actions would pass it",
-      "find": "uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0",
+      "find": "uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0",
       "replace": "uses: actions/github-script@v7",
       "expect_caught_by": "test_every_action_in_every_workflow_is_on_the_list"
     },
@@ -69,7 +69,7 @@
       "id": "checkout-back-on-node-20",
       "target": ".github/workflows/run-tests.yml",
       "why": "the test job checks out with checkout v4 again, a full SHA with its release named, so every other pin test passes; it runs on Node 20, which GitHub is retiring from its runners",
-      "find": "uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0",
+      "find": "uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1",
       "replace": "uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0",
       "expect_caught_by": "test_every_pin_is_on_a_node_24_major"
     }
