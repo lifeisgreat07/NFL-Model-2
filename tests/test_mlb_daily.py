@@ -180,6 +180,7 @@ class LockWithRuns(daily.GameLock):
         super().__init__(runs=RUNS)
 
 
+@pytest.mark.slow
 def test_the_run_saves_the_games_the_lock_names_and_grades_and_reports_drift(tmp_path, monkeypatch):
     past_g, past_l = history()
     sched = pd.DataFrame([game('701', start='2027-04-01 17:35'), game('702', start='2027-04-01 23:05'),
