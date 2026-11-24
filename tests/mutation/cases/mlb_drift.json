@@ -25,9 +25,9 @@
     },
     {
       "id": "mlb-drift-never-flags",
-      "why": "a look whose lower bound is above its baseline does not flag.",
+      "why": "the comparison is turned round, so a look flags when live Model A does better than its backtest and not when it does worse.",
       "find": "'flagged': bool(bound > base)}",
-      "replace": "'flagged': bool(bound > base + 1)}",
+      "replace": "'flagged': bool(bound < base)}",
       "expect_caught_by": "test_a_look_flags_when_its_lower_bound_is_above_its_baseline"
     },
     {
