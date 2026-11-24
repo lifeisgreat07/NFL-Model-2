@@ -74,7 +74,7 @@ jobs:
         run: python3 -m src.core.job_logs --repo "$GITHUB_REPOSITORY" --run "$GITHUB_RUN_ID" --out "$RUNNER_TEMP/line-judge/logs"
 
       - name: Run Line Judge's diagnosis
-        uses: anthropics/claude-code-action@8ce9314fa9a404564fa7e954cd84f25bcba2b829 # v1.0.236
+        uses: anthropics/claude-code-action@f3b070c88125d33dbae5653df5f143101d4ea9dc # v1.0.276
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           # The repository's own token, held to this job's read-only
