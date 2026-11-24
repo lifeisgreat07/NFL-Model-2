@@ -5,8 +5,8 @@
     {
       "id": "booth-can-mint-an-oidc-token-again",
       "why": "id-token: write comes back, which with no github_token lets the Claude Code action fetch the Claude app's installation token -- write access to code, workflows and pull requests -- for Booth (the 2026-09-28 audit)",
-      "find": "  contents: read\n  pull-requests: write\n",
-      "replace": "  contents: read\n  pull-requests: write\n  id-token: write\n",
+      "find": "\npermissions:\n  contents: read\n  pull-requests: read\n",
+      "replace": "\npermissions:\n  contents: read\n  pull-requests: read\n  id-token: write\n",
       "expect_caught_by": "test_no_workflow_that_runs_the_model_can_mint_an_oidc_token"
     },
     {
@@ -38,6 +38,20 @@
       "find": "        uses: anthropics/claude-code-action@8ce9314fa9a404564fa7e954cd84f25bcba2b829",
       "replace": "        uses: Anthropics/Claude-Code-Action@8ce9314fa9a404564fa7e954cd84f25bcba2b829",
       "expect_caught_by": "test_the_scan_finds_both_booth_workflows"
+    },
+    {
+      "id": "booth-holds-the-pr-write-token-again",
+      "why": "the workflow-wide grant can write to pull requests again, so the model runs with a token the pull request it audits can ask it to use (Stage 82 item 4)",
+      "find": "\npermissions:\n  contents: read\n  pull-requests: read\n",
+      "replace": "\npermissions:\n  contents: read\n  pull-requests: write\n",
+      "expect_caught_by": "test_the_model_runs_in_a_job_that_cannot_write"
+    },
+    {
+      "id": "booth-post-job-checks-out-with-a-token",
+      "why": "the post job's checkout leaves its write-capable token in .git/config for every later step (Stage 82 item 4)",
+      "find": "          ref: ${{ github.event.pull_request.base.sha || 'main' }}\n          persist-credentials: false\n",
+      "replace": "          ref: ${{ github.event.pull_request.base.sha || 'main' }}\n",
+      "expect_caught_by": "test_the_model_runs_in_a_job_that_cannot_write"
     }
   ]
 }

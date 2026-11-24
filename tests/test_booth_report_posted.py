@@ -210,7 +210,7 @@ def test_main_exits_non_zero_on_silence(tmp_path):
 # -------------------------------------------------------------------- wiring
 
 def _steps():
-    """(name, body-text) for each step of the audit job, in order."""
+    """(name, body-text) for each step of the audit job, then the post job, in order."""
     if not WORKFLOW.is_file():
         pytest.skip("booth-pr-audit.yml not present in this checkout")
     lines = WORKFLOW.read_text(encoding='utf-8').splitlines()
@@ -263,35 +263,39 @@ def test_sha_and_start_time_are_recorded_before_booth_and_used_by_the_check():
     record_body = steps[record][1]
     assert 'id: audited' in record_body and 'started=' in record_body
     check_body = next(b for n, b in steps if 'booth_report_posted' in b and 'gh api' in b)
-    assert 'steps.audited.outputs.sha' in check_body
-    assert 'steps.audited.outputs.started' in check_body
+    assert 'needs.audit.outputs.sha' in check_body
+    assert 'needs.audit.outputs.started' in check_body
+    wf = WORKFLOW.read_text(encoding='utf-8')
+    assert 'sha: ${{ steps.audited.outputs.sha }}' in wf and 'started: ${{ steps.audited.outputs.started }}' in wf, (
+        "the audit job no longer hands the recorded SHA and start time to the post job")
 
 
-def test_the_checker_is_copied_out_before_booth_touches_the_tree():
+def test_the_check_runs_in_a_job_booth_cannot_reach():
+    """Stage 82 item 4. The check ran in Booth's own job, from a copy in
+    $RUNNER_TEMP that Booth's Bash could reach. Now it runs in the post job,
+    after the audit job has finished, from that job's own checkout."""
+    wf = WORKFLOW.read_text(encoding='utf-8')
+    audit, post = wf.split('\n  post:\n')
+    assert 'booth_report_posted' not in audit.split('\njobs:\n')[1]
+    assert '    needs: audit\n' in post
     steps = _steps()
-    booth = _index(steps, lambda n, b: 'anthropics/claude-code-action' in b, 'runs Booth')
-    copy = _index(steps, lambda n, b: 'cp src/agents/booth_report_posted.py' in b, 'copies the checker out')
-    assert copy < booth
-    assert 'src/agents/booth_verdict.py' in steps[copy][1], "the checker imports booth_verdict; copy both"
     check_body = next(b for n, b in steps if 'booth_report_posted' in b and 'gh api' in b)
-    assert 'cd "$RUNNER_TEMP/booth-check"' in check_body and '-m src.agents.booth_report_posted' in check_body, (
-        "the check runs the script from the working tree Booth left behind"
-    )
-
+    assert check_body in post
+    assert 'python3 -m src.agents.booth_report_posted' in check_body
+    assert '\n          cd ' not in check_body, 'the check runs from somewhere other than the base checkout'
 
 
 def test_the_checker_comes_from_the_base_not_the_pull_request():
-    """Stage 82 item 1 (the 2026-11-02 review). Copied from the head, a pull
-    request could relax the check that decides whether its own audit counts."""
+    """Stage 82 item 1 (the 2026-11-02 review). Run from the head, a pull
+    request could relax the check that decides whether its own audit counts.
+    The post job checks out the base commit and nothing else."""
     steps = _steps()
-    copy = _index(steps, lambda n, b: 'cp src/agents/booth_report_posted.py' in b, 'copies the checker out')
-    body = steps[copy][1]
-    assert 'BASE_SHA: ${{ github.event.pull_request.base.sha }}' in body
-    assert 'git show "$base:$f" > "$RUNNER_TEMP/booth-base/$f"' in body
-    assert body.index('cd "$RUNNER_TEMP/booth-base"') < body.index('cp src/agents/booth_report_posted.py'), (
-        "the checker is copied from the pull request's working tree, not from the base")
-    for f in ('src/agents/booth_report_posted.py', 'src/agents/booth_verdict.py', 'src/agents/__init__.py', 'src/__init__.py'):
-        assert f in body.split('for f in ')[1].split(';')[0], f'{f} is copied but not read from the base'
+    checkout = _index(steps, lambda n, b: 'actions/checkout@' in b and 'base.sha' in b, 'checks out the base')
+    check = _index(steps, lambda n, b: 'booth_report_posted' in b and 'gh api' in b, 'checks for a report')
+    assert checkout < check
+    assert "ref: ${{ github.event.pull_request.base.sha || 'main' }}" in steps[checkout][1]
+    post = WORKFLOW.read_text(encoding='utf-8').split('\n  post:\n')[1]
+    assert post.count('actions/checkout@') == 1, 'the post job checks out something besides the base'
 
 
 def test_the_checker_files_are_auditor_files():
@@ -301,14 +305,11 @@ def test_the_checker_files_are_auditor_files():
     assert 'src/agents/booth_verdict.py' in pf.AUDITOR_FILES
 
 
-# --- the check runs from a copy, outside the checkout -------------------------
+# --- the check runs with nothing installed -----------------------------------
 
-def copied_modules(workflow_text):
-    """The src/agents/ modules booth-pr-audit.yml copies into $RUNNER_TEMP/booth-check."""
-    import re
-    m = re.search(r'^\s*cp ((?:src/agents/\S+\.py\s+)+)"\$RUNNER_TEMP/booth-check/src/agents/"', workflow_text, re.M)
-    assert m, 'the copy into booth-check is gone from booth-pr-audit.yml -- re-anchor this guard'
-    return [p.split('/')[-1][:-3] for p in m.group(1).split() if not p.endswith('__init__.py')]
+#: The modules the post job runs, from its checkout of the base. It installs
+#: nothing, so these may import only the standard library and each other.
+CHECKER = ['booth_report_posted', 'booth_verdict']
 
 
 def local_imports(source, candidates):
@@ -331,26 +332,36 @@ def local_imports(source, candidates):
     return names & candidates
 
 
-def test_the_copied_check_imports_only_what_is_copied():
-    """Stage 30 item 5, found on PR #219 itself. The workflow copies the report
-    check and its one helper out of the checkout before Booth runs, so the
-    audit cannot edit the check that judges it. A new import of another src/
-    module passed every test here -- they run inside the checkout -- and failed
-    only in CI, where the copy stands alone: "Fail if Booth posted no report"
-    went red on a run whose report was sitting on the PR."""
+def test_the_checker_runs_with_nothing_installed():
+    """Stage 30 item 5, found on PR #219 itself, and Stage 82 item 4. The check
+    once imported a module the workflow did not copy, passed every test here --
+    they run inside the checkout -- and failed only in CI: "Fail if Booth posted
+    no report" went red on a run whose report was sitting on the PR. The post
+    job now checks out the whole base but installs nothing, so the check may
+    import only the standard library and its own two modules."""
+    import ast
+    import sys
     root = Path(__file__).resolve().parents[1]
     wf = (root / '.github' / 'workflows' / 'booth-pr-audit.yml').read_text(encoding='utf-8')
-    copied = copied_modules(wf)
-    assert 'booth_report_posted' in copied and len(copied) >= 2, f'copied: {copied}'
+    post = wf.split('\n  post:\n')[1]
+    assert 'pip install' not in post and 'setup-python' not in post, 'the post job installs things; update CHECKER'
     src_modules = {p.stem for p in (root / 'src').glob('*/*.py')} - {'__init__'}
     stray = {}
-    for mod in copied:
-        imported = local_imports((root / 'src' / 'agents' / f'{mod}.py').read_text(encoding='utf-8'), src_modules)
-        missing = imported - set(copied)
+    for mod in CHECKER:
+        source = (root / 'src' / 'agents' / f'{mod}.py').read_text(encoding='utf-8')
+        missing = local_imports(source, src_modules) - set(CHECKER)
+        for node in ast.walk(ast.parse(source)):
+            if isinstance(node, ast.Import):
+                tops = [a.name.split('.')[0] for a in node.names]
+            elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
+                tops = [node.module.split('.')[0]]
+            else:
+                continue
+            missing |= {t for t in tops if t != 'src' and t not in sys.stdlib_module_names}
         if missing:
             stray[mod] = sorted(missing)
-    assert not stray, (f'modules copied into booth-check import src/ modules that are not copied: '
-                       f'{stray}. Add them to the cp line, or keep the import out of these files.')
+    assert not stray, (f'the report check imports what the post job does not have: {stray}. '
+                       'Keep these two modules to the standard library and each other.')
 
 
 def test_the_import_check_sees_an_import():

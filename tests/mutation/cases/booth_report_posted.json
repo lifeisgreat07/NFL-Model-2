@@ -3,11 +3,11 @@
   "tests": "tests/test_booth_report_posted.py",
   "cases": [
     {
-      "id": "report-check-imports-what-is-not-copied",
-      "why": "the report check takes Booth's accounts from collect_agent_log.py, which the workflow does not copy into booth-check. Every test here passes, because the tests run inside the checkout; in CI the step fails on a run whose report was posted -- exactly what happened on PR #219's first audit (Stage 30 item 5).",
+      "id": "report-check-imports-what-is-not-installed",
+      "why": "the report check takes Booth's accounts from collect_agent_log.py, outside the two modules the install-nothing post job is held to. Every other test here passes, because the tests run in a checkout with everything installed; an import like this is how PR #219's first audit went red on a run whose report was posted (Stage 30 item 5).",
       "find": "from src.agents.booth_verdict import (\n    BOOTH_ACCOUNTS,\n    VerdictError,\n    author,\n    cross_check,\n    extract,\n)",
       "replace": "from src.agents.booth_verdict import VerdictError, cross_check, extract\nfrom src.agents.collect_agent_log import BOOTH_ACCOUNTS, author",
-      "expect_caught_by": "test_the_copied_check_imports_only_what_is_copied"
+      "expect_caught_by": "test_the_checker_runs_with_nothing_installed"
     },
     {
       "id": "report-check-accepts-any-bot",
