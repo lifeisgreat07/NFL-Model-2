@@ -266,6 +266,9 @@ def test_the_writer_scan_finds_the_workflows_we_know_write():
 NOT_YET_ON_A_PAGE: dict[str, str] = {
     # Stage 103 item 1: the bracket's season results; its page comes in March (item 4).
     'NCAAM results collector': 'ncaam',
+    # Stage 101 item 2: spring training's probables timing, which sets MLB's run times and is on no page; the
+    # workflow is removed after 2027-03-21.
+    'MLB spring probables': 'mlb',
 }
 
 
