@@ -79,6 +79,7 @@ NOT_DISPATCHED: dict[str, str] = {
     'browser-checks.yml': 'reads main and writes nothing, so a late start costs nothing',
     'ncaam-collect.yml': 'reads the last three days, so a late or missed run is caught up by the next',
     'mlb-spring-probables.yml': 'a late read only sees a naming later, which errs toward later run times',
+    'mlb-canary.yml': 'reads and writes nothing, so a late start costs nothing',
 }
 
 Fetch = Callable[[str, datetime], list[datetime]]
