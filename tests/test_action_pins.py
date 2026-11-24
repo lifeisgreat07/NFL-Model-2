@@ -28,6 +28,14 @@ v4, deploy-pages v4, upload-pages-artifact v3, git-auto-commit v5) to the
 first major of each that runs on Node 24 (checkout to v6, where three
 workflows already were, rather than v5), with SHAs read with `git ls-remote`
 on 2026-11-05, and `test_every_pin_is_on_a_node_24_major` keeps them there.
+
+On 2026-11-23 six of them moved to the majors Dependabot proposed in #683
+(checkout v7, setup-python v7, setup-node v7, cache v6, upload-artifact v7,
+download-artifact v8), each SHA read again with `git ls-remote` and found to
+be its major tag's commit. A Dependabot pull request cannot pass here on its
+own: mutation cases anchor on the pinned lines, and Booth refuses bot authors.
+claude-code-action moves on its own, because its newer releases change how
+`--allowedTools` is enforced.
 """
 import re
 from pathlib import Path
