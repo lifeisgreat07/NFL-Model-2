@@ -1,0 +1,65 @@
+{
+  "target": "src/sports/mlb/pages/mlb.js",
+  "tests": "tests/test_mlb_lab_page.py",
+  "cases": [
+    {
+      "id": "mlb-lab-page-no-smallest-edge",
+      "why": "a tuned value at the bottom of the grid is not said, as the chosen 150 outs of shrinkage is",
+      "find": "    return v.length > 1 && (c === Math.min(...v) || c === Math.max(...v));\n",
+      "replace": "    return v.length > 1 && c === Math.max(...v);\n",
+      "expect_caught_by": "test_a_tuned_value_at_an_end_of_the_grid_is_found"
+    },
+    {
+      "id": "mlb-lab-page-unanswered-not-deferred",
+      "why": "an unanswered question carries no decision label, so it reads as if nothing was ever going to decide it",
+      "find": "    const tag = q.kind === 'measurement' ? 'a measurement' : '<span class=\"conf-tag tag-neutral\">DEFERRED</span>';\n",
+      "replace": "    const tag = q.kind === 'measurement' ? 'a measurement' : '';\n",
+      "expect_caught_by": "test_an_unanswered_question_is_deferred_and_says_what_was_expected"
+    },
+    {
+      "id": "mlb-lab-page-question-unescaped",
+      "why": "a question's title from the registration goes into the page as markup",
+      "find": "  const head = `<th scope=\"row\">${q.id}</th><td><b>${escapeHtml(q.title)}</b><br>${escapeHtml(q.question)}</td>`;\n",
+      "replace": "  const head = `<th scope=\"row\">${q.id}</th><td><b>${q.title}</b><br>${escapeHtml(q.question)}</td>`;\n",
+      "expect_caught_by": "test_an_unanswered_question_is_deferred_and_says_what_was_expected"
+    },
+    {
+      "id": "mlb-lab-page-method-not-in-more",
+      "why": "Methodology is in the More sheet but the More button does not light while it is shown",
+      "find": "const OVERFLOW_PAGES = ['modellab', 'method'];\n",
+      "replace": "const OVERFLOW_PAGES = ['modellab'];\n",
+      "expect_caught_by": "test_both_pages_have_their_buttons_and_sit_in_the_more_sheet"
+    },
+    {
+      "id": "mlb-lab-page-worst-settings-listed",
+      "target": "src/sports/mlb/site.py",
+      "why": "the tuning lists the worst settings, so the kept one is not among them",
+      "find": "            'best': sorted(tuning['grid'], key=lambda g: g['log_loss'])[:TUNING_SHOWN]},\n",
+      "replace": "            'best': sorted(tuning['grid'], key=lambda g: -g['log_loss'])[:TUNING_SHOWN]},\n",
+      "expect_caught_by": "test_the_tuning_lists_the_best_settings_first_and_the_kept_one_is_the_best"
+    },
+    {
+      "id": "mlb-lab-page-every-season-checked",
+      "target": "src/sports/mlb/site.py",
+      "why": "a season Retrosheet has not been checked against is shown as checked",
+      "find": "                    'checked': season in checked})\n",
+      "replace": "                    'checked': True})\n",
+      "expect_caught_by": "test_a_season_not_checked_against_retrosheet_says_not_yet"
+    },
+    {
+      "id": "mlb-lab-page-every-price-counted",
+      "target": "src/sports/mlb/site.py",
+      "why": "the coverage counts every game as priced, so a season with no market reads as fully priced",
+      "find": "        out.append({'season': season, 'games': len(ids), 'priced': sum(i in priced for i in ids),\n",
+      "replace": "        out.append({'season': season, 'games': len(ids), 'priced': len(ids),\n",
+      "expect_caught_by": "test_the_coverage_counts_the_history_files_and_the_prices_the_backtest_keeps"
+    },
+    {
+      "id": "mlb-lab-page-postseason-figure-wrong",
+      "why": "Methodology prints a figure for the unchecked postseason that the registration does not say, as the first draft did",
+      "find": "the postseason, 32 to 53 games a season, is used unchecked",
+      "replace": "the postseason, 32 to 87 games a season, is used unchecked",
+      "expect_caught_by": "test_what_methodology_says_of_the_amendments_is_what_they_say"
+    }
+  ]
+}

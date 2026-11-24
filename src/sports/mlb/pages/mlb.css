@@ -81,3 +81,8 @@ html[data-density="compact"] .mlb-row{min-height:40px;}
   font-size:var(--fs-13); color:var(--text-2);}
 .mlb-rating-controls label{display:inline-flex; gap:var(--s2); align-items:center;}
 .mlb-rating-more{margin:var(--s3) 0 0; font-size:var(--fs-13); color:var(--text-2);}
+
+/* Model Lab (Stage 100 item 2): what a question was expected to show when it was registered, under its decision,
+   and the tuning row that was kept. */
+.mlb-lab-note{display:inline-block; margin-top:var(--s1); font-size:var(--fs-12); color:var(--text-2);}
+.mlb-table tr.mlb-chosen > *{font-weight:700; color:var(--text);}
