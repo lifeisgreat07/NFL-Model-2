@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 11,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-23T05:37:40Z",
+  "read_at": "2026-11-24T11:03:02Z",
   "games": [
     {
       "away": "IND",
@@ -127,9 +127,9 @@
     {
       "away": "CIN",
       "home": "WAS",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 20,
+      "home_score": 22,
       "spread_line": -6.0,
       "neutral_site": false,
       "venue": "Northwest Stadium"

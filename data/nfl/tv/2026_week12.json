@@ -1,0 +1,256 @@
+{
+  "reads": [
+    "2026-11-24T11:03:10Z"
+  ],
+  "changes": [],
+  "games": [
+    {
+      "elias": "2026112500",
+      "networks": [],
+      "held_back": [
+        "Wednesday night Eastern slot rule broken by Netflix with no exception"
+      ],
+      "reported": [],
+      "away": "GB",
+      "home": "LA",
+      "territory": "NATIONAL",
+      "listed": [
+        "Netflix"
+      ]
+    },
+    {
+      "elias": "2026112600",
+      "networks": [],
+      "held_back": [
+        "Thursday 13:00 Eastern slot rule broken by CBS with no exception"
+      ],
+      "reported": [],
+      "away": "CHI",
+      "home": "DET",
+      "territory": "NATIONAL",
+      "listed": [
+        "CBS"
+      ]
+    },
+    {
+      "elias": "2026112601",
+      "networks": [],
+      "held_back": [
+        "Thursday 16:30 Eastern slot rule broken by FOX with no exception"
+      ],
+      "reported": [
+        "unlisted network TUBI not shown"
+      ],
+      "away": "PHI",
+      "home": "DAL",
+      "territory": "NATIONAL",
+      "listed": [
+        "FOX"
+      ]
+    },
+    {
+      "elias": "2026112602",
+      "networks": [],
+      "held_back": [
+        "Thursday night slot rule broken by NBC with no exception"
+      ],
+      "reported": [],
+      "away": "KC",
+      "home": "BUF",
+      "territory": "NATIONAL",
+      "listed": [
+        "NBC"
+      ]
+    },
+    {
+      "elias": "2026112700",
+      "networks": [],
+      "held_back": [
+        "Friday 15:00 Eastern slot rule broken by Prime Video with no exception"
+      ],
+      "reported": [],
+      "away": "DEN",
+      "home": "PIT",
+      "territory": "NATIONAL",
+      "listed": [
+        "Prime Video"
+      ]
+    },
+    {
+      "elias": "2026112900",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NO",
+      "home": "CIN",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
+      "read_at": "2026-11-24T11:03:10Z"
+    },
+    {
+      "elias": "2026112902",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "BAL",
+      "home": "HOU",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
+      "read_at": "2026-11-24T11:03:10Z"
+    },
+    {
+      "elias": "2026112903",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NYG",
+      "home": "IND",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
+      "read_at": "2026-11-24T11:03:10Z"
+    },
+    {
+      "elias": "2026112904",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NYJ",
+      "home": "MIA",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
+      "read_at": "2026-11-24T11:03:10Z"
+    },
+    {
+      "elias": "2026112905",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "ATL",
+      "home": "MIN",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
+      "read_at": "2026-11-24T11:03:10Z"
+    },
+    {
+      "elias": "2026112906",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "TEN",
+      "home": "JAX",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
+      "read_at": "2026-11-24T11:03:10Z"
+    },
+    {
+      "elias": "2026112909",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NE",
+      "home": "LAC",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
+      "read_at": "2026-11-24T11:03:10Z"
+    },
+    {
+      "elias": "2026112907",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "WAS",
+      "home": "ARI",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
+      "read_at": "2026-11-24T11:03:10Z"
+    },
+    {
+      "elias": "2026112908",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "SEA",
+      "home": "SF",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
+      "read_at": "2026-11-24T11:03:10Z"
+    },
+    {
+      "elias": "2026112901",
+      "networks": [
+        "NBC"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LV",
+      "home": "CLE",
+      "territory": "NATIONAL",
+      "listed": [
+        "NBC"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
+      "read_at": "2026-11-24T11:03:10Z"
+    },
+    {
+      "elias": "2026113000",
+      "networks": [
+        "ESPN"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CAR",
+      "home": "TB",
+      "territory": "NATIONAL",
+      "listed": [
+        "ESPN"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
+      "read_at": "2026-11-24T11:03:10Z"
+    }
+  ]
+}

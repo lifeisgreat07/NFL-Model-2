@@ -1,0 +1,268 @@
+{
+  "season": 2026,
+  "week": 12,
+  "read_at": "2026-11-24T11:03:11Z",
+  "sources": {
+    "injuries": "nflverse injury report, via nflreadpy.load_injuries",
+    "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
+    "depth_chart_snapshot": "2026-11-24T07:02:17Z"
+  },
+  "teams": {
+    "LA": {
+      "qb": {
+        "name": "Matthew Stafford",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "GB": {
+      "qb": {
+        "name": "Jordan Love",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "DET": {
+      "qb": {
+        "name": "Jared Goff",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "CHI": {
+      "qb": {
+        "name": "Caleb Williams",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "DAL": {
+      "qb": {
+        "name": "Dak Prescott",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "PHI": {
+      "qb": {
+        "name": "Joe Milton III",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "BUF": {
+      "qb": {
+        "name": "Josh Allen",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "KC": {
+      "qb": {
+        "name": "Patrick Mahomes",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "PIT": {
+      "qb": {
+        "name": "Aaron Rodgers",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "DEN": {
+      "qb": {
+        "name": "Bo Nix",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "CIN": {
+      "qb": {
+        "name": "Joe Burrow",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "NO": {
+      "qb": {
+        "name": "Tyler Shough",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "CLE": {
+      "qb": {
+        "name": "Deshaun Watson",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "LV": {
+      "qb": {
+        "name": "Fernando Mendoza",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "HOU": {
+      "qb": {
+        "name": "C.J. Stroud",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "BAL": {
+      "qb": {
+        "name": "Jacoby Brissett",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "IND": {
+      "qb": {
+        "name": "Anthony Richardson",
+        "basis": "announced",
+        "changed_from": "D.Jones"
+      },
+      "injury_report": "not yet published"
+    },
+    "NYG": {
+      "qb": {
+        "name": "J.J. McCarthy",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "MIA": {
+      "qb": {
+        "name": "Kyle McCord",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "NYJ": {
+      "qb": {
+        "name": "Geno Smith",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "MIN": {
+      "qb": {
+        "name": "Kirk Cousins",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "ATL": {
+      "qb": {
+        "name": "Michael Penix Jr.",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "JAX": {
+      "qb": {
+        "name": "Trevor Lawrence",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "TEN": {
+      "qb": {
+        "name": "Cam Ward",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "ARI": {
+      "qb": {
+        "name": "Josh Johnson",
+        "basis": "override",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "WAS": {
+      "qb": {
+        "name": "Jayden Daniels",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "SF": {
+      "qb": {
+        "name": "Brock Purdy",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "SEA": {
+      "qb": {
+        "name": "Sam Darnold",
+        "basis": "announced",
+        "changed_from": "D.Lock"
+      },
+      "injury_report": "not yet published"
+    },
+    "LAC": {
+      "qb": {
+        "name": "Justin Herbert",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "NE": {
+      "qb": {
+        "name": "Tommy DeVito",
+        "basis": "override",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "TB": {
+      "qb": {
+        "name": "Baker Mayfield",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    },
+    "CAR": {
+      "qb": {
+        "name": "Bryce Young",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "not yet published"
+    }
+  }
+}
