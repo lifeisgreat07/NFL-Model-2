@@ -104,7 +104,7 @@ def espn_match(games: pd.DataFrame, events: Iterable[Mapping[str, Any]]) -> tupl
         if e['home'] and e['away']:
             by_pair.setdefault(frozenset((e['home'], e['away'])), []).append(e)
     out: dict[str, tuple[str, bool]] = {}
-    missing = []
+    missing: list[str] = []
     for pair, group in games.groupby(games.apply(lambda g: frozenset((str(g['home']), str(g['away']))), axis=1),
                                  sort=False):
         cands = sorted(by_pair.get(pair, []), key=lambda e: e['start'])
