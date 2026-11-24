@@ -28,6 +28,11 @@
    completed. A postponed or cancelled game's pick is never counted, and nor is an official tie.
 8. **Drift.** `results/mlb/drift_<season>.json` from `src/sports/mlb/drift.py`: regular-season picks only; until the
    confirmation gives the baselines, the file says the check is not running and why.
+9. **Forward test.** `results/mlb/forward_<season>.json` (`forward_file`, through `src/core/forward_test.py`): the
+   registered comparisons on the scored regular-season picks, each forecaster scored by market source and on the
+   picks with a starter not named as well as in the total, and the postseason's picks scored on their own
+   (`postseason`), never in the total. The first run after the regular season's last game is final freezes it as
+   `forward_<season>_regular_season_final.json`, the file the registry's decision is taken on, once.
 
 Every step after the first save is guarded (`src/core/after_save.py`): a failure prints DEGRADED and the run goes on
 to commit the picks.
@@ -47,6 +52,7 @@ import pandas as pd
 
 from src.core import (
     after_save,
+    forward_test,
     pick_guard,
     request_budget,
     schedule_guard,
@@ -62,6 +68,7 @@ from src.sports.mlb.lock import GameLock
 
 PATHS = sport_paths('mlb')
 CODE_VERSION = 'mlb-stage98'
+REGISTRY = 'experiments/mlb/stage101/registry.json'
 FIRST_SEASON = 2010
 ET = 'America/New_York'
 
@@ -246,6 +253,27 @@ def drift_rows(graded: Iterable[Mapping[str, Any]]) -> list[tuple[float | None, 
     return [(r['model_a'], r['home_win'], str(r['slate'])) for r in rows]
 
 
+def forward_file(folder: Path, sched: pd.DataFrame, played: pd.DataFrame, season: int) -> dict[str, Any]:
+    """The forward-test file: `src/core/forward_test.report` on the scored regular-season picks, with the picks
+    whose starters were not both named scored on their own, and the postseason's picks reported apart. A pick counts
+    only when `grade_one` scores it, so a postponed game's pick and an official tie never enter it."""
+    by_id = {str(g['game_id']): g for g in sched.to_dict('records')}
+    scored = [p for p in read_picks(folder) if grade_one(p, by_id.get(str(p['game_id']))) in ('correct', 'wrong')]
+    finals = sched[sched['status'] == GameStatus.FINAL.value][['game_id', 'slate', 'home_win']].dropna(
+        subset=['home_win'])
+    finals = finals.assign(game_id=finals['game_id'].astype(str))
+    rates = forward_test.base_rates([str(p['slate']) for p in scored], played)
+    regular = [p for p in scored if p.get('game_type') == 'regular']
+    post = [p for p in scored if p.get('game_type') != 'regular']
+    doc = forward_test.report(forward_test.rows(regular, finals, rates), 'mlb', season, REGISTRY)
+    unnamed = [p for p in regular if not all(s.get('named') for s in (p.get('starters') or {}).values())]
+    doc['starter_not_named'] = {'graded_picks': len(unnamed),
+                                'scores': forward_test.scores(forward_test.rows(unnamed, finals, rates))}
+    doc['postseason'] = {'graded_picks': len(post), 'decides': False,
+                         'scores': forward_test.scores(forward_test.rows(post, finals, rates))}
+    return doc
+
+
 def missed(started: Iterable[str], slates: Mapping[str, str], folder: Path) -> list[str]:
     """Started games with no pick saved for their official date."""
     return sorted(g for g in started if not pick_path(folder, g, slates[g]).exists())
@@ -351,6 +379,18 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             print(f"drift check not running: {report['why']}")
 
     after_save.guarded('drift check', write_drift)
+
+    def write_forward() -> None:
+        path = PATHS.results / f'forward_{season}.json'
+        played = games[['day', 'home_score', 'away_score']]
+        doc = forward_file(folder, sched, played, season)
+        write_json_atomic(path, doc, trailing_newline=True, indent=1)
+        print(f"forward test: {doc['graded_picks']} graded regular-season picks through {doc['through']}")
+        frozen = forward_test.freeze(path, sched, str(now.date()))
+        if frozen is not None:
+            print(f'forward test: the regular season is over; the deciding file is {frozen.name}')
+
+    after_save.guarded('forward test', write_forward)
     lost = missed(decision.started, dict(zip(slate['game_id'].astype(str), slate['slate'].astype(str), strict=True)),
                   folder)
     if lost:

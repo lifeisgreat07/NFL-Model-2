@@ -85,6 +85,27 @@
       "find": "                if market.espn_price(odds or {}, bool(espn and espn[1])) is None and not kalshi_read:\n",
       "replace": "                if not kalshi_read:\n",
       "expect_caught_by": "test_the_run_saves_the_games_the_lock_names_and_grades_and_reports_drift"
+    },
+    {
+      "id": "mlb-forward-counts-a-postponed-pick",
+      "why": "a pick saved for a game later postponed enters the forward test, scored against the game played another day.",
+      "find": "    scored = [p for p in read_picks(folder) if grade_one(p, by_id.get(str(p['game_id']))) in ('correct', 'wrong')]\n",
+      "replace": "    scored = read_picks(folder)\n",
+      "expect_caught_by": "test_the_forward_file_scores_regular_season_picks_and_keeps_the_postseason_apart"
+    },
+    {
+      "id": "mlb-forward-postseason-in-the-total",
+      "why": "postseason picks enter the regular season's comparisons, which the registry's decision never reads.",
+      "find": "    regular = [p for p in scored if p.get('game_type') == 'regular']\n",
+      "replace": "    regular = scored\n",
+      "expect_caught_by": "test_the_forward_file_scores_regular_season_picks_and_keeps_the_postseason_apart"
+    },
+    {
+      "id": "mlb-forward-unnamed-starters-not-apart",
+      "why": "picks made with a starter not named are not reported on their own, as the registry's reported asks.",
+      "find": "    unnamed = [p for p in regular if not all(s.get('named') for s in (p.get('starters') or {}).values())]\n",
+      "replace": "    unnamed = []\n",
+      "expect_caught_by": "test_the_forward_file_scores_regular_season_picks_and_keeps_the_postseason_apart"
     }
   ]
 }
