@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-11-24T00:06:51Z",
+  "generated_utc": "2026-11-24T00:48:27Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 836,
-    "audits_superseded": 150,
-    "pull_requests_audited": 686,
+    "audits_total": 838,
+    "audits_superseded": 151,
+    "pull_requests_audited": 687,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 5013,
+    "claims_checked": 5020,
     "discrepancies_found": 38,
-    "unverifiable": 558,
+    "unverifiable": 559,
     "pull_requests_with_a_discrepancy": 27,
     "reports_disagreeing_with_themselves": 44
   },
@@ -14756,9 +14756,66 @@
       "implicated": [],
       "inconsistencies": [],
       "superseded": false
+    },
+    {
+      "pr": 821,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/821#issuecomment-7118127632",
+      "posted_utc": "2026-11-24T00:29:44Z",
+      "head": "1e06ebd",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 6,
+      "confirmed": 5,
+      "discrepancies": 1,
+      "unverifiable": 0,
+      "overall": "DO NOT MERGE -- DISCREPANCIES FOUND",
+      "implicated": [
+        "tests/mutation/cases/mlb_board.json"
+      ],
+      "inconsistencies": [],
+      "superseded": true
+    },
+    {
+      "pr": 821,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/821#issuecomment-7118306561",
+      "posted_utc": "2026-11-24T00:40:03Z",
+      "head": "1e06ebd",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 7,
+      "confirmed": 6,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
     }
   ],
   "recent": [
+    {
+      "agent": "Booth",
+      "pr": 821,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/821#issuecomment-7118306561",
+      "when": "2026-11-24T00:40:03Z",
+      "says": "NEEDS HUMAN REVIEW: 6 of 7 claims confirmed, 0 wrong, 1 unverifiable"
+    },
+    {
+      "agent": "Scout",
+      "pr": null,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45298695228",
+      "when": "2026-11-24T00:37:42Z",
+      "says": "found nothing to fix in the description"
+    },
+    {
+      "agent": "Scout",
+      "pr": null,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45294470871",
+      "when": "2026-11-24T00:06:57Z",
+      "says": "found nothing to fix in the description"
+    },
     {
       "agent": "Booth",
       "pr": 820,
@@ -14848,27 +14905,6 @@
       "pr": null,
       "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45265870109",
       "when": "2026-11-23T21:04:24Z",
-      "says": "found nothing to fix in the description"
-    },
-    {
-      "agent": "Booth",
-      "pr": 813,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/813#issuecomment-7113879265",
-      "when": "2026-11-23T21:00:59Z",
-      "says": "SAFE TO MERGE: 7 of 8 claims confirmed, 0 wrong, 1 unverifiable"
-    },
-    {
-      "agent": "Booth",
-      "pr": 809,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/809#issuecomment-7113041911",
-      "when": "2026-11-23T20:25:28Z",
-      "says": "SAFE TO MERGE: 6 of 7 claims confirmed, 0 wrong, 1 unverifiable"
-    },
-    {
-      "agent": "Scout",
-      "pr": null,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45258868051",
-      "when": "2026-11-23T20:23:26Z",
       "says": "found nothing to fix in the description"
     }
   ]
