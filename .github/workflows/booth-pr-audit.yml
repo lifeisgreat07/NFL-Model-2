@@ -92,7 +92,11 @@ jobs:
       (github.event.pull_request.draft == false || github.event_name == 'workflow_dispatch')
       && (github.event.action != 'edited' || github.event.changes.body != null)
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    # 35, not 20 (Mark, 2026-11-23): #809's audit, the MLB standings
+    # simulation, was cancelled at 20 minutes on its first run and again on
+    # its re-run, and the MLB pages stacked on it are as large.
+    # tests/test_booth_timeout.py holds it and the turn cap together.
+    timeout-minutes: 35
 
     steps:
       # A dispatch names a PR by number and checks out refs/pull/N/head,
@@ -114,7 +118,7 @@ jobs:
           fi
 
       - name: Check out the PR branch
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Full history: Booth checks claims about commits, branch state and
           # what changed against main, none of which survive a shallow clone.
@@ -122,7 +126,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || format('refs/pull/{0}/head', inputs.pr_number) }}
 
       - name: Set up Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -275,8 +279,14 @@ jobs:
           # it. At roughly 8 turns/minute, 120 turns lands inside the timeout,
           # which is the real backstop: wall-clock is the cost that matters,
           # and turns are a blunt proxy for it.
+          #
+          # 210, not 120 (2026-11-23), with the timeout raised to 35: #809's
+          # two runs reached the 20-minute limit before the 120-turn cap, so
+          # long audits run slower than 8 turns a minute. At 6 a minute, 210
+          # turns still lands inside 35 minutes, and the clock stays the
+          # backstop.
           claude_args: |
-            --max-turns 120
+            --max-turns 210
             --allowedTools "Bash,Read,Glob,Grep"
 
       - name: Fail if Booth posted no report

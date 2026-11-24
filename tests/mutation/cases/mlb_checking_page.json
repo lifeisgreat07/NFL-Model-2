@@ -3,6 +3,14 @@
   "tests": "tests/test_mlb_checking_page.py",
   "cases": [
     {
+      "id": "mlb-checking-page-confirmation-rerun-allowed",
+      "why": "the confirmation overwrites a result already on file, so Checking the AI's work says a refusal the code no longer makes",
+      "target": "src/sports/mlb/backtest.py",
+      "find": "        raise SystemExit('results/confirmation.json exists: the confirmation is run once and never rewritten')\n",
+      "replace": "        pass\n",
+      "expect_caught_by": "test_checking_says_what_the_tuning_test_holds_and_counts_the_amendments"
+    },
+    {
       "id": "mlb-checking-page-tuning-kept-another-setting",
       "why": "the committed tuning keeps a setting that is not the lowest, which Checking the AI's work says the tests forbid",
       "find": " \"chosen\": {\n  \"H_days\": 120,\n",

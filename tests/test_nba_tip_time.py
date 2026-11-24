@@ -129,6 +129,7 @@ def test_the_home_page_reads_them_the_same_way():
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr
     assert json.loads(r.stdout) == [True, False, True]
-    assert "const PLACEHOLDER_TIMES = {'tip-off': [tipClock, tipWhen]};" in js, 'the NBA card\'s day rows'
+    assert "const PLACEHOLDER_TIMES = {'tip-off': [tipClock, tipWhen], 'first pitch': [pitchClock, pitchWhen]};" in js, (
+        'the NBA card\'s day rows')
     assert "[['First tip-off', tipWhen(first)]]" in js, 'the NBA card before its first pick'
     assert "s === 'nba' ? (tonight ? tipClock(t) : tipWhen(t))" in js, 'the next-game line'
