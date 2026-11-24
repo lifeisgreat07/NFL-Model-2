@@ -68,7 +68,7 @@ def test_both_pages_have_their_buttons_and_sit_in_the_more_sheet():
     sheet = re.search(r'<div id="bnav-more-sheet".*?\n</div>\n', BODY, re.S).group(0)
     in_sheet = re.findall(r'class="bnav-more-item" data-page="([a-z]+)"', sheet)
     overflow = json.loads(re.search(r"const OVERFLOW_PAGES = (\[.*?\]);", JS).group(1).replace("'", '"'))
-    assert in_sheet == overflow == ['modellab', 'method']
+    assert in_sheet == overflow and {'modellab', 'method'} <= set(in_sheet)
 
 
 def run_node(names, body, shared=()):

@@ -468,11 +468,76 @@ function renderMethod(){
     <tbody>${cov}</tbody></table></div>`;
 }
 
+/* ---------- teams (Stage 100 item 2) ----------
+   The NHL's Teams page, one club at a time: its run rating and rank, where it stands in the simulated standings, and
+   its games so far; and what baseball adds, the club's starters with their ratings. The pick and grade columns join
+   the games table when Stage 101 defines MLB's pick file. */
+let currentTeam = null;
+try{ currentTeam = localStorage.getItem('mlb:team'); }catch(e){}
+function clubName(code){ return (BD.teams[code] || {}).name || code; }
+function clubGames(code){
+  return BD.games.filter(g => g.home === code || g.away === code)
+    .sort((a, b) => (a.start || a.day).localeCompare(b.start || b.day));
+}
+function gameResult(g, code){
+  if(g.status !== 'final' || g.hs === null || g.hs === undefined) return '';
+  const mine = g.home === code ? g.hs : g.as, theirs = g.home === code ? g.as : g.hs;
+  return `${mine > theirs ? 'W' : mine < theirs ? 'L' : 'T'} ${mine}-${theirs}`;
+}
+function teamFacts(code, r, s){
+  const rank = r ? r.clubs.findIndex(c => c.team === code) : -1;
+  const club = rank >= 0 ? r.clubs[rank] : null;
+  const odds = s ? s.teams.find(t => t.team === code) : null;
+  return [
+    club ? `Run rating <b>${plusMinus(club.runs, 2)}</b> a game (${rank + 1} of ${r.clubs.length}).` : 'No ratings yet.',
+    odds ? `${odds.wins_now}-${odds.losses_now}; projected <b>${odds.projected_wins.toFixed(1)}</b> wins, the postseason <b>${chance(odds.playoff_pct)}</b>, the ${escapeHtml(odds.division)} title ${chance(odds.division_pct)}.`
+      : 'Standings odds not simulated yet.',
+  ];
+}
+function renderTeams(){
+  const select = document.getElementById('team-select');
+  const clubs = Object.keys(BD.teams).sort((a, b) => clubName(a).localeCompare(clubName(b)));
+  if(!currentTeam || !BD.teams[currentTeam]) currentTeam = clubs[0];
+  if(!select.options.length){
+    select.innerHTML = clubs.map(c => `<option value="${c}">${escapeHtml(clubName(c))}</option>`).join('');
+    select.addEventListener('change', () => {
+      currentTeam = select.value;
+      try{ localStorage.setItem('mlb:team', currentTeam); }catch(e){}
+      renderTeams();
+    });
+  }
+  select.value = currentTeam;
+  const t = currentTeam, r = BD.ratings, name = escapeHtml(clubName(t));
+  const starters = r ? r.starters.filter(s => clubCode(s.club) === t) : [];
+  const startersHtml = !r ? '' : starters.length
+    ? `<h3 class="mlb-team-sub">Starters this season</h3><div class="table-wrap"><table class="metrics-table mlb-table"><caption class="visually-hidden">${name}: starters</caption>
+      <thead><tr><th scope="col">Pitcher</th><th scope="col" class="num">Runs per 9</th><th scope="col" class="num">Better than league</th><th scope="col" class="num">Starts</th></tr></thead>
+      <tbody>${starters.map(s => `<tr><th scope="row">${escapeHtml(s.name || s.player_id)}</th><td class="num">${s.rate.toFixed(2)}</td><td class="num">${plusMinus(r.league_rate - s.rate, 2)}</td><td class="num">${s.starts}</td></tr>`).join('')}</tbody></table></div>`
+    : `<p class="mlb-lede">No pitcher has made ${r.min_starts} starts for this club yet.</p>`;
+  const games = clubGames(t).filter(g => g.status === 'final');
+  const gamesHtml = games.length
+    ? `<h3 class="mlb-team-sub">Games so far</h3><div class="table-wrap"><table class="metrics-table mlb-table"><caption class="visually-hidden">${name}: games so far</caption>
+      <thead><tr><th scope="col">Date</th><th scope="col">Opponent</th><th scope="col">Result</th></tr></thead>
+      <tbody>${games.map(g => `<tr><td>${FMT_MONTHDAY.format(dayDate(g.day))}</td><td>${g.home === t ? 'vs' : 'at'} ${clubCode(g.home === t ? g.away : g.home)}</td><td>${gameResult(g, t)}</td></tr>`).join('')}</tbody></table></div>`
+    : stateHtml('waiting', 'No games played yet', '');
+  document.getElementById('teams-body').innerHTML = `<div class="fav-title"><h2 class="section-title">${name}</h2>${favStar('mlb', t, name)}</div>`
+    + `<p class="mlb-lede">${teamFacts(t, r, BD.standings).join(' ')}</p>${startersHtml}${gamesHtml}`;
+}
+
+/* ---------- what's changed ----------
+   src/sports/mlb/pages/changes.json: every amendment to MLB's registration, each entry naming the ones it covers
+   (tests/test_whats_changed_complete.py holds the list to the registration both ways). */
+function renderChanges(){
+  document.getElementById('changes-body').innerHTML = (DATA.changes || []).map(c => `<div class="mlb-change">`
+    + `<span class="mlb-change-date">${escapeHtml(dayText(c.date))}</span><h3>${escapeHtml(c.title)}</h3>`
+    + `<p class="mlb-lede">${escapeHtml(c.text)}</p></div>`).join('') || stateHtml('waiting', 'Nothing recorded yet', '');
+}
+
 /* ---------- the page around the board ----------
    Each button for the page shown carries aria-current, as on the other sports. On a phone the pages past the first
    three sit in the More sheet (OVERFLOW_PAGES), whose button is lit while one of them is shown. */
 const BASE_TITLE = document.title;
-const OVERFLOW_PAGES = ['modellab', 'method'];
+const OVERFLOW_PAGES = ['teams', 'modellab', 'method', 'changes'];
 function showMlbPage(name, opts){
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
   document.querySelectorAll('[data-page]').forEach(b => {
@@ -545,6 +610,8 @@ renderStandings();
 renderRatings();
 renderModelLab();
 renderMethod();
+renderTeams();
+renderChanges();
 /* A star redraws the board with its club's games first. */
 installFavStars(renderBoard);
 /* #board/<day> and #game/<id>, as on the other day boards (src/core/routes.js). */
