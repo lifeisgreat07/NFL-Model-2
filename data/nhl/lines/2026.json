@@ -4450,5 +4450,17 @@
   "home_prob": 0.3908,
   "read_utc": "2026-11-23T21:01:45Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020384",
+  "start_utc": "2026-11-24T03:00:00Z",
+  "home": "SJS",
+  "away": "MIN",
+  "book": "DraftKings",
+  "home_price": 150.0,
+  "away_price": -180.0,
+  "home_prob": 0.3836,
+  "read_utc": "2026-11-24T01:27:12Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]

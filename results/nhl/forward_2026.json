@@ -25,7 +25,7 @@
   },
   "base_rate": {
    "games": 314,
-   "log_loss": 0.6927048167121488,
+   "log_loss": 0.6927048167121489,
    "brier": 0.24977773806968107,
    "accuracy": 0.5222929936305732
   }
@@ -34,7 +34,7 @@
   "https://api-web.nhle.com/v1/partner-game/US/now": {
    "model_a": {
     "games": 286,
-    "log_loss": 0.6706621741271386,
+    "log_loss": 0.6706621741271387,
     "brier": 0.23906219244755245,
     "accuracy": 0.583916083916084
    },
@@ -52,7 +52,7 @@
    },
    "base_rate": {
     "games": 286,
-    "log_loss": 0.6923645235732157,
+    "log_loss": 0.6923645235732158,
     "brier": 0.24960793556501343,
     "accuracy": 0.5244755244755245
    }
@@ -66,25 +66,25 @@
   "model_a_minus_base_rate": {
    "games": 314,
    "days": 46,
-   "diff": -0.03131977845343312,
-   "low": -0.05529716235475438,
-   "high": -0.004951413066536005,
+   "diff": -0.031319778453433124,
+   "low": -0.055297162354754376,
+   "high": -0.00495141306653601,
    "level": 0.9833333333333333
   },
   "model_b_minus_model_a": {
    "games": 286,
    "days": 46,
-   "diff": -0.015552150876482563,
-   "low": -0.03115033685278567,
-   "high": 0.0006939487735235477,
+   "diff": -0.015552150876482554,
+   "low": -0.031150336852785666,
+   "high": 0.0006939487735235567,
    "level": 0.9833333333333333
   },
   "model_b_minus_market": {
    "games": 286,
    "days": 46,
-   "diff": -0.004910132394893716,
-   "low": -0.010480972742744116,
-   "high": 0.0010425250591886463,
+   "diff": -0.004910132394893702,
+   "low": -0.0104809727427441,
+   "high": 0.0010425250591886608,
    "level": 0.9833333333333333
   }
  },
@@ -95,9 +95,9 @@
    "level": 0.9833333333333333,
    "fits": "two: the intercept with the slope held at 1 (calibration in the large), the slope with an intercept of its own",
    "intercept": {
-    "value": -0.039075183120960956,
+    "value": -0.03907518312096091,
     "low": -0.35456957472862494,
-    "high": 0.24628352020935337,
+    "high": 0.24628352020935335,
     "draws_unfit": 0
    },
    "slope": {
@@ -113,7 +113,7 @@
    "level": 0.9833333333333333,
    "fits": "two: the intercept with the slope held at 1 (calibration in the large), the slope with an intercept of its own",
    "intercept": {
-    "value": -0.03700449038727402,
+    "value": -0.03700449038727403,
     "low": -0.37465314047939136,
     "high": 0.27861702079128964,
     "draws_unfit": 0
