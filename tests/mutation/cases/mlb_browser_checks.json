@@ -17,6 +17,15 @@
       "expect_caught_by": "test_the_cross_sport_checks_open_mlbs_pages_too"
     },
     {
+      "id": "mlb-browser-task-skips-mlb",
+      "why": "the local browser-check task stops building MLB's pages, so a run on the PC checks less than CI does",
+      "target": "tasks.py",
+      "tests": "tests/test_tasks.py",
+      "find": "                                 [PY, '-m', 'src.sports.mlb.site', '--out', str(STATES / MLB_PAGE)],\n",
+      "replace": "",
+      "expect_caught_by": "test_browser_check_runs_what_the_workflow_runs_in_the_same_order"
+    },
+    {
       "id": "mlb-tables-never-fitted",
       "why": "mlb.js drops the rule that runs fitTables, so a Model Lab table wider than a phone cannot be reached by keyboard (axe scrollable-region-focusable)",
       "target": "src/sports/mlb/pages/mlb.js",
