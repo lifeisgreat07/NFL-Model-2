@@ -1,0 +1,116 @@
+name: MLB spring probables
+
+# Stage 101 item 2. MLB's forward test saves each pick at the last of three
+# daily runs at least an hour before first pitch, with the probable pitchers
+# the Stats API lists then; the three times come from this measurement, by the
+# rule experiments/mlb/stage101/registry.json fixed before it was taken
+# (forward_test.runs). Every 30 minutes in February and March,
+# src/sports/mlb/probables_timing.py reads the spring training schedule for
+# today and the next two days with the probable pitchers, and keeps each
+# game's listed first pitch and the first read that named both probables in
+# data/mlb/spring_probables_2027.json. It reads nothing after 2027-03-21, the
+# registry's last measured day, or in another year; after the measurement the
+# rule is applied by hand (`probables_timing choose`) and this workflow is
+# removed.
+#
+# GitHub's scheduler starts runs late and sometimes skips them. A late read
+# can only see a naming later than it happened, never earlier, so nothing is
+# dispatched on the minute: the measurement errs toward later times, not
+# toward a run that would find the probables unnamed. The minutes are 7 and
+# 37, off the hour's crowded start.
+#
+# It commits only that file (src/core/isolation.py holds MLB's workflows to
+# MLB's folders), and only when it changed. A failure opens or comments on
+# "MLB: the spring probables reader failed".
+on:
+  schedule:
+    - cron: '7,37 * * 2,3 *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: mlb-spring-probables
+  cancel-in-progress: false
+
+jobs:
+  read:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.11'
+
+      # Stage 42 item 1: how late this run started, against its own cron line.
+      - name: Record the start delay
+        timeout-minutes: 5
+        run: python -m src.core.start_delay .github/workflows/mlb-spring-probables.yml
+
+      - name: Install dependencies
+        timeout-minutes: 10
+        run: pip install --require-hashes -r requirements.lock
+
+      # `shell: bash` runs with pipefail, so a crash is not reported as success by `tee`.
+      - name: Read the spring schedule's probable pitchers
+        timeout-minutes: 5
+        shell: bash
+        run: python -m src.sports.mlb.probables_timing record 2>&1 | tee mlb-spring-probables.log
+
+      - name: Pull before committing
+        timeout-minutes: 5
+        run: |
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              pull --rebase --autostash origin main
+          python -m src.core.pull_check
+
+      - name: Commit the measurement
+        timeout-minutes: 5
+        run: |
+          test -f data/mlb/spring_probables_2027.json && git add data/mlb/spring_probables_2027.json
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -q -m "MLB spring probables"
+          for try in 1 2 3; do
+            if git push origin HEAD:main; then exit 0; fi
+            echo "push refused (try $try of 3); rebasing on main"
+            sleep $((try * 15))
+            git -c user.name='github-actions[bot]' \
+                  -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+                  pull --rebase origin main
+          done
+          echo "push refused three times"
+          exit 1
+
+      - name: Close the alert if this run recovered
+        timeout-minutes: 5
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'Recovered: the run at %s succeeded.\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > recovered.md
+          python -m src.core.alerts --resolve --title "MLB: the spring probables reader failed" --body-file recovered.md
+
+      - name: Raise an alert on failure
+        if: failure()
+        timeout-minutes: 5
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          printf 'The MLB spring probables reader failed. A missed read is a gap in the measurement: the next read records any naming it missed, later than it happened.\n\nRun: %s\n' "$run_url" > alert.md
+          python -m src.core.alerts --title "MLB: the spring probables reader failed" --body-file alert.md

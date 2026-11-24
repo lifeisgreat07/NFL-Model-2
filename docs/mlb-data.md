@@ -86,7 +86,8 @@ published before first pitch cannot be measured in November; it is measured in s
 reading the schedule on a timer, before Stage 101's starting-pitcher routine is set. OPEN until then. How that
 measurement becomes the daily runs' three times is registered now, before it is taken
 (`experiments/mlb/stage101/registry.json`, `forward_test.runs`), and a side with no probable named at the lock
-gets the league-average starter.
+gets the league-average starter. The measurement is `src/sports/mlb/probables_timing.py`, run every 30 minutes in
+February and March by `.github/workflows/mlb-spring-probables.yml`; its `choose` applies the rule once spring is over.
 
 ## 5. Club identity across seasons
 

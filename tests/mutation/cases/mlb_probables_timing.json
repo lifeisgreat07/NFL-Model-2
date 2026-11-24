@@ -1,0 +1,83 @@
+{
+  "target": "src/sports/mlb/probables_timing.py",
+  "tests": "tests/test_mlb_probables_timing.py",
+  "cases": [
+    {
+      "id": "mlb-probables-naming-moved",
+      "why": "every read that names both probables overwrites the first, so a game named a day ahead looks named late.",
+      "find": "        if row['first_named_utc'] is None and home is not None and away is not None:\n",
+      "replace": "        if home is not None and away is not None:\n",
+      "expect_caught_by": "test_the_first_read_naming_both_probables_is_kept_and_never_moved"
+    },
+    {
+      "id": "mlb-probables-one-side-counts",
+      "why": "one probable named counts as both, so a pick would be saved with a side's starter unknown more often than measured.",
+      "find": "        if row['first_named_utc'] is None and home is not None and away is not None:\n",
+      "replace": "        if row['first_named_utc'] is None and (home is not None or away is not None):\n",
+      "expect_caught_by": "test_the_first_read_naming_both_probables_is_kept_and_never_moved"
+    },
+    {
+      "id": "mlb-probables-named-after-first-pitch",
+      "why": "a game is never closed, so probables named after first pitch count as named before it.",
+      "find": "        if read_at >= parse(row['start_utc']):\n            row['closed'] = True\n            continue\n",
+      "replace": "",
+      "expect_caught_by": "test_a_game_read_after_it_started_is_closed_and_a_late_naming_does_not_count"
+    },
+    {
+      "id": "mlb-probables-start-frozen",
+      "why": "the first listed start is kept, so a game moved later is measured against a first pitch it never had.",
+      "find": "        row['start_utc'] = g['gameDate']\n",
+      "replace": "",
+      "expect_caught_by": "test_the_listed_start_follows_the_schedule_until_first_pitch"
+    },
+    {
+      "id": "mlb-probables-exhibitions-kept",
+      "why": "exhibitions against college clubs are measured as spring training games.",
+      "find": "        if g.get('gameType') != 'S' or not g.get('gamePk')",
+      "replace": "        if not g.get('gamePk')",
+      "expect_caught_by": "test_only_spring_games_are_kept"
+    },
+    {
+      "id": "mlb-probables-read-past-the-last-day",
+      "why": "the reads go on past 2027-03-21, so the measurement takes in days the registry does not measure.",
+      "find": "    if today.year != SEASON or today > LAST_DAY:\n",
+      "replace": "    if today.year != SEASON:\n",
+      "expect_caught_by": "test_nothing_is_read_after_the_registrys_last_day_or_in_another_year"
+    },
+    {
+      "id": "mlb-probables-no-slack",
+      "why": "the saving run is the last before first pitch, not an hour before it, so the measurement credits runs the lock would never use.",
+      "find": "    latest = start.astimezone(UTC) - SLACK\n",
+      "replace": "    latest = start.astimezone(UTC)\n",
+      "expect_caught_by": "test_the_saving_run_is_the_last_at_its_mark_an_hour_before_first_pitch"
+    },
+    {
+      "id": "mlb-probables-postponed-measured",
+      "why": "postponed and cancelled games are measured as never named, pulling the share down for games no pick would be saved for.",
+      "find": " or row['start_time_tbd'] or row['state'] in NOT_PLAYED:\n",
+      "replace": " or row['start_time_tbd']:\n",
+      "expect_caught_by": "test_postponed_unset_and_unstarted_games_are_not_measured"
+    },
+    {
+      "id": "mlb-probables-no-one-point-tie",
+      "why": "only the best share is considered, so the registry's one-point allowance for later, fresher runs is lost.",
+      "find": "share >= best - WITHIN - 1e-12]",
+      "replace": "share >= best - 1e-12]",
+      "expect_caught_by": "test_a_later_set_within_a_point_of_the_best_is_chosen"
+    },
+    {
+      "id": "mlb-probables-latest-on-the-utc-clock",
+      "why": "latest is read on the UTC clock, so 23:30 UTC beats 00:30 UTC though it is an hour earlier in MLB's day.",
+      "find": "    return float(np.mean([(m - DAY_START) % (24 * 60) for m in marks]))\n",
+      "replace": "    return float(np.mean(list(marks)))\n",
+      "expect_caught_by": "test_latest_is_read_on_mlbs_day_so_half_past_midnight_utc_is_later_than_half_past_eleven"
+    },
+    {
+      "id": "mlb-probables-sets-scored-by-one-run",
+      "why": "a set is scored on its first run only, not on whichever of its runs saves the game.",
+      "find": "            pair = n[:, i] | n[:, j]\n",
+      "replace": "            pair = n[:, i]\n",
+      "expect_caught_by": "test_every_set_of_three_is_scored_as_any_of_its_runs_naming_the_game"
+    }
+  ]
+}
