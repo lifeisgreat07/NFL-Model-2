@@ -121,7 +121,8 @@ def day_sport_facts(sport: str, game_types: tuple[str, ...], root: Path = ROOT,
     # hour), which the card prints as "time TBD". Only the NBA's schedule
     # carries the field; for the NHL this is empty.
     unset = sorted({g['start_utc'] for g in sched.get('games', [])
-                    if g.get('game_type') in game_types and g.get('start_utc') and g.get('time_valid') is False})
+                    if g.get('game_type') in game_types and g.get('start_utc')
+                    and (g.get('time_valid') is False or g.get('start_time_tbd') is True)})
     # The first game of the season and how many picks are saved, so a card
     # can say when picks start rather than show an empty record (Stage 68
     # item 6). graded_<season>.json has one row per saved pick.
@@ -143,6 +144,23 @@ def nba_facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
     f = day_sport_facts('nba', ('regular', 'playin', 'playoff'), root, now)
     return f if f['built'] else {'built': True, 'games': [], 'first_game': None, 'picks': 0, 'unset': [],
                                  'record': {'label': 'Picks this season', 'won': 0, 'lost': 0}}
+
+
+#: MLB's game types (src/sports/mlb/schedule.py GAME_TYPES): the regular season and the four postseason rounds.
+MLB_TYPES = ('regular', 'wild_card', 'division', 'league', 'world_series')
+
+
+def mlb_facts(root: Path = ROOT, now: datetime | None = None, published: bool | None = None) -> dict[str, Any]:
+    """MLB's, as the NHL's (Stage 100 item 4), but dark until MLB's page is published (Stage 101, Mark's
+    2026-11-23 answer): until the site build lists 'mlb' among its SPORTS, `{'built': False, 'dark': True}`,
+    which home.js turns into no card at all rather than "not built", since MLB has no page yet to have failed to
+    build. A schedule file alone does not light it. Once published, a build that fails says "not built" as the
+    other sports' cards do. MLB marks an unset start `start_time_tbd`, which `day_sport_facts` lists in `unset`
+    beside the NBA's `time_valid`."""
+    if published is None:
+        from src.site.build import SPORTS
+        published = 'mlb' in SPORTS
+    return day_sport_facts('mlb', MLB_TYPES, root, now) if published else {'built': False, 'dark': True}
 
 
 #: How close to an even chance a side may be and still be called "even",
@@ -245,7 +263,8 @@ def facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
     # built_utc: when this page was made, printed as "Updated ... ET" as the
     # sport pages print theirs (Stage 77 item 30, the 2026-10-13 audit's H2).
     built = (now or datetime.now(UTC)).strftime('%Y-%m-%dT%H:%M:%SZ')
-    return {'nfl': nfl_facts(root), 'nhl': nhl_facts(root, now), 'nba': nba_facts(root, now), 'built_utc': built,
+    return {'nfl': nfl_facts(root), 'nhl': nhl_facts(root, now), 'nba': nba_facts(root, now),
+            'mlb': mlb_facts(root, now), 'built_utc': built,
             'slate': slate(root, now), 'track': track_record.track_record(root)}
 
 

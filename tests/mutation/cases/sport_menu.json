@@ -67,6 +67,14 @@
       "find": "  .sm-list:not(:has(.sm-rec:not(:empty))) .sm-note{display:none;}\n",
       "replace": "",
       "expect_caught_by": "test_the_note_and_an_empty_record_hide_until_there_is_a_record"
+    },
+    {
+      "id": "sport-menu-mlb-published-without-its-menus",
+      "target": "src/site/build.py",
+      "why": "MLB is published while the other sports' menus still leave it out",
+      "find": "SPORTS = ('nfl', 'nhl', 'nba')\n",
+      "replace": "SPORTS = ('nfl', 'nhl', 'nba', 'mlb')\n",
+      "expect_caught_by": "test_every_sport_pages_menus_list_home_each_published_sport_and_itself_once"
     }
   ]
 }

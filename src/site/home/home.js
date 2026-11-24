@@ -18,8 +18,13 @@ const UNSET_TIPS = new Set(((HOME.nba || {}).unset || []).map(s => Date.parse(s)
 function tipSet(t){ return !UNSET_TIPS.has(t); }
 function tipClock(t){ return tipSet(t) ? clock(t) : 'time TBD'; }
 function tipWhen(t){ return tipSet(t) ? when(t) : `${weekday(t)} · time TBD`; }
-/* Which moments can be placeholders: only the NBA's tip-off. */
-const PLACEHOLDER_TIMES = {'tip-off': [tipClock, tipWhen]};
+/* MLB's first pitch likewise (Stage 100 item 4): MLB files a start it has
+   not set as `start_time_tbd`, which home.py lists in the same `unset`. */
+const UNSET_PITCHES = new Set(((HOME.mlb || {}).unset || []).map(s => Date.parse(s)));
+function pitchClock(t){ return UNSET_PITCHES.has(t) ? 'time TBD' : clock(t); }
+function pitchWhen(t){ return UNSET_PITCHES.has(t) ? `${weekday(t)} · time TBD` : when(t); }
+/* Which moments can be placeholders: the NBA's tip-off and MLB's first pitch. */
+const PLACEHOLDER_TIMES = {'tip-off': [tipClock, tipWhen], 'first pitch': [pitchClock, pitchWhen]};
 function record(r){ return r && (r.won + r.lost) > 0 ? `${r.won}–${r.lost}` : '—'; }
 
 // Each sport's icon, as at the top left of its page (Stage 62.2: the football,
@@ -31,6 +36,8 @@ const ICON_PARTS = {
      + '<path d="M1.6 8.4v3.2a8.4 3.2 0 0 0 16.8 0V8.4"/></g>',
   nba: '<g transform="rotate(-28 10 10)"><circle cx="10" cy="10" r="8.4"/>'
      + '<path stroke-width="1.2" d="M10 1.6v16.8M1.6 10h16.8M4.1 4c2.5 2.3 3 9.2 0 12M15.9 4c-2.5 2.3-3 9.2 0 12"/></g>',
+  mlb: '<g><circle cx="10" cy="10" r="8.4"/>'
+     + '<path stroke-width="1.2" d="M5.2 3.6c2.4 2.2 2.4 10.6 0 12.8M14.8 3.6c-2.4 2.2-2.4 10.6 0 12.8"/></g>',
 };
 function icon(sport){
   const parts = ICON_PARTS[sport];
@@ -65,7 +72,7 @@ function bestPick(games, timeOf){
   const r = ahead.reduce((x, y) => y.c > x.c ? y : x);
   return `${r.p} ${r.c}% over ${r.p === r.h ? r.a : r.h} · ${timeOf(Date.parse(r.t))}`;
 }
-const START_SPORT = {'puck drop': 'nhl', 'tip-off': 'nba'};
+const START_SPORT = {'puck drop': 'nhl', 'tip-off': 'nba', 'first pitch': 'mlb'};
 function slateOf(sport){ return (HOME.slate || []).filter(r => r.s === sport); }
 
 function card(sport, name, href, status, big, rows, go){
@@ -119,6 +126,10 @@ function nflCard(f){
    the moment a game begins in that sport ("puck drop", "tip-off"). */
 function dayStatus(f, start){
   const [atClock, atWhen] = PLACEHOLDER_TIMES[start] || [clock, when];
+  /* MLB's moment already says "first": its rows read "First pitch" and
+     "Next game", not "First first pitch" (Stage 100 item 4). */
+  const MOMENT_LABELS = {'first pitch': ['First pitch', 'Next game']};
+  const [firstLabel, nextLabel] = MOMENT_LABELS[start] || [`First ${start}`, `Next ${start}`];
   const games = (f.games || []).map(([s, st]) => ({t: Date.parse(s), st}));
   const today = games.filter(g => dayKey(g.t) === dayKey(NOW));
   const upcoming = games.filter(g => g.t > NOW - 3 * HOUR && g.st !== 'final');
@@ -136,8 +147,8 @@ function dayStatus(f, start){
     /* Audit 9 D16: once every game has started, the card said "First tip-off
        1:00 PM" for the rest of the day. The statuses are the build's, so a
        game that started since is not known to be final: it is under way. */
-    if(first > NOW) rows.push([`First ${start}`, atClock(first)]);
-    else if(later.length) rows.push([`Next ${start}`, atClock(Math.min(...later))]);
+    if(first > NOW) rows.push([firstLabel, atClock(first)]);
+    else if(later.length) rows.push([nextLabel, atClock(Math.min(...later))]);
     else rows.push([evening ? 'Tonight' : 'Today', finals === today.length ? 'All final' : 'All under way']);
     const best = bestPick(slateOf(START_SPORT[start]).filter(r => r.k === 'pick' && dayKey(Date.parse(r.t)) === dayKey(NOW)), atClock);
     if(best) rows.push([`Best pick ${evening ? 'tonight' : 'today'}`, best]);
@@ -145,7 +156,7 @@ function dayStatus(f, start){
     const next = Math.min(...upcoming.map(g => g.t));
     const n = games.filter(g => dayKey(g.t) === dayKey(next)).length;
     status = {text:`Next: ${n} game${n === 1 ? '' : 's'} ${weekday(next)}`};
-    rows.push([`First ${start}`, atWhen(next)]);
+    rows.push([firstLabel, atWhen(next)]);
   } else {
     status = null;
   }
@@ -180,6 +191,35 @@ function nbaCard(f){
               'Picks lock game by game', d.rows, 'Open the NBA board');
 }
 
+/* Stage 100 item 4: MLB's card. Until its page is published (Stage 101)
+   home.py marks it `dark` and there is no card at all, not "not built";
+   after that a failed build says so as the others do. Before the first
+   pick the card counts down to Opening Day by calendar day on the visitor's
+   own clock: "Opening Day in 3 days", "tomorrow", "today". */
+function daysUntil(t, now){
+  const a = new Date(now), b = new Date(t);
+  const start = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  return Math.round((start(b) - start(a)) / (24 * HOUR));
+}
+function countdown(t, now){
+  const n = daysUntil(t, now);
+  if(n <= 0) return 'Opening Day today';
+  if(n === 1) return 'Opening Day tomorrow';
+  return `Opening Day in ${n} days`;
+}
+function mlbCard(f){
+  if(!f || f.dark) return '';
+  if(!f.built) return notBuilt('mlb', 'MLB');
+  const first = beforeFirstPick(f);
+  if(first !== null){
+    return card('mlb', 'MLB', 'mlb/', {text: countdown(first, NOW)}, 'Picks lock game by game',
+                [['First pitch', pitchWhen(first)]], 'Open the MLB board');
+  }
+  const d = dayStatus(f, 'first pitch');
+  return card('mlb', 'MLB', 'mlb/', d.status || {text:'No games scheduled', cls:'is-quiet'},
+              'Picks lock game by game', d.rows, 'Open the MLB board');
+}
+
 /* Stage 103 item 4: the March Madness bracket's card, only while its page is
    published (from the lock to the middle of April); home.py hands it over
    only then, so any other month there is no card at all. */
@@ -193,7 +233,7 @@ function marchCard(m){
 }
 
 document.getElementById('home-cards').innerHTML = nflCard(HOME.nfl) + nhlCard(HOME.nhl) + nbaCard(HOME.nba)
-  + marchCard(HOME.march);
+  + mlbCard(HOME.mlb) + marchCard(HOME.march);
 /* Stage 77 item 30 (H2): "Updated ... ET", as on each sport's page. */
 function updatedText(iso){
   if(!iso) return '';

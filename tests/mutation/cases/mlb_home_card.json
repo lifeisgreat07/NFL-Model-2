@@ -1,0 +1,64 @@
+{
+  "target": "src/site/home/home.js",
+  "tests": "tests/test_mlb_home_card.py",
+  "cases": [
+    {
+      "id": "mlb-home-card-lit-before-publishing",
+      "why": "a schedule file alone lights MLB's card before Stage 101 publishes its page, so the home links to a page that is not there",
+      "target": "src/site/home.py",
+      "find": "    return day_sport_facts('mlb', MLB_TYPES, root, now) if published else {'built': False, 'dark': True}\n",
+      "replace": "    return day_sport_facts('mlb', MLB_TYPES, root, now)\n",
+      "expect_caught_by": "test_the_card_stays_dark_until_the_site_build_publishes_mlb"
+    },
+    {
+      "id": "mlb-home-unset-start-ignored",
+      "why": "MLB's start_time_tbd is not read, so a placeholder 3:33 AM start is printed as Opening Day's first pitch",
+      "target": "src/site/home.py",
+      "find": "                    and (g.get('time_valid') is False or g.get('start_time_tbd') is True)})\n",
+      "replace": "                    and g.get('time_valid') is False})\n",
+      "expect_caught_by": "test_a_start_mlb_has_not_set_is_listed_as_unset"
+    },
+    {
+      "id": "mlb-home-dark-card-says-not-built",
+      "why": "before Stage 101 the home shows an MLB card saying its page was not built, though there is no page to build",
+      "find": "  if(!f || f.dark) return '';\n",
+      "replace": "  if(!f) return '';\n",
+      "expect_caught_by": "test_no_card_at_all_while_dark_and_not_built_once_published"
+    },
+    {
+      "id": "mlb-home-countdown-by-hours",
+      "why": "the countdown counts whole 24-hour spans, so late in the evening it is a day short of the calendar",
+      "find": "  return Math.round((start(b) - start(a)) / (24 * HOUR));\n",
+      "replace": "  return Math.floor((b - a) / (24 * HOUR));\n",
+      "expect_caught_by": "test_the_countdown_is_by_calendar_day_on_the_visitors_clock"
+    },
+    {
+      "id": "mlb-home-countdown-one-days",
+      "why": "the day before Opening Day reads \"Opening Day in 1 days\"",
+      "find": "  if(n === 1) return 'Opening Day tomorrow';\n",
+      "replace": "",
+      "expect_caught_by": "test_the_countdown_is_by_calendar_day_on_the_visitors_clock"
+    },
+    {
+      "id": "mlb-home-first-first-pitch",
+      "why": "MLB's day rows read \"First first pitch\" and \"Next first pitch\"",
+      "find": "  const MOMENT_LABELS = {'first pitch': ['First pitch', 'Next game']};\n",
+      "replace": "  const MOMENT_LABELS = {};\n",
+      "expect_caught_by": "test_after_the_first_pick_it_is_the_day_card"
+    },
+    {
+      "id": "mlb-home-tbd-pitch-printed",
+      "why": "a first pitch MLB has not set is printed at its placeholder hour instead of \"time TBD\"",
+      "find": "function pitchWhen(t){ return UNSET_PITCHES.has(t) ? `${weekday(t)} · time TBD` : when(t); }\n",
+      "replace": "function pitchWhen(t){ return when(t); }\n",
+      "expect_caught_by": "test_the_countdown_card_shows_the_first_pitch_and_links_to_the_board"
+    },
+    {
+      "id": "mlb-home-card-never-drawn",
+      "why": "mlbCard is written but never put on the page, so Stage 101 publishes MLB with no home card",
+      "find": "  + mlbCard(HOME.mlb) + marchCard(HOME.march);\n",
+      "replace": "  + marchCard(HOME.march);\n",
+      "expect_caught_by": "test_the_card_sits_after_the_nba_and_draws_the_pages_ball"
+    }
+  ]
+}

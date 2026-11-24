@@ -1,0 +1,63 @@
+{
+ "game_id": "401910043",
+ "season": 2026,
+ "slate": "2026-11-23",
+ "start_utc": "2026-11-24T01:30:00Z",
+ "home": "HOU",
+ "away": "LAC",
+ "model_a": 0.7619,
+ "model_b": 0.8327,
+ "pick": "HOU",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.9605
+ },
+ "features": {
+  "point_matchup": 5.650478,
+  "efficiency_matchup": 5.673055,
+  "availability_matchup": 0.039493
+ },
+ "market": {
+  "game_id": "401910043",
+  "home": "HOU",
+  "away": "LAC",
+  "start_utc": "2026-11-24T01:30:00Z",
+  "read_utc": "2026-11-23T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -650.0,
+  "away_price": 470.0,
+  "home_prob": 0.8316
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-23T21:31:30Z",
+  "home": [],
+  "away": [
+   {
+    "athlete_id": "6580",
+    "name": "Bradley Beal",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4396818",
+    "name": "Jordan Miller",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-23T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-22",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14306,
+  "training_games_priced": 14265,
+  "training_ids_sha256": "54f1e4f8d4a3b92adec37c0ecb0dea8c6f95b24e09e72068cd8757f2e83cf31a"
+ },
+ "code_sha256": "8f64049279069421c307a139a44f8e1b78e4fc90b3a204bd6485b1ab292dbc16",
+ "code_commit": "36a34623012d5d69920e31938075fb61876031e0"
+}
