@@ -20,7 +20,11 @@ def text():
 
 
 def timeout():
-    m = re.findall(r'^\s*timeout-minutes:\s*(\d+)', text(), re.M)
+    # The audit job's own limit: the post job (Stage 82 item 4) has its own, five minutes, and runs no model.
+    t = text().replace('\r\n', '\n')
+    audit = t[t.index('\n  audit:\n'):]
+    audit = audit[:audit.index('\n  post:\n')] if '\n  post:\n' in audit else audit
+    m = re.findall(r'^\s*timeout-minutes:\s*(\d+)', audit, re.M)
     assert len(m) == 1, f'expected one timeout-minutes on the audit job, found {m}'
     return int(m[0])
 

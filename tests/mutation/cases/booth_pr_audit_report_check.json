@@ -12,8 +12,8 @@
     {
       "id": "audit-report-check-exit-code-swallowed",
       "why": "the checker runs and prints FAIL, and the step still exits 0",
-      "find": "\"${{ steps.audited.outputs.started }}\"",
-      "replace": "\"${{ steps.audited.outputs.started }}\" || true",
+      "find": "\"${{ needs.audit.outputs.started }}\"",
+      "replace": "\"${{ needs.audit.outputs.started }}\" || true",
       "expect_caught_by": "test_the_check_runs_after_booth"
     },
     {
@@ -26,22 +26,22 @@
     {
       "id": "audit-sha-read-after-booth",
       "why": "HEAD is read after the audit, when Booth may have checked out another commit, so the check looks for a report on a commit this run never audited",
-      "find": "\"${{ steps.audited.outputs.sha }}\"",
+      "find": "\"${{ needs.audit.outputs.sha }}\"",
       "replace": "\"$(git rev-parse HEAD)\"",
       "expect_caught_by": "test_sha_and_start_time_are_recorded_before_booth_and_used_by_the_check"
     },
     {
-      "id": "audit-checker-run-from-the-tree-booth-left",
-      "why": "the checker runs from whatever checkout Booth left behind -- an older commit without the script, or a file mid-mutation",
-      "find": "          cd \"$RUNNER_TEMP/booth-check\"\n",
-      "replace": "",
-      "expect_caught_by": "test_the_checker_is_copied_out_before_booth_touches_the_tree"
+      "id": "audit-check-moves-back-beside-booth",
+      "why": "the post job no longer waits for the audit job, so the check runs while Booth is still working, and can never see the report the post job has not yet posted (Stage 82 item 4)",
+      "find": "    needs: audit\n    if: ${{ !cancelled() && needs.audit.result",
+      "replace": "    if: ${{ !cancelled() && needs.audit.result",
+      "expect_caught_by": "test_the_check_runs_in_a_job_booth_cannot_reach"
     },
     {
       "id": "booth-checker-from-the-head",
       "target": ".github/workflows/booth-pr-audit.yml",
-      "why": "the checker is copied from the pull request's own working tree again, so a pull request can relax the check that decides whether its audit counts (the 2026-11-02 review)",
-      "find": "          cd \"$RUNNER_TEMP/booth-base\"\n",
+      "why": "the post job checks out the pull request again instead of the base, so a pull request can relax the check that decides whether its audit counts (the 2026-11-02 review)",
+      "find": "          ref: ${{ github.event.pull_request.base.sha || 'main' }}\n",
       "replace": "",
       "expect_caught_by": "test_the_checker_comes_from_the_base_not_the_pull_request"
     },

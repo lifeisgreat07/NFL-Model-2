@@ -129,7 +129,9 @@ work:
 <!-- agents:end -->
 
 Booth runs on the workflow's own read-only token, so it cannot push or
-merge, and the workflow fails if it posts no report. Every audit is public:
+merge. It writes its report to a file, and a second job, with no model,
+posts it, so the job Booth runs in cannot write to the pull request
+either. The workflow fails if no report is posted. Every audit is public:
 the NFL page's "Checking the AI's work" counts them live from
 `data/agent_log.json`.
 

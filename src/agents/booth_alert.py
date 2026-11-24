@@ -63,8 +63,8 @@ def alert_for(event: dict[str, Any]) -> tuple[str, str] | None:
         'The audit job fails when Booth posted no report for the commit it '
         'checked out, as well as when a step errors. The run log says which. '
         'If a report IS on the PR and the job still failed, the report check '
-        'itself broke: it runs from a copy of two files, so check that they '
-        'import nothing else (PR #219). A PR that edits booth-pr-audit.yml is '
+        'itself broke: it runs in the post job with nothing installed, so check '
+        'that it imports only the standard library (PR #219). A PR that edits booth-pr-audit.yml is '
         'audited like any other since PR #176, so its failure is real too.',
         '',
         'Close this issue once the audit has been re-run or the cause is '
