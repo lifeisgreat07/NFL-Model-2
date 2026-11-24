@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/mlb/site.py",
+  "tests": "tests/test_sport_read_sets.py",
+  "cases": [
+    {
+      "id": "read-set-mlb-opens-nhl-registration",
+      "why": "MLB's page build reads one of the NHL's experiment files, so an NHL change could move a byte of MLB's page.",
+      "find": "    reg = backtest.registry()\n    p = reg['protocol']\n    tuning = _maybe(backtest.RESULTS / 'tuning.json')\n",
+      "replace": "    reg = backtest.registry()\n    p = reg['protocol']\n    tuning = _maybe(backtest.RESULTS / 'tuning.json')\n    (ROOT / 'experiments' / 'nhl' / 'stage56' / 'registry.json').read_text(encoding='utf-8')\n",
+      "expect_caught_by": "test_the_mlb_build_opens_only_its_own_files_and_the_shared_ones"
+    },
+    {
+      "id": "read-set-mlb-opens-nba-code",
+      "why": "MLB's page build imports the NBA's package, so an NBA change could break or change MLB's page.",
+      "find": "from src.core.sport import sport_paths\n",
+      "replace": "from src.core.sport import sport_paths\nimport src.sports.nba.teams  # noqa: F401\n",
+      "expect_caught_by": "test_the_mlb_build_opens_only_its_own_files_and_the_shared_ones"
+    }
+  ]
+}
