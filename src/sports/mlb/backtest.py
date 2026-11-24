@@ -7,7 +7,9 @@ earlier grid entry. No game after the last validation season is read.
 **Confirmation** (`results/confirmation.json`, `python -m src.sports.mlb.backtest confirm`): with the tuned (H,
 lambda, K_outs) fixed, Model A, Model A without its starter term (M1), Model B, the market and the home-win base rate
 walk-forward over 2025 and 2026, and H1 to H3 decided by their registered rules: a paired bootstrap over whole game
-days, 5,000 resamples, seed 20261112, at 98.33%. Model B and the market score only games with a price
+days, 5,000 resamples, seed 20261112, at 98.33%. Each game's forecasts are written beside it
+(`results/confirmation_games.csv`, `CONFIRMATION_GAMES`): MLB's forward-test drift baselines are computed from that
+file (`src/sports/mlb/drift.py`, Stage 101). Model B and the market score only games with a price
 (`market_<season>.csv`, `src/sports/mlb/market_history.py`), and Model B trains only on such games. It refuses to run
 until every season it reads is checked against Retrosheet, so it waits for 2026's log (the registration's
 fallback_check), and both confirmation seasons are scored together, once.
@@ -38,7 +40,11 @@ PATHS = sport_paths('mlb')
 FOLDER = PATHS.experiments / 'stage98'
 REGISTRY = FOLDER / 'registry.json'
 RESULTS = FOLDER / 'results'
+CONFIRMATION_GAMES = RESULTS / 'confirmation_games.csv'
 SEED = 20261112
+#: One row per confirmation game: its season, day, start and result, and each forecaster's home probability.
+GAME_COLUMNS = ('game_id', 'season', 'day', 'start_utc', 'home_win', 'model_a', 'model_a_no_starter',
+                'model_b', 'market', 'base_rate')
 
 
 def registry() -> dict[str, Any]:
@@ -180,6 +186,7 @@ def confirm(games: pd.DataFrame, lines: pd.DataFrame, market: pd.DataFrame, reg:
                            'scores': {name: scores(s, table) for name, s in preds.items()}}
     pairs = {'H1': ('model_a', 'base_rate'), 'H2': ('model_b', 'model_a'), 'H3': ('model_b', 'market'),
              'M1': ('model_a', 'model_a_no_starter')}
+    out['per_game'] = per_game(table, preds, seasons)
     out['questions'] = {}
     for hid, (cand, inc) in pairs.items():
         iv = day_block_interval(preds[cand], preds[inc], table, level)
@@ -188,6 +195,20 @@ def confirm(games: pd.DataFrame, lines: pd.DataFrame, market: pd.DataFrame, reg:
             entry['label'] = label(iv)
         out['questions'][hid] = entry
     return out
+
+
+def per_game(table: pd.DataFrame, preds: dict[str, pd.Series], seasons: Sequence[int]) -> pd.DataFrame:
+    """Every scored confirmation game in the order it was played (day, then start, then id), with each forecaster's
+    home probability; empty where a forecaster did not score the game (Model B and the market without a price)."""
+    rows = table[table['season'].isin(seasons)].dropna(subset=['home_win']).copy()
+    if 'start_utc' not in rows:
+        rows['start_utc'] = ''
+    rows = rows[['game_id', 'season', 'day', 'start_utc', 'home_win']]
+    for name in GAME_COLUMNS[5:]:
+        rows[name] = rows['game_id'].map(preds[name]) if name in preds else np.nan
+    rows['home_win'] = rows['home_win'].astype(int)
+    rows['day'] = rows['day'].astype(str).str[:10]
+    return rows.sort_values(['day', 'start_utc', 'game_id'], kind='stable').reset_index(drop=True)
 
 
 def main_confirm() -> int:
@@ -206,6 +227,7 @@ def main_confirm() -> int:
     games, lines = load_history(p['training_from_season'], last)  # raises until every season is checked
     market = load_market(p['training_from_season'], last, required=p['confirmation_seasons'])
     result = confirm(ratings.prepare(games), lines, market, reg, chosen)
+    result.pop('per_game').to_csv(CONFIRMATION_GAMES, index=False, lineterminator='\n')
     (RESULTS / 'confirmation.json').write_text(json.dumps(result, indent=1) + '\n', encoding='utf-8')
     for hid, q in result['questions'].items():
         print(f"{hid}: {q['candidate']} - {q['incumbent']} = {q['diff']:+.5f} "

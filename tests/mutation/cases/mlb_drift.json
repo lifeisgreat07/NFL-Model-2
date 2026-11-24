@@ -1,0 +1,55 @@
+{
+  "target": "src/sports/mlb/drift.py",
+  "tests": "tests/test_mlb_drift.py",
+  "cases": [
+    {
+      "id": "mlb-drift-whole-season-baseline",
+      "why": "each look is held to the confirmation's whole seasons, not a season's first n games, which the NBA's audit found misleading early in a season.",
+      "find": "        first = pd.concat([g.head(n) for _, g in games.groupby('season', sort=True)])\n",
+      "replace": "        first = games\n",
+      "expect_caught_by": "test_each_look_is_held_to_a_seasons_first_n_games_pooled"
+    },
+    {
+      "id": "mlb-drift-baseline-rewritten",
+      "why": "the baseline file is overwritten when written again, so a baseline could be moved after the picks are seen.",
+      "find": "    if path.exists():\n        raise SystemExit(",
+      "replace": "    if False:\n        raise SystemExit(",
+      "expect_caught_by": "test_the_baselines_are_written_once"
+    },
+    {
+      "id": "mlb-drift-runs-without-a-baseline",
+      "why": "with no baseline file the check reports itself running, so the page shows a clean drift check that never ran.",
+      "find": "        return {'running': False,",
+      "replace": "        return {'running': True,",
+      "expect_caught_by": "test_with_no_baseline_the_check_does_not_run_and_says_why"
+    },
+    {
+      "id": "mlb-drift-never-flags",
+      "why": "the comparison is turned round, so a look flags when live Model A does better than its backtest and not when it does worse.",
+      "find": "'flagged': bool(bound > base)}",
+      "replace": "'flagged': bool(bound < base)}",
+      "expect_caught_by": "test_a_look_flags_when_its_lower_bound_is_above_its_baseline"
+    },
+    {
+      "id": "mlb-drift-single-games",
+      "why": "a look resamples single games, not whole days, treating games on one day as independent.",
+      "find": "        bound = lower_bound(list(losses[:n]), rule, LEVEL, list(days[:n]))\n",
+      "replace": "        bound = lower_bound(list(losses[:n]), rule, LEVEL, None)\n",
+      "expect_caught_by": "test_a_look_resamples_whole_days"
+    },
+    {
+      "id": "mlb-drift-ninety-five",
+      "why": "each look is taken at 95%, not the registered 99%, so a five-look season flags far more often than registered.",
+      "find": "LEVEL = 0.99\n",
+      "replace": "LEVEL = 0.95\n",
+      "expect_caught_by": "test_only_the_registered_looks_are_taken"
+    },
+    {
+      "id": "mlb-drift-ungraded-counted",
+      "why": "a pick without a result is scored, so a look comes early on games not yet decided.",
+      "find": "    kept = [(p, y, d) for p, y, d in rows if p is not None and y in (0, 1)]\n",
+      "replace": "    kept = [(p, 1 if y is None else y, d) for p, y, d in rows if p is not None]\n",
+      "expect_caught_by": "test_a_pick_without_a_result_or_probability_decides_nothing"
+    }
+  ]
+}
