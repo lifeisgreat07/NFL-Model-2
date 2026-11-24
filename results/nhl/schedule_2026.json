@@ -1,5 +1,5 @@
 {
- "as_of": "2026-11-23",
+ "as_of": "2026-11-24",
  "games": [
   {
    "game_id": "2026020001",
@@ -4908,11 +4908,11 @@
    "start_utc": "2026-11-24T00:00:00Z",
    "home": "NJD",
    "away": "CBJ",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 3,
+   "away_score": 2,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -4921,11 +4921,11 @@
    "start_utc": "2026-11-24T00:30:00Z",
    "home": "MTL",
    "away": "LAK",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 1,
+   "away_score": 2,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -4934,11 +4934,11 @@
    "start_utc": "2026-11-24T00:30:00Z",
    "home": "OTT",
    "away": "CGY",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 2,
+   "away_score": 1,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -4947,11 +4947,11 @@
    "start_utc": "2026-11-24T00:30:00Z",
    "home": "NYI",
    "away": "TOR",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 2,
+   "away_score": 4,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -4960,11 +4960,11 @@
    "start_utc": "2026-11-24T00:30:00Z",
    "home": "WPG",
    "away": "UTA",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 4,
+   "away_score": 2,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -4973,7 +4973,7 @@
    "start_utc": "2026-11-24T02:40:00Z",
    "home": "SEA",
    "away": "ANA",
-   "status": "scheduled",
+   "status": "in_progress",
    "game_type": "regular",
    "home_score": null,
    "away_score": null,
@@ -4986,7 +4986,7 @@
    "start_utc": "2026-11-24T03:00:00Z",
    "home": "SJS",
    "away": "MIN",
-   "status": "scheduled",
+   "status": "in_progress",
    "game_type": "regular",
    "home_score": null,
    "away_score": null,
