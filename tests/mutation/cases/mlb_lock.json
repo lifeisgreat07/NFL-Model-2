@@ -1,0 +1,62 @@
+{
+  "target": "src/sports/mlb/lock.py",
+  "tests": "tests/test_mlb_lock.py",
+  "cases": [
+    {
+      "id": "mlb-lock-no-slack",
+      "why": "a game is held for a run that comes less than an hour before it, so a late run saves it after the start or not at all.",
+      "find": "        return 'lock' if start < after + self.slack else 'hold'\n",
+      "replace": "        return 'lock' if start < after else 'hold'\n",
+      "expect_caught_by": "test_a_game_is_saved_by_the_last_run_an_hour_before_it"
+    },
+    {
+      "id": "mlb-lock-predicts-a-started-game",
+      "why": "a game whose first pitch has passed is still saved, so a pick made during the game counts as a prediction.",
+      "find": "        if start <= now_ts:\n            return 'started'\n",
+      "replace": "",
+      "expect_caught_by": "test_a_started_or_finished_game_is_never_predicted_and_a_postponed_one_is_left_out"
+    },
+    {
+      "id": "mlb-lock-tbd-by-placeholder",
+      "why": "an unset start goes by its placeholder (3:33 AM at the park), so game 2 of a doubleheader is called started and never picked.",
+      "find": "            other = partner(slate, g) if _tbd(g) else None\n",
+      "replace": "            other = None\n",
+      "expect_caught_by": "test_an_unset_start_is_saved_with_the_other_game_of_its_doubleheader"
+    },
+    {
+      "id": "mlb-lock-tbd-after-game-one-dropped",
+      "why": "game 2 is called started once game 1 is under way, so it is never picked.",
+      "find": "                out['lock'].append(gid)  # the game it follows is under way or over: save it now\n",
+      "replace": "                out['started'].append(gid)\n",
+      "expect_caught_by": "test_an_unset_start_whose_other_game_is_under_way_is_saved_at_once"
+    },
+    {
+      "id": "mlb-lock-follows-a-postponed-game",
+      "why": "game 2 follows a postponed game 1 and is saved at once, a day early, rather than by its own time.",
+      "find": "    return None if live.empty else live.iloc[0]\n",
+      "replace": "    return None if same.empty else same.iloc[0]\n",
+      "expect_caught_by": "test_an_unset_start_with_no_game_to_follow_goes_by_its_placeholder"
+    },
+    {
+      "id": "mlb-lock-follows-another-clubs-game",
+      "why": "an unset start follows any game that day, not its own doubleheader.",
+      "find": "    same = slate[(slate['slate'] == g['slate']) & (slate['home'] == g['home']) & (slate['away'] == g['away'])\n",
+      "replace": "    same = slate[(slate['slate'] == g['slate'])\n",
+      "expect_caught_by": "test_an_unset_start_with_no_game_to_follow_goes_by_its_placeholder"
+    },
+    {
+      "id": "mlb-lock-runs-without-the-chosen-times",
+      "why": "with no chosen times the lock goes on without a clear stop, so a pick could be saved at times the registered rule never chose.",
+      "find": "    if not path.exists():\n        raise MLBLockError(",
+      "replace": "    if False:\n        raise MLBLockError(",
+      "expect_caught_by": "test_no_run_times_no_lock"
+    },
+    {
+      "id": "mlb-lock-two-times-accepted",
+      "why": "a file naming the same time twice gives two runs a day, not the three the registry fixes.",
+      "find": "    if len(pairs) != 3 or",
+      "replace": "    if len(pairs) < 2 or",
+      "expect_caught_by": "test_the_run_times_are_the_three_the_rule_wrote"
+    }
+  ]
+}
