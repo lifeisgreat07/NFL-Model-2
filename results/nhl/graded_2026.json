@@ -1916,13 +1916,13 @@
  {
   "game_id": "2026020383",
   "pick": "SEA",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-23T21:01:45Z"
  },
  {
   "game_id": "2026020384",
   "pick": "MIN",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-23T21:01:45Z"
  }
 ]

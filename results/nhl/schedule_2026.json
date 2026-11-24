@@ -4973,11 +4973,11 @@
    "start_utc": "2026-11-24T02:40:00Z",
    "home": "SEA",
    "away": "ANA",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 3,
+   "away_score": 2,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -4986,11 +4986,11 @@
    "start_utc": "2026-11-24T03:00:00Z",
    "home": "SJS",
    "away": "MIN",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 2,
+   "away_score": 5,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
