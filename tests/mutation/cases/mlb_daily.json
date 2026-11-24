@@ -1,0 +1,90 @@
+{
+  "target": "src/sports/mlb/daily.py",
+  "tests": "tests/test_mlb_daily.py",
+  "cases": [
+    {
+      "id": "mlb-daily-graded-on-another-date",
+      "why": "a pick saved for a game later postponed is scored against the game played on another day, which the registry never counts.",
+      "find": "    if str(game['slate']) != str(pick['slate']) or game['status'] == GameStatus.POSTPONED.value:\n",
+      "replace": "    if game['status'] == GameStatus.POSTPONED.value:\n",
+      "expect_caught_by": "test_a_pick_is_graded_only_on_its_own_official_date"
+    },
+    {
+      "id": "mlb-daily-tie-scored",
+      "why": "an official tie is scored as a home loss.",
+      "find": "    if pd.isna(game['home_win']):\n        return 'tie'\n",
+      "replace": "    if pd.isna(game['home_win']):\n        return 'wrong'\n",
+      "expect_caught_by": "test_a_pick_is_graded_only_on_its_own_official_date"
+    },
+    {
+      "id": "mlb-daily-pick-rewritten",
+      "why": "a saved pick is written again by a later run, so a pick can change after it was first made.",
+      "find": "    if path.exists():\n        return False\n    pick_guard.refuse_leak(record)\n",
+      "replace": "    pick_guard.refuse_leak(record)\n",
+      "expect_caught_by": "test_a_pick_is_one_file_per_game_and_official_date_never_rewritten"
+    },
+    {
+      "id": "mlb-daily-leak-guard-skipped",
+      "why": "a pick saved after its start, or fitted through its own day, is written.",
+      "find": "    pick_guard.refuse_leak(record)\n",
+      "replace": "",
+      "expect_caught_by": "test_a_pick_that_could_have_seen_its_result_is_refused"
+    },
+    {
+      "id": "mlb-daily-fitted-through-the-pick-day",
+      "why": "the models are fitted on the pick's own day, so an afternoon game's result reaches an evening pick.",
+      "find": "    before = table[pd.to_datetime(table['day']) < day]\n",
+      "replace": "    before = table[pd.to_datetime(table['day']) <= day]\n",
+      "expect_caught_by": "test_the_models_are_fitted_strictly_before_the_picks_official_date"
+    },
+    {
+      "id": "mlb-daily-neutral-keeps-the-edge",
+      "why": "a neutral-site game's Model A forecast keeps the home edge the backtest took off.",
+      "find": "    if neutral:\n        z -= float(a[-1].intercept_[0])\n",
+      "replace": "",
+      "expect_caught_by": "test_a_neutral_site_game_loses_model_as_home_edge_but_not_model_bs"
+    },
+    {
+      "id": "mlb-daily-model-a-picks-when-priced",
+      "why": "the pick is Model A's side even when Model B has a price, against the registry's the_pick.",
+      "find": "    lead = p_b if p_b is not None else p_a\n",
+      "replace": "    lead = p_a\n",
+      "expect_caught_by": "test_the_pick_is_model_bs_when_priced_and_says_which_starter_was_unknown"
+    },
+    {
+      "id": "mlb-daily-unknown-starter-unmarked",
+      "why": "a side with no probable named is stored as named, so the league-rate picks cannot be reported on their own.",
+      "find": "    return {'id': None if probable is None else str(probable), 'named': probable is not None}\n",
+      "replace": "    return {'id': None if probable is None else str(probable), 'named': True}\n",
+      "expect_caught_by": "test_the_pick_is_model_bs_when_priced_and_says_which_starter_was_unknown"
+    },
+    {
+      "id": "mlb-daily-drift-reads-the-postseason",
+      "why": "postseason picks enter the drift check, which the registry holds to regular-season picks.",
+      "find": "    rows = [r for r in graded if r['result'] in ('correct', 'wrong') and r.get('game_type') == 'regular']\n",
+      "replace": "    rows = [r for r in graded if r['result'] in ('correct', 'wrong')]\n",
+      "expect_caught_by": "test_drift_reads_scored_regular_season_picks_in_start_order"
+    },
+    {
+      "id": "mlb-daily-drift-out-of-order",
+      "why": "a look's first n picks are the first n files by name, not the first n games played.",
+      "find": "    rows.sort(key=lambda r: (str(r.get('start_utc') or ''), str(r['game_id'])))\n",
+      "replace": "",
+      "expect_caught_by": "test_drift_reads_scored_regular_season_picks_in_start_order"
+    },
+    {
+      "id": "mlb-daily-unsettled-box-stops-the-run",
+      "why": "one box score not yet readable stops the run, and with it every pick of the day.",
+      "find": "        except (history.HistoryError, OSError, ValueError) as exc:\n            print(f'box score not settled yet",
+      "replace": "        except (history.HistoryError, ValueError) as exc:\n            print(f'box score not settled yet",
+      "expect_caught_by": "test_a_box_score_not_settled_is_left_for_the_next_run"
+    },
+    {
+      "id": "mlb-daily-kalshi-read-first",
+      "why": "Kalshi is read for every run that saves a pick, not only when ESPN gave a game no price.",
+      "find": "                if market.espn_price(odds or {}, bool(espn and espn[1])) is None and not kalshi_read:\n",
+      "replace": "                if not kalshi_read:\n",
+      "expect_caught_by": "test_the_run_saves_the_games_the_lock_names_and_grades_and_reports_drift"
+    }
+  ]
+}
