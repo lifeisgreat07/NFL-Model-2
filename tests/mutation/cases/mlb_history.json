@@ -208,6 +208,15 @@
       "find": "        raise SystemExit(f'tuning.json chose {chosen}, which is not in the registered grid')\n",
       "replace": "        pass\n",
       "expect_caught_by": "test_the_confirmation_runs_once_and_only_on_a_registered_setting"
+    },
+    {
+      "id": "mlb-bt-per-game-forecasts-crossed",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "the confirmation's per-game file gives every forecaster Model A's forecast, so the drift baselines and any later reading of the file are built on the wrong model's numbers.",
+      "find": "        rows[name] = rows['game_id'].map(preds[name]) if name in preds else np.nan\n",
+      "replace": "        rows[name] = rows['game_id'].map(preds['model_a']) if name in preds else np.nan\n",
+      "expect_caught_by": "test_confirmation_answers_each_question_on_its_own_games"
     }
   ]
 }

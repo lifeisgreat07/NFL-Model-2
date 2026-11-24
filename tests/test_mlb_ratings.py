@@ -150,6 +150,10 @@ def test_confirmation_answers_each_question_on_its_own_games(monkeypatch):
     assert {k: v.get('label') for k, v in q.items()}['M1'] is None
     assert all(q[h]['label'] in ('ACCEPT', 'REJECT', 'INCONCLUSIVE') for h in ('H1', 'H2', 'H3'))
     assert q['H1']['level'] == 0.9833
+    games = out['per_game']
+    assert list(games.columns) == list(backtest.GAME_COLUMNS) and len(games) == len(played)
+    assert games['model_b'].notna().sum() == len(priced) and games['model_a'].notna().all()
+    assert list(games['day']) == sorted(games['day'])
 
 
 def test_confirmation_reads_through_the_last_confirmation_season_and_so_waits_for_its_check(monkeypatch):
