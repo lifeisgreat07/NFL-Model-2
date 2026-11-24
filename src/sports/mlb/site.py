@@ -203,6 +203,7 @@ def lab() -> dict[str, Any]:
         'confirmation': _maybe(backtest.RESULTS / 'confirmation.json'),
         'coverage': coverage(),
         'not_registered': reg['not_in_this_registration'],
+        'amendments': len(reg['amendments']),
     }
 
 

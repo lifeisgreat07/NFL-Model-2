@@ -533,11 +533,36 @@ function renderChanges(){
     + `<p class="mlb-lede">${escapeHtml(c.text)}</p></div>`).join('') || stateHtml('waiting', 'Nothing recorded yet', '');
 }
 
+/* ---------- season accuracy and checking the AI's work (Stage 100 item 2) ----------
+   Before Opening Day there is nothing to grade, so Season Accuracy says what it will hold and when, and Checking the
+   AI's work holds what is true already: what was written down before anything was fitted, and how the published
+   numbers are held to it. The record, the forward test, calibration, the drift check and M2 join with Stage 101,
+   when MLB's pick file and forward-test registration exist. */
+function renderAccuracy(){
+  const start = OPENING_DAY ? `on Opening Day, ${escapeHtml(dayText(OPENING_DAY))}` : 'on Opening Day';
+  document.getElementById('accuracy-body').innerHTML = stateHtml('waiting', 'Nothing graded yet', `MLB&#39;s picks start ${start}.`)
+    + '<p class="mlb-lede mlb-after-state">From then each game&#39;s pick is graded once the game is final; a postponed or cancelled game is never counted. '
+    + 'This page will hold the season&#39;s record, the forward test, judged on log loss against the market and the base rate rather than on picks right, '
+    + 'how sure each pick was against how often it was right, and every graded pick. The forward test&#39;s rules are registered before the first pick is saved.</p>';
+}
+function renderReliability(){
+  const el = document.getElementById('reliability-body');
+  if(!LAB){ el.innerHTML = stateHtml('waiting', 'Not built yet', ''); return; }
+  el.innerHTML = `<h2 class="section-title">The drift check</h2>
+    <p class="mlb-lede">Starts with the live picks. Its rule, how often it looks and how far live log loss may run from the backtest&#39;s before it flags, is registered with the forward test before Opening Day.</p>
+    <h2 class="section-title">The probable pitcher against who started</h2>
+    <p class="mlb-lede">A live pick reads the probable pitcher announced before the game; the backtest read who actually started. The registration measures that gap (M2) and prints it here once 200 live games are graded.</p>
+    <h2 class="section-title">Before anything was fitted</h2>
+    <p class="mlb-lede">The questions, the seasons, the settings to search, the bootstrap and the labels were written down and committed on ${escapeHtml(dayText(LAB.registered))} (<a href="${REGISTRY_URL}">the registration</a>), before any MLB model, feature or rating was fitted or scored. ${LAB.amendments} amendment${LAB.amendments === 1 ? '' : 's'} followed, each dated, saying what it changed and what had been seen by then, and each listed on <a href="#changes">What&#39;s Changed</a>. One of them says aloud that a single confirmation-season figure had been printed while the feature code was being timed, and was not kept.</p>
+    <h2 class="section-title">After</h2>
+    <p class="mlb-lede">Every number on these pages is read from the committed files when the page is built, and tests hold those files to the registration: the tuning searched every registered setting, on the validation seasons only, and kept the lowest. Those tests were checked in turn, by breaking the code on purpose and confirming a test fails. When the confirmation runs, it runs once: the code refuses to run it again. The pull request that commits its result is audited by a separate agent, Booth, before it is merged.</p>`;
+}
+
 /* ---------- the page around the board ----------
    Each button for the page shown carries aria-current, as on the other sports. On a phone the pages past the first
    three sit in the More sheet (OVERFLOW_PAGES), whose button is lit while one of them is shown. */
 const BASE_TITLE = document.title;
-const OVERFLOW_PAGES = ['teams', 'modellab', 'method', 'changes'];
+const OVERFLOW_PAGES = ['teams', 'modellab', 'method', 'reliability', 'changes'];
 function showMlbPage(name, opts){
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
   document.querySelectorAll('[data-page]').forEach(b => {
@@ -612,6 +637,8 @@ renderModelLab();
 renderMethod();
 renderTeams();
 renderChanges();
+renderAccuracy();
+renderReliability();
 /* A star redraws the board with its club's games first. */
 installFavStars(renderBoard);
 /* #board/<day> and #game/<id>, as on the other day boards (src/core/routes.js). */

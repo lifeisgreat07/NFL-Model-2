@@ -26,8 +26,8 @@
     {
       "id": "mlb-lab-page-method-not-in-more",
       "why": "Methodology is in the More sheet but the More button does not light while it is shown",
-      "find": "const OVERFLOW_PAGES = ['teams', 'modellab', 'method', 'changes'];\n",
-      "replace": "const OVERFLOW_PAGES = ['teams', 'modellab', 'changes'];\n",
+      "find": "const OVERFLOW_PAGES = ['teams', 'modellab', 'method', 'reliability', 'changes'];\n",
+      "replace": "const OVERFLOW_PAGES = ['teams', 'modellab', 'reliability', 'changes'];\n",
       "expect_caught_by": "test_both_pages_have_their_buttons_and_sit_in_the_more_sheet"
     },
     {

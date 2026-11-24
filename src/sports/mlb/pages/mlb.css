@@ -95,3 +95,6 @@ html[data-density="compact"] .mlb-row{min-height:40px;}
 .mlb-change{border-left:2px solid var(--border-strong); padding-left:var(--s3); margin:0 0 var(--s4);}
 .mlb-change h3{font-size:var(--fs-14); margin:0;}
 .mlb-change .mlb-change-date{font-size:var(--fs-12); color:var(--text-3);}
+
+/* Season Accuracy before Opening Day: the paragraph under the waiting box. */
+.mlb-lede.mlb-after-state{margin-top:var(--s4);}
