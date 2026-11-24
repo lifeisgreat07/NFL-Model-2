@@ -182,6 +182,7 @@
   "tests/test_missed_picks.py": "mixed",
   "tests/test_missed_slots.py": "mixed",
   "tests/test_mlb_board.py": "template/JS",
+  "tests/test_mlb_browser_checks.py": "workflow/docs/tests-of-tests",
   "tests/test_mlb_canary.py": "isolated behavioural",
   "tests/test_mlb_checking_page.py": "template/JS",
   "tests/test_mlb_colours.py": "isolated behavioural",

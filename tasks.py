@@ -35,6 +35,9 @@ STATE_PAGES = ('states_tie.html', 'states_preview.html')
 NHL_PAGE = 'nhl.html'
 # The NBA's page, built from the committed backtest (src/sports/nba/site.py).
 NBA_PAGE = 'nba.html'
+# MLB's pages, built from the committed backtest and history (src/sports/mlb/site.py), checked before
+# they are published (Stage 100 item 4).
+MLB_PAGE = 'mlb.html'
 # The site's home page (src/site/home.py, Stage 59).
 HOME_PAGE = 'home.html'
 # The type check run-tests.yml runs (Stage 35).
@@ -88,6 +91,8 @@ TASKS = {
                                  [PY, 'tests/browser/check_page.py', str(STATES / NHL_PAGE), *_axe()],
                                  [PY, '-m', 'src.sports.nba.site', '--out', str(STATES / NBA_PAGE)],
                                  [PY, 'tests/browser/check_page.py', str(STATES / NBA_PAGE), *_axe()],
+                                 [PY, '-m', 'src.sports.mlb.site', '--out', str(STATES / MLB_PAGE)],
+                                 [PY, 'tests/browser/check_page.py', str(STATES / MLB_PAGE), *_axe()],
                                  [PY, '-m', 'src.site.home', '--out', str(STATES / HOME_PAGE)],
                                  [PY, 'tests/browser/check_page.py', str(STATES / HOME_PAGE), *_axe()]]),
     'mutation-slice': ('30 mutation cases chosen by a date seed, as the nightly job runs '

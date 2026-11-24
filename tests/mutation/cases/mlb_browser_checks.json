@@ -1,0 +1,37 @@
+{
+  "target": ".github/workflows/browser-checks.yml",
+  "tests": "tests/test_mlb_browser_checks.py",
+  "cases": [
+    {
+      "id": "mlb-browser-never-built",
+      "why": "MLB's pages are never built in the browser job, so nothing in a real browser looks at them before Stage 101 publishes them",
+      "find": "        run: python -m src.sports.mlb.site --out \"$RUNNER_TEMP/states/mlb.html\"\n",
+      "replace": "        run: echo skipped\n",
+      "expect_caught_by": "test_the_workflow_builds_mlbs_pages_with_the_real_builder_and_checks_them"
+    },
+    {
+      "id": "mlb-browser-hidden-check-skips-mlb",
+      "why": "the hidden check opens the other sports' pages but not MLB's, so an empty box marked hidden is drawn on MLB's unseen",
+      "find": "        run: python tests/browser/check_hidden.py index.html \"$RUNNER_TEMP/states/nhl.html\" \"$RUNNER_TEMP/states/nba.html\" \"$RUNNER_TEMP/states/mlb.html\"\n",
+      "replace": "        run: python tests/browser/check_hidden.py index.html \"$RUNNER_TEMP/states/nhl.html\" \"$RUNNER_TEMP/states/nba.html\"\n",
+      "expect_caught_by": "test_the_cross_sport_checks_open_mlbs_pages_too"
+    },
+    {
+      "id": "mlb-browser-task-skips-mlb",
+      "why": "the local browser-check task stops building MLB's pages, so a run on the PC checks less than CI does",
+      "target": "tasks.py",
+      "tests": "tests/test_tasks.py",
+      "find": "                                 [PY, '-m', 'src.sports.mlb.site', '--out', str(STATES / MLB_PAGE)],\n",
+      "replace": "",
+      "expect_caught_by": "test_browser_check_runs_what_the_workflow_runs_in_the_same_order"
+    },
+    {
+      "id": "mlb-tables-never-fitted",
+      "why": "mlb.js drops the rule that runs fitTables, so a Model Lab table wider than a phone cannot be reached by keyboard (axe scrollable-region-focusable)",
+      "target": "src/sports/mlb/pages/mlb.js",
+      "find": "  const later = () => { if(queued) return; queued = true; requestAnimationFrame(() => { queued = false; fitTables(); }); };\n",
+      "replace": "  const later = () => {};\n",
+      "expect_caught_by": "test_a_table_wider_than_its_box_is_in_the_tab_order"
+    }
+  ]
+}
