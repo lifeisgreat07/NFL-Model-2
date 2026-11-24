@@ -1,0 +1,83 @@
+{
+  "target": "src/sports/mlb/market.py",
+  "tests": "tests/test_mlb_market.py",
+  "cases": [
+    {
+      "id": "mlb-market-accuscore-priced",
+      "why": "AccuScore's model output is read as a book's price, which Stage 98's market rules leave out.",
+      "find": "EXCLUDED = frozenset({'espn bet - projections', 'numberfire', 'teamrankings', 'accuscore'})",
+      "replace": "EXCLUDED = frozenset({'espn bet - projections', 'numberfire', 'teamrankings'})",
+      "expect_caught_by": "test_espn_first_provider_that_is_a_book_with_the_margin_taken_out"
+    },
+    {
+      "id": "mlb-market-live-priced",
+      "why": "an in-game price is used for a pre-game pick.",
+      "find": "        if 'live' in provider.lower() or provider.lower() in EXCLUDED:\n",
+      "replace": "        if provider.lower() in EXCLUDED:\n",
+      "expect_caught_by": "test_espn_first_provider_that_is_a_book_with_the_margin_taken_out"
+    },
+    {
+      "id": "mlb-market-no-sum-check",
+      "why": "a price whose sides sum outside 1.00-1.20 is used, which the backtest's market never was.",
+      "find": "        if not SUM_RANGE[0] <= h + a <= SUM_RANGE[1]:\n            return None\n",
+      "replace": "",
+      "expect_caught_by": "test_a_price_whose_sides_sum_outside_the_backtests_range_is_not_used"
+    },
+    {
+      "id": "mlb-market-relocated-not-swapped",
+      "why": "a relocated game's prices stay ESPN's way round, so the home probability is the wrong club's.",
+      "find": "        if swapped:\n            hp, ap = ap, hp\n",
+      "replace": "",
+      "expect_caught_by": "test_a_relocated_game_is_priced_for_the_stats_apis_home_club"
+    },
+    {
+      "id": "mlb-market-doubleheader-out-of-order",
+      "why": "a doubleheader's ESPN events are paired with its games in the order ESPN lists them, so game 1 can take game 2's price.",
+      "find": "        cands = sorted(by_pair.get(pair, []), key=lambda e: e['start'])\n",
+      "replace": "        cands = list(by_pair.get(pair, []))\n",
+      "expect_caught_by": "test_espn_events_match_by_date_and_clubs_and_a_doubleheader_in_order"
+    },
+    {
+      "id": "mlb-market-guesses-a-short-match",
+      "why": "a game ESPN lists fewer times than it is played is matched anyway, so one event prices two games.",
+      "find": "        if len(cands) != len(ordered):\n",
+      "replace": "        if not cands:\n",
+      "expect_caught_by": "test_a_game_espn_lists_a_different_number_of_times_is_left_unmatched"
+    },
+    {
+      "id": "mlb-market-kalshi-one-side",
+      "why": "a game with only one side quoted on Kalshi is priced from it.",
+      "find": "        if listed is not None and len(by_club) == 2:\n",
+      "replace": "        if listed is not None and len(by_club) >= 1:\n",
+      "expect_caught_by": "test_kalshi_needs_both_sides_quoted"
+    },
+    {
+      "id": "mlb-market-doubleheader-shares-kalshi",
+      "why": "both games of a doubleheader are looked up as a single game, so game 2 takes no price or the wrong one.",
+      "find": "    number = int(game['game_number']) if str(game.get('double_header') or 'N') != 'N' else None\n",
+      "replace": "    number = None\n",
+      "expect_caught_by": "test_a_doubleheader_game_takes_its_own_kalshi_market"
+    },
+    {
+      "id": "mlb-market-kalshi-before-espn",
+      "why": "Kalshi is read first, so a game ESPN prices is priced by the fallback.",
+      "find": "    found = espn_price(espn_odds, swapped) if espn_odds is not None else None\n",
+      "replace": "    found = kalshi_price(kalshi, game)[0] if kalshi is not None else None\n",
+      "expect_caught_by": "test_kalshi_prices_only_a_game_espn_did_not_and_says_so"
+    },
+    {
+      "id": "mlb-market-records-after-the-start",
+      "why": "a price read after first pitch is kept beside the pre-game ones.",
+      "find": "        if r.get('source') is None or _started(r):\n",
+      "replace": "        if r.get('source') is None:\n",
+      "expect_caught_by": "test_the_record_keeps_a_row_only_when_the_price_moves_and_never_after_the_start"
+    },
+    {
+      "id": "mlb-market-records-every-read",
+      "why": "every read is kept, not only a moved price, so the file grows with the runs rather than the market.",
+      "find": "        if prev and (prev['source'], prev['home_price'], prev['away_price']) == key:\n            continue\n",
+      "replace": "",
+      "expect_caught_by": "test_the_record_keeps_a_row_only_when_the_price_moves_and_never_after_the_start"
+    }
+  ]
+}
