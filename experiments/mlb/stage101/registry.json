@@ -1,0 +1,61 @@
+{
+ "family": "mlb-stage101",
+ "registered": "2026-11-24",
+ "approved_by": "Mark's answers of 2026-11-24 (12:10 ET): register now, with a fixed rule that turns spring training's probables measurement into the run times; a side with no probable pitcher at the lock gets the league-average starter; Model B's market is ESPN's moneyline with Kalshi as the named fallback and 'no price' rather than a silent switch; the season's verdict is taken once, after the regular season. The details below are Claude's, under Mark's delegation, written before any MLB pick was saved and before Stage 99's confirmation has run.",
+ "models": "Model A and Model B exactly as experiments/mlb/stage98/registry.json registers them, with the settings Stage 98's validation chose (experiments/mlb/stage98/results/tuning.json: H_days 120, lambda 10.0, K_outs 150.0), refitted at every run on every final game from 2010 strictly before the pick's official date. This season's final games enter Model B's training with the price the daily runs recorded for them, the last read before each started, as the NBA's do since its amendment of 2026-11-04.",
+ "forward_test": {
+  "season": 2027,
+  "starts": "With the first pick a scheduled daily run saves, on or after Opening Day (2027-03-25). Spring training games are never picked; games before the first saved pick are never scored, and nothing is backfilled.",
+  "picks": "One file per game and official date, predictions/mlb/2027/<gamePk>_<official date>.json, saved by the run named in runs and never rewritten. A game postponed after its pick was saved keeps that file, which is never scored; the game is picked again for the date it is played, under that date's file.",
+  "runs": {
+   "count": "Three scheduled runs a day, every day from Opening Day to the last game of the postseason.",
+   "lock": "A game is saved by the last run at least one hour before its listed first pitch, the NBA's rule; a run that finds a game already started never predicts it. A game whose start the Stats API has not set (start_time_tbd, as for game 2 of a traditional doubleheader) is saved by the run that saves the other game of its doubleheader, or else by the last run at least one hour before its listed placeholder time.",
+   "times": "Not fixed here. They are set once, before the first pick, by the rule below from the spring measurement, written into MLB's lock module as its run times with the measurement committed beside this file (experiments/mlb/stage101/probables_timing.json), and changed during the season only by an amendment.",
+   "measurement": "From the first spring training game day of 2027 to 2027-03-21, a scheduled workflow reads the Stats API's schedule every 30 minutes and records, for each spring training game, its listed first pitch and the first read that names both probable pitchers. A game whose probables are not both named by its first pitch is recorded as never named.",
+   "rule": "The candidates are the 48 half-hour marks of the UTC day. Each set of three candidates is scored by the share of measured games whose two probables were both named at the run that would save the game under lock. The set with the highest share is chosen; among sets within one percentage point of it, the one whose three times are latest on average, so a pick reads the freshest prices. If the chosen share is below 90%, the times are still the rule's, and the shortfall is disclosed by amendment before the first pick."
+  },
+  "starters": {
+   "read": "Each side's starter is the Stats API's probable pitcher read at the run that saves the pick, matched by the Stats API's person id.",
+   "unknown": "A side with no probable pitcher named at that run gets the league rate, as the backtest gives a pitcher with no earlier appearance. The pick is saved and stores starter_named false for that side.",
+   "changed": "A pick is never redone when its probable pitcher does not start. The pick stores the probables it read; Stage 98's M2 measures how often the probable was not the starter."
+  },
+  "the_pick": "Model B's side when the game has a market price, Model A's otherwise, as on the NFL, NHL and NBA boards, whatever Stage 99's confirmation finds.",
+  "graded": "Final games only, the Stats API's 'Final' or 'Completed Early'. A cancelled game is never counted, nor a pick whose game was postponed from that date. A suspended game is scored once completed, against the pick saved before its first pitch. An official tie is never scored.",
+  "reported": "Model A, Model B, the market and the home-win base rate, by log loss with Brier beside it; accuracy is reported and never decides. Intervals as in Stage 98: paired, resampling whole game days, 5,000 resamples. Picks priced by the fallback, and picks with a starter not named, are reported on their own as well as in the total. Postseason picks are saved, graded and reported on their own.",
+  "decision": {
+   "when": "Once, on the forward-test file (results/mlb/forward_2027.json) the first scheduled daily run writes after the 2027 regular season's last game is final. No earlier look decides anything, and the postseason never does.",
+   "what": "Each of three comparisons over the regular season's graded picks: Model A minus the base rate, Model B minus Model A, Model B minus the market, on log loss per game, paired on the games both scored, resampling whole game days 5,000 times with Stage 98's seed (20261112).",
+   "rule": "The backtest's rule at its level, 1 - 0.05/3 (98.33%): ACCEPT when the whole interval is below zero (the first forecaster did better), REJECT when it is above zero, INCONCLUSIVE otherwise.",
+   "implemented_by": "src/core/forward_test.py"
+  }
+ },
+ "market": {
+  "primary": "ESPN's pre-game moneyline for the game, read at the run that saves the pick: the first listed provider that is not marked live and is not one Stage 98's market rules leave out (a provider that publishes a model's output, such as AccuScore), with the margin taken out evenly, used only when the two implied probabilities sum to between 1.00 and 1.20, as the backtest's market is.",
+  "fallback": "Kalshi's MLB game-winner market (series KXMLBGAME), read only when ESPN gives no usable price for the game at that run. Each side's price is the midpoint of its yes bid and ask; the home probability is the home midpoint over the sum of the two. Used only when both sides have a bid and an ask. MLB's data probe (#711) found the series answering a GitHub runner on 2026-11-12.",
+  "none": "With neither price, Model B is not run for the game, the pick is Model A's, and the page says 'no price'. There is never a silent switch: every pick stores which source priced it ('espn', 'kalshi' or none), the provider, both prices and the read time.",
+  "record": "Every price read is kept in data/mlb/lines/<season>.json, added only when it moves and never after the game starts."
+ },
+ "drift": {
+  "file": "data/mlb/drift_baseline.json",
+  "model": "model_a",
+  "metric": "log_loss",
+  "looks": "Five, after 100, 200, 400, 800 and 1,600 graded regular-season picks, each on the first that many graded picks in the order their games start. Each look is one-sided at 99%.",
+  "baseline": "For a look at n graded picks, Model A's backtest log loss over a season's first n games, Stage 98's confirmation seasons pooled, computed from the confirmation's per-game file once Stage 99 has run and committed to the drift file before the first pick. Until then the drift check does not run, and the page says why.",
+  "rule": "Flag when the lower end of the one-sided 99% bootstrap interval of the look's mean per-game log loss is above that look's baseline, resampling whole game days, each resample the pooled mean of the days drawn.",
+  "known_break": "The backtest knew who started; a live pick knows only the probable pitcher, or none. Stage 98's M2 measures that gap."
+ },
+ "canary": "Every night, each source the daily run reads is read once on its own (the Stats API's schedule with probable pitchers, a box score, ESPN's odds and Kalshi), judged on the shape the run needs, and named in the report. A failed source opens or comments on its own issue, and a canary that fails before naming a source opens 'MLB: nightly canary failing'.",
+ "measurements": [
+  "Stage 98 M2: the probable pitcher against who started, printed once 200 games are graded.",
+  "How many picks each market source priced, how many had no price, and how many had a starter not named."
+ ],
+ "disclosures": [
+  "This registration is made before Stage 99's confirmation, which waits on Retrosheet's 2026 game log. The models go live and the pick is Model B's whatever the confirmation shows, as the_pick says; the confirmation's answers are shown on Model Lab beside the forward test's figures.",
+  "The run times come from spring training, where clubs name probables on their own habits and games start earlier in the day than in the regular season. The rule fixes how the times are chosen, not that spring's timing will hold in April.",
+  "Kalshi is a prediction market, not a sportsbook; its prices on MLB games were not in Stage 98's data and were never backtested.",
+  "The live market price is the one read at the run that saves the pick; the backtest's market input is ESPN's closing price where it has one. Model B's coefficient on the market was fitted on those prices and is applied to earlier ones.",
+  "A side with no probable pitcher named gets the league rate, which the backtest gave only to a pitcher with no earlier appearance, never to an unannounced one. Those picks are reported on their own.",
+  "The drift baselines cannot be computed until the confirmation runs, so the drift check may not run on the first picks if Retrosheet posts its 2026 log late; the page says so rather than hold the picks to a baseline written from another season."
+ ],
+ "amendments": []
+}

@@ -1,0 +1,41 @@
+{
+  "target": "experiments/mlb/stage101/registry.json",
+  "tests": "tests/test_mlb_stage101_registry.py",
+  "cases": [
+    {
+      "id": "mlb-s101-settings-drift-from-tuning",
+      "why": "the forward test names a ridge strength the validation did not choose",
+      "find": "H_days 120, lambda 10.0, K_outs 150.0",
+      "replace": "H_days 120, lambda 3.0, K_outs 150.0",
+      "expect_caught_by": "test_the_models_are_stage98s_with_the_settings_its_validation_chose"
+    },
+    {
+      "id": "mlb-s101-run-times-chosen-later-by-hand",
+      "why": "the rule that turns the spring measurement into run times loses its tie-break, so the times could be picked after seeing the data",
+      "find": "among sets within one percentage point of it, the one whose three times are latest on average",
+      "replace": "among sets close to it, whichever seems best",
+      "expect_caught_by": "test_the_run_times_come_from_a_rule_fixed_now"
+    },
+    {
+      "id": "mlb-s101-unknown-starter-unmarked",
+      "why": "a pick made with no probable pitcher no longer says so, so those picks cannot be reported on their own",
+      "find": "The pick is saved and stores starter_named false for that side.",
+      "replace": "The pick is saved.",
+      "expect_caught_by": "test_a_side_with_no_probable_gets_the_league_rate_and_the_pick_says_so"
+    },
+    {
+      "id": "mlb-s101-silent-switch",
+      "why": "a pick with no price no longer says 'no price', so a Model A pick reads as a Model B one",
+      "find": "and the page says 'no price'. There is never a silent switch",
+      "replace": "and the page says nothing. There is a switch",
+      "expect_caught_by": "test_the_market_is_espn_then_kalshi_never_silently"
+    },
+    {
+      "id": "mlb-s101-postseason-decides",
+      "why": "the verdict waits for the postseason, which Mark chose not to let decide",
+      "find": "No earlier look decides anything, and the postseason never does.",
+      "replace": "No earlier look decides anything.",
+      "expect_caught_by": "test_the_verdict_is_taken_once_after_the_regular_season_by_the_backtests_rule"
+    }
+  ]
+}
