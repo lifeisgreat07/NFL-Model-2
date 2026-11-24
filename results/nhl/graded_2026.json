@@ -1886,31 +1886,31 @@
  {
   "game_id": "2026020378",
   "pick": "NJD",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-23T21:01:45Z"
  },
  {
   "game_id": "2026020379",
   "pick": "MTL",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-23T21:01:45Z"
  },
  {
   "game_id": "2026020380",
   "pick": "OTT",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-23T21:01:45Z"
  },
  {
   "game_id": "2026020381",
   "pick": "NYI",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-23T21:01:45Z"
  },
  {
   "game_id": "2026020382",
   "pick": "UTA",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-23T21:01:45Z"
  },
  {
