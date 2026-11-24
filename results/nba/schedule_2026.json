@@ -3335,10 +3335,10 @@
    "start_utc": "2026-11-24T03:00:00Z",
    "home": "LAL",
    "away": "UTAH",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
+   "home_score": 109,
+   "away_score": 94,
    "neutral_site": false,
    "time_valid": true
   },
