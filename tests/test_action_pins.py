@@ -36,6 +36,12 @@ be its major tag's commit. A Dependabot pull request cannot pass here on its
 own: mutation cases anchor on the pinned lines, and Booth refuses bot authors.
 claude-code-action moves on its own, because its newer releases change how
 `--allowedTools` is enforced.
+
+On 2026-11-24 claude-code-action moved from 1.0.236 to 1.0.276 (Dependabot's
+#683 figure), its SHA read from the tag through GitHub's API. The enforcement
+change in that range (claude-code-action #2006) rewrites the git commit and
+push allow rules of tag mode; every use here is agent mode with a `prompt`,
+none allows `git commit` or `git push`, and none sets `allowed_bots` (#2005).
 """
 import re
 from pathlib import Path

@@ -5,7 +5,7 @@
     {
       "id": "booth-back-on-a-movable-tag",
       "why": "the audit workflow goes back to @v1: whoever can move that tag decides what code reads every PR with this repository's token, and nothing in a diff here would show the change",
-      "find": "uses: anthropics/claude-code-action@8ce9314fa9a404564fa7e954cd84f25bcba2b829 # v1.0.236",
+      "find": "uses: anthropics/claude-code-action@f3b070c88125d33dbae5653df5f143101d4ea9dc # v1.0.276",
       "replace": "uses: anthropics/claude-code-action@v1",
       "expect_caught_by": "test_each_is_pinned_to_a_full_commit_sha"
     },
