@@ -4,49 +4,45 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-23 (session 1122: Sunday 2026-11-22 with Mark, then overnight with Mark asleep; #798 to #808)
+Last updated: 2026-11-24 (session 1123: Monday 2026-11-23 with Mark, then overnight with Mark asleep; #809 to #827)
 
 ---
 
 ## Right now
 
 **Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked figure, split five ways by `tests/suite_classes.json` (`session_wrapup --suite-line` writes it). NFL in `src/sports/nfl/`, shared modules in `src/core/`.
-**Sportalytics** (Stage 67) is live: home `/`, NFL `/nfl/` (Model **v2.6**), NHL `/nhl/`, NBA `/nba/` (picks saved twice a day). **MLB's day board is built and tested but not published** (Stage 100 item 1, #808: `src/sports/mlb/site.py` and `pages/`, layout A, Board tab only, no picks until Stage 101 defines the pick file; `build.SPORTS` does not list MLB). March Madness (Stage 103) is built; its page and card appear only from the lock to 15 April.
+**Sportalytics** (Stage 67) is live: home `/`, NFL `/nfl/` (Model **v2.6**), NHL `/nhl/`, NBA `/nba/` (picks saved twice a day). **MLB's pages are all built, tested and unpublished** (Stage 100: board #808, standings odds #809, Standings #815, Power Ratings #818, Model Lab and Methodology #821, Teams and What's Changed #823, Season Accuracy and Checking the AI's work #824, the home card #813, the read-set test #825; `build.SPORTS` does not list MLB, and the home card stays dark until it does). March Madness (Stage 103) is built; its page and card appear only from the lock to 15 April.
 
-**Run tests has 35 minutes (#748)**; it took 17-28 min tonight. **Booth audits run one at a time**; it timed out twice on #799 (Mark: merge) and its report check failed once on #805 (a re-run passed). Do not change booth-pr-audit.yml until Mark decides.
+**Booth has 35 minutes and 210 turns (#810)**, and still sometimes needs them; audits run one at a time. **Run tests has 35 minutes.** The six `actions/*` are on their newest majors (#822).
 
-**Merge rule (Mark):** Booth SAFE TO MERGE, 0 discrepancies, audited head = PR head, every check green; `merge_item.py PR WT_NAME
-BRANCH "Title"`; re-run a failed or timed-out audit once. **At the final head, before opening:** prechecks (ruff, both mypy),
-every figure and mutation case by exact id, the suite (the session archive's prep and go scripts; CLAUDE.local.md has the paths).
-A body that must change after opening: close the PR and open a new one from the same branch.
-**Stacked branches (session 1122):** after the PR below merges, merge main into the next branch, re-prep, then open, and check the new PR's `mergeable` at once (GitHub marked #801 and #802 conflicting and ran no checks though `git merge-tree` was clean).
-**Mutation scope = every case whose target or tests file the branch changes** (session archive scope_by_target.py; full_prep.ps1 -Scope).
+**Merge rule (Mark):** Booth SAFE TO MERGE with 0 discrepancies, audited head = PR head, every check green; or (Mark, 2026-11-23) NEEDS HUMAN REVIEW with 0 discrepancies, every check green, and the only unverifiable claims the full-suite count and/or the archive-built mutation-scope list. Anything else, a second Booth timeout, and any PR that changes booth-pr-audit.yml (Scout's auditor-edits rule) go to Mark. `merge_item.py PR WT_NAME BRANCH "Title"`.
+**At the final head, before opening:** prechecks (ruff, the three mypy steps at run-tests.yml lines 79, 84, 89), every figure and mutation case by exact id, the suite (the session archive's prep and go scripts; CLAUDE.local.md has the paths). A body may be corrected after opening (the session archive's set-body script, which re-triggers Booth).
+**Mutation scope = every case whose own target or tests file the branch changes** (scope_by_target.py; full_prep.ps1 -Scope). Name the cases a scoped file holds but the scope leaves out (the session archive's scope-left script), or Booth counts the whole file and calls it a discrepancy.
 **Rules on main that bind every branch:** every workflow installs with `pip install --require-hashes -r requirements.lock`;
 every python or pip step of an alerting scheduled job has its own `timeout-minutes`; src/core, src/site, src/sports/nhl,
 src/sports/nba and src/sports/mlb pass `mypy --strict`; **a new test file needs a line in `tests/suite_classes.json`**, and two
 branches adding lines beside each other conflict there, so merge main before opening; **no test skips on a missing node by
 hand**: `require_tool('node')`; **every mutation case names its real file**; **a new page meets every page guard at once**
-(CSP `PAGES`, `SPORT_SHEETS`, Spotter's `RULES` and spotter.yml paths, the day boards' three-way copy guard).
+(CSP `PAGES`, `SPORT_SHEETS`, Spotter's `RULES` and spotter.yml paths, the day boards' three-way copy guard); **a title a
+workflow closes with `--resolve` is raised in the same file** (`tests/test_alerts_raised.py`, #814); **tasks.py's
+browser-check task runs what browser-checks.yml runs, in order** (`tests/test_tasks.py`).
 
-**Single next action:** check that Tuesday's Weekly update (2026-11-24, 11:00 UTC) ran: it locks all of week 12, because GB at LA kicks off Wednesday, before Thursday's usual lock; if it failed, dispatch it by hand before Wednesday 20:00 ET. Then MLB Stage 100 item 3 (standings odds by simulation, independent of the pages), then item 2 (the other pages, options rendered first).
-
-**Audit 9** is done: the last part, the drift paragraph as a table, merged as option B on Mark's behalf (#807). **The order of work (Mark, 2026-11-11, 2026-11-13):** the v2 shadow (done) and v3 (registered #732, writers open); 97-101 (MLB); 103. **Audit 8** is answered. Stages 102 and 104, Stage 95 items 31 to 35, Stages 97 and 98 are done.
+**Single next action:** Mark decides the three PRs waiting on him: #826 (MLB browser checks, the last of Stage 100), #827 (#582's Booth post job, brought current) and the claude-code-action 1.0.276 PR. Then Stage 101.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| v2 and v3 shadows (Stage 95, Stage 105) | Writers live (#721, #722; #740, #741); each saves only the picks its own run saved (#736) | Decided once after the 2026 regular season |
-| MLB Stage 99 (model and backtest) | History, tuning, market, confirmation code, audit 8 fixes (#728-#735) | Retrosheet's 2026 log (gl2026.zip was 404 on 2026-11-22), then `python -m src.sports.mlb.backtest confirm`, once |
-| MLB Stage 100 | Item 1 done: series place (#800), unset start (#805), the board (#808), not published | Items 3 (standings odds), 2 (other pages, rendered options first), 4 (home card countdown, browser checks, isolation read-set) |
-| MLB Stage 101 | Not started: forward-test registration, daily run writing `results/mlb/schedule_<season>.json` and the pick file, canary, starters routine, going live | Opening Day 2027 (Thu Mar 25); probables timing measured in spring training |
-| NCAAM Stage 103 | Everything built (#743-#787) | The lock between Selection Sunday and the First Four: dry-run the field read first |
-| NFL week 12 | Locks on Tuesday's run (GB at LA, Wednesday 20:00 ET) | A QB override must be merged before Tue 06:00 ET; AUTO_MERGE_OVERRIDES is off |
-| #582 Booth post job (Stage 82 item 4) | Green; Human review | Mark merges; then 82 item 5 |
-| AUTO_MERGE_OVERRIDES | Off; weeks 10 and 11 locked without their override PRs (#706, #791); #692 and #756 are those PRs, stale | **Mark sets AUTO_MERGE_OVERRIDES=true** when he wants it; closes #692 and #756 |
-| #683 (Dependabot, the actions group, 7 major bumps; replaces #570/#575) | Fails tests, Booth, preflight, probe | Mark: a Dependabot secret; which updates to take |
+| #826 MLB browser checks (Stage 100 item 4) | 0 discrepancies, all green; NEEDS HUMAN REVIEW because Booth's runner cannot run Chromium (outside the merge rule) | Mark merges |
+| #827 Booth post job (Stage 82 item 4; #582 re-applied on main) | Opened overnight; changes booth-pr-audit.yml | Mark reads the `post` job and merges; then #582 closes and Stage 82 item 5 |
+| claude-code-action 1.0.236 to 1.0.276 (branch claude-code-action-1-0-276, last of #683) | Prepped or opened overnight; changes booth-pr-audit.yml | Mark merges (he chose to decide it himself) |
+| MLB Stage 99 (model and backtest) | History, tuning, market, confirmation code (#728-#735) | Retrosheet's 2026 log (gl2026.zip not out on 2026-11-23), then `python -m src.sports.mlb.backtest confirm`, once |
+| MLB Stage 101 | Not started: forward-test registration, daily run writing the schedule, standings, ratings and pick files, canary, going live (add 'mlb' to `build.SPORTS`, the strip's names, the home layout of four cards) | Opening Day 2027 (Thu Mar 25) |
+| v2 and v3 shadows (Stage 95, Stage 105) | Writers live | Decided once after the 2026 regular season |
+| NCAAM Stage 103 | Everything built | The lock between Selection Sunday and the First Four |
+| NFL week 12 | QB overrides #816 merged themselves (AUTO_MERGE_OVERRIDES is on); Tuesday's run locks all 16 games | The 07:30 ET check-in confirms it ran |
 | Stage 88 item 1 (actions): one dispatch of each writer | Not done | Mark (dispatching the Weekly update can lock a week) |
-| Open alerts | #747 Line Judge digest failing since 2026-11-16; #797 NHL canary on the goalie page (the run itself now degrades, #799); #794 is spam (an outside link: do not open) | Mark |
+| Open alerts | #769, #671 (NHL), #541 (Line Judge digest, now retried on a 5xx, #811) | Mark |
 
 ## Known and deliberately not fixed
 
@@ -62,7 +58,7 @@ hand**: `require_tool('node')`; **every mutation case names its real file**; **a
 - **A browser check that assumes the pre-season page ages out on opening night.** `tests/browser/pre_opening.py` rewinds a built NBA page (no picks, every game scheduled); the countdown, rows and accuracy checks read it (#536). A new check about a state the real page has left should do the same.
 - **GitHub's cron starts hours late**; cron-job.org starts on time. Every Weekly update slot runs once (slot guard).
 - **Booth's prose can disagree with its own verdict block** (#286 ... #433). Re-run once; red again for the same reason, merge and log it.
-- **Booth can say NEEDS HUMAN REVIEW on an all-green PR** whose only unverified claims are browser renders (#437, #488, #490). That is Mark's call, not a re-run. The relaxed overnight rule (0 discrepancies, only renders, measurements or mutation scope unverified: merge) is **off unless Mark turns it on**.
+- **Booth can say NEEDS HUMAN REVIEW on an all-green PR.** When the only unverifiable claims are the full-suite count and/or the archive-built mutation-scope list, the merge rule above covers it (Mark, 2026-11-23). When a browser render is among them (Booth's runner has no Chromium, #826), it is Mark's call, not a re-run.
 - **Booth's runner has no Playwright**, so a Chromium claim in a PR body is UNVERIFIABLE there. Mark's PC has none either; the container has Playwright and Chromium and can run a `tests/browser` check, but its Python cannot install the repo's pinned pandas.
 - **Scout's body check ties any number near a test file's name to that file's whole count**, and reads `--id "glob"` as a mutation scope: quote the file's total, and run mutation cases by exact id.
 - **The file bridge can report a write and keep the old file**: commit to a new name, copy into place, compare hashes. **A PowerShell `>` redirect writes UTF-16**, which `git apply` refuses: write patches with `git format-patch -o`, or a Python script written with the file tool.
@@ -82,3 +78,6 @@ hand**: `require_tool('node')`; **every mutation case names its real file**; **a
   put flags after the files.
 - **The anonymous GitHub API allows 60 requests an hour**: poll Booth with the session archive's authenticated
   `scratch-nba/pr_runs.py PR --wait SECONDS`, not every 15 s anonymously.
+- **The NBA daily run's end-to-end test** (`tests/test_daily_end_to_end.py::test_the_nba_daily_run_end_to_end`) takes about 3 minutes alone on Mark's PC and sometimes 15 or more inside the full suite (CPU-bound ridge solves in `src/core/day_ratings.py`). A prep stuck at "5%" is this test, not a hang; CI is unaffected.
+- **A page joining MLB's More sheet changes `OVERFLOW_PAGES`**, which `mlb-lab-page-method-not-in-more` anchors on: re-anchor it with the same mutation.
+- **Scout rejects "on screen" without an attached image** (its visual-evidence rule): say what a check reported instead.
