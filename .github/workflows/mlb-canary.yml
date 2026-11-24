@@ -1,0 +1,107 @@
+name: MLB nightly canary
+
+# Stage 101 item 4: every source MLB's daily run reads (src/sports/mlb/canary.py),
+# read once each night and judged on the shape the run needs, as
+# experiments/mlb/stage101/registry.json's canary registers it. It writes
+# nothing to the repository, so it cannot touch a pick. It runs through the
+# winter and spring training too, so a source that changes shape is seen
+# before a pick depends on it.
+#
+# One issue per failing source, as the NBA's canary: src/core/alerts.py opens
+# "MLB: <source> failing in the nightly canary", or comments on it if it is
+# already open; each title is written out once below, so a green night closes
+# it. A canary that fails before naming any source opens "MLB: nightly canary
+# failing".
+#
+# 07:10 UTC: after the night's last games have ended, and clear of the NFL's
+# canary (06:00), the mutation slice (06:30), the NHL's (06:40) and the NBA's
+# (06:50). Nothing is dispatched on the minute: a late start costs nothing.
+on:
+  schedule:
+    - cron: '10 7 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  canary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.11'
+
+      # Stage 42 item 1: how late this run started, against its own cron line.
+      - name: Record the start delay
+        timeout-minutes: 10
+        run: python -m src.core.start_delay .github/workflows/mlb-canary.yml
+
+      - name: Install dependencies
+        timeout-minutes: 10
+        run: pip install --require-hashes -r requirements.lock
+
+      - name: Run the canary
+        timeout-minutes: 10
+        run: python -m src.sports.mlb.canary --report mlb-canary-report.md --failed mlb-canary-failed.txt
+
+      # A run that succeeds closes every canary issue, if one is open.
+      # continue-on-error: closing an issue must never fail a run.
+      - name: Close the alert if this run recovered
+        timeout-minutes: 10
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'Recovered: the run at %s succeeded.\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > recovered.md
+          python -m src.core.alerts --resolve --title "MLB: nightly canary failing" --body-file recovered.md
+          python -m src.core.alerts --resolve --title "MLB: Stats API schedule failing in the nightly canary" --body-file recovered.md
+          python -m src.core.alerts --resolve --title "MLB: Stats API probable pitchers failing in the nightly canary" --body-file recovered.md
+          python -m src.core.alerts --resolve --title "MLB: Stats API box score failing in the nightly canary" --body-file recovered.md
+          python -m src.core.alerts --resolve --title "MLB: ESPN odds failing in the nightly canary" --body-file recovered.md
+          python -m src.core.alerts --resolve --title "MLB: Kalshi failing in the nightly canary" --body-file recovered.md
+
+      - name: Raise an alert per failing source
+        if: failure()
+        timeout-minutes: 10
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          if [ ! -s mlb-canary-failed.txt ]; then
+            printf 'The MLB canary failed before naming a source. See %s\n' "$run_url" > mlb-canary-report.md
+            python -m src.core.alerts --title "MLB: nightly canary failing" --body-file mlb-canary-report.md
+            exit 0
+          fi
+          printf '\nRun: %s\n' "$run_url" >> mlb-canary-report.md
+          # One fixed title per source, each closed by the step above on the next
+          # green night. A source the list below does not name raises the
+          # night's own title, so a new check cannot fail in silence.
+          if grep -qx 'Stats API schedule' mlb-canary-failed.txt; then
+            python -m src.core.alerts --title "MLB: Stats API schedule failing in the nightly canary" --body-file mlb-canary-report.md
+          fi
+          if grep -qx 'Stats API probable pitchers' mlb-canary-failed.txt; then
+            python -m src.core.alerts --title "MLB: Stats API probable pitchers failing in the nightly canary" --body-file mlb-canary-report.md
+          fi
+          if grep -qx 'Stats API box score' mlb-canary-failed.txt; then
+            python -m src.core.alerts --title "MLB: Stats API box score failing in the nightly canary" --body-file mlb-canary-report.md
+          fi
+          if grep -qx 'ESPN odds' mlb-canary-failed.txt; then
+            python -m src.core.alerts --title "MLB: ESPN odds failing in the nightly canary" --body-file mlb-canary-report.md
+          fi
+          if grep -qx 'Kalshi' mlb-canary-failed.txt; then
+            python -m src.core.alerts --title "MLB: Kalshi failing in the nightly canary" --body-file mlb-canary-report.md
+          fi
+          unknown=$(grep -vxF -e 'Stats API schedule' -e 'Stats API probable pitchers' -e 'Stats API box score' -e 'ESPN odds' -e 'Kalshi' mlb-canary-failed.txt | grep -v '^$' || true)
+          if [ -n "$unknown" ]; then
+            python -m src.core.alerts --title "MLB: nightly canary failing" --body-file mlb-canary-report.md
+          fi

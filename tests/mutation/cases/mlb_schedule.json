@@ -78,19 +78,19 @@
       "id": "mlb-canary-box-unchecked",
       "target": "src/sports/mlb/canary.py",
       "tests": "tests/test_mlb_canary.py",
-      "why": "a box score with no pitchers passes, so a source that drops the starter is not seen until a pick needs it.",
-      "find": "        if not t.get('pitchers'):\n            out.append(f'{side}: no pitchers, so no starter')\n",
-      "replace": "",
-      "expect_caught_by": "test_a_box_score_without_pitchers_fails_the_night"
+      "why": "a box score the daily run cannot read its starters from passes, so a source that drops the pitchers is not seen until a pick needs it.",
+      "find": "        except history.HistoryError as exc:\n            problems.append(str(exc))\n            continue\n",
+      "replace": "        except history.HistoryError as exc:\n            return f'game {gid}: {exc}'\n",
+      "expect_caught_by": "test_a_box_score_without_pitchers_fails_its_source_alone"
     },
     {
       "id": "mlb-canary-stops-at-first-error",
       "target": "src/sports/mlb/canary.py",
       "tests": "tests/test_mlb_canary.py",
-      "why": "the first failing step ends the night, so one report no longer names everything wrong.",
-      "find": "            errors.append(f'{name} raised {type(exc).__name__}: {exc}')\n            notes.append(f'{name}: FAILED\\n\\n```\\n{traceback.format_exc(limit=3)}```')\n",
-      "replace": "            errors.append(f'{name} raised {type(exc).__name__}: {exc}')\n            notes.append(f'{name}: FAILED\\n\\n```\\n{traceback.format_exc(limit=3)}```')\n            break\n",
-      "expect_caught_by": "test_a_step_that_raises_is_recorded_and_the_rest_still_run"
+      "why": "the first failing source ends the night, so one report no longer names every source.",
+      "find": "            failed.append(name)\n            notes.append(f'{name}: FAILED, {type(exc).__name__}: {exc}\\n\\n```\\n{traceback.format_exc(limit=3)}```')\n",
+      "replace": "            failed.append(name)\n            notes.append(f'{name}: FAILED, {type(exc).__name__}: {exc}\\n\\n```\\n{traceback.format_exc(limit=3)}```')\n            break\n",
+      "expect_caught_by": "test_an_unreadable_schedule_skips_what_needs_it_rather_than_failing_twice"
     },
     {
       "id": "mlb-sched-tie-scored",

@@ -1,20 +1,28 @@
-"""MLB's nightly canary: run the reads the daily run will make, every night, and keep none (Stage 98 item 2).
+"""MLB's nightly canary: read every source the daily run reads, one at a time, and keep none (Stage 98 item 2, made
+per-source in Stage 101 item 4).
 
-The NFL's canary exists because an upstream change crashed a locking run with no warning (PR #6); the NHL's and
-the NBA's run every night for the same reason. MLB's daily run is Stage 101's, but its reads are fixed now, so the
-canary can watch them through the winter and spring training before a pick depends on them. Each step is one read,
-judged on the shape the run needs; a step that raises is recorded and the rest still run, so one report names
-everything wrong tonight.
+The NFL's canary exists because an upstream change crashed a locking run with no warning (PR #6); the NHL's and the
+NBA's run every night for the same reason. `experiments/mlb/stage101/registry.json` (`canary`) registers MLB's: every
+night, each source the daily run reads is read once on its own, judged on the shape the run needs, and named in the
+report. As the NBA's does, the workflow raises one issue per failing source ("MLB: ESPN odds failing in the nightly
+canary"), so a source that recovers does not hide another that has not.
 
-1. this season's schedule, through `schedule.load_schedule` (its own checks, the clubs' venues included);
-2. today's slate and the status of each game;
-3. the newest final's box score: both clubs' runs and a first pitcher, the starter;
-4. today's probable pitchers, through `schedule.probables` (none named on a day with games is reported, not
-   failed: the clubs name them a day or more ahead, and when is measured in spring training).
+1. **Stats API schedule**: this season's schedule, through `schedule.load_schedule` (its own checks, the clubs'
+   venues included), and today's slate.
+2. **Stats API probable pitchers**: today's, through `schedule.probables`. None named on a day with games is noted,
+   not failed: clubs name them a day or more ahead.
+3. **Stats API box score**: the newest final's, through `history.pitcher_rows`, the read the daily run adds this
+   season's games with: each club's pitchers, the first the starter, with outs and runs. The newest few finals are
+   tried; none usable is a failure. Before this season's first final, the newest stored finals of last season.
+4. **ESPN odds**: the next scheduled games within a week, matched to ESPN's scoreboard (`market.espn_match`) and
+   priced by `market.espn_price`. None of them priced is a failure; no game in the next week is not (the winter).
+5. **Kalshi**: the game markets, through `market.kalshi_prices`. Kalshi is the fallback, so a night with no quoted
+   game is noted, not failed; a feed that cannot be read or has no market list is a failure.
 
-Exit 1 on any error. The workflow that schedules it waits for MLB's daily run (Stage 101).
+A check that needs the schedule and finds it unreadable says so rather than raising a second error about the same
+cause.
 
-    python -m src.sports.mlb.canary [--report mlb-canary-report.md]
+    python -m src.sports.mlb.canary [--report mlb-canary-report.md] [--failed mlb-canary-failed.txt]
 """
 from __future__ import annotations
 
@@ -28,98 +36,130 @@ from typing import Any
 import pandas as pd
 
 from src.core.sport import GameStatus
+from src.sports.mlb import history, market
 from src.sports.mlb import schedule as mlb_schedule
 
-Step = Callable[[dict[str, Any]], str]
-BOX = mlb_schedule.STATS + '/game/{gid}/boxscore'
-#: How many of the newest finals one night looks through for a box score with both clubs' pitchers.
+Check = Callable[[dict[str, Any]], str]
+#: How many of the newest finals one night looks through for a usable box score.
 LOOKBACK = 5
+#: How many upcoming games the odds check reads.
+ODDS_SAMPLE = 3
+SOURCES = ('Stats API schedule', 'Stats API probable pitchers', 'Stats API box score', 'ESPN odds', 'Kalshi')
+
+
+class Skipped(Exception):
+    """The check depends on a read that already failed tonight."""
 
 
 def today(state: dict[str, Any]) -> str:
     return str(pd.Timestamp(state['now']).tz_convert('America/New_York').strftime('%Y-%m-%d'))
 
 
-def step_schedule(state: dict[str, Any]) -> str:
+def _schedule(state: dict[str, Any]) -> pd.DataFrame:
+    if state.get('schedule') is None:
+        raise Skipped('the schedule could not be read tonight')
+    sched: pd.DataFrame = state['schedule']
+    return sched
+
+
+def check_schedule(state: dict[str, Any]) -> str:
     season = mlb_schedule.current_season(state['now'])
     state['schedule'] = mlb_schedule.load_schedule(season, get=state['get'], cache=None, now=state['now'])
-    return f'{len(state["schedule"])} games in {season}'
-
-
-def step_slate(state: dict[str, Any]) -> str:
     day = mlb_schedule.slate(state['schedule'], today(state))
-    if day.empty:
-        return f'no game on {today(state)} (not an error)'
     counts = day['status'].value_counts().to_dict()
-    return f'{today(state)}: ' + ', '.join(f'{v} {k}' for k, v in sorted(counts.items()))
+    slate = (', '.join(f'{v} {k}' for k, v in sorted(counts.items())) if counts
+             else 'no game (not an error)')
+    return f'{len(state["schedule"])} games in {season}; {today(state)}: {slate}'
 
 
-def box_problems(data: Any) -> list[str]:
-    teams = (data or {}).get('teams') or {}
-    out = []
-    for side in ('home', 'away'):
-        t = teams.get(side) or {}
-        runs = ((t.get('teamStats') or {}).get('batting') or {}).get('runs')
-        if not isinstance(runs, int):
-            out.append(f'{side}: no runs')
-        if not t.get('pitchers'):
-            out.append(f'{side}: no pitchers, so no starter')
-    return out
-
-
-def step_box_score(state: dict[str, Any]) -> str:
-    sched = state['schedule']
-    finals = sched[sched['status'] == GameStatus.FINAL.value].sort_values('start_utc', ascending=False)
-    if finals.empty:
-        return 'no final game yet this season (not an error)'
-    problems: list[str] = []
-    for gid in finals['game_id'].head(LOOKBACK):
-        bad = box_problems(state['get'](BOX.format(gid=gid)))
-        if not bad:
-            return f'game {gid}: both clubs\' runs and starters'
-        problems.append(f'game {gid}: ' + ', '.join(bad))
-    raise ValueError(f'none of the newest {LOOKBACK} finals has a usable box score: ' + '; '.join(problems))
-
-
-def step_probables(state: dict[str, Any]) -> str:
+def check_probables(state: dict[str, Any]) -> str:
     named = mlb_schedule.probables(state['get'](mlb_schedule.DAY.format(day=today(state))))
     both = sum(1 for h, a in named.values() if h and a)
     return f'{both} of {len(named)} games on {today(state)} name both probable pitchers'
 
 
-STEPS: list[tuple[str, Step]] = [
-    ('schedule', step_schedule), ('slate', step_slate), ('box score', step_box_score),
-    ('probables', step_probables),
-]
+def _newest_finals(state: dict[str, Any]) -> list[str]:
+    sched = _schedule(state)
+    finals = sched[sched['status'] == GameStatus.FINAL.value].sort_values('start_utc', ascending=False)
+    if not finals.empty:
+        return [str(g) for g in finals['game_id'].head(LOOKBACK)]
+    season = mlb_schedule.current_season(state['now'])
+    past = pd.read_csv(history.HISTORY / f'games_{season - 1}.csv', dtype={'game_id': str})
+    return [str(g) for g in past.sort_values('start_utc', ascending=False)['game_id'].head(LOOKBACK)]
+
+
+def check_box_score(state: dict[str, Any]) -> str:
+    problems: list[str] = []
+    for gid in _newest_finals(state):
+        try:
+            rows = history.pitcher_rows(state['get'](history.BOX.format(gid=gid)), gid)
+        except history.HistoryError as exc:
+            problems.append(str(exc))
+            continue
+        return f'game {gid}: {len(rows)} pitcher lines, both starters'
+    raise ValueError(f'none of the newest {LOOKBACK} finals has a usable box score: ' + '; '.join(problems))
+
+
+def check_odds(state: dict[str, Any]) -> str:
+    sched = _schedule(state)
+    now = pd.Timestamp(state['now']).tz_convert('UTC')
+    ahead = sched[(sched['status'] == GameStatus.SCHEDULED.value) & (sched['start_utc'] > now)
+                  & (sched['start_utc'] < now + pd.Timedelta(days=7))].head(ODDS_SAMPLE)
+    if ahead.empty:
+        return 'no game scheduled in the next week (not an error)'
+    priced = []
+    for day, games in ahead.groupby('slate', sort=True):
+        board = state['get'](market.SCOREBOARD.format(day=str(day).replace('-', '')))
+        matched, _ = market.espn_match(games, market.espn_events(board))
+        for gid, (espn_id, swapped) in matched.items():
+            if market.espn_price(state['get'](market.ESPN_ODDS.format(e=espn_id)), swapped) is not None:
+                priced.append(gid)
+    if not priced:
+        raise ValueError(f'ESPN priced none of the next {len(ahead)} games ({", ".join(ahead["game_id"])})')
+    return f'{len(priced)} of the next {len(ahead)} games priced'
+
+
+def check_kalshi(state: dict[str, Any]) -> str:
+    feed = state['get'](market.KALSHI)
+    if not isinstance(feed.get('markets'), list):
+        raise ValueError('no market list')
+    return f'{len(market.kalshi_prices(feed))} games quoted on both sides (fallback only)'
+
+
+CHECKS: list[tuple[str, Check]] = list(zip(SOURCES, (check_schedule, check_probables, check_box_score, check_odds,
+                                                     check_kalshi), strict=True))
 
 
 def run(now: datetime, get: Callable[[str], Any] = mlb_schedule.fetch_json,
-        steps: list[tuple[str, Step]] | None = None) -> tuple[list[str], list[str]]:
-    """(errors, notes) for one night."""
+        checks: list[tuple[str, Check]] | None = None) -> tuple[list[str], list[str]]:
+    """(the failing sources, a report line per source) for one night."""
     state: dict[str, Any] = {'now': now, 'get': get}
-    errors, notes = [], []
-    for name, step in steps or STEPS:
+    failed, notes = [], []
+    for name, check in checks or CHECKS:
         try:
-            notes.append(f'{name}: {step(state)}')
+            notes.append(f'{name}: {check(state)}')
+        except Skipped as why:
+            notes.append(f'{name}: not checked, {why}')
         except Exception as exc:  # the crash is the finding
-            errors.append(f'{name} raised {type(exc).__name__}: {exc}')
-            notes.append(f'{name}: FAILED\n\n```\n{traceback.format_exc(limit=3)}```')
-    return errors, notes
+            failed.append(name)
+            notes.append(f'{name}: FAILED, {type(exc).__name__}: {exc}\n\n```\n{traceback.format_exc(limit=3)}```')
+    return failed, notes
 
 
 def main(argv: list[str] | None = None, now: datetime | None = None,
          get: Callable[[str], Any] = mlb_schedule.fetch_json) -> int:
     ap = argparse.ArgumentParser(description='The MLB nightly canary')
     ap.add_argument('--report', default=None)
+    ap.add_argument('--failed', default=None, help='write each failing source on its own line')
     args = ap.parse_args(argv)
-    errors, notes = run(now or datetime.now(UTC), get)
+    failed, notes = run(now or datetime.now(UTC), get)
     text = '# MLB nightly canary\n\n' + '\n'.join(f'- {n}' for n in notes) + '\n'
-    if errors:
-        text += '\n## Errors\n\n' + '\n'.join(f'- {e}' for e in errors) + '\n'
     print(text)
     if args.report:
         Path(args.report).write_text(text, encoding='utf-8')
-    return 1 if errors else 0
+    if args.failed:
+        Path(args.failed).write_text(''.join(f'{f}\n' for f in failed), encoding='utf-8')
+    return 1 if failed else 0
 
 
 if __name__ == '__main__':

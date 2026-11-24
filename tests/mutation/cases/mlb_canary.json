@@ -1,0 +1,41 @@
+{
+  "target": "src/sports/mlb/canary.py",
+  "tests": "tests/test_mlb_canary.py",
+  "cases": [
+    {
+      "id": "mlb-canary-odds-never-fail",
+      "why": "odds that price none of the coming games pass, so a broken ESPN odds feed is first seen as a day of Model A picks.",
+      "find": "    if not priced:\n        raise ValueError(",
+      "replace": "    if False:\n        raise ValueError(",
+      "expect_caught_by": "test_odds_that_price_no_upcoming_game_fail_their_source"
+    },
+    {
+      "id": "mlb-canary-winter-fails-odds",
+      "why": "a week with no game fails the odds source, so the canary opens an issue every winter night.",
+      "find": "    if ahead.empty:\n        return 'no game scheduled in the next week (not an error)'\n",
+      "replace": "",
+      "expect_caught_by": "test_no_game_in_the_next_week_is_not_an_odds_failure"
+    },
+    {
+      "id": "mlb-canary-kalshi-shape-unchecked",
+      "why": "a Kalshi answer without a market list passes as a quiet night.",
+      "find": "    if not isinstance(feed.get('markets'), list):\n        raise ValueError('no market list')\n",
+      "replace": "",
+      "expect_caught_by": "test_a_kalshi_feed_without_a_market_list_fails"
+    },
+    {
+      "id": "mlb-canary-skipped-counted-as-failed",
+      "why": "a check that could not run because the schedule failed is counted as its own failure, so one cause opens several issues.",
+      "find": "        except Skipped as why:\n            notes.append(f'{name}: not checked, {why}')\n",
+      "replace": "",
+      "expect_caught_by": "test_an_unreadable_schedule_skips_what_needs_it_rather_than_failing_twice"
+    },
+    {
+      "id": "mlb-canary-failed-file-empty",
+      "why": "the failing sources are not written for the workflow, so every failure opens the night's general issue and none names its source.",
+      "find": "        Path(args.failed).write_text(''.join(f'{f}\\n' for f in failed), encoding='utf-8')\n",
+      "replace": "        Path(args.failed).write_text('', encoding='utf-8')\n",
+      "expect_caught_by": "test_main_exits_one_and_writes_each_failing_source"
+    }
+  ]
+}
