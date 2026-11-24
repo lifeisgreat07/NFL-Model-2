@@ -37,7 +37,10 @@ def test_the_daily_run_stages_each_folder_only_if_it_exists():
 def test_the_daily_run_alerts_on_a_failure_and_a_drift_flag():
     t = text(DAILY)
     assert 'python -m src.sports.nba.daily 2>&1 | tee nba-daily.log' in t
-    assert '--title "NBA: daily run failed"' in t and "if: failure()" in t
+    # The raise itself, not only the title: the recovery step's `--resolve` line names it too, so a check on the
+    # title alone passed with the raise gone (nba-daily-silent-failure SURVIVED, found 2026-11-23).
+    assert ('python -m src.core.alerts --title "NBA: daily run failed" --body-file failure.md --log nba-daily.log'
+            in t) and "if: failure()" in t
     assert "grep -q 'DRIFT CHECK: FLAGGED' nba-daily.log" in t and '--title "NBA: drift check flagged"' in t
 
 
@@ -53,7 +56,14 @@ def test_the_canary_raises_one_issue_per_failing_source():
     for name, _ in canary.CHECKS:
         assert (f"if grep -qx '{name}' nba-canary-failed.txt; then\n"
                 f'            python -m src.core.alerts --title "NBA: {name} failing in the nightly canary"') in t, name
-    assert '--title "NBA: nightly canary failing"' in t, 'a canary that names no source still alerts'
+    # A canary that fails before naming any source raises the night's title and stops; one that names a source
+    # this step does not list raises it too. Each raise is held where it stands: the title alone is also on the
+    # recovery step's `--resolve` line and on the other raise (nba-canary-unnamed-failure-silent SURVIVED).
+    raise_ = 'python -m src.core.alerts --title "NBA: nightly canary failing" --body-file nba-canary-report.md\n'
+    assert ("if [ ! -s nba-canary-failed.txt ]; then\n"
+            "            printf 'The NBA canary failed before naming a source. See %s\\n' \"$run_url\" > nba-canary-report.md\n"
+            f"            {raise_}            exit 0\n") in t, 'a canary that names no source raises nothing'
+    assert f'if [ -n "$unknown" ]; then\n            {raise_}' in t, 'a source the step does not list raises nothing'
 
 
 def test_the_canary_writes_nothing():
