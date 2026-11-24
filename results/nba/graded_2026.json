@@ -322,6 +322,27 @@
   "saved_utc": "2026-11-20T21:31:27Z"
  },
  {
+  "game_id": "401909314",
+  "pick": "DET",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-24T21:31:34Z"
+ },
+ {
+  "game_id": "401909315",
+  "pick": "BOS",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-24T21:31:34Z"
+ },
+ {
+  "game_id": "401909316",
+  "pick": "DEN",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-24T21:31:34Z"
+ },
+ {
   "game_id": "401909834",
   "pick": "ORL",
   "result": "wrong",
