@@ -1,0 +1,39 @@
+{
+ "game_id": "401909315",
+ "season": 2026,
+ "slate": "2026-11-24",
+ "start_utc": "2026-11-25T01:00:00Z",
+ "home": "WSH",
+ "away": "BOS",
+ "model_a": 0.1834,
+ "model_b": 0.2284,
+ "neutral_site": false,
+ "market_source": "espn",
+ "price_used": true,
+ "price_note": null,
+ "features": {
+  "point_matchup": -12.402523,
+  "efficiency_matchup": -12.20133,
+  "availability_matchup": -0.011946
+ },
+ "market": {
+  "source": "espn",
+  "home_price": 331.0,
+  "away_price": -424.0,
+  "home_prob": 0.2228,
+  "read_utc": "2026-11-24T21:31:34Z"
+ },
+ "saved_utc": "2026-11-24T21:31:34Z",
+ "code": "nba-day-sport-v2",
+ "registry": "experiments/nba/stage95_v2/registry.json",
+ "H_days": 120.0,
+ "lambda": 10.0,
+ "never_a_pick": true,
+ "training_through": "2026-11-23",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14311,
+  "training_games_priced": 14263,
+  "training_ids_sha256": "d99ce822be426cf15e45e955eeb960c4d3e063df1dad4fe352a7df6a90367f08"
+ }
+}

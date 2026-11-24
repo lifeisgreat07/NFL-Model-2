@@ -1,0 +1,78 @@
+{
+ "game_id": "401909316",
+ "season": 2026,
+ "slate": "2026-11-24",
+ "start_utc": "2026-11-25T03:00:00Z",
+ "home": "DEN",
+ "away": "DAL",
+ "model_a": 0.7258,
+ "model_b": 0.7177,
+ "pick": "DEN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.986
+ },
+ "features": {
+  "point_matchup": 4.719345,
+  "efficiency_matchup": 4.473785,
+  "availability_matchup": 0.013957
+ },
+ "market": {
+  "game_id": "401909316",
+  "home": "DEN",
+  "away": "DAL",
+  "start_utc": "2026-11-25T03:00:00Z",
+  "read_utc": "2026-11-24T21:31:34Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -297.0,
+  "away_price": 241.0,
+  "home_prob": 0.7184
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-24T21:31:34Z",
+  "home": [],
+  "away": [
+   {
+    "athlete_id": "4683688",
+    "name": "Dereck Lively II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4278078",
+    "name": "P.J. Washington",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5279129",
+    "name": "Sergio de Larrea",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5148538",
+    "name": "Tarik Biberovic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5106040",
+    "name": "Tobi Lawal",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-24T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-23",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14316,
+  "training_games_priced": 14275,
+  "training_ids_sha256": "ba14c6cf5389c92f91a093b69c49f7a184c0f4741b4704fe4ddb6c614f167964"
+ },
+ "code_sha256": "845175be4f081676012aa5c7ca6e529e18a7867ce6d5846957d2fb5cddef1956",
+ "code_commit": "4d340a875819a2cc452ad77df9eaa4db8c028ada"
+}

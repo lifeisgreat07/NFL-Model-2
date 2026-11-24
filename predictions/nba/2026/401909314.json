@@ -1,0 +1,99 @@
+{
+ "game_id": "401909314",
+ "season": 2026,
+ "slate": "2026-11-24",
+ "start_utc": "2026-11-25T00:00:00Z",
+ "home": "ORL",
+ "away": "DET",
+ "model_a": 0.3946,
+ "model_b": 0.4561,
+ "pick": "DET",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8879,
+  "away": 0.8364
+ },
+ "features": {
+  "point_matchup": -5.598057,
+  "efficiency_matchup": -5.605281,
+  "availability_matchup": 0.051473
+ },
+ "market": {
+  "game_id": "401909314",
+  "home": "ORL",
+  "away": "DET",
+  "start_utc": "2026-11-25T00:00:00Z",
+  "read_utc": "2026-11-24T21:31:34Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 110.0,
+  "away_price": -130.0,
+  "home_prob": 0.4573
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-24T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "5107251",
+    "name": "Izaiyah Nelson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065654",
+    "name": "Jonathan Isaac",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5214637",
+    "name": "Noah Penda",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432573",
+    "name": "Paolo Banchero",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4432166",
+    "name": "Cade Cunningham",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3157465",
+    "name": "Duncan Robinson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5258459",
+    "name": "Ebuka Okorie",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433621",
+    "name": "Jalen Duren",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2990962",
+    "name": "Taurean Prince",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-24T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-23",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14316,
+  "training_games_priced": 14275,
+  "training_ids_sha256": "ba14c6cf5389c92f91a093b69c49f7a184c0f4741b4704fe4ddb6c614f167964"
+ },
+ "code_sha256": "845175be4f081676012aa5c7ca6e529e18a7867ce6d5846957d2fb5cddef1956",
+ "code_commit": "4d340a875819a2cc452ad77df9eaa4db8c028ada"
+}
