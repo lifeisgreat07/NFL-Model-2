@@ -1,0 +1,94 @@
+{
+ "game_id": "2026020385",
+ "season": 2026,
+ "slate": "2026-11-24",
+ "start_utc": "2026-11-25T01:00:00Z",
+ "home": "EDM",
+ "away": "VGK",
+ "model_a": 0.5066,
+ "model_b": 0.4291,
+ "pick": "VGK",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.115767,
+  "shot_matchup": -3.155953,
+  "goalie_matchup_2000": -0.000577
+ },
+ "market": {
+  "game_id": "2026020385",
+  "start_utc": "2026-11-25T01:00:00Z",
+  "home": "EDM",
+  "away": "VGK",
+  "book": "DraftKings",
+  "home_price": 105.0,
+  "away_price": -125.0,
+  "home_prob": 0.4675,
+  "read_utc": "2026-11-24T21:01:41Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482221,
+   "name": "Devon Levi",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/EdmontonOilers/status/2125268756465336705"
+  },
+  "away": {
+   "player_id": 8479394,
+   "name": "Carter Hart",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/JasonGregor/status/2125293215276499438?a=e6n5IVdZV40L5xK1eyI&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-24",
+  "read_utc": "2026-11-24T21:01:41Z",
+  "home": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Nugent-Hopkins",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Zach Hyman",
+    "position": "LW",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": []
+ },
+ "saved_utc": "2026-11-24T21:01:41Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-23",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14787,
+  "training_games_priced": 7752,
+  "training_ids_sha256": "e3d9cda39f96fed73a72b81d6d3fd69f2d8ac76a7c1b4678c7edcd6a8e1f771d"
+ },
+ "code_sha256": "625d69e267af06c19d5ae3bf249595b9db2ee654caefb7c613d3eac9564d02fc",
+ "code_commit": "bbee43ec5fa43b25b8fc8c33af73577b9a652d05"
+}

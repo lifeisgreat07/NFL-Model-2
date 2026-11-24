@@ -1924,5 +1924,11 @@
   "pick": "MIN",
   "result": "correct",
   "saved_utc": "2026-11-23T21:01:45Z"
+ },
+ {
+  "game_id": "2026020385",
+  "pick": "VGK",
+  "result": "pending",
+  "saved_utc": "2026-11-24T21:01:41Z"
  }
 ]
