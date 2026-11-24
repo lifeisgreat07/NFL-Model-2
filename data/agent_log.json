@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-11-24T05:26:15Z",
+  "generated_utc": "2026-11-24T17:06:07Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 842,
+    "audits_total": 845,
     "audits_superseded": 151,
-    "pull_requests_audited": 691,
+    "pull_requests_audited": 694,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 5050,
+    "claims_checked": 5070,
     "discrepancies_found": 38,
-    "unverifiable": 564,
+    "unverifiable": 567,
     "pull_requests_with_a_discrepancy": 27,
     "reports_disagreeing_with_themselves": 44
   },
@@ -14860,9 +14860,123 @@
       "implicated": [],
       "inconsistencies": [],
       "superseded": false
+    },
+    {
+      "pr": 826,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/826#issuecomment-7124558519",
+      "posted_utc": "2026-11-24T07:02:55Z",
+      "head": "f7c2e79",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 7,
+      "confirmed": 5,
+      "discrepancies": 0,
+      "unverifiable": 2,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 827,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/827#issuecomment-7124896024",
+      "posted_utc": "2026-11-24T07:21:17Z",
+      "head": "1d8ad5f",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 7,
+      "confirmed": 6,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 828,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/828#issuecomment-7125410262",
+      "posted_utc": "2026-11-24T07:49:23Z",
+      "head": "fecf569",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 6,
+      "confirmed": 6,
+      "discrepancies": 0,
+      "unverifiable": 0,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
     }
   ],
   "recent": [
+    {
+      "pr": 829,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/829#issuecomment-7130805704",
+      "when": "2026-11-24T11:59:08Z",
+      "agent": "Spotter",
+      "says": "Spotter did not post a reading this run: - Spotter produced no reading this run"
+    },
+    {
+      "agent": "Scout",
+      "pr": 829,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45388816799",
+      "when": "2026-11-24T11:56:44Z",
+      "says": "found the description needs fixing before an audit"
+    },
+    {
+      "pr": 828,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/828#issuecomment-7125538033",
+      "when": "2026-11-24T07:56:14Z",
+      "agent": "Spotter",
+      "says": "#### What changed I found no visible difference between head and base on any page."
+    },
+    {
+      "agent": "Booth",
+      "pr": 828,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/828#issuecomment-7125410262",
+      "when": "2026-11-24T07:49:23Z",
+      "says": "NEEDS HUMAN REVIEW: 6 of 6 claims confirmed, 0 wrong, 0 unverifiable"
+    },
+    {
+      "agent": "Scout",
+      "pr": 828,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45350748883",
+      "when": "2026-11-24T07:47:42Z",
+      "says": "found nothing to fix in the description"
+    },
+    {
+      "agent": "Booth",
+      "pr": 827,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/827#issuecomment-7124896024",
+      "when": "2026-11-24T07:21:17Z",
+      "says": "NEEDS HUMAN REVIEW: 6 of 7 claims confirmed, 0 wrong, 1 unverifiable"
+    },
+    {
+      "agent": "Scout",
+      "pr": null,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45347074908",
+      "when": "2026-11-24T07:19:14Z",
+      "says": "found nothing to fix in the description"
+    },
+    {
+      "agent": "Booth",
+      "pr": 826,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/826#issuecomment-7124558519",
+      "when": "2026-11-24T07:02:55Z",
+      "says": "NEEDS HUMAN REVIEW: 5 of 7 claims confirmed, 0 wrong, 2 unverifiable"
+    },
+    {
+      "agent": "Scout",
+      "pr": null,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45343606711",
+      "when": "2026-11-24T06:51:45Z",
+      "says": "found nothing to fix in the description"
+    },
     {
       "agent": "Booth",
       "pr": 825,
@@ -14911,69 +15025,6 @@
       "when": "2026-11-24T00:56:13Z",
       "agent": "Spotter",
       "says": "#### What changed I opened all 16 head and base pairs (4 pages x 2 viewports x 2 themes)."
-    },
-    {
-      "agent": "Booth",
-      "pr": 822,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/822#issuecomment-7118500293",
-      "when": "2026-11-24T00:51:05Z",
-      "says": "NEEDS HUMAN REVIEW: 7 of 8 claims confirmed, 0 wrong, 1 unverifiable"
-    },
-    {
-      "agent": "Scout",
-      "pr": null,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45300149711",
-      "when": "2026-11-24T00:48:34Z",
-      "says": "found nothing to fix in the description"
-    },
-    {
-      "agent": "Booth",
-      "pr": 821,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/821#issuecomment-7118306561",
-      "when": "2026-11-24T00:40:03Z",
-      "says": "NEEDS HUMAN REVIEW: 6 of 7 claims confirmed, 0 wrong, 1 unverifiable"
-    },
-    {
-      "agent": "Scout",
-      "pr": null,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45298695228",
-      "when": "2026-11-24T00:37:42Z",
-      "says": "found nothing to fix in the description"
-    },
-    {
-      "agent": "Scout",
-      "pr": null,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45294470871",
-      "when": "2026-11-24T00:06:57Z",
-      "says": "found nothing to fix in the description"
-    },
-    {
-      "agent": "Booth",
-      "pr": 820,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/820#issuecomment-7117449771",
-      "when": "2026-11-23T23:52:09Z",
-      "says": "SAFE TO MERGE: 6 of 6 claims confirmed, 0 wrong, 0 unverifiable"
-    },
-    {
-      "agent": "Scout",
-      "pr": null,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/45289510530",
-      "when": "2026-11-23T23:31:14Z",
-      "says": "found nothing to fix in the description"
-    },
-    {
-      "agent": "Booth",
-      "pr": 819,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/819#issuecomment-7116720525",
-      "when": "2026-11-23T23:14:18Z",
-      "says": "NEEDS HUMAN REVIEW: 5 of 6 claims confirmed, 0 wrong, 1 unverifiable"
-    },
-    {
-      "pr": 819,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/819#issuecomment-7116662266",
-      "when": "2026-11-23T23:11:44Z",
-      "agent": "Spotter",
-      "says": "#### What changed Only the `home` page was rendered, at both viewports and in both themes."
     }
   ]
 }
