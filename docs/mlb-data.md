@@ -83,7 +83,10 @@ effect, which is enough for the validation and confirmation seasons.
 The Stats API's schedule names each game's probable pitchers, and a box score names every pitcher who appeared, the
 starter first. A past day (2025-07-04) named both probables for all fifteen games. **When** the probables are
 published before first pitch cannot be measured in November; it is measured in spring training (February 2027) by
-reading the schedule on a timer, before Stage 101's starting-pitcher routine is set. OPEN until then.
+reading the schedule on a timer, before Stage 101's starting-pitcher routine is set. OPEN until then. How that
+measurement becomes the daily runs' three times is registered now, before it is taken
+(`experiments/mlb/stage101/registry.json`, `forward_test.runs`), and a side with no probable named at the lock
+gets the league-average starter.
 
 ## 5. Club identity across seasons
 

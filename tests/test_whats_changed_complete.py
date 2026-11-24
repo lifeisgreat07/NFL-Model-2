@@ -16,8 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 #: Each sport's forward-test registration, and the backtest registration it rests on.
 REGISTRIES = {'nhl': ['experiments/nhl/stage58/registry.json', 'experiments/nhl/stage56/registry.json'],
               'nba': ['experiments/nba/stage65/registry.json', 'experiments/nba/stage61/registry.json'],
-              # MLB's forward test is registered with Stage 101; until then its page covers the backtest's.
-              'mlb': ['experiments/mlb/stage98/registry.json']}
+              # MLB's forward test (Stage 101, registered 2026-11-24) beside the backtest's.
+              'mlb': ['experiments/mlb/stage101/registry.json', 'experiments/mlb/stage98/registry.json']}
 
 
 def changes(sport):
