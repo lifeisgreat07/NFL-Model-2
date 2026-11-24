@@ -190,6 +190,7 @@
   "tests/test_mlb_history.py": "isolated behavioural",
   "tests/test_mlb_home_card.py": "mixed",
   "tests/test_mlb_lab_page.py": "template/JS",
+  "tests/test_mlb_market.py": "isolated behavioural",
   "tests/test_mlb_market_history.py": "isolated behavioural",
   "tests/test_mlb_probables_timing.py": "mixed",
   "tests/test_mlb_ratings.py": "isolated behavioural",
