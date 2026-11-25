@@ -50,6 +50,20 @@ def author(comment: dict[str, Any]) -> Any:
     return (comment.get('user') or {}).get('login')
 
 
+#: Stage 82 item 5 (the 2026-11-02 review): since the post job (#827) publishes Booth's report as
+#: github-actions[bot], the account any workflow's GITHUB_TOKEN posts as, the account alone no longer says a
+#: comment is Booth's. The post job closes each report with this line, naming the run that wrote it, and a
+#: report counts only when that run is one of Booth's audit runs.
+RUN_MARK = '<!-- booth-run: {run_id} -->'
+RUN_MARK_RE = re.compile(r'<!-- booth-run: (\d+) -->\s*\Z')
+
+
+def run_id(body: str) -> int | None:
+    """The run a report's closing marker names, or None when its last line is not one."""
+    m = RUN_MARK_RE.search(body or '')
+    return int(m.group(1)) if m else None
+
+
 VERDICTS = ('CONFIRMED', 'DISCREPANCY', 'UNVERIFIABLE')
 OVERALLS = (
     'SAFE TO MERGE',

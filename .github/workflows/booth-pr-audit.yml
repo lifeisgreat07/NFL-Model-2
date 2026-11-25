@@ -335,6 +335,10 @@ jobs:
           name: booth-report
           path: ${{ runner.temp }}/booth
 
+      # Stage 82 item 5: the report closes with the marker naming this run
+      # (src/agents/booth_verdict.py RUN_MARK), since github-actions[bot], the
+      # account it is posted as, is the one any workflow's token posts as. The
+      # check below and the agent-log collector count a report only with it.
       - name: Post Booth's report
         env:
           REPORT: ${{ runner.temp }}/booth/booth-report.md
@@ -342,7 +346,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ -s "$REPORT" ]; then
-            gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file "$REPORT"
+            { cat "$REPORT"; printf '\n\n<!-- booth-run: %s -->\n' "$GITHUB_RUN_ID"; } > "$RUNNER_TEMP/booth-post.md"
+            gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/booth-post.md"
           else
             echo "Booth wrote no report; the next step fails the run."
           fi
@@ -355,9 +360,12 @@ jobs:
         # during this run, whose booth-verdict block names the audited
         # commit. src/agents/booth_report_posted.py holds the rules and says which
         # one failed; tests/test_booth_report_posted.py holds both halves.
+        # Stage 82 item 5: BOOTH_RUN_ID makes it count only a report closing
+        # with this run's marker.
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ github.event.pull_request.number || inputs.pr_number }}
+          BOOTH_RUN_ID: ${{ github.run_id }}
         run: |
           gh api "repos/${{ github.repository }}/issues/$PR/comments" --paginate > "$RUNNER_TEMP/booth-comments.json"
           python3 -m src.agents.booth_report_posted "$RUNNER_TEMP/booth-comments.json" \

@@ -90,14 +90,24 @@ jobs:
           gh api "/repos/${{ github.repository }}/actions/workflows/scout-preflight.yml/runs?per_page=30" \
             --jq '[.workflow_runs[] | {conclusion, html_url, created_at, pull_requests: [.pull_requests[] | {number}]}]' > scout.json
 
+      # Stage 82 item 5: Booth's audit runs, so a report counts only when the
+      # run its closing marker names is one of them.
+      - name: Fetch Booth's audit runs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api --paginate "/repos/${{ github.repository }}/actions/workflows/booth-pr-audit.yml/runs?per_page=100" \
+            --jq '.workflow_runs[].id' > booth-runs.txt
+          python -c "print('fetched', len(open('booth-runs.txt').read().split()), 'Booth runs')"
+
       - name: Build data/agent_log.json
-        run: python -m src.agents.collect_agent_log --comments comments.json --scout scout.json
+        run: python -m src.agents.collect_agent_log --comments comments.json --scout scout.json --booth-runs booth-runs.txt
 
       - name: Show what was collected
         run: python -c "import json; d=json.load(open('data/agent_log.json')); print(json.dumps(d.get('summary', {}), indent=2))"
 
       - name: Remove the raw comment dump
-        run: rm -f comments.json scout.json
+        run: rm -f comments.json scout.json booth-runs.txt
 
       # Catch up with main before committing, as the Weekly update and the
       # Weekend refresh do (issue #145). This job checks out main at the merge

@@ -78,6 +78,24 @@
       "find": "                continue\n            return True, (\n",
       "replace": "                break\n            return True, (\n",
       "expect_caught_by": "test_a_consistent_report_passes_beside_one_that_disagrees"
+    },
+    {
+      "id": "booth-check-ignores-the-run-marker",
+      "target": "src/agents/booth_report_posted.py",
+      "tests": "tests/test_booth_report_posted.py",
+      "why": "a comment from github-actions[bot] another run or workflow posted counts as this run's report.",
+      "find": "        and (run is None or run_id(c.get('body') or '') == run)\n",
+      "replace": "",
+      "expect_caught_by": "test_with_its_run_named_only_that_runs_marked_report_counts"
+    },
+    {
+      "id": "booth-check-run-from-the-arguments",
+      "target": "src/agents/booth_report_posted.py",
+      "tests": "tests/test_booth_report_posted.py",
+      "why": "the run named in BOOTH_RUN_ID is not read, so the marker is never asked for on a real run.",
+      "find": "    run = os.environ.get('BOOTH_RUN_ID', '').strip()\n",
+      "replace": "    run = ''\n",
+      "expect_caught_by": "test_the_run_is_named_in_the_environment_not_the_arguments"
     }
   ]
 }

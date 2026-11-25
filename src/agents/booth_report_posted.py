@@ -22,6 +22,9 @@ What counts as "a report for this run" -- all four must hold for ONE comment:
   4. whose `head` names the commit this run checked out. The protocol's own
      example writes a short SHA, so a prefix of at least seven characters
      counts; anything shorter is too ambiguous to be evidence.
+  6. (Stage 82 item 5) when the workflow names its run in BOOTH_RUN_ID, closing with the marker for that
+     run (`booth_verdict.RUN_MARK`), which the post job writes: a report another run posted, or a comment
+     some other workflow's GITHUB_TOKEN posted as the same github-actions[bot], does not count.
   5. whose block agrees with its own prose: the four count lines, the
      overall verdict, and no DISCREPANCY under an unqualified SAFE TO MERGE
      (booth_verdict.cross_check). The collector had recorded these
@@ -46,6 +49,7 @@ Usage (as the workflow calls it):
 Exit 0 with a one-line confirmation, or 1 with the reason.
 """
 import json
+import os
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -57,6 +61,7 @@ from src.agents.booth_verdict import (
     author,
     cross_check,
     extract,
+    run_id,
 )
 
 MIN_SHA_PREFIX = 7
@@ -93,8 +98,10 @@ def head_matches(block_head: str | None, head_sha: str) -> bool:
     return len(block_head) >= MIN_SHA_PREFIX and head_sha.lower().startswith(block_head)
 
 
-def check(comments: list[dict[str, Any]], head_sha: str, started_at: str) -> tuple[bool, str]:
-    """Return (ok, message). Pure: no I/O, so the rules are testable directly."""
+def check(comments: list[dict[str, Any]], head_sha: str, started_at: str,
+          run: int | None = None) -> tuple[bool, str]:
+    """Return (ok, message). Pure: no I/O, so the rules are testable directly. With `run`, a comment counts
+    only when it closes with that run's marker (rule 6)."""
     if len(head_sha) < 40:
         return False, f"head SHA {head_sha!r} is not a full SHA; the workflow must record `git rev-parse HEAD`"
     floor = _parse_time(started_at)
@@ -107,6 +114,7 @@ def check(comments: list[dict[str, Any]], head_sha: str, started_at: str) -> tup
         c for c in comments
         if author(c) in BOOTH_ACCOUNTS
         and _parse_time(c['created_at']) >= floor
+        and (run is None or run_id(c.get('body') or '') == run)
     ]
     if not candidates:
         return False, (
@@ -158,7 +166,10 @@ def main(argv: list[str]) -> int:
         print("usage: booth_report_posted.py COMMENTS_JSON HEAD_SHA STARTED_AT")
         return 2
     comments = load_comments(Path(argv[1]).read_text(encoding='utf-8'))
-    ok, message = check(comments, argv[2].strip(), argv[3].strip())
+    # Named in the environment, not the arguments: a pull request's own run reads the base commit's check, which
+    # takes exactly three arguments (Stage 82 item 1), so a fourth would fail the very run that adds it.
+    run = os.environ.get('BOOTH_RUN_ID', '').strip()
+    ok, message = check(comments, argv[2].strip(), argv[3].strip(), int(run) if run.isdigit() else None)
     print(("OK: " if ok else "FAIL: ") + message)
     return 0 if ok else 1
 

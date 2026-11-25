@@ -71,6 +71,15 @@
       "find": "_COUNT = r'^\\s*{label}:\\s*(\\d+)(?:\\s+\\(.*\\))?\\s*$'\n",
       "replace": "_COUNT = r'^\\s*{label}:\\s*(\\d+)\\b.*$'\n",
       "expect_caught_by": "test_other_text_after_the_number_is_not_a_count_line"
+    },
+    {
+      "id": "booth-run-marker-anywhere",
+      "target": "src/agents/booth_verdict.py",
+      "tests": "tests/test_booth_report_posted.py",
+      "why": "a marker quoted mid-report counts, though the post job writes it as the report's last line.",
+      "find": "RUN_MARK_RE = re.compile(r'<!-- booth-run: (\\d+) -->\\s*\\Z')\n",
+      "replace": "RUN_MARK_RE = re.compile(r'<!-- booth-run: (\\d+) -->')\n",
+      "expect_caught_by": "test_with_its_run_named_only_that_runs_marked_report_counts"
     }
   ]
 }
