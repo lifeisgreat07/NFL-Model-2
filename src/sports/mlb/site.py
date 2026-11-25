@@ -7,11 +7,17 @@ game's place in its series ("Game 2 of 4 · DET leads 1-0") and a doubleheader's
 100 item 2; the standings odds item 3. The site build does not list MLB in its SPORTS until Stage 101 makes it
 live, so nothing here reaches the public site yet.
 
-The board shows no picks yet, on purpose: MLB's pick file and the daily run that writes it are Stage 101, and
-the pick's shape is fixed there with its writer, not guessed here. Until then every row is a scheduled game.
+Since Stage 101 item 4 the board shows each saved pick as the NBA's board does (Mark, 2026-11-24: "copying nba
+makes the most sense and offers a consistent look across the pages"): the row's pick and grade, and a card with
+Model B, the market and Model A on one bar, the price and its source or "no price" and why, and, what baseball
+adds, which side's starter was not named when the pick was saved, so it got the league rate. A game postponed
+after its pick was saved has two pick files; the board shows the one saved for the date the schedule lists it on
+now, so a row never shows a pick that will not be graded.
 
 What it reads, all under MLB's folders (`src.core.sport.sport_paths`):
 
+- `predictions/mlb/<season>/<gamePk>_<official date>.json`: the saved picks (`src/sports/mlb/daily.py`), keyed
+  here by game and official date (`slim_pick`), each with its grade from `results/mlb/graded_<season>.json`;
 - `results/mlb/schedule_<season>.json`: what the daily run will write (Stage 101 item 2), `{"as_of", "games"}`
   with each game in the core's schedule shape as `src/sports/mlb/schedule.py` makes it (clubs as Stats API ids,
   as text), plus `game_number`, `double_header`, `series_game`, `series_games`, and, once a club has named one,
@@ -29,7 +35,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from src.core import page_render
+from src.core import colour, page_render
 from src.core.page_fill import (
     DAY_BOARD_JS,
     ESCAPE_JS,
@@ -119,6 +125,50 @@ def slim_game(g: Json, games: list[Json]) -> dict[str, Any]:
             'hsp': starter(g.get('home_starter')), 'asp': starter(g.get('away_starter'))}
 
 
+def bar_colours(away: str, home: str) -> list[str]:
+    """The two colours a game's bar draws, pushed apart when they are close, as the NBA's board does."""
+    a = colours.TEAM_COLOUR.get(str(away), '#8A93A8')
+    h = colours.TEAM_COLOUR.get(str(home), '#8A93A8')
+    pa, ph = colour.matchup_push(a, h)
+    return [_hex(pa), _hex(ph)]
+
+
+def _hex(rgb: tuple[float, float, float]) -> str:
+    return '#' + ''.join(f'{max(0, min(255, round(c))):02X}' for c in rgb)
+
+
+def slim_pick(p: Json, result: str) -> dict[str, Any]:
+    """What the board shows of a saved pick: both models, the price and its source (or why there was none), and
+    whether each side's starter was named, every club by its code."""
+    m = p.get('market') or {}
+    sp = p.get('starters') or {}
+    out: dict[str, Any] = {
+        'a': p.get('model_a'), 'b': p.get('model_b'), 'pick': abbr(p.get('pick')), 'by': p.get('pick_model'),
+        'saved': p.get('saved_utc'), 'result': result, 'colours': bar_colours(p['away'], p['home']),
+        'source': p.get('market_source'),
+        'named': {side: bool((sp.get(side) or {}).get('named')) for side in ('home', 'away')},
+    }
+    if p.get('market_source'):
+        out['market'] = {'book': m.get('provider'), 'hp': m.get('home_price'), 'ap': m.get('away_price'),
+                         'prob': m.get('home_prob')}
+    else:
+        out['why'] = m.get('why')
+    return out
+
+
+def picks_file(season: int) -> dict[str, Any]:
+    """Every saved pick of the season, keyed '<gamePk>_<official date>', with its grade (pending until graded)."""
+    graded = _maybe(PATHS.results / f'graded_{season}.json') or []
+    results = {(str(r['game_id']), str(r['slate'])): str(r['result']) for r in graded}
+    folder = PATHS.predictions / str(season)
+    out = {}
+    for path in sorted(folder.glob('*.json')) if folder.exists() else []:
+        p = json.loads(path.read_text(encoding='utf-8'))
+        key = (str(p['game_id']), str(p['slate']))
+        out[f'{key[0]}_{key[1]}'] = slim_pick(p, results.get(key, 'pending'))
+    return out
+
+
 def standings_file(season: int) -> Json:
     """The standings odds MLB's daily run will write (`src/sports/mlb/standings.py` to_json; Stage 101 writes it),
     each club by its code; None before the first."""
@@ -149,8 +199,7 @@ def board(season: int) -> dict[str, Any]:
         'season': season,
         'schedule_as_of': (sched or {}).get('as_of'),
         'games': [slim_game(g, games) for g in games],
-        # Stage 101 defines MLB's pick file with its writer; until then no game has a pick.
-        'picks': {},
+        'picks': picks_file(season),
         'standings': standings_file(season),
         'ratings': ratings_file(season),
         'teams': {code: {'name': name, 'logo': colours.LOGO['dark'].format(code=colours.LOGO_CODE[club]),

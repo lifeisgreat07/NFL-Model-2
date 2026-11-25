@@ -31,12 +31,17 @@
 .mlb-row-result.live{color:var(--accent);}
 .mlb-row-result.open, .mlb-row-result.off{color:var(--text-3); font-weight:500;}
 .mlb-row-detail{padding:0 0 var(--s3);}
+.mlb-row-pick .mlb-no-price{font-size:var(--fs-12); color:var(--text-3);}
+.mlb-result-line{font-size:var(--fs-13); color:var(--text-2); margin:2px 0 var(--s2); display:flex; flex-wrap:wrap; column-gap:var(--s3); row-gap:2px;}
+.mlb-result-line b{color:var(--text);}
+.mlb-model-result{white-space:nowrap;}
 /* A phone: the starters' names wrap rather than being cut, since they are what the row is for. */
 @media (max-width:600px){
   .mlb-row{grid-template-columns:3.7rem minmax(0, 1fr) auto minmax(4.4rem, max-content) 14px; column-gap:var(--s2);}
   .mlb-row-time{white-space:nowrap;}
   .mlb-row-sp, .mlb-row-meta{white-space:normal;}
   .mlb-row-pick{text-align:right;}
+  .mlb-row-pick .mlb-no-price{display:block;}
 }
 /* Before the first pick. */
 .mlb-preseason{margin:0 0 var(--s3); padding:var(--s3); border:1px solid var(--border); border-radius:var(--r-lg);

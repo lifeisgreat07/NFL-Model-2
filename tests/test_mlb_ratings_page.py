@@ -51,7 +51,7 @@ def board_with(tmp_path, monkeypatch, d):
     res.mkdir()
     if d is not None:
         (res / 'ratings_2026.json').write_text(json.dumps(d), encoding='utf-8')
-    monkeypatch.setattr(site, 'PATHS', type('P', (), {'results': res})())
+    monkeypatch.setattr(site, 'PATHS', type('P', (), {'results': res, 'predictions': res.parent.parent / 'predictions' / 'mlb'})())
     return site.board(2026)
 
 
