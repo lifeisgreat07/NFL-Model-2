@@ -1,342 +1,336 @@
 {
- "as_of": "2026-11-24",
+ "as_of": "2026-11-25",
  "K_shots": 2000.0,
  "teams": [
   {
    "team": "CAR",
-   "goal": 1.2976,
-   "shot": 9.1799
+   "goal": 1.2975,
+   "shot": 9.1787
   },
   {
    "team": "MIN",
-   "goal": 0.9115,
-   "shot": 0.8899
+   "goal": 0.9109,
+   "shot": 0.8896
   },
   {
    "team": "COL",
-   "goal": 0.8832,
-   "shot": 4.6132
+   "goal": 0.8848,
+   "shot": 4.6134
   },
   {
    "team": "TBL",
-   "goal": 0.6455,
-   "shot": 2.3557
-  },
-  {
-   "team": "EDM",
-   "goal": 0.4941,
-   "shot": 0.0355
+   "goal": 0.6452,
+   "shot": 2.3553
   },
   {
    "team": "BOS",
-   "goal": 0.4764,
-   "shot": -1.4481
+   "goal": 0.4777,
+   "shot": -1.4472
   },
   {
-   "team": "DAL",
-   "goal": 0.394,
-   "shot": 0.2125
+   "team": "EDM",
+   "goal": 0.4434,
+   "shot": 0.009
   },
   {
    "team": "VGK",
-   "goal": 0.3783,
-   "shot": 3.1914
+   "goal": 0.4244,
+   "shot": 3.2152
+  },
+  {
+   "team": "DAL",
+   "goal": 0.397,
+   "shot": 0.2141
   },
   {
    "team": "OTT",
-   "goal": 0.3085,
-   "shot": 2.0329
+   "goal": 0.3094,
+   "shot": 2.033
   },
   {
    "team": "MTL",
-   "goal": 0.3021,
-   "shot": -0.9535
+   "goal": 0.3024,
+   "shot": -0.9533
   },
   {
    "team": "NJD",
-   "goal": 0.2654,
-   "shot": 4.9038
+   "goal": 0.2655,
+   "shot": 4.9031
   },
   {
    "team": "STL",
-   "goal": 0.1621,
-   "shot": -2.0028
+   "goal": 0.1619,
+   "shot": -2.0026
   },
   {
    "team": "BUF",
-   "goal": 0.1153,
-   "shot": -0.4098
+   "goal": 0.1162,
+   "shot": -0.4093
   },
   {
    "team": "NYR",
-   "goal": 0.0947,
-   "shot": -2.1514
+   "goal": 0.0923,
+   "shot": -2.1524
   },
   {
    "team": "NSH",
-   "goal": 0.0754,
-   "shot": -2.0001
+   "goal": 0.0778,
+   "shot": -1.9985
   },
   {
    "team": "NYI",
-   "goal": 0.0269,
-   "shot": -0.9133
+   "goal": 0.0256,
+   "shot": -0.9139
   },
   {
    "team": "UTA",
-   "goal": 0.0244,
-   "shot": 2.1898
+   "goal": 0.0252,
+   "shot": 2.19
   },
   {
    "team": "FLA",
-   "goal": 0.0151,
-   "shot": 2.3707
+   "goal": 0.013,
+   "shot": 2.3693
   },
   {
    "team": "WSH",
-   "goal": -0.0481,
+   "goal": -0.0474,
    "shot": 1.4531
   },
   {
    "team": "WPG",
-   "goal": -0.1115,
-   "shot": -0.9364
+   "goal": -0.1096,
+   "shot": -0.9353
   },
   {
    "team": "PIT",
-   "goal": -0.244,
-   "shot": 0.5097
+   "goal": -0.2418,
+   "shot": 0.5107
   },
   {
    "team": "PHI",
-   "goal": -0.2553,
-   "shot": -0.6674
+   "goal": -0.2574,
+   "shot": -0.6686
   },
   {
    "team": "CBJ",
-   "goal": -0.328,
-   "shot": 0.4234
+   "goal": -0.3266,
+   "shot": 0.4239
   },
   {
    "team": "ANA",
-   "goal": -0.3471,
-   "shot": 1.2047
+   "goal": -0.3488,
+   "shot": 1.2037
   },
   {
    "team": "DET",
    "goal": -0.3508,
-   "shot": 0.7711
+   "shot": 0.771
   },
   {
    "team": "LAK",
-   "goal": -0.3675,
-   "shot": -0.1146
+   "goal": -0.3679,
+   "shot": -0.1148
   },
   {
    "team": "TOR",
-   "goal": -0.4249,
+   "goal": -0.4257,
    "shot": -3.0396
   },
   {
    "team": "SEA",
    "goal": -0.4353,
-   "shot": -3.8251
+   "shot": -3.8245
   },
   {
    "team": "CGY",
-   "goal": -0.8084,
-   "shot": -2.1168
+   "goal": -0.8086,
+   "shot": -2.1166
   },
   {
    "team": "SJS",
-   "goal": -0.8088,
-   "shot": -3.9393
+   "goal": -0.8097,
+   "shot": -3.9392
   },
   {
    "team": "CHI",
-   "goal": -0.9993,
-   "shot": -5.7312
+   "goal": -0.9978,
+   "shot": -5.7297
   },
   {
    "team": "VAN",
-   "goal": -1.3417,
-   "shot": -6.0877
+   "goal": -1.3429,
+   "shot": -6.0875
   }
  ],
  "goalies": [
   {
    "player_id": "8482661",
    "name": "Jesper Wallstedt",
-   "rating": 0.00717,
-   "weighted_shots": 757.5
+   "rating": 0.00715,
+   "weighted_shots": 753.1
   },
   {
    "player_id": "8480981",
    "name": "Joel Hofer",
-   "rating": 0.00588,
-   "weighted_shots": 660.7
+   "rating": 0.00587,
+   "weighted_shots": 656.9
   },
   {
    "player_id": "8476999",
    "name": "Linus Ullmark",
-   "rating": 0.00582,
-   "weighted_shots": 534.1
+   "rating": 0.0058,
+   "weighted_shots": 531.0
   },
   {
    "player_id": "8478009",
    "name": "Ilya Sorokin",
-   "rating": 0.00439,
-   "weighted_shots": 696.7
+   "rating": 0.00438,
+   "weighted_shots": 692.7
   },
   {
    "player_id": "8484170",
    "name": "Jacob Fowler",
-   "rating": 0.00427,
-   "weighted_shots": 458.0
+   "rating": 0.00426,
+   "weighted_shots": 455.3
   },
   {
    "player_id": "8477424",
    "name": "Juuse Saros",
    "rating": 0.00335,
-   "weighted_shots": 721.2
+   "weighted_shots": 717.1
   },
   {
    "player_id": "8478048",
    "name": "Igor Shesterkin",
-   "rating": 0.00307,
-   "weighted_shots": 350.9
+   "rating": 0.00306,
+   "weighted_shots": 348.9
   },
   {
    "player_id": "8480193",
    "name": "Daniil Tarasov",
    "rating": 0.00297,
-   "weighted_shots": 376.1
+   "weighted_shots": 374.0
   },
   {
    "player_id": "8478406",
    "name": "Mackenzie Blackwood",
    "rating": 0.00292,
-   "weighted_shots": 580.5
+   "weighted_shots": 577.2
   },
   {
    "player_id": "8480280",
    "name": "Jeremy Swayman",
    "rating": 0.00286,
-   "weighted_shots": 731.7
+   "weighted_shots": 727.5
   },
   {
    "player_id": "8482193",
    "name": "Dylan Garand",
    "rating": 0.00283,
-   "weighted_shots": 339.2
+   "weighted_shots": 337.3
   },
   {
    "player_id": "8479979",
    "name": "Jake Oettinger",
-   "rating": 0.00266,
-   "weighted_shots": 696.0
+   "rating": 0.00267,
+   "weighted_shots": 692.0
   },
   {
    "player_id": "8482445",
    "name": "Devin Cooley",
-   "rating": 0.0026,
-   "weighted_shots": 407.0
+   "rating": 0.00259,
+   "weighted_shots": 404.6
   },
   {
    "player_id": "8476883",
    "name": "Andrei Vasilevskiy",
    "rating": 0.0023,
-   "weighted_shots": 701.9
+   "weighted_shots": 697.8
   },
   {
    "player_id": "8479193",
    "name": "Casey DeSmith",
    "rating": 0.00193,
-   "weighted_shots": 250.3
+   "weighted_shots": 248.9
   },
   {
    "player_id": "8476341",
    "name": "Anton Forsberg",
    "rating": 0.00188,
-   "weighted_shots": 392.2
+   "weighted_shots": 390.0
   },
   {
    "player_id": "8480022",
    "name": "Michael DiPietro",
-   "rating": 0.00178,
-   "weighted_shots": 139.0
+   "rating": 0.00177,
+   "weighted_shots": 138.2
   },
   {
    "player_id": "8481611",
    "name": "Pyotr Kochetkov",
    "rating": 0.00176,
-   "weighted_shots": 308.4
+   "weighted_shots": 306.6
   },
   {
    "player_id": "8475809",
    "name": "Scott Wedgewood",
    "rating": 0.00174,
-   "weighted_shots": 418.5
+   "weighted_shots": 416.1
   },
   {
    "player_id": "8476914",
    "name": "Joonas Korpisalo",
    "rating": 0.00165,
-   "weighted_shots": 228.4
+   "weighted_shots": 227.1
   },
   {
    "player_id": "8476932",
    "name": "Anthony Stolarz",
    "rating": 0.00141,
-   "weighted_shots": 432.3
+   "weighted_shots": 429.8
   },
   {
    "player_id": "8477968",
    "name": "Alex Nedeljkovic",
    "rating": 0.00141,
-   "weighted_shots": 432.4
+   "weighted_shots": 429.9
   },
   {
    "player_id": "8475660",
    "name": "Cam Talbot",
    "rating": 0.00105,
-   "weighted_shots": 434.8
+   "weighted_shots": 432.3
   },
   {
    "player_id": "8479406",
    "name": "Filip Gustavsson",
    "rating": 0.00094,
-   "weighted_shots": 294.4
+   "weighted_shots": 292.7
   },
   {
    "player_id": "8479312",
    "name": "Alex Lyon",
-   "rating": 0.00064,
-   "weighted_shots": 334.1
+   "rating": 0.00065,
+   "weighted_shots": 332.2
   },
   {
    "player_id": "8476945",
    "name": "Connor Hellebuyck",
-   "rating": 0.00048,
-   "weighted_shots": 543.7
+   "rating": 0.00049,
+   "weighted_shots": 540.6
   },
   {
    "player_id": "8477465",
    "name": "Tristan Jarry",
-   "rating": 0.00035,
-   "weighted_shots": 416.3
-  },
-  {
-   "player_id": "8479394",
-   "name": "Carter Hart",
-   "rating": 0.00029,
-   "weighted_shots": 560.0
+   "rating": 0.00036,
+   "weighted_shots": 413.9
   },
   {
    "player_id": "8478971",
    "name": null,
    "rating": 0.00026,
-   "weighted_shots": 213.1
+   "weighted_shots": 211.9
   },
   {
    "player_id": "8484910",
@@ -348,25 +342,31 @@
    "player_id": "8476899",
    "name": null,
    "rating": 0.00019,
-   "weighted_shots": 12.0
+   "weighted_shots": 11.9
   },
   {
    "player_id": "8482487",
    "name": "Jakub Dobes",
-   "rating": 0.00018,
-   "weighted_shots": 617.4
+   "rating": 0.00019,
+   "weighted_shots": 613.9
   },
   {
    "player_id": "8475831",
    "name": "Philipp Grubauer",
-   "rating": 0.00014,
-   "weighted_shots": 415.1
+   "rating": 0.00015,
+   "weighted_shots": 412.7
+  },
+  {
+   "player_id": "8479394",
+   "name": "Carter Hart",
+   "rating": 0.00013,
+   "weighted_shots": 580.6
   },
   {
    "player_id": "8481529",
    "name": null,
    "rating": 0.00011,
-   "weighted_shots": 12.5
+   "weighted_shots": 12.4
   },
   {
    "player_id": "8481544",
@@ -378,19 +378,19 @@
    "player_id": "8477480",
    "name": null,
    "rating": 6e-05,
-   "weighted_shots": 113.6
+   "weighted_shots": 112.9
   },
   {
    "player_id": "8483575",
    "name": null,
    "rating": 5e-05,
-   "weighted_shots": 15.5
+   "weighted_shots": 15.4
   },
   {
    "player_id": "8482123",
    "name": "Drew Commesso",
    "rating": 1e-05,
-   "weighted_shots": 40.2
+   "weighted_shots": 40.0
   },
   {
    "player_id": "8477831",
@@ -401,14 +401,14 @@
   {
    "player_id": "8485545",
    "name": "Michal Postava",
-   "rating": -1e-05,
-   "weighted_shots": 23.7
+   "rating": -0.0,
+   "weighted_shots": 23.5
   },
   {
    "player_id": "8481551",
    "name": "Colten Ellis",
-   "rating": -2e-05,
-   "weighted_shots": 209.8
+   "rating": -1e-05,
+   "weighted_shots": 208.6
   },
   {
    "player_id": "8483114",
@@ -420,31 +420,31 @@
    "player_id": "8477967",
    "name": null,
    "rating": -4e-05,
-   "weighted_shots": 79.4
+   "weighted_shots": 78.9
   },
   {
    "player_id": "8483668",
    "name": null,
    "rating": -4e-05,
-   "weighted_shots": 22.4
+   "weighted_shots": 22.2
   },
   {
    "player_id": "8479361",
    "name": "Joseph Woll",
-   "rating": -8e-05,
-   "weighted_shots": 560.4
+   "rating": -7e-05,
+   "weighted_shots": 557.2
   },
   {
    "player_id": "8479496",
    "name": null,
-   "rating": -8e-05,
-   "weighted_shots": 125.0
+   "rating": -7e-05,
+   "weighted_shots": 124.3
   },
   {
    "player_id": "8480313",
    "name": "Logan Thompson",
-   "rating": -0.00012,
-   "weighted_shots": 622.1
+   "rating": -0.00011,
+   "weighted_shots": 618.5
   },
   {
    "player_id": "8480238",
@@ -456,31 +456,31 @@
    "player_id": "8482761",
    "name": null,
    "rating": -0.00022,
-   "weighted_shots": 22.2
+   "weighted_shots": 22.1
   },
   {
    "player_id": "8471734",
    "name": null,
-   "rating": -0.00024,
-   "weighted_shots": 121.9
+   "rating": -0.00023,
+   "weighted_shots": 121.2
+  },
+  {
+   "player_id": "8482982",
+   "name": "Jet Greaves",
+   "rating": -0.00023,
+   "weighted_shots": 477.3
+  },
+  {
+   "player_id": "8483710",
+   "name": "Dennis Hildeby",
+   "rating": -0.00023,
+   "weighted_shots": 205.6
   },
   {
    "player_id": "8477484",
    "name": null,
    "rating": -0.00024,
-   "weighted_shots": 24.4
-  },
-  {
-   "player_id": "8482982",
-   "name": "Jet Greaves",
-   "rating": -0.00024,
-   "weighted_shots": 480.0
-  },
-  {
-   "player_id": "8483710",
-   "name": "Dennis Hildeby",
-   "rating": -0.00024,
-   "weighted_shots": 206.8
+   "weighted_shots": 24.3
   },
   {
    "player_id": "8477990",
@@ -492,289 +492,289 @@
    "player_id": "8480051",
    "name": null,
    "rating": -0.00028,
-   "weighted_shots": 12.6
-  },
-  {
-   "player_id": "8482221",
-   "name": "Devon Levi",
-   "rating": -0.00029,
-   "weighted_shots": 295.3
+   "weighted_shots": 12.5
   },
   {
    "player_id": "8482783",
    "name": null,
    "rating": -0.00031,
-   "weighted_shots": 9.2
+   "weighted_shots": 9.1
   },
   {
    "player_id": "8475311",
    "name": "Darcy Kuemper",
-   "rating": -0.00033,
-   "weighted_shots": 557.4
+   "rating": -0.00032,
+   "weighted_shots": 554.2
   },
   {
    "player_id": "8478435",
    "name": "Dan Vladar",
-   "rating": -0.00034,
-   "weighted_shots": 606.3
+   "rating": -0.00032,
+   "weighted_shots": 602.8
+  },
+  {
+   "player_id": "8484900",
+   "name": "Cooper Black",
+   "rating": -0.00035,
+   "weighted_shots": 16.4
   },
   {
    "player_id": "8477035",
    "name": "Matt Tomkins",
    "rating": -0.00036,
-   "weighted_shots": 43.8
+   "weighted_shots": 43.6
   },
   {
    "player_id": "8482949",
    "name": "Arsenii Sergeev",
    "rating": -0.00036,
-   "weighted_shots": 36.5
-  },
-  {
-   "player_id": "8484900",
-   "name": "Cooper Black",
-   "rating": -0.00036,
-   "weighted_shots": 16.5
+   "weighted_shots": 36.3
   },
   {
    "player_id": "8473575",
    "name": "Semyon Varlamov",
    "rating": -0.00037,
-   "weighted_shots": 161.9
+   "weighted_shots": 160.9
   },
   {
    "player_id": "8475852",
    "name": null,
    "rating": -0.00038,
-   "weighted_shots": 49.3
+   "weighted_shots": 49.0
   },
   {
    "player_id": "8482515",
    "name": null,
    "rating": -0.00039,
-   "weighted_shots": 20.4
+   "weighted_shots": 20.3
   },
   {
    "player_id": "8478499",
    "name": "Adin Hill",
-   "rating": -0.00041,
-   "weighted_shots": 424.3
+   "rating": -0.0004,
+   "weighted_shots": 421.9
   },
   {
    "player_id": "8478470",
    "name": null,
    "rating": -0.00042,
-   "weighted_shots": 126.9
+   "weighted_shots": 126.2
   },
   {
    "player_id": "8483703",
    "name": "Sergei Murashov",
-   "rating": -0.00043,
-   "weighted_shots": 244.9
+   "rating": -0.00042,
+   "weighted_shots": 243.5
   },
   {
    "player_id": "8475883",
    "name": null,
-   "rating": -0.00047,
-   "weighted_shots": 281.8
+   "rating": -0.00046,
+   "weighted_shots": 280.2
   },
   {
    "player_id": "8481519",
    "name": "Spencer Knight",
-   "rating": -0.00057,
-   "weighted_shots": 769.3
+   "rating": -0.00055,
+   "weighted_shots": 764.8
   },
   {
    "player_id": "8474596",
    "name": "Jake Allen",
-   "rating": -0.00058,
-   "weighted_shots": 400.1
+   "rating": -0.00057,
+   "weighted_shots": 397.8
   },
   {
    "player_id": "8477970",
    "name": null,
-   "rating": -0.00058,
-   "weighted_shots": 92.0
+   "rating": -0.00057,
+   "weighted_shots": 91.5
   },
   {
    "player_id": "8482076",
    "name": "Nico Daws",
-   "rating": -0.0006,
-   "weighted_shots": 166.1
+   "rating": -0.00059,
+   "weighted_shots": 165.1
   },
   {
    "player_id": "8483532",
    "name": "Clay Stevenson",
    "rating": -0.00064,
-   "weighted_shots": 108.6
+   "weighted_shots": 108.0
   },
   {
    "player_id": "8474593",
    "name": "Jacob Markstrom",
-   "rating": -0.00075,
-   "weighted_shots": 473.2
+   "rating": -0.00074,
+   "weighted_shots": 470.4
   },
   {
    "player_id": "8478007",
    "name": null,
-   "rating": -0.00079,
-   "weighted_shots": 159.1
+   "rating": -0.00078,
+   "weighted_shots": 158.1
+  },
+  {
+   "player_id": "8482221",
+   "name": "Devon Levi",
+   "rating": -0.0008,
+   "weighted_shots": 319.4
   },
   {
    "player_id": "8483548",
    "name": "Brandon Bussi",
-   "rating": -0.00081,
-   "weighted_shots": 361.2
+   "rating": -0.0008,
+   "weighted_shots": 359.1
   },
   {
    "player_id": "8481692",
    "name": "Dustin Wolf",
-   "rating": -0.00084,
-   "weighted_shots": 590.7
+   "rating": -0.00082,
+   "weighted_shots": 587.3
   },
   {
    "player_id": "8481020",
    "name": "Justus Annunen",
-   "rating": -0.00088,
-   "weighted_shots": 281.2
+   "rating": -0.00087,
+   "weighted_shots": 279.5
   },
   {
    "player_id": "8482657",
    "name": "Sebastian Cossa",
-   "rating": -0.00088,
-   "weighted_shots": 222.2
+   "rating": -0.00087,
+   "weighted_shots": 220.9
   },
   {
    "player_id": "8473503",
    "name": "James Reimer",
    "rating": -0.00106,
-   "weighted_shots": 81.6
+   "weighted_shots": 81.1
   },
   {
    "player_id": "8481033",
    "name": "Akira Schmid",
-   "rating": -0.00109,
-   "weighted_shots": 323.0
-  },
-  {
-   "player_id": "8478916",
-   "name": "Joey Daccord",
-   "rating": -0.00127,
-   "weighted_shots": 461.8
+   "rating": -0.00107,
+   "weighted_shots": 321.2
   },
   {
    "player_id": "8480045",
    "name": "Ukko-Pekka Luukkonen",
-   "rating": -0.00127,
-   "weighted_shots": 534.3
+   "rating": -0.00125,
+   "weighted_shots": 531.3
+  },
+  {
+   "player_id": "8478916",
+   "name": "Joey Daccord",
+   "rating": -0.00126,
+   "weighted_shots": 459.2
   },
   {
    "player_id": "8475717",
    "name": "Calvin Pickard",
-   "rating": -0.00137,
-   "weighted_shots": 136.2
+   "rating": -0.00136,
+   "weighted_shots": 135.4
   },
   {
    "player_id": "8484268",
    "name": "Nikita Tolopilo",
-   "rating": -0.0015,
-   "weighted_shots": 154.4
+   "rating": -0.00149,
+   "weighted_shots": 153.5
   },
   {
    "player_id": "8479973",
    "name": "Stuart Skinner",
-   "rating": -0.00164,
-   "weighted_shots": 689.1
+   "rating": -0.00162,
+   "weighted_shots": 685.2
   },
   {
    "player_id": "8476316",
    "name": "Laurent Brossoit",
-   "rating": -0.00181,
-   "weighted_shots": 121.5
+   "rating": -0.0018,
+   "weighted_shots": 120.8
   },
   {
    "player_id": "8482137",
    "name": "Yaroslav Askarov",
-   "rating": -0.00185,
-   "weighted_shots": 651.5
+   "rating": -0.00183,
+   "weighted_shots": 647.8
   },
   {
    "player_id": "8481668",
    "name": "Arturs Silovs",
-   "rating": -0.00208,
-   "weighted_shots": 508.1
+   "rating": -0.00206,
+   "weighted_shots": 505.2
   },
   {
    "player_id": "8482447",
    "name": "Leevi Merilainen",
-   "rating": -0.0021,
-   "weighted_shots": 494.3
+   "rating": -0.00208,
+   "weighted_shots": 491.5
   },
   {
    "player_id": "8478872",
    "name": "Karel Vejmelka",
-   "rating": -0.00247,
-   "weighted_shots": 653.3
+   "rating": -0.00245,
+   "weighted_shots": 649.6
   },
   {
    "player_id": "8482821",
    "name": "Arvid Soderblom",
-   "rating": -0.00249,
-   "weighted_shots": 247.5
+   "rating": -0.00247,
+   "weighted_shots": 246.1
   },
   {
    "player_id": "8476434",
    "name": "John Gibson",
-   "rating": -0.0025,
-   "weighted_shots": 536.9
+   "rating": -0.00248,
+   "weighted_shots": 533.8
   },
   {
    "player_id": "8477992",
    "name": "Jonas Johansson",
-   "rating": -0.00271,
-   "weighted_shots": 201.9
+   "rating": -0.00269,
+   "weighted_shots": 200.7
   },
   {
    "player_id": "8481035",
    "name": "Samuel Ersson",
-   "rating": -0.00342,
-   "weighted_shots": 312.9
+   "rating": -0.00339,
+   "weighted_shots": 311.1
   },
   {
    "player_id": "8479292",
    "name": "Charlie Lindgren",
-   "rating": -0.0037,
-   "weighted_shots": 250.6
+   "rating": -0.00368,
+   "weighted_shots": 249.2
   },
   {
    "player_id": "8475683",
    "name": "Sergei Bobrovsky",
-   "rating": -0.00373,
-   "weighted_shots": 590.5
+   "rating": -0.0037,
+   "weighted_shots": 587.1
   },
   {
    "player_id": "8478024",
    "name": "Ville Husso",
-   "rating": -0.00383,
-   "weighted_shots": 255.7
+   "rating": -0.0038,
+   "weighted_shots": 254.2
   },
   {
    "player_id": "8476412",
    "name": "Jordan Binnington",
-   "rating": -0.00462,
-   "weighted_shots": 378.3
+   "rating": -0.00459,
+   "weighted_shots": 376.2
   },
   {
    "player_id": "8480843",
    "name": "Lukas Dostal",
-   "rating": -0.00576,
-   "weighted_shots": 644.5
+   "rating": -0.00572,
+   "weighted_shots": 640.8
   },
   {
    "player_id": "8480947",
    "name": "Kevin Lankinen",
-   "rating": -0.00768,
-   "weighted_shots": 408.3
+   "rating": -0.00763,
+   "weighted_shots": 406.0
   }
  ]
 }
