@@ -23,7 +23,7 @@ What counts as "a report for this run" -- all four must hold for ONE comment:
      example writes a short SHA, so a prefix of at least seven characters
      counts; anything shorter is too ambiguous to be evidence.
   6. (Stage 82 item 5) when the workflow names its run in BOOTH_RUN_ID, closing with the marker for that
-     run (`booth_verdict.RUN_MARK`), which the post job writes: a report another run posted, or a comment
+     run (`booth_verdict.RUN_MARK_RE`), which the post job writes: a report another run posted, or a comment
      some other workflow's GITHUB_TOKEN posted as the same github-actions[bot], does not count.
   5. whose block agrees with its own prose: the four count lines, the
      overall verdict, and no DISCREPANCY under an unqualified SAFE TO MERGE

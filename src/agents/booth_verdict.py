@@ -52,9 +52,8 @@ def author(comment: dict[str, Any]) -> Any:
 
 #: Stage 82 item 5 (the 2026-11-02 review): since the post job (#827) publishes Booth's report as
 #: github-actions[bot], the account any workflow's GITHUB_TOKEN posts as, the account alone no longer says a
-#: comment is Booth's. The post job closes each report with this line, naming the run that wrote it, and a
-#: report counts only when that run is one of Booth's audit runs.
-RUN_MARK = '<!-- booth-run: {run_id} -->'
+#: comment is Booth's. The post job closes each report with the line `<!-- booth-run: <run id> -->`, naming
+#: the run that wrote it, and a report counts only when that run is one of Booth's audit runs.
 RUN_MARK_RE = re.compile(r'<!-- booth-run: (\d+) -->\s*\Z')
 
 

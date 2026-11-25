@@ -336,7 +336,7 @@ jobs:
           path: ${{ runner.temp }}/booth
 
       # Stage 82 item 5: the report closes with the marker naming this run
-      # (src/agents/booth_verdict.py RUN_MARK), since github-actions[bot], the
+      # (src/agents/booth_verdict.py RUN_MARK_RE), since github-actions[bot], the
       # account it is posted as, is the one any workflow's token posts as. The
       # check below and the agent-log collector count a report only with it.
       - name: Post Booth's report

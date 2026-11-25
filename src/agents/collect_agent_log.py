@@ -38,7 +38,7 @@ comment that merely copies Booth's heading cannot put a row on the page.
 Since Stage 82 item 5 (the 2026-11-02 review) the account is not enough. The
 post job (#827) publishes the report as github-actions[bot], which any
 workflow's GITHUB_TOKEN posts as, so it closes each report with the marker for
-its run (booth_verdict.RUN_MARK). From the first report that carries a marker
+its run (booth_verdict.RUN_MARK_RE). From the first report that carries a marker
 naming one of Booth's audit runs (--booth-runs), every later comment counts only
 if it opens with Booth's heading and closes with such a marker. Earlier reports
 were posted before the marker existed; they count by the account as before, so

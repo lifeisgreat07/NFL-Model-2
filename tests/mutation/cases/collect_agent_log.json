@@ -12,8 +12,8 @@
     {
       "id": "agentlog-drops-clean-audits",
       "why": "audits that found nothing are filtered out, so the log describes a verifier that finds something every time. That is selection bias in a portfolio artifact, and the same failure this project's methodology section bans for model results.",
-      "find": "    rows = [parse_audit(c) for c in comments if is_audit(c)]",
-      "replace": "    rows = [parse_audit(c) for c in comments if is_audit(c)]\n    rows = [r for r in rows if r.get('discrepancies')]",
+      "find": "    rows = [parse_audit(c) for c in comments if is_audit(c, booth_runs, cutover)]",
+      "replace": "    rows = [parse_audit(c) for c in comments if is_audit(c, booth_runs, cutover)]\n    rows = [r for r in rows if r.get('discrepancies')]",
       "expect_caught_by": "test_a_clean_audit_is_kept"
     },
     {
@@ -40,8 +40,8 @@
     {
       "id": "agentlog-any-author-counts",
       "why": "the author check is dropped, so a comment from any account that copies Booth's heading and a SAFE TO MERGE block becomes a row on the page (the 2026-09-28 audit's finding)",
-      "find": "    return bool(AUDIT_RE.search(body)) and author(comment) in BOOTH_ACCOUNTS",
-      "replace": "    return bool(AUDIT_RE.search(body))",
+      "find": "    if not (AUDIT_RE.search(body) and author(comment) in BOOTH_ACCOUNTS):",
+      "replace": "    if not AUDIT_RE.search(body):",
       "expect_caught_by": "test_a_copied_heading_from_anyone_else_is_not_an_audit"
     },
     {
