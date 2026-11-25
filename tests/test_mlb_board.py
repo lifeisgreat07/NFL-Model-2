@@ -106,12 +106,18 @@ def test_a_starter_is_shown_by_name_once_named():
 
 
 # ---------- the build
-def board_with(tmp_path, monkeypatch, sched):
+def board_with(tmp_path, monkeypatch, sched, picks=(), graded=None):
     res = tmp_path / 'results' / 'mlb'
     res.mkdir(parents=True)
     if sched is not None:
         (res / 'schedule_2024.json').write_text(json.dumps(sched), encoding='utf-8')
-    monkeypatch.setattr(site, 'PATHS', type('P', (), {'results': res})())
+    folder = tmp_path / 'predictions' / 'mlb' / '2024'
+    for p in picks:
+        folder.mkdir(parents=True, exist_ok=True)
+        (folder / f"{p['game_id']}_{p['slate']}.json").write_text(json.dumps(p), encoding='utf-8')
+    if graded is not None:
+        (res / 'graded_2024.json').write_text(json.dumps(graded), encoding='utf-8')
+    monkeypatch.setattr(site, 'PATHS', type('P', (), {'results': res, 'predictions': res.parent.parent / 'predictions' / 'mlb'})())
     return site.board(2024)
 
 
@@ -126,7 +132,57 @@ def test_an_empty_schedule_stops_the_build(tmp_path, monkeypatch):
         board_with(tmp_path, monkeypatch, {'as_of': '2024-04-13', 'games': []})
 
 
-def test_no_game_has_a_pick_until_stage_101_defines_the_file(tmp_path, monkeypatch):
+def saved(gid, slate, pick=DET, a=0.55, b=0.58, source='espn', named=(True, False)):
+    market = ({'source': source, 'provider': 'DraftKings', 'home_price': -140, 'away_price': 120, 'home_prob': 0.567}
+              if source else {'source': None, 'why': 'ESPN has no usable pre-game price; Kalshi not read'})
+    return {'game_id': gid, 'slate': slate, 'home': DET, 'away': MIN, 'pick': pick, 'model_a': a,
+            'model_b': b if source else None, 'pick_model': 'model_b' if source else 'model_a',
+            'market_source': source, 'market': market, 'saved_utc': f'{slate}T16:00:00Z',
+            'starters': {'home': {'id': '1', 'named': named[0]}, 'away': {'id': None, 'named': named[1]}}}
+
+
+def test_each_saved_pick_is_keyed_by_game_and_date_with_its_grade(tmp_path, monkeypatch):
+    picks = [saved('2', '2024-04-13'), saved('4', '2024-04-14', source=None),
+             saved('3', '2024-04-12', pick=MIN)]  # game 3's pick from before it was postponed to the 13th
+    graded = [{'game_id': '2', 'slate': '2024-04-13', 'result': 'wrong'},
+              {'game_id': '3', 'slate': '2024-04-12', 'result': 'postponed'}]
+    b = board_with(tmp_path, monkeypatch, {'as_of': '2024-04-13', 'games': SERIES}, picks, graded)
+    assert set(b['picks']) == {'2_2024-04-13', '4_2024-04-14', '3_2024-04-12'}
+    two = b['picks']['2_2024-04-13']
+    assert (two['pick'], two['by'], two['result'], two['source']) == ('DET', 'model_b', 'wrong', 'espn')
+    assert two['market'] == {'book': 'DraftKings', 'hp': -140, 'ap': 120, 'prob': 0.567}
+    assert two['named'] == {'home': True, 'away': False} and len(two['colours']) == 2
+    four = b['picks']['4_2024-04-14']
+    assert four['result'] == 'pending' and 'market' not in four and 'Kalshi not read' in four['why']
+
+
+def test_a_row_takes_the_pick_saved_for_the_date_it_is_listed_on():
+    out = run_node(['pickOf'], """
+const BD = {picks: {'3_2024-04-12': {pick: 'MIN'}, '3_2024-04-13': {pick: 'DET'}}};
+console.log(JSON.stringify([pickOf({id: '3', day: '2024-04-13'}), pickOf({id: '3', day: '2024-04-14'})]));""")
+    assert out == [{'pick': 'DET'}, None]
+
+
+def test_the_card_names_a_side_whose_starter_was_not_named():
+    out = run_node(['starterNote'], """
+const g = {home: 'DET', away: 'MIN'};
+console.log(JSON.stringify([starterNote(g, {named: {home: true, away: true}}), starterNote(g, {named: {home: true, away: false}}),
+                            starterNote(g, {named: {home: false, away: false}})]));""")
+    assert out[0] == '' and '<b>MIN</b>' in out[1] and 'a league-average starter' in out[1]
+    assert '<b>MIN or DET</b>' in out[2] and 'gave each' in out[2]
+
+
+def test_a_rows_grade_follows_the_pick():
+    out = run_node(['mlbResult'], """
+console.log(JSON.stringify([
+  mlbResult({status: 'final'}, {result: 'correct'}), mlbResult({status: 'final'}, {result: 'wrong'}),
+  mlbResult({status: 'final'}, {result: 'pending'}), mlbResult({status: 'scheduled'}, {result: 'pending'}),
+  mlbResult({status: 'in_progress'}, {result: 'pending'}), mlbResult({status: 'final'}, {result: 'tie'}),
+  mlbResult({status: 'postponed'}, {result: 'postponed'}), mlbResult({status: 'final'}, null)].map(r => r.text)));""")
+    assert out == ['Correct', 'Missed', 'Grading', 'Locked', 'Live', 'Tie', 'Postponed', 'No pick']
+
+
+def test_the_board_lists_every_game_and_its_series(tmp_path, monkeypatch):
     b = board_with(tmp_path, monkeypatch, {'as_of': '2024-04-13', 'games': SERIES})
     assert b['picks'] == {} and [g['id'] for g in b['games']] == ['1', '2', '3', '4']
     assert b['games'][1]['series'] == {'game': 2, 'of': 4, 'home_won': 1, 'away_won': 0}

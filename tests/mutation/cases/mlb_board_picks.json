@@ -1,0 +1,58 @@
+{
+  "target": "src/sports/mlb/site.py",
+  "tests": "tests/test_mlb_board.py",
+  "cases": [
+    {
+      "id": "mlb-board-picks-keyed-by-game-only",
+      "why": "picks are keyed by game alone, so a game postponed after its pick was saved shows that ungraded pick on the date it is played.",
+      "find": "        out[f'{key[0]}_{key[1]}'] = slim_pick(p, results.get(key, 'pending'))\n",
+      "replace": "        out[key[0]] = slim_pick(p, results.get(key, 'pending'))\n",
+      "expect_caught_by": "test_each_saved_pick_is_keyed_by_game_and_date_with_its_grade"
+    },
+    {
+      "id": "mlb-board-grade-ignored",
+      "why": "every pick shows as pending, so the board never says correct or missed.",
+      "find": "    results = {(str(r['game_id']), str(r['slate'])): str(r['result']) for r in graded}\n",
+      "replace": "    results: dict[tuple[str, str], str] = {}\n",
+      "expect_caught_by": "test_each_saved_pick_is_keyed_by_game_and_date_with_its_grade"
+    },
+    {
+      "id": "mlb-board-pick-as-a-club-id",
+      "why": "the pick is shown as the Stats API's club id, so the row reads '116 58%' and no badge marks the picked side.",
+      "find": "'pick': abbr(p.get('pick')),",
+      "replace": "'pick': p.get('pick'),",
+      "expect_caught_by": "test_each_saved_pick_is_keyed_by_game_and_date_with_its_grade"
+    },
+    {
+      "id": "mlb-board-unnamed-starter-lost",
+      "why": "the card can no longer say which side got a league-average starter.",
+      "find": "        'named': {side: bool((sp.get(side) or {}).get('named')) for side in ('home', 'away')},\n",
+      "replace": "        'named': {side: True for side in ('home', 'away')},\n",
+      "expect_caught_by": "test_each_saved_pick_is_keyed_by_game_and_date_with_its_grade"
+    },
+    {
+      "id": "mlb-board-row-takes-another-dates-pick",
+      "target": "src/sports/mlb/pages/mlb.js",
+      "why": "a row looks its pick up by game alone, so it misses the pick saved for its own date.",
+      "find": "  return (BD.picks || {})[`${g.id}_${g.day}`] || null;\n",
+      "replace": "  return (BD.picks || {})[g.id] || null;\n",
+      "expect_caught_by": "test_a_row_takes_the_pick_saved_for_the_date_it_is_listed_on"
+    },
+    {
+      "id": "mlb-board-starter-note-silent",
+      "target": "src/sports/mlb/pages/mlb.js",
+      "why": "the card never says that a side got a league-average starter.",
+      "find": "  if(!unnamed.length) return '';\n",
+      "replace": "  return '';\n",
+      "expect_caught_by": "test_the_card_names_a_side_whose_starter_was_not_named"
+    },
+    {
+      "id": "mlb-board-tie-counted-as-a-grade",
+      "target": "src/sports/mlb/pages/mlb.js",
+      "why": "an official tie reads 'Grading' for ever instead of saying it is not scored.",
+      "find": "    if(p.result === 'tie') return {text: 'Tie', cls: 'off'};\n",
+      "replace": "",
+      "expect_caught_by": "test_a_rows_grade_follows_the_pick"
+    }
+  ]
+}

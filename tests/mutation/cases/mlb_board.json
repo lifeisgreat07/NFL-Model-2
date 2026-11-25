@@ -69,10 +69,10 @@
       "id": "mlb-board-picks-invented",
       "target": "src/sports/mlb/site.py",
       "tests": "tests/test_mlb_board.py",
-      "why": "the board invents an empty pick for each game before Stage 101 defines the file.",
-      "find": "        'picks': {},",
+      "why": "the board invents an empty pick for each game with no saved pick, so every row reads as locked.",
+      "find": "        'picks': picks_file(season),",
       "replace": "        'picks': {str(g['game_id']): {} for g in games},",
-      "expect_caught_by": "test_no_game_has_a_pick_until_stage_101_defines_the_file"
+      "expect_caught_by": "test_the_board_lists_every_game_and_its_series"
     },
     {
       "id": "mlb-board-series-leader-swapped",

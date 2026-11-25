@@ -7,8 +7,8 @@ document.addEventListener('error', e => {
 /* MLB's day board (Stage 100 item 1; layout A, Mark 2026-11-22): the NHL's and NBA's board, a strip of the
    week's days and a row a game, with what baseball adds to each row: the two starting pitchers, the game's
    place in its series and how the series stands, and a doubleheader's game number. Everything reads one JSON
-   block, #mlb-data, written by src/sports/mlb/site.py. There are no picks yet: MLB's pick file is fixed with
-   its writer in Stage 101, and every row until then is a scheduled game. Times are shown in US Eastern, or in
+   block, #mlb-data, written by src/sports/mlb/site.py. A game with a saved pick shows it as the NBA's board does
+   (Stage 101 item 4); before the first pick every row is a scheduled game. Times are shown in US Eastern, or in
    the visitor's own zone when the Settings sheet says so (src/core/prefs.js). */
 const DATA = JSON.parse(document.getElementById('mlb-data').textContent);
 const ET = 'America/New_York';
@@ -145,6 +145,107 @@ function scoreLine(g){
 }
 
 /* ---------- the card ---------- */
+/* A saved pick, as the NBA's board shows one (Stage 101 item 4; Mark, 2026-11-24). Picks are keyed by game and
+   official date (src/sports/mlb/site.py), so a game postponed after its pick was saved shows the pick saved for
+   the date it is listed on now. */
+const SERIES = {
+  a:      {label: 'Model A', color: 'var(--series-a)', shape: 'circle'},
+  b:      {label: 'Model B', color: 'var(--series-b)', shape: 'square'},
+  market: {label: 'Market',  color: 'var(--series-c)', shape: 'triangle'},
+};
+const EVEN_BAND = 2, NEAR = 7, LANE = {market: -1, b: 0, a: 1};
+function pct(x){ return `${Math.round(x * 100)}%`; }
+function logo(abbr){
+  const t = BD.teams[abbr];
+  if(!t) return '';
+  return document.documentElement.getAttribute('data-theme') === 'light' ? t.logo_light : t.logo;
+}
+function pickOf(g){
+  return (BD.picks || {})[`${g.id}_${g.day}`] || null;
+}
+const FIRST_SAVED = Object.values(BD.picks || {}).map(p => p.saved).filter(Boolean).sort()[0] || null;
+const FMT_WHEN = new Intl.DateTimeFormat('en-US', {weekday: 'short', hour: 'numeric', minute: '2-digit', timeZone: ET});
+function whenEt(d){ return `${FMT_WHEN.format(d)} ET`; }
+/* The market line: the price and who quoted it, or "no price" and why. Every pick names its source
+   (experiments/mlb/stage101/registry.json): ESPN's sportsbook, Kalshi's market as the named fallback, or none. */
+function marketText(g, p){
+  const m = p.market;
+  if(!m) return `Market: <b>no price</b>${p.why ? ` (${escapeHtml(p.why)})` : ''}, so Model A made the pick`;
+  if(p.source === 'kalshi'){
+    return `Market (Kalshi, the fallback: ESPN had no price): ${g.away} <b>${pct(m.ap)}</b> · ${g.home} <b>${pct(m.hp)}</b>, so ${sideText(side(m.prob * 100, g))}; with a price, Model B made the pick`;
+  }
+  return `Market (${escapeHtml(m.book || 'sportsbook')} via ESPN): ${g.away} <b>${american(m.ap)}</b> · ${g.home} <b>${american(m.hp)}</b>, so ${sideText(side(m.prob * 100, g))} with the margin out; with a price, Model B made the pick`;
+}
+/* What baseball adds: a side whose club had named no probable pitcher when the pick was saved got the league
+   rate for its starter, and the card says which. */
+function starterNote(g, p){
+  const unnamed = [['away', g.away], ['home', g.home]].filter(([s]) => p.named && p.named[s] === false).map(([, t]) => t);
+  if(!unnamed.length) return '';
+  return `<div class="mlb-card-line">No probable pitcher named for <b>${unnamed.join(' or ')}</b> when the pick was saved, so ${unnamed.length > 1 ? 'both models gave each' : 'both models gave it'} a league-average starter.</div>`;
+}
+function lockedTag(g, p){
+  if(g.status === 'final' || g.status === 'cancelled' || g.status === 'postponed' || g.status === 'suspended') return '';
+  const when = p.saved ? ` ${whenEt(new Date(p.saved))}` : '';
+  return `<span class="graded-tag tag-fill mlb-locked">Locked${when}</span>`;
+}
+function resultLine(g, p){
+  const won = winnerOf(g);
+  if(!won) return '';
+  const one = (label, prob) => {
+    const s = modelSide(prob, g);
+    return s === null ? '' : `<span class="mlb-model-result">${label} ${s}, <b>${s === won ? 'correct' : 'missed'}</b></span>`;
+  };
+  const market = p.market ? one('Market', p.market.prob) : '';
+  return `<div class="mlb-result-line">Winner <b>${won}</b>${one('Model B', p.b)}${one('Model A', p.a)}${market}</div>`;
+}
+function pickedCard(g, p){
+  const vals = {b: p.b === null ? null : p.b * 100, a: p.a * 100, market: p.market ? p.market.prob * 100 : null};
+  const lead = vals.b !== null ? vals.b : vals.a;
+  const leadLabel = vals.b !== null ? 'Model B' : 'Model A';
+  const s = side(lead, g);
+  const done = g.status === 'final';
+  const headline = s.team
+    ? `<span class="card-hl-label">${leadLabel}${done ? ' picked' : ''}</span> <b>${s.team} ${Math.round(s.pct)}%</b> <span class="card-hl-to">to win</span>`
+    : `<span class="card-hl-label">${leadLabel}${done ? ' picked' : ''}</span> <b>${pickText(g, p).replace(' · even', '')}</b> <span class="card-hl-to">· even</span>`;
+  const ln = lanes(vals);
+  // One axis, as the NBA's card: the bar draws the away club first, so a home share v sits at 100 - v.
+  const mark = k => vals[k] === null ? '' :
+    `<svg class="card-mk" data-series="${k}" style="left:${100 - vals[k]}%; top:calc(50% + ${ln[k] * 12}px)" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">${markerPath(SERIES[k].shape, 6, 6, 4.5)} fill="${SERIES[k].color}"/></svg>`;
+  const key = k => vals[k] === null ? '' :
+    `<span class="card-key"><svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true">${markerPath(SERIES[k].shape, 7, 7, 5)} fill="${SERIES[k].color}"/></svg>${SERIES[k].label} <b>${sideText(side(vals[k], g))}</b></span>`;
+  const aria = ['b', 'market', 'a'].filter(k => vals[k] !== null).map(k => `${SERIES[k].label} ${sideText(side(vals[k], g))}`).join('. ') + '.';
+  const [awayC, homeC] = p.colours;
+  const graded = p.result === 'correct' || p.result === 'wrong';
+  const tag = graded ? `<span class="graded-tag ${p.result === 'correct' ? 'correct' : 'incorrect'}">${p.result === 'correct' ? 'Correct' : 'Missed'}</span>`
+    : (p.result === 'cancelled' ? '<span class="graded-tag tie">Cancelled</span>' : p.result === 'tie' ? '<span class="graded-tag tie">Tie, not scored</span>' : lockedTag(g, p));
+  const status = scoreLine(g);
+  const starters = startersText(g);
+  const series = seriesText(g);
+  return `<div class="game-card">
+    <div class="matchup-header">${g.away} <span class="at-symbol">at</span> ${g.home}</div>
+    <div class="card-kickoff">${startLabel(g)}</div>
+    ${status ? `<div class="mlb-card-status">${status}</div>` : ''}
+    ${resultLine(g, p)}
+    ${tag ? `<div class="game-top"><div class="tag-row">${tag}</div></div>` : ''}
+    <div class="card-hl">${headline}</div>
+    <div class="card-viz">
+      <span class="card-end">${badge(p.pick === g.away, p.result)}${endTeam(g.away)}</span>
+      <div class="card-scale" role="img" aria-label="${escapeHtml(aria)}">
+        <div class="tele-bar">
+          <div class="tele-bar-seg" style="width:${100 - lead}%; background:${awayC};"></div>
+          <div class="tele-bar-seg" style="width:${lead}%; background:${homeC};"></div>
+        </div>
+        <div class="card-line"><span class="card-mid"></span><span class="card-mid-label">50%</span>${mark('a')}${mark('market')}${mark('b')}</div>
+      </div>
+      <span class="card-end">${badge(p.pick === g.home, p.result)}${endTeam(g.home)}</span>
+    </div>
+    <div class="card-keys">${key('b')}${key('market')}${key('a')}</div>
+    <div class="market-ref">${marketText(g, p)}</div>
+    <div class="mlb-card-line">Starting pitchers: ${starters ? `<b>${starters}</b>` : 'not named yet'}</div>
+    ${starterNote(g, p)}
+    ${series || g.dh ? `<div class="mlb-card-line">${doubleheaderTag(g)}${series ? `<span class="mlb-series">${series}</span>` : ''}</div>` : ''}
+  </div>`;
+}
 function waitingCard(g){
   const status = scoreLine(g);
   const starters = startersText(g);
@@ -152,7 +253,8 @@ function waitingCard(g){
   let note;
   if(g.status === 'postponed' || g.status === 'cancelled' || g.status === 'suspended') note = 'No pick: a postponed, suspended or cancelled game is not predicted.';
   else if(g.status === 'final' || g.status === 'in_progress') note = 'No pick was saved for this game.';
-  else note = 'Picks start on Opening Day, each saved before its first pitch.';
+  else note = FIRST_SAVED ? 'The pick is saved at the last daily run at least an hour before first pitch.'
+    : 'Picks start on Opening Day, each saved before its first pitch.';
   return `<div class="game-card mlb-not-saved">
     <div class="matchup-header">${g.away} <span class="at-symbol">at</span> ${g.home}</div>
     <div class="card-kickoff">${startLabel(g)}</div>
@@ -165,10 +267,18 @@ function waitingCard(g){
 
 /* ---------- rows, a day at a time ---------- */
 const FMT_HOUR = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: startZone()});
-function mlbResult(g){
+function mlbResult(g, p){
   if(g.status === 'postponed') return {text: 'Postponed', cls: 'off'};
-  if(g.status === 'suspended') return {text: 'Suspended', cls: 'off'};
   if(g.status === 'cancelled') return {text: 'Cancelled', cls: 'off'};
+  if(p){
+    if(p.result === 'correct') return {text: 'Correct', cls: 'right'};
+    if(p.result === 'wrong') return {text: 'Missed', cls: 'wrong'};
+    if(p.result === 'tie') return {text: 'Tie', cls: 'off'};
+    if(g.status === 'suspended') return {text: 'Suspended', cls: 'locked'};
+    if(g.status === 'in_progress') return {text: 'Live', cls: 'live'};
+    return {text: g.status === 'final' ? 'Grading' : 'Locked', cls: 'locked'};
+  }
+  if(g.status === 'suspended') return {text: 'Suspended', cls: 'off'};
   if(g.status === 'in_progress') return {text: 'Live', cls: 'live'};
   if(g.status === 'final') return {text: 'No pick', cls: 'off'};
   return {text: '', cls: 'open'};
@@ -195,17 +305,25 @@ function mlbGame(g){
     + (meta ? `<span class="mlb-row-meta">${meta}</span>` : '');
 }
 const CHEVRON = '<svg class="game-row-chev mlb-row-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+/* The pick in a row: the saved side, the chance the leading model gave it, and "no price" when Model A made it
+   for want of one. */
+function rowPick(g, p){
+  if(!p) return '—';
+  const pick = pickText(g, p).replace(' · even', '<span class="row-even"><span class="row-even-sep"> · </span>even</span>');
+  return `${pick}${p.market ? '' : ' <span class="mlb-no-price">no price</span>'}`;
+}
 function mlbRow(g){
-  const r = mlbResult(g);
+  const p = pickOf(g);
+  const r = mlbResult(g, p);
   const id = `mlb-detail-${g.id}`;
   return `<li class="mlb-row-item">
     <button type="button" class="game-row mlb-row" aria-expanded="false" aria-controls="${id}">
       <span class="mlb-row-time">${mlbTime(g)}</span>
       <span class="mlb-row-game">${mlbGame(g)}</span>
-      <span class="mlb-row-pick">—</span>
+      <span class="mlb-row-pick">${rowPick(g, p)}</span>
       <span class="mlb-row-result ${r.cls}">${r.text}</span>${CHEVRON}
     </button>
-    <div class="mlb-row-detail" id="${id}" hidden>${waitingCard(g)}</div>
+    <div class="mlb-row-detail" id="${id}" hidden>${p ? pickedCard(g, p) : waitingCard(g)}</div>
   </li>`;
 }
 /* The rows the reader opened, by their card's id, kept across every redraw. */
@@ -248,7 +366,7 @@ function renderBoard(){
   const dayGames = favFirst('mlb', byDay[currentDay] || []);
   const title = `${FMT_DAY.format(dayDate(currentDay))}${currentDay === today ? ' · Today' : ''}`;
   const head = `<div class="mlb-day-top"><h3 class="mlb-day-title">${title}</h3>`
-    + `<p class="mlb-day-summary" aria-live="polite">${daySummary(dayGames, BD.picks)}</p></div>`;
+    + `<p class="mlb-day-summary" aria-live="polite">${daySummary(dayGames, Object.fromEntries(dayGames.filter(pickOf).map(g => [g.id, pickOf(g)])))}</p></div>`;
   if(!dayGames.length){
     grid.innerHTML = head + preseasonHtml() + (games.length ? '' : stateHtml('waiting', 'No games this week', ''));
     return;
