@@ -4114,5 +4114,29 @@
   "home_price": -297.0,
   "away_price": 241.0,
   "home_prob": 0.7184
+ },
+ {
+  "game_id": "401909315",
+  "home": "WSH",
+  "away": "BOS",
+  "start_utc": "2026-11-25T01:00:00Z",
+  "read_utc": "2026-11-25T00:13:31Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 351.0,
+  "away_price": -452.0,
+  "home_prob": 0.2131
+ },
+ {
+  "game_id": "401909316",
+  "home": "DEN",
+  "away": "DAL",
+  "start_utc": "2026-11-25T03:00:00Z",
+  "read_utc": "2026-11-25T00:13:31Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -310.0,
+  "away_price": 251.0,
+  "home_prob": 0.7263
  }
 ]
