@@ -67,6 +67,37 @@ def test_a_report_for_this_commit_passes():
     assert 'SAFE TO MERGE' in message
 
 
+def test_with_its_run_named_only_that_runs_marked_report_counts():
+    """Stage 82 item 5. The post job publishes as github-actions[bot], the account any workflow's token posts as,
+    so the check counts only a report that closes with the marker for its own run."""
+    marked = comment(report() + '\n\n<!-- booth-run: 777 -->\n', login='github-actions[bot]')
+    ok, message = check([marked], SHA, STARTED, run=777)
+    assert ok, message
+    other_run = comment(report() + '\n\n<!-- booth-run: 776 -->\n', login='github-actions[bot]')
+    unmarked = comment(report(), login='github-actions[bot]')
+    ok, message = check([other_run, unmarked], SHA, STARTED, run=777)
+    assert not ok and 'posted NO report' in message
+    assert check([unmarked], SHA, STARTED)[0], 'without a run named, the marker is not asked for'
+    # Only the last line counts: a marker quoted inside the report is not the one the post job wrote.
+    quoting = comment(report() + '\nThe last run closed with `<!-- booth-run: 776 -->`.\n\n<!-- booth-run: 777 -->\n',
+                      login='github-actions[bot]')
+    assert check([quoting], SHA, STARTED, run=777)[0]
+
+
+def test_the_run_is_named_in_the_environment_not_the_arguments(tmp_path, monkeypatch):
+    """A pull request's own audit reads the base commit's check, which takes exactly three arguments, so the run
+    id travels in BOOTH_RUN_ID."""
+    path = tmp_path / 'c.json'
+    path.write_text(json.dumps([comment(report() + '\n<!-- booth-run: 5 -->')]), encoding='utf-8')
+    monkeypatch.setenv('BOOTH_RUN_ID', '6')
+    assert main(['x', str(path), SHA, STARTED]) == 1
+    monkeypatch.setenv('BOOTH_RUN_ID', '5')
+    assert main(['x', str(path), SHA, STARTED]) == 0
+    post = WORKFLOW.read_text(encoding='utf-8').split('\n  post:\n')[1]
+    assert 'BOOTH_RUN_ID: ${{ github.run_id }}' in post
+    assert "printf '\\n\\n<!-- booth-run: %s -->\\n' \"$GITHUB_RUN_ID\"" in post
+
+
 def test_no_comments_at_all_fails():
     """The #80 case: the action succeeded and the thread is silent."""
     ok, message = check([], SHA, STARTED)
