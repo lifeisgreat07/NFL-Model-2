@@ -7,8 +7,8 @@ document.addEventListener('error', e => {
 /* MLB's day board (Stage 100 item 1; layout A, Mark 2026-11-22): the NHL's and NBA's board, a strip of the
    week's days and a row a game, with what baseball adds to each row: the two starting pitchers, the game's
    place in its series and how the series stands, and a doubleheader's game number. Everything reads one JSON
-   block, #mlb-data, written by src/sports/mlb/site.py. There are no picks yet: MLB's pick file is fixed with
-   its writer in Stage 101, and every row until then is a scheduled game. Times are shown in US Eastern, or in
+   block, #mlb-data, written by src/sports/mlb/site.py. A game with a saved pick shows it as the NBA's board does
+   (Stage 101 item 4); before the first pick every row is a scheduled game. Times are shown in US Eastern, or in
    the visitor's own zone when the Settings sheet says so (src/core/prefs.js). */
 const DATA = JSON.parse(document.getElementById('mlb-data').textContent);
 const ET = 'America/New_York';
