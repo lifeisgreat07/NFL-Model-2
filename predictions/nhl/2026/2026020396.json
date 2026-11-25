@@ -1,0 +1,100 @@
+{
+ "game_id": "2026020396",
+ "season": 2026,
+ "slate": "2026-11-25",
+ "start_utc": "2026-11-26T01:00:00Z",
+ "home": "MIN",
+ "away": "UTA",
+ "model_a": 0.6353,
+ "model_b": 0.5454,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.885661,
+  "shot_matchup": -1.30038,
+  "goalie_matchup_2000": 0.009602
+ },
+ "market": {
+  "game_id": "2026020396",
+  "start_utc": "2026-11-26T01:00:00Z",
+  "home": "MIN",
+  "away": "UTA",
+  "book": "DraftKings",
+  "home_price": -148.0,
+  "away_price": 124.0,
+  "home_prob": 0.5721,
+  "read_utc": "2026-11-25T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482661,
+   "name": "Jesper Wallstedt",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/RussoHockey/status/2125633706853540031?a=2QHdecs4I50G2VuMOxo&s=20"
+  },
+  "away": {
+   "player_id": 8478872,
+   "name": "Karel Vejmelka",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-24",
+  "read_utc": "2026-11-25T21:01:48Z",
+  "home": [
+   {
+    "name": "Olli Maatta",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quinn Hughes",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "John Marino",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Maveric Lamoureux",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Michael Carcone",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Nate Schmidt",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Schmaltz",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-25T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14788,
+  "training_games_priced": 7753,
+  "training_ids_sha256": "c7c94333f1c30c02cd6e1857c85244853970808a0a94f0e432e1fee8e6141fb3"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "e4a498eaf09da6b36a11f7d3c77fd9b25c682bf9"
+}

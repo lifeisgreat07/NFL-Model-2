@@ -1,0 +1,115 @@
+{
+ "game_id": "2026020391",
+ "season": 2026,
+ "slate": "2026-11-25",
+ "start_utc": "2026-11-26T00:00:00Z",
+ "home": "PIT",
+ "away": "CGY",
+ "model_a": 0.6103,
+ "model_b": 0.6144,
+ "pick": "PIT",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.566774,
+  "shot_matchup": 2.627247,
+  "goalie_matchup_2000": -0.001234
+ },
+ "market": {
+  "game_id": "2026020391",
+  "start_utc": "2026-11-26T00:00:00Z",
+  "home": "PIT",
+  "away": "CGY",
+  "book": "DraftKings",
+  "home_price": -175.0,
+  "away_price": 145.0,
+  "home_prob": 0.6092,
+  "read_utc": "2026-11-25T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481668,
+   "name": "Arturs Silovs",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/DanPotashTV/status/2125624466562851145?a=rLxWsElmTzAqj0DSWdQ&s=20"
+  },
+  "away": {
+   "player_id": 8481692,
+   "name": "Dustin Wolf",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/dwillsnhl/status/2125619336090193954?a=aL4k9qReEz7P2I7jWTU&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-24",
+  "read_utc": "2026-11-25T21:01:48Z",
+  "home": [
+   {
+    "name": "Bryan Rust",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Declan Carlile",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Elmer Soderblom",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Evgeni Malkin",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Nick Robertson",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Graves",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Jonathan Huberdeau",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kevin Bahl",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Martin Pospisil",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Morgan Frost",
+    "position": "C",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-25T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14788,
+  "training_games_priced": 7753,
+  "training_ids_sha256": "c7c94333f1c30c02cd6e1857c85244853970808a0a94f0e432e1fee8e6141fb3"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "e4a498eaf09da6b36a11f7d3c77fd9b25c682bf9"
+}

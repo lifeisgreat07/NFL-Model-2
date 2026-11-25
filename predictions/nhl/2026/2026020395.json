@@ -1,0 +1,89 @@
+{
+ "game_id": "2026020395",
+ "season": 2026,
+ "slate": "2026-11-25",
+ "start_utc": "2026-11-26T01:00:00Z",
+ "home": "DAL",
+ "away": "NSH",
+ "model_a": 0.5888,
+ "model_b": 0.6191,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.319222,
+  "shot_matchup": 2.212636,
+  "goalie_matchup_2000": -0.000682
+ },
+ "market": {
+  "game_id": "2026020395",
+  "start_utc": "2026-11-26T01:00:00Z",
+  "home": "DAL",
+  "away": "NSH",
+  "book": "DraftKings",
+  "home_price": -170.0,
+  "away_price": 142.0,
+  "home_prob": 0.6038,
+  "read_utc": "2026-11-25T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479979,
+   "name": "Jake Oettinger",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/BruceLeVinePuck/status/2125637017144848550?a=Qeew08y3APmmECdBFfc&s=20"
+  },
+  "away": {
+   "player_id": 8477424,
+   "name": "Juuse Saros",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-24",
+  "read_utc": "2026-11-25T21:01:48Z",
+  "home": [
+   {
+    "name": "Kyle Capobianco",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lian Bichsel",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Duchene",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Oskar Back",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Myers",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": []
+ },
+ "saved_utc": "2026-11-25T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14788,
+  "training_games_priced": 7753,
+  "training_ids_sha256": "c7c94333f1c30c02cd6e1857c85244853970808a0a94f0e432e1fee8e6141fb3"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "e4a498eaf09da6b36a11f7d3c77fd9b25c682bf9"
+}

@@ -1,0 +1,85 @@
+{
+ "game_id": "2026020392",
+ "season": 2026,
+ "slate": "2026-11-25",
+ "start_utc": "2026-11-26T00:00:00Z",
+ "home": "WSH",
+ "away": "PHI",
+ "model_a": 0.5822,
+ "model_b": 0.6111,
+ "pick": "WSH",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.210048,
+  "shot_matchup": 2.121707,
+  "goalie_matchup_2000": -3.7e-05
+ },
+ "market": {
+  "game_id": "2026020392",
+  "start_utc": "2026-11-26T00:00:00Z",
+  "home": "WSH",
+  "away": "PHI",
+  "book": "DraftKings",
+  "home_price": -162.0,
+  "away_price": 136.0,
+  "home_prob": 0.5934,
+  "read_utc": "2026-11-25T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480313,
+   "name": "Logan Thompson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/sammisilber/status/2125614895500816774"
+  },
+  "away": {
+   "player_id": 8479361,
+   "name": "Joseph Woll",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/NHLFlyers/status/2125623307839914193"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-24",
+  "read_utc": "2026-11-25T21:01:48Z",
+  "home": [
+   {
+    "name": "Jordan Kyrou",
+    "position": "RW",
+    "status": "Out"
+   },
+   {
+    "name": "Rasmus Sandin",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Vincent Desharnais",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Nikita Grebenkin",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-25T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14788,
+  "training_games_priced": 7753,
+  "training_ids_sha256": "c7c94333f1c30c02cd6e1857c85244853970808a0a94f0e432e1fee8e6141fb3"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "e4a498eaf09da6b36a11f7d3c77fd9b25c682bf9"
+}

@@ -1,0 +1,100 @@
+{
+ "game_id": "2026020389",
+ "season": 2026,
+ "slate": "2026-11-25",
+ "start_utc": "2026-11-26T00:00:00Z",
+ "home": "FLA",
+ "away": "OTT",
+ "model_a": 0.4898,
+ "model_b": 0.544,
+ "pick": "FLA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.296351,
+  "shot_matchup": 0.336265,
+  "goalie_matchup_2000": -0.006539
+ },
+ "market": {
+  "game_id": "2026020389",
+  "start_utc": "2026-11-26T00:00:00Z",
+  "home": "FLA",
+  "away": "OTT",
+  "book": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325,
+  "read_utc": "2026-11-25T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8474593,
+   "name": "Jacob Markstrom",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JamesonCoop/status/2125615999114268808?a=MfGvaH8B_6zZgsAzcJE&s=20"
+  },
+  "away": {
+   "player_id": 8476999,
+   "name": "Linus Ullmark",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Jackson_Starr_/status/2125634802896576971"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-24",
+  "read_utc": "2026-11-25T21:01:48Z",
+  "home": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Andre Burakovsky",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Hayden Hodgson",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Warren Foegele",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Eklund",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-25T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14788,
+  "training_games_priced": 7753,
+  "training_ids_sha256": "c7c94333f1c30c02cd6e1857c85244853970808a0a94f0e432e1fee8e6141fb3"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "e4a498eaf09da6b36a11f7d3c77fd9b25c682bf9"
+}

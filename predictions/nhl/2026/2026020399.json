@@ -1,0 +1,95 @@
+{
+ "game_id": "2026020399",
+ "season": 2026,
+ "slate": "2026-11-25",
+ "start_utc": "2026-11-26T02:40:00Z",
+ "home": "SEA",
+ "away": "CHI",
+ "model_a": 0.6036,
+ "model_b": 0.5774,
+ "pick": "SEA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.56253,
+  "shot_matchup": 1.905166,
+  "goalie_matchup_2000": -0.000708
+ },
+ "market": {
+  "game_id": "2026020399",
+  "start_utc": "2026-11-26T02:40:00Z",
+  "home": "SEA",
+  "away": "CHI",
+  "book": "DraftKings",
+  "home_price": -155.0,
+  "away_price": 130.0,
+  "home_prob": 0.583,
+  "read_utc": "2026-11-25T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8478916,
+   "name": "Joey Daccord",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/Benton_Mike/status/2125647204664909947?a=-CYnvLfEXZgCCMtmREg&s=20"
+  },
+  "away": {
+   "player_id": 8481519,
+   "name": "Spencer Knight",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-24",
+  "read_utc": "2026-11-25T21:01:48Z",
+  "home": [
+   {
+    "name": "Jake O'Brien",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jared McCann",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Anton Frondell",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Bowen Byram",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Connor Bedard",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Wyatt Kaiser",
+    "position": "D",
+    "status": "Suspension"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-25T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14788,
+  "training_games_priced": 7753,
+  "training_ids_sha256": "c7c94333f1c30c02cd6e1857c85244853970808a0a94f0e432e1fee8e6141fb3"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "e4a498eaf09da6b36a11f7d3c77fd9b25c682bf9"
+}

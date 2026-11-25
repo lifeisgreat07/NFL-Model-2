@@ -1,0 +1,105 @@
+{
+ "game_id": "2026020394",
+ "season": 2026,
+ "slate": "2026-11-25",
+ "start_utc": "2026-11-26T00:30:00Z",
+ "home": "DET",
+ "away": "VAN",
+ "model_a": 0.7139,
+ "model_b": 0.6909,
+ "pick": "DET",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.992102,
+  "shot_matchup": 6.858506,
+  "goalie_matchup_2000": 0.005045
+ },
+ "market": {
+  "game_id": "2026020394",
+  "start_utc": "2026-11-26T00:30:00Z",
+  "home": "DET",
+  "away": "VAN",
+  "book": "DraftKings",
+  "home_price": -230.0,
+  "away_price": 190.0,
+  "home_prob": 0.669,
+  "read_utc": "2026-11-25T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480193,
+   "name": "Daniil Tarasov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/m_bultman/status/2125280246807097457?a=h0zuO4nJtWLatSca3gY&s=20"
+  },
+  "away": {
+   "player_id": 8482447,
+   "name": "Leevi Merilainen",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/ThomasDrance/status/2125633856896466969?a=3qoxl-9MzgXSp-yleL8&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-24",
+  "read_utc": "2026-11-25T21:01:48Z",
+  "home": [
+   {
+    "name": "Sam Montembeault",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Simon Edvinsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Wallinder",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Brendan Gallagher",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elias Pettersson",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Guillaume Brisebois",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mackenzie MacEachern",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thatcher Demko",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-25T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14788,
+  "training_games_priced": 7753,
+  "training_ids_sha256": "c7c94333f1c30c02cd6e1857c85244853970808a0a94f0e432e1fee8e6141fb3"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "e4a498eaf09da6b36a11f7d3c77fd9b25c682bf9"
+}

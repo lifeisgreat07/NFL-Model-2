@@ -1,0 +1,90 @@
+{
+ "game_id": "2026020386",
+ "season": 2026,
+ "slate": "2026-11-25",
+ "start_utc": "2026-11-26T00:00:00Z",
+ "home": "BOS",
+ "away": "WPG",
+ "model_a": 0.595,
+ "model_b": 0.6012,
+ "pick": "BOS",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.587284,
+  "shot_matchup": -0.511854,
+  "goalie_matchup_2000": 0.003449
+ },
+ "market": {
+  "game_id": "2026020386",
+  "start_utc": "2026-11-26T00:00:00Z",
+  "home": "BOS",
+  "away": "WPG",
+  "book": "DraftKings",
+  "home_price": -170.0,
+  "away_price": 142.0,
+  "home_prob": 0.6038,
+  "read_utc": "2026-11-25T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480280,
+   "name": "Jeremy Swayman",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/jackstudley13/status/2125622918852083872?a=-rkkoGCdtY--tzatGVU&s=20"
+  },
+  "away": {
+   "player_id": 8482076,
+   "name": "Nico Daws",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/NHLJets/status/2125653255426650461?a=MkdBzffQq5ZuGX2rPxw&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-24",
+  "read_utc": "2026-11-25T21:01:48Z",
+  "home": [
+   {
+    "name": "James Hagens",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Dylan DeMelo",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Isak Rosen",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Bjugstad",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Vladislav Namestnikov",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-25T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14788,
+  "training_games_priced": 7753,
+  "training_ids_sha256": "c7c94333f1c30c02cd6e1857c85244853970808a0a94f0e432e1fee8e6141fb3"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "e4a498eaf09da6b36a11f7d3c77fd9b25c682bf9"
+}

@@ -1,0 +1,115 @@
+{
+ "game_id": "2026020390",
+ "season": 2026,
+ "slate": "2026-11-25",
+ "start_utc": "2026-11-26T00:00:00Z",
+ "home": "NYI",
+ "away": "STL",
+ "model_a": 0.5356,
+ "model_b": 0.5565,
+ "pick": "NYI",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.136337,
+  "shot_matchup": 1.088744,
+  "goalie_matchup_2000": -0.001485
+ },
+ "market": {
+  "game_id": "2026020390",
+  "start_utc": "2026-11-26T00:00:00Z",
+  "home": "NYI",
+  "away": "STL",
+  "book": "DraftKings",
+  "home_price": -130.0,
+  "away_price": 110.0,
+  "home_prob": 0.5427,
+  "read_utc": "2026-11-25T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8478009,
+   "name": "Ilya Sorokin",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/stefen_rosner/status/2125614710602998096"
+  },
+  "away": {
+   "player_id": 8480981,
+   "name": "Joel Hofer",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-24",
+  "read_utc": "2026-11-25T21:01:48Z",
+  "home": [
+   {
+    "name": "Alexander Romanov",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kyle Palmieri",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Pulock",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Brandon Carlo",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Connor McMichael",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Dillon Dube",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jimmy Snuggerud",
+    "position": "RW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Pavel Buchnevich",
+    "position": "LW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Torey Krug",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Tucker",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-25T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14788,
+  "training_games_priced": 7753,
+  "training_ids_sha256": "c7c94333f1c30c02cd6e1857c85244853970808a0a94f0e432e1fee8e6141fb3"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "e4a498eaf09da6b36a11f7d3c77fd9b25c682bf9"
+}
