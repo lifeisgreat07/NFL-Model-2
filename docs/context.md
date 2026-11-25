@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-24 (session 1123: Monday 2026-11-23 with Mark, overnight, and Tuesday noon; #809 to #828)
+Last updated: 2026-11-25 (session 1123: Monday 2026-11-23 with Mark, overnight, Tuesday with Mark, and overnight into Wednesday; #809 to #842)
 
 ---
 
@@ -13,7 +13,7 @@ Last updated: 2026-11-24 (session 1123: Monday 2026-11-23 with Mark, overnight, 
 **Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked figure, split five ways by `tests/suite_classes.json` (`session_wrapup --suite-line` writes it). NFL in `src/sports/nfl/`, shared modules in `src/core/`.
 **Sportalytics** (Stage 67) is live: home `/`, NFL `/nfl/` (Model **v2.6**), NHL `/nhl/`, NBA `/nba/` (picks saved twice a day). **MLB's pages are all built, tested and unpublished** (Stage 100: board #808, standings odds #809, Standings #815, Power Ratings #818, Model Lab and Methodology #821, Teams and What's Changed #823, Season Accuracy and Checking the AI's work #824, the home card #813, the read-set test #825, the browser checks #826; `build.SPORTS` does not list MLB, and the home card stays dark until it does). March Madness (Stage 103) is built; its page and card appear only from the lock to 15 April.
 
-**Booth has 35 minutes and 210 turns (#810)**, and still sometimes needs them; audits run one at a time. **Booth writes its report to a file and a `post` job with no model publishes it (#827, Stage 82 item 4)**; the audit job holds no write grant. claude-code-action is 1.0.276 (#828). **Run tests has 35 minutes.** The six `actions/*` are on their newest majors (#822).
+**Booth has 35 minutes and 210 turns (#810)**, and still sometimes needs them; audits run one at a time. **Booth writes its report to a file and a `post` job with no model publishes it (#827, Stage 82 item 4)**; **each report closes with `<!-- booth-run: <id> -->`, and the report check and the agent-log collector count only a report marked by a Booth run (#841, Stage 82 item 5)**; the audit job holds no write grant. claude-code-action is 1.0.276 (#828). **Run tests has 35 minutes.** The six `actions/*` are on their newest majors (#822).
 
 **Merge rule (Mark):** Booth SAFE TO MERGE with 0 discrepancies, audited head = PR head, every check green; or (Mark, 2026-11-23) NEEDS HUMAN REVIEW with 0 discrepancies, every check green, and the only unverifiable claims the full-suite count and/or the archive-built mutation-scope list. Anything else, a second Booth timeout, and any PR that changes booth-pr-audit.yml (Scout's auditor-edits rule) go to Mark. `merge_item.py PR WT_NAME BRANCH "Title"`.
 **At the final head, before opening:** prechecks (ruff, the three mypy steps at run-tests.yml lines 79, 84, 89), every figure and mutation case by exact id, the suite (the session archive's prep and go scripts; CLAUDE.local.md has the paths). A body may be corrected after opening (the session archive's set-body script, which re-triggers Booth).
@@ -27,14 +27,14 @@ hand**: `require_tool('node')`; **every mutation case names its real file**; **a
 workflow closes with `--resolve` is raised in the same file** (`tests/test_alerts_raised.py`, #814); **tasks.py's
 browser-check task runs what browser-checks.yml runs, in order** (`tests/test_tasks.py`).
 
-**Single next action:** Stage 101 item 4, MLB going live: the board showing MLB's saved picks (`src/sports/mlb/site.py` still passes no picks), then, once spring training has set the run times (`python -m src.sports.mlb.probables_timing choose` after 2027-03-21), the daily workflow and 'mlb' in `build.SPORTS` (the four-card home layout is Mark's choice then). Stage 82 item 5 is next on the Booth side.
+**Single next action:** nothing MLB can do before spring: after 2027-03-21 run `python -m src.sports.mlb.probables_timing choose`, then the MLB daily workflow and 'mlb' in `build.SPORTS` (the four-card home layout is Mark's choice then). Until then, the next work is Mark's pick from the open list below (Stage 88 item 1's dispatches, the NHL alerts) or a new stage.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
 | MLB Stage 99 (model and backtest) | History, tuning, market, confirmation code (#728-#735) | Retrosheet's 2026 log (gl2026.zip not out on 2026-11-23), then `python -m src.sports.mlb.backtest confirm`, once |
-| MLB Stage 101 | Registered (#831); spring probables measurement scheduled Feb-Mar (#832); lock #833, drift #834, market #835, daily run #836 with its forward-test file #838 and page files #839, all run by hand only; nightly canary live (#837). Left: picks on the board, the daily workflow, going live (`build.SPORTS`, the strip's names, the home layout of four cards), and removing mlb-spring-probables.yml after `choose` | The run times (after 2027-03-21), the drift baselines (Stage 99's confirmation), Opening Day 2027 (Thu Mar 25) |
+| MLB Stage 101 | Registered (#831); spring probables measurement scheduled Feb-Mar (#832); lock #833, drift #834, market #835, daily run #836 with its forward-test file #838 and page files #839, all run by hand only; nightly canary live (#837); the board shows saved picks as the NBA's does (#842, Mark's choice). Left: the daily workflow, MLB in `tests/browser/check_board_picks.py` once it has picks, going live (`build.SPORTS`, the strip's names, the home layout of four cards), and removing mlb-spring-probables.yml after `choose` | The run times (after 2027-03-21), the drift baselines (Stage 99's confirmation), Opening Day 2027 (Thu Mar 25) |
 | v2 and v3 shadows (Stage 95, Stage 105) | Writers live | Decided once after the 2026 regular season |
 | NCAAM Stage 103 | Everything built | The lock between Selection Sunday and the First Four |
 | NFL week 12 | QB overrides #816 merged themselves (AUTO_MERGE_OVERRIDES is on); Tuesday's run locks all 16 games | The 07:30 ET check-in confirms it ran |
