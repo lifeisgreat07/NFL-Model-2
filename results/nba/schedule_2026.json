@@ -3400,7 +3400,7 @@
    "start_utc": "2026-11-25T22:00:00Z",
    "home": "PHI",
    "away": "MIA",
-   "status": "scheduled",
+   "status": "in_progress",
    "game_type": "regular",
    "home_score": null,
    "away_score": null,
