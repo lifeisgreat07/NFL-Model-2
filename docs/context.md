@@ -27,14 +27,14 @@ hand**: `require_tool('node')`; **every mutation case names its real file**; **a
 workflow closes with `--resolve` is raised in the same file** (`tests/test_alerts_raised.py`, #814); **tasks.py's
 browser-check task runs what browser-checks.yml runs, in order** (`tests/test_tasks.py`).
 
-**Single next action:** Stage 101, MLB going live for Opening Day 2027: register the forward test first, then the daily run that writes the schedule, standings, ratings and pick files. Stage 82 item 5 is next on the Booth side.
+**Single next action:** Stage 101 item 4, MLB going live: the board showing MLB's saved picks (`src/sports/mlb/site.py` still passes no picks), then, once spring training has set the run times (`python -m src.sports.mlb.probables_timing choose` after 2027-03-21), the daily workflow and 'mlb' in `build.SPORTS` (the four-card home layout is Mark's choice then). Stage 82 item 5 is next on the Booth side.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
 | MLB Stage 99 (model and backtest) | History, tuning, market, confirmation code (#728-#735) | Retrosheet's 2026 log (gl2026.zip not out on 2026-11-23), then `python -m src.sports.mlb.backtest confirm`, once |
-| MLB Stage 101 | Not started: forward-test registration, daily run writing the schedule, standings, ratings and pick files, canary, going live (add 'mlb' to `build.SPORTS`, the strip's names, the home layout of four cards) | Opening Day 2027 (Thu Mar 25) |
+| MLB Stage 101 | Registered (#831); spring probables measurement scheduled Feb-Mar (#832); lock #833, drift #834, market #835, daily run #836 with its forward-test file #838 and page files #839, all run by hand only; nightly canary live (#837). Left: picks on the board, the daily workflow, going live (`build.SPORTS`, the strip's names, the home layout of four cards), and removing mlb-spring-probables.yml after `choose` | The run times (after 2027-03-21), the drift baselines (Stage 99's confirmation), Opening Day 2027 (Thu Mar 25) |
 | v2 and v3 shadows (Stage 95, Stage 105) | Writers live | Decided once after the 2026 regular season |
 | NCAAM Stage 103 | Everything built | The lock between Selection Sunday and the First Four |
 | NFL week 12 | QB overrides #816 merged themselves (AUTO_MERGE_OVERRIDES is on); Tuesday's run locks all 16 games | The 07:30 ET check-in confirms it ran |
