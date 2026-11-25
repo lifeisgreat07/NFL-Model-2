@@ -35,6 +35,15 @@ Only Booth's own accounts count (BOOTH_ACCOUNTS below). That is not a
 selection of audits, which rule 1 forbids; it is the definition of one, so a
 comment that merely copies Booth's heading cannot put a row on the page.
 
+Since Stage 82 item 5 (the 2026-11-02 review) the account is not enough. The
+post job (#827) publishes the report as github-actions[bot], which any
+workflow's GITHUB_TOKEN posts as, so it closes each report with the marker for
+its run (booth_verdict.RUN_MARK_RE). From the first report that carries a marker
+naming one of Booth's audit runs (--booth-runs), every later comment counts only
+if it opens with Booth's heading and closes with such a marker. Earlier reports
+were posted before the marker existed; they count by the account as before, so
+rule 1 still holds for them.
+
 The counts come from the verdict block, never from the prose summary -- the
 block is what src/agents/booth_verdict.py can validate, and cross_check() catches a
 report whose two halves disagree.
@@ -55,6 +64,8 @@ OUT = REPO / 'data' / 'agent_log.json'
 
 #: A comment is one of Booth's audits if it opens with the protocol's heading.
 AUDIT_RE = re.compile(r'^##\s+Booth Audit:\s*PR\s*#(\d+)', re.M)
+#: Stage 82 item 5: from the marker cutover, the heading must open the body, not merely start a line in it.
+OPENING_RE = re.compile(r'\s*##\s+Booth Audit:\s*PR\s*#(\d+)')
 
 #: The header line PR #29 introduced. Its absence dates a report.
 HEAD_RE = re.compile(r'^Head commit audited:\s*`?([0-9a-f]{7,40})`?', re.M)
@@ -77,13 +88,32 @@ BOOTH_ACCOUNTS = bv.BOOTH_ACCOUNTS
 author = bv.author
 
 
-def is_audit(comment: dict[str, Any]) -> bool:
+def is_audit(comment: dict[str, Any], booth_runs: frozenset[int] | None = None,
+             cutover: str | None = None) -> bool:
     """A comment is an audit only if it has Booth's heading AND was posted by
     one of Booth's accounts. A comment with no author recorded is not one:
     failing closed here means a collector fed the wrong shape logs nothing,
-    which the page reports, rather than logging anyone."""
+    which the page reports, rather than logging anyone.
+
+    From `cutover` (Stage 82 item 5, `marker_cutover`), it must also open with
+    the heading and close with the marker of one of `booth_runs`."""
     body = comment.get('body') or ''
-    return bool(AUDIT_RE.search(body)) and author(comment) in BOOTH_ACCOUNTS
+    if not (AUDIT_RE.search(body) and author(comment) in BOOTH_ACCOUNTS):
+        return False
+    if cutover is None or (comment.get('created_at') or '') < cutover:
+        return True
+    return bool(OPENING_RE.match(body)) and bv.run_id(body) in (booth_runs or frozenset())
+
+
+def marker_cutover(comments: list[dict[str, Any]], booth_runs: frozenset[int] | None) -> str | None:
+    """When the first report carrying a marker for one of Booth's audit runs was posted; None when none has
+    (or no run list was given), so every report counts by its account, as before Stage 82 item 5."""
+    if not booth_runs:
+        return None
+    times = [c.get('created_at') or '' for c in comments
+             if author(c) in BOOTH_ACCOUNTS and OPENING_RE.match(c.get('body') or '')
+             and bv.run_id(c.get('body') or '') in booth_runs]
+    return min(times) if times else None
 
 
 def parse_audit(comment: dict[str, Any]) -> dict[str, Any]:
@@ -240,8 +270,10 @@ def recent(rows: list[dict[str, Any]], comments: list[dict[str, Any]],
     return out[:n]
 
 
-def build(comments: list[dict[str, Any]], scout_runs: list[dict[str, Any]] | None = None) -> dict[str, Any]:
-    rows = [parse_audit(c) for c in comments if is_audit(c)]
+def build(comments: list[dict[str, Any]], scout_runs: list[dict[str, Any]] | None = None,
+          booth_runs: frozenset[int] | None = None) -> dict[str, Any]:
+    cutover = marker_cutover(comments, booth_runs)
+    rows = [parse_audit(c) for c in comments if is_audit(c, booth_runs, cutover)]
     rows.sort(key=lambda r: (r['posted_utc'] or '', r['pr'] or 0))
     mark_superseded(rows)
     return {
@@ -275,6 +307,8 @@ def main(argv: list[str] | None = None) -> int:
                     help="JSON array of issue comments, or - for stdin")
     ap.add_argument('--scout', default=None,
                     help='JSON array of Scout pre-flight workflow runs (Stage 90 item 3)')
+    ap.add_argument('--booth-runs', default=None,
+                    help="Booth's audit run ids, one per line (Stage 82 item 5)")
     ap.add_argument('--out', default=str(OUT))
     args = ap.parse_args(argv)
 
@@ -283,7 +317,9 @@ def main(argv: list[str] | None = None) -> int:
     comments = json.loads(raw)
 
     scout = json.loads(Path(args.scout).read_text(encoding='utf-8')) if args.scout else None
-    payload = build(comments, scout)
+    runs = (frozenset(int(x) for x in Path(args.booth_runs).read_text(encoding='utf-8').split() if x.isdigit())
+            if args.booth_runs else None)
+    payload = build(comments, scout, runs)
     out = Path(args.out)
     if unchanged(out, payload):
         # Stage 68 item 29 (the 2026-10-09 audit's E34): a run whose audits are the

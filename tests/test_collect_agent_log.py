@@ -75,6 +75,42 @@ def test_a_copied_heading_from_anyone_else_is_not_an_audit():
     assert [r['pr'] for r in cal.build([forged, real])['audits']] == [8]
 
 
+def _marked(pr, when, run, login='github-actions[bot]', lead=''):
+    c = _audit(pr, when, CONFIRMED, login=login)
+    c['body'] = lead + c['body'] + f'\n\n<!-- booth-run: {run} -->\n'
+    return c
+
+
+def test_from_the_first_marked_report_on_every_report_needs_a_booth_runs_marker():
+    """Stage 82 item 5. Reports from before the marker count by their account, so nothing already recorded is
+    dropped; from the first report marked with one of Booth's runs, an unmarked comment from the same account,
+    or one marked with another workflow's run, is not an audit."""
+    runs = frozenset({101, 102})
+    old = _audit(1, '2026-11-20T10:00:00Z', CONFIRMED, login='github-actions[bot]')
+    first = _marked(2, '2026-11-26T10:00:00Z', 101)
+    unmarked = _audit(3, '2026-11-27T10:00:00Z', CONFIRMED, login='github-actions[bot]')
+    other = _marked(4, '2026-11-27T11:00:00Z', 999)
+    later = _marked(5, '2026-11-28T10:00:00Z', 102)
+    assert cal.marker_cutover([old, first, unmarked, other, later], runs) == '2026-11-26T10:00:00Z'
+    got = [r['pr'] for r in cal.build([old, first, unmarked, other, later], booth_runs=runs)['audits']]
+    assert got == [1, 2, 5]
+    assert [r['pr'] for r in cal.build([old, first, unmarked, other, later])['audits']] == [1, 2, 3, 4, 5]
+
+
+def test_from_the_cutover_the_heading_must_open_the_report():
+    runs = frozenset({101})
+    first = _marked(2, '2026-11-26T10:00:00Z', 101)
+    buried = _marked(3, '2026-11-27T10:00:00Z', 101, lead='Quoting Booth:\n\n')
+    assert [r['pr'] for r in cal.build([first, buried], booth_runs=runs)['audits']] == [2]
+
+
+def test_the_workflow_hands_the_collector_booths_audit_runs():
+    wf = (Path(__file__).parent.parent / '.github' / 'workflows' /
+          'collect-agent-log.yml').read_text(encoding='utf-8')
+    assert 'actions/workflows/booth-pr-audit.yml/runs' in wf and "--jq '.workflow_runs[].id' > booth-runs.txt" in wf
+    assert '--booth-runs booth-runs.txt' in wf
+
+
 def test_a_comment_with_no_author_is_not_an_audit():
     c = _audit(7, '2026-09-29T10:00:00Z', CONFIRMED)
     del c['user']

@@ -12,8 +12,8 @@
     {
       "id": "agentlog-drops-clean-audits",
       "why": "audits that found nothing are filtered out, so the log describes a verifier that finds something every time. That is selection bias in a portfolio artifact, and the same failure this project's methodology section bans for model results.",
-      "find": "    rows = [parse_audit(c) for c in comments if is_audit(c)]",
-      "replace": "    rows = [parse_audit(c) for c in comments if is_audit(c)]\n    rows = [r for r in rows if r.get('discrepancies')]",
+      "find": "    rows = [parse_audit(c) for c in comments if is_audit(c, booth_runs, cutover)]",
+      "replace": "    rows = [parse_audit(c) for c in comments if is_audit(c, booth_runs, cutover)]\n    rows = [r for r in rows if r.get('discrepancies')]",
       "expect_caught_by": "test_a_clean_audit_is_kept"
     },
     {
@@ -40,8 +40,8 @@
     {
       "id": "agentlog-any-author-counts",
       "why": "the author check is dropped, so a comment from any account that copies Booth's heading and a SAFE TO MERGE block becomes a row on the page (the 2026-09-28 audit's finding)",
-      "find": "    return bool(AUDIT_RE.search(body)) and author(comment) in BOOTH_ACCOUNTS",
-      "replace": "    return bool(AUDIT_RE.search(body))",
+      "find": "    if not (AUDIT_RE.search(body) and author(comment) in BOOTH_ACCOUNTS):",
+      "replace": "    if not AUDIT_RE.search(body):",
       "expect_caught_by": "test_a_copied_heading_from_anyone_else_is_not_an_audit"
     },
     {
@@ -103,6 +103,33 @@
       "find": "          branch: main",
       "replace": "",
       "expect_caught_by": "test_the_collector_pushes_its_commit_to_main"
+    },
+    {
+      "id": "agent-log-marker-not-required-after-cutover",
+      "target": "src/agents/collect_agent_log.py",
+      "tests": "tests/test_collect_agent_log.py",
+      "why": "after the cutover an unmarked github-actions[bot] comment opening with Booth's heading becomes a row.",
+      "find": "    return bool(OPENING_RE.match(body)) and bv.run_id(body) in (booth_runs or frozenset())\n",
+      "replace": "    return bool(OPENING_RE.match(body))\n",
+      "expect_caught_by": "test_from_the_first_marked_report_on_every_report_needs_a_booth_runs_marker"
+    },
+    {
+      "id": "agent-log-cutover-drops-history",
+      "target": "src/agents/collect_agent_log.py",
+      "tests": "tests/test_collect_agent_log.py",
+      "why": "reports from before the marker are held to it too, so every audit already recorded drops off the page.",
+      "find": "    if cutover is None or (comment.get('created_at') or '') < cutover:\n",
+      "replace": "    if cutover is None:\n",
+      "expect_caught_by": "test_from_the_first_marked_report_on_every_report_needs_a_booth_runs_marker"
+    },
+    {
+      "id": "agent-log-heading-not-anchored",
+      "target": "src/agents/collect_agent_log.py",
+      "tests": "tests/test_collect_agent_log.py",
+      "why": "after the cutover a comment that quotes Booth's heading lower down counts as a report.",
+      "find": "    return bool(OPENING_RE.match(body)) and bv.run_id(body) in (booth_runs or frozenset())\n",
+      "replace": "    return bool(AUDIT_RE.search(body)) and bv.run_id(body) in (booth_runs or frozenset())\n",
+      "expect_caught_by": "test_from_the_cutover_the_heading_must_open_the_report"
     }
   ]
 }
