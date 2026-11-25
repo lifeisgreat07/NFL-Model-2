@@ -1,5 +1,5 @@
 {
- "as_of": "2026-11-24",
+ "as_of": "2026-11-25",
  "games": [
   {
    "game_id": "401909088",
@@ -3387,10 +3387,10 @@
    "start_utc": "2026-11-25T03:00:00Z",
    "home": "DEN",
    "away": "DAL",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
+   "home_score": 101,
+   "away_score": 120,
    "neutral_site": false,
    "time_valid": true
   },

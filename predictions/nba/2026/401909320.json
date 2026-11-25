@@ -1,0 +1,104 @@
+{
+ "game_id": "401909320",
+ "season": 2026,
+ "slate": "2026-11-25",
+ "start_utc": "2026-11-26T00:30:00Z",
+ "home": "OKC",
+ "away": "MIN",
+ "model_a": 0.594,
+ "model_b": 0.5335,
+ "pick": "OKC",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7383,
+  "away": 0.833
+ },
+ "features": {
+  "point_matchup": 1.579012,
+  "efficiency_matchup": 1.51439,
+  "availability_matchup": -0.09472
+ },
+ "market": {
+  "game_id": "401909320",
+  "home": "OKC",
+  "away": "MIN",
+  "start_utc": "2026-11-26T00:30:00Z",
+  "read_utc": "2026-11-25T21:31:33Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-25T21:31:33Z",
+  "home": [
+   {
+    "athlete_id": "5174983",
+    "name": "Aday Mara",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4683692",
+    "name": "Cason Wallace",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433255",
+    "name": "Chet Holmgren",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4593803",
+    "name": "Jalen Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432823",
+    "name": "Jaylin Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5159925",
+    "name": "Nikola Topic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061603",
+    "name": "Thomas Sorber",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4594268",
+    "name": "Anthony Edwards",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3934673",
+    "name": "Donte DiVincenzo",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432247",
+    "name": "Jaylen Clark",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-25T21:31:33Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14319,
+  "training_games_priced": 14278,
+  "training_ids_sha256": "7d3a01d4a3d83e274c91facc86b0bcd3bca21f525c63678f5e65193b11a7c423"
+ },
+ "code_sha256": "ed3e89358d4e403fd52986f46ceb9596f477f1051009e3d9a25cc8f991191a34",
+ "code_commit": "b564eed6dfb9a3c73aebf78eb242bc408cbb387a"
+}

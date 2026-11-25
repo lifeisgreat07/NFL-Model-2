@@ -1,0 +1,63 @@
+{
+ "game_id": "401909317",
+ "season": 2026,
+ "slate": "2026-11-25",
+ "start_utc": "2026-11-25T22:00:00Z",
+ "home": "PHI",
+ "away": "MIA",
+ "model_a": 0.498,
+ "model_b": 0.4929,
+ "pick": "MIA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9206,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": -1.33054,
+  "efficiency_matchup": -1.327894,
+  "availability_matchup": -0.079401
+ },
+ "market": {
+  "game_id": "401909317",
+  "home": "PHI",
+  "away": "MIA",
+  "start_utc": "2026-11-25T22:00:00Z",
+  "read_utc": "2026-11-25T21:31:33Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -105.0,
+  "away_price": -113.0,
+  "home_prob": 0.4912
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-25T21:31:33Z",
+  "home": [
+   {
+    "athlete_id": "4871141",
+    "name": "Ariel Hukporti",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3059318",
+    "name": "Joel Embiid",
+    "status": "Out"
+   }
+  ],
+  "away": []
+ },
+ "saved_utc": "2026-11-25T21:31:33Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14319,
+  "training_games_priced": 14278,
+  "training_ids_sha256": "7d3a01d4a3d83e274c91facc86b0bcd3bca21f525c63678f5e65193b11a7c423"
+ },
+ "code_sha256": "ed3e89358d4e403fd52986f46ceb9596f477f1051009e3d9a25cc8f991191a34",
+ "code_commit": "b564eed6dfb9a3c73aebf78eb242bc408cbb387a"
+}

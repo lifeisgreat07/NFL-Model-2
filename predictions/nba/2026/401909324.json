@@ -1,0 +1,99 @@
+{
+ "game_id": "401909324",
+ "season": 2026,
+ "slate": "2026-11-25",
+ "start_utc": "2026-11-26T03:00:00Z",
+ "home": "GS",
+ "away": "SAC",
+ "model_a": 0.7518,
+ "model_b": 0.7253,
+ "pick": "GS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8423,
+  "away": 0.9515
+ },
+ "features": {
+  "point_matchup": 6.876234,
+  "efficiency_matchup": 6.712727,
+  "availability_matchup": -0.109195
+ },
+ "market": {
+  "game_id": "401909324",
+  "home": "GS",
+  "away": "SAC",
+  "start_utc": "2026-11-26T03:00:00Z",
+  "read_utc": "2026-11-25T21:31:33Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -304.0,
+  "away_price": 247.0,
+  "home_prob": 0.7231
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-25T21:31:33Z",
+  "home": [
+   {
+    "athlete_id": "4397040",
+    "name": "Brandon Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6430",
+    "name": "Jimmy Butler III",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102531",
+    "name": "Kristaps Porzingis",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432171",
+    "name": "Moses Moody",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3975",
+    "name": "Stephen Curry",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5175737",
+    "name": "Yaxel Lendeborg",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3064440",
+    "name": "Zach LaVine",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-25T21:31:33Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14319,
+  "training_games_priced": 14278,
+  "training_ids_sha256": "7d3a01d4a3d83e274c91facc86b0bcd3bca21f525c63678f5e65193b11a7c423"
+ },
+ "code_sha256": "ed3e89358d4e403fd52986f46ceb9596f477f1051009e3d9a25cc8f991191a34",
+ "code_commit": "b564eed6dfb9a3c73aebf78eb242bc408cbb387a"
+}
