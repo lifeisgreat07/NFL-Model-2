@@ -226,8 +226,40 @@ def test_the_run_saves_the_games_the_lock_names_and_grades_and_reports_drift(tmp
     lines = json.loads((paths.data / 'lines' / '2027.json').read_text(encoding='utf-8'))
     assert [r['game_id'] for r in lines] == ['701']
     report = json.loads((paths.results / 'drift_2027.json').read_text(encoding='utf-8'))
+    assert json.loads((paths.results / 'forward_2027.json').read_text(encoding='utf-8'))['sport'] == 'mlb'
     assert report['running'] is False
     assert (paths.data / 'starters_2027.csv').exists()
+
+
+def saved(folder, gid, slate, pick, model_a, game_type='regular', named=(True, True), source='espn'):
+    rec = {'game_id': gid, 'slate': slate, 'game_type': game_type, 'pick': pick, 'model_a': model_a,
+           'model_b': None, 'market_source': source, 'market': {'source': source, 'home_prob': 0.5},
+           'starters': {'home': {'named': named[0]}, 'away': {'named': named[1]}}}
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / f'{gid}_{slate}.json').write_text(json.dumps(rec), encoding='utf-8')
+
+
+def test_the_forward_file_scores_regular_season_picks_and_keeps_the_postseason_apart(tmp_path):
+    folder = tmp_path / '2027'
+    saved(folder, '1', '2027-04-01', '147', 0.6)
+    saved(folder, '2', '2027-04-02', '147', 0.6, named=(True, False), source='kalshi')
+    saved(folder, '3', '2027-04-03', '147', 0.6)  # postponed to 04-04: never counted
+    saved(folder, '4', '2027-10-01', '147', 0.6, game_type='wild_card')
+    sched = pd.DataFrame([game('1', status='final', home_win=1, hs=3, as_=1),
+                          game('2', slate='2027-04-02', status='final', home_win=0, hs=1, as_=2),
+                          game('3', slate='2027-04-04', status='final', home_win=1, hs=5, as_=2),
+                          {**game('4', slate='2027-10-01', status='final', home_win=1, hs=4, as_=0),
+                           'game_type': 'wild_card'}])
+    played = pd.DataFrame({'day': pd.to_datetime(['2027-03-30', '2027-03-31']), 'home_score': [3, 1],
+                           'away_score': [1, 2]})
+    doc = daily.forward_file(folder, sched, played, 2027)
+    assert doc['sport'] == 'mlb' and doc['graded_picks'] == 2 and doc['through'] == '2027-04-02'
+    assert doc['interval_rule']['seed'] == 20261112 == daily.backtest.SEED
+    assert doc['starter_not_named']['graded_picks'] == 1
+    assert set(doc['by_market_source']) == {'espn', 'kalshi'}
+    assert doc['postseason'] == {'graded_picks': 1, 'decides': False,
+                                 'scores': doc['postseason']['scores']} and doc['postseason']['scores']
+    assert doc['registered'] == 'experiments/mlb/stage101/registry.json'
 
 
 def test_a_started_game_with_no_pick_is_named(tmp_path):

@@ -54,8 +54,8 @@ N_RESAMPLES = 5000
 #: than this rests on too few blocks to be read alone, so the interval that
 #: resamples single games is reported beside it until this many days are in.
 MIN_DAY_BLOCKS = 20
-#: The backtests' bootstrap seeds (experiments/nhl/stage56 and nba/stage61 registries).
-SEEDS = {'nhl': 20261005, 'nba': 20261006}
+#: The backtests' bootstrap seeds (experiments/nhl/stage56, nba/stage61 and mlb/stage98 registries).
+SEEDS = {'nhl': 20261005, 'nba': 20261006, 'mlb': 20261112}
 EPS = 1e-15
 FORECASTERS = ('model_a', 'model_b', 'market', 'base_rate')
 #: (name, first, second): the mean of first's per-game log loss minus second's.

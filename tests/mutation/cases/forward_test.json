@@ -33,8 +33,8 @@
     {
       "id": "forward-seeds-swapped",
       "why": "each sport resamples with the other's seed, so its intervals are not the registered ones",
-      "find": "SEEDS = {'nhl': 20261005, 'nba': 20261006}\n",
-      "replace": "SEEDS = {'nhl': 20261006, 'nba': 20261005}\n",
+      "find": "SEEDS = {'nhl': 20261005, 'nba': 20261006, 'mlb': 20261112}\n",
+      "replace": "SEEDS = {'nhl': 20261006, 'nba': 20261005, 'mlb': 20261112}\n",
       "expect_caught_by": "test_the_level_and_seed_are_the_backtests"
     }
   ]
