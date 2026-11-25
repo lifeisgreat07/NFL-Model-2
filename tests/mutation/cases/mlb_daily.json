@@ -106,6 +106,38 @@
       "find": "    unnamed = [p for p in regular if not all(s.get('named') for s in (p.get('starters') or {}).values())]\n",
       "replace": "    unnamed = []\n",
       "expect_caught_by": "test_the_forward_file_scores_regular_season_picks_and_keeps_the_postseason_apart"
+    },
+    {
+      "id": "mlb-board-file-drops-the-starters",
+      "target": "src/sports/mlb/page_inputs.py",
+      "tests": "tests/test_mlb_daily.py",
+      "why": "the board's file leaves out a named probable pitcher, so the board shows no starter for a game that has one.",
+      "find": "        if home:\n            row['home_starter'] = home\n",
+      "replace": "",
+      "expect_caught_by": "test_the_board_file_lists_every_game_with_each_named_starter"
+    },
+    {
+      "id": "mlb-board-file-names-an-unnamed-starter",
+      "target": "src/sports/mlb/page_inputs.py",
+      "tests": "tests/test_mlb_daily.py",
+      "why": "a side with no probable named is written with an empty starter, which the board would show as named.",
+      "find": "            sides.append({'id': str(p['id']), 'name': str(p.get('fullName') or '')} if p.get('id') else None)\n",
+      "replace": "            sides.append({'id': str(p.get('id')), 'name': str(p.get('fullName') or '')})\n",
+      "expect_caught_by": "test_the_board_file_lists_every_game_with_each_named_starter"
+    },
+    {
+      "id": "mlb-standings-simulate-the-postseason",
+      "why": "postseason games enter the regular season's simulation, so a club's odds count games that are not in the standings.",
+      "find": "    left = sched[(sched['game_type'] == 'regular') & ~sched['status'].isin(\n",
+      "replace": "    left = sched[(sched['game_type'] != '') & ~sched['status'].isin(\n",
+      "expect_caught_by": "test_the_standings_odds_give_every_unplayed_regular_season_game_league_rate_starters"
+    },
+    {
+      "id": "mlb-ratings-file-reads-today",
+      "why": "the Power Ratings file counts today's starts, so the page's ratings are not the ones the day's picks used.",
+      "find": "    cur = games[(games['season'] == season) & (games['day'] < before)]\n",
+      "replace": "    cur = games[(games['season'] == season) & (games['day'] <= before)]\n",
+      "expect_caught_by": "test_the_ratings_file_reads_this_seasons_starts_before_today_and_names_them"
     }
   ]
 }

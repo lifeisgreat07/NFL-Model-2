@@ -28,7 +28,12 @@
    completed. A postponed or cancelled game's pick is never counted, and nor is an official tie.
 8. **Drift.** `results/mlb/drift_<season>.json` from `src/sports/mlb/drift.py`: regular-season picks only; until the
    confirmation gives the baselines, the file says the check is not running and why.
-9. **Forward test.** `results/mlb/forward_<season>.json` (`forward_file`, through `src/core/forward_test.py`): the
+9. **Page inputs.** The board's schedule file (`results/mlb/schedule_<season>.json`) every run, with each named
+   probable pitcher; and, in a run that saves picks, the Power Ratings file (`ratings_<season>.json`, the ratings
+   as they stand before today, each listed starter named from the Stats API's people) and the standings odds
+   (`standings_<season>.json`: Model A fitted before today, with both starters at the league rate since they are
+   not known yet, for every unplayed regular-season game). `src/sports/mlb/site.py` reads all three.
+10. **Forward test.** `results/mlb/forward_<season>.json` (`forward_file`, through `src/core/forward_test.py`): the
    registered comparisons on the scored regular-season picks, each forecaster scored by market source and on the
    picks with a starter not named as well as in the total, and the postseason's picks scored on their own
    (`postseason`), never in the total. The first run after the regular season's last game is final freezes it as
@@ -62,7 +67,16 @@ from src.core.atomic_write import write_json_atomic
 from src.core.day_backtest import estimator
 from src.core.provenance import code_identity, training
 from src.core.sport import GameStatus, sport_paths
-from src.sports.mlb import backtest, drift, history, market, ratings, starters
+from src.sports.mlb import (
+    backtest,
+    drift,
+    history,
+    market,
+    page_inputs,
+    ratings,
+    standings,
+    starters,
+)
 from src.sports.mlb import schedule as mlb_schedule
 from src.sports.mlb.lock import GameLock
 
@@ -274,6 +288,41 @@ def forward_file(folder: Path, sched: pd.DataFrame, played: pd.DataFrame, season
     return doc
 
 
+PEOPLE = mlb_schedule.STATS + '/people?personIds={ids}'
+
+
+def standings_probs(models: Mapping[str, Any], rated: ratings.DayRatings, sched: pd.DataFrame,
+                    cols: Sequence[str]) -> dict[str, float]:
+    """Model A's home probability for every unplayed regular-season game, both starters at the league rate."""
+    left = sched[(sched['game_type'] == 'regular') & ~sched['status'].isin(
+        [GameStatus.FINAL.value, GameStatus.CANCELLED.value])]
+    out = {}
+    for g in left.to_dict('records'):
+        feats = rated.matchup(str(g['home']), str(g['away']), None, None)
+        p_a, _ = predict(models, {cols[0]: feats['run_matchup'], cols[1]: feats['starter_matchup']}, cols,
+                         bool(g['neutral_site']), None)
+        out[str(g['game_id'])] = p_a
+    return out
+
+
+def season_starts(games: pd.DataFrame, season: int, before: pd.Timestamp) -> list[tuple[str, str, str]]:
+    """(pitcher, club, day) for both starters of every final game of `season` before `before`."""
+    cur = games[(games['season'] == season) & (games['day'] < before)]
+    return ([(str(p), str(c), str(d.date())) for p, c, d in zip(cur['home_starter'], cur['home'], cur['day'],
+                                                               strict=True)]
+            + [(str(p), str(c), str(d.date())) for p, c, d in zip(cur['away_starter'], cur['away'], cur['day'],
+                                                                 strict=True)])
+
+
+def people_names(ids: Iterable[str], get: Callable[[str], bytes]) -> dict[str, str]:
+    """The Stats API's full names by person id; empty when the read fails (the page then shows the id)."""
+    keys = sorted(set(ids))
+    if not keys:
+        return {}
+    data = read_json(PEOPLE.format(ids=','.join(keys)), get, 'Stats API people')
+    return {str(p['id']): str(p.get('fullName') or '') for p in (data or {}).get('people') or [] if p.get('id')}
+
+
 def missed(started: Iterable[str], slates: Mapping[str, str], folder: Path) -> list[str]:
     """Started games with no pick saved for their official date."""
     return sorted(g for g in started if not pick_path(folder, g, slates[g]).exists())
@@ -310,11 +359,13 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     decision = GameLock().decide(slate, now)
     folder = PATHS.predictions / str(season)
     probables: dict[str, tuple[Any, Any]] = {}
+    named: dict[str, tuple[page_inputs.Starter, page_inputs.Starter]] = {}
     for day in days:
         url = mlb_schedule.DAY.format(day=day)
         data = read_json(url, get, f'probable pitchers for {day}')
         if data is not None:
             probables.update(mlb_schedule.probables(data))
+            named.update(page_inputs.probable_starters(data))
             after_save.guarded('starters record', starters.append, PATHS.data / f'starters_{season}.csv',
                                starters.probable_rows(data, url, now))
     saved_prices: list[dict[str, Any]] = []
@@ -362,6 +413,29 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     # From here on the picks are saved, and no step may lose them.
     after_save.guarded('market record', market.record, saved_prices, lines_path)
     PATHS.results.mkdir(parents=True, exist_ok=True)
+    as_of = str(today.date())
+    after_save.guarded('schedule file', lambda: write_json_atomic(
+        PATHS.results / f'schedule_{season}.json', page_inputs.schedule_json(sched, as_of, named),
+        trailing_newline=True, indent=1))
+    if decision.lock:
+
+        def write_season_files() -> None:
+            day = today.tz_localize(None)
+            models, _ = fit_before(table, day, cols, FIRST_SEASON)
+            rated = ratings.day_ratings(games[games['day'] < day], lines, day_of, day, h, lam, k)
+            odds = standings.simulate(sched, standings_probs(models, rated, sched, cols))
+            write_json_atomic(PATHS.results / f'standings_{season}.json',
+                              standings.to_json(odds, as_of, 10000, standings.games_listed(sched)),
+                              trailing_newline=True, indent=1)
+            starts = season_starts(games, season, day)
+            outs = ratings.pitcher_totals(lines, day_of, day, h)[1]['o'].to_dict()
+            listed = [p for p, _, _ in starts]
+            names = people_names({p for p in listed if listed.count(p) >= page_inputs.MIN_STARTS}, get)
+            write_json_atomic(PATHS.results / f'ratings_{season}.json',
+                              page_inputs.ratings_json(rated, k, starts, outs, names, as_of),
+                              trailing_newline=True, indent=1)
+
+        after_save.guarded('standings and ratings files', write_season_files)
 
     def write_grades() -> list[dict[str, Any]]:
         graded = grade(folder, sched)

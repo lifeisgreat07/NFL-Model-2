@@ -227,6 +227,8 @@ def test_the_run_saves_the_games_the_lock_names_and_grades_and_reports_drift(tmp
     assert [r['game_id'] for r in lines] == ['701']
     report = json.loads((paths.results / 'drift_2027.json').read_text(encoding='utf-8'))
     assert json.loads((paths.results / 'forward_2027.json').read_text(encoding='utf-8'))['sport'] == 'mlb'
+    board = json.loads((paths.results / 'schedule_2027.json').read_text(encoding='utf-8'))
+    assert board['games'][0]['home_starter']['id'] == '6801'
     assert report['running'] is False
     assert (paths.data / 'starters_2027.csv').exists()
 
@@ -260,6 +262,49 @@ def test_the_forward_file_scores_regular_season_picks_and_keeps_the_postseason_a
     assert doc['postseason'] == {'graded_picks': 1, 'decides': False,
                                  'scores': doc['postseason']['scores']} and doc['postseason']['scores']
     assert doc['registered'] == 'experiments/mlb/stage101/registry.json'
+
+
+def test_the_board_file_lists_every_game_with_each_named_starter():
+    day = {'dates': [{'games': [
+        {'gamePk': 701, 'gameType': 'R', 'officialDate': '2027-04-01', 'gameDate': '2027-04-01T17:35:00Z',
+         'teams': {'home': {'team': {'id': 147}, 'probablePitcher': {'id': 6801, 'fullName': 'A Pitcher'}},
+                   'away': {'team': {'id': 111}}}}]}]}
+    named = daily.page_inputs.probable_starters(day)
+    assert named == {'701': ({'id': '6801', 'name': 'A Pitcher'}, None)}
+    sched = pd.DataFrame([game('701'), game('702', start='2027-04-01 23:05', home_win=pd.NA)])
+    doc = daily.page_inputs.schedule_json(sched, '2027-04-01', named)
+    assert doc['as_of'] == '2027-04-01' and [g['game_id'] for g in doc['games']] == ['701', '702']
+    first, second = doc['games']
+    assert first['home_starter'] == {'id': '6801', 'name': 'A Pitcher'} and 'away_starter' not in first
+    assert first['start_utc'] == '2027-04-01T17:35:00Z' and second['home_win'] is None
+    json.dumps(doc)  # every value is plain JSON
+
+
+def test_the_standings_odds_give_every_unplayed_regular_season_game_league_rate_starters(monkeypatch):
+    rated = ratings.DayRatings({'147': 0.5, '111': -0.5}, 4.5, {'p1': 2.0})
+    sched = pd.DataFrame([game('1'), game('2', status='final', home_win=1, hs=3, as_=1),
+                          {**game('3'), 'game_type': 'wild_card'}])
+    seen = []
+
+    def fake_predict(models, feats, cols, neutral, home_prob):
+        seen.append(feats)
+        return 0.6, None
+    monkeypatch.setattr(daily, 'predict', fake_predict)
+    probs = daily.standings_probs({}, rated, sched, ['run_matchup_10', 'starter_matchup_150'])
+    assert probs == {'1': 0.6} and seen == [{'run_matchup_10': 1.0, 'starter_matchup_150': 0.0}]
+
+
+def test_the_ratings_file_reads_this_seasons_starts_before_today_and_names_them():
+    g = ratings.prepare(history(n_days=4)[0])
+    starts = daily.season_starts(g, 2026, pd.Timestamp('2026-04-03'))
+    assert len(starts) == 8 and all(day < '2026-04-03' for _, _, day in starts)
+    asked = []
+
+    def get(url):
+        asked.append(url)
+        return json.dumps({'people': [{'id': 6801, 'fullName': 'A Pitcher'}]}).encode()
+    assert daily.people_names({'6801', '42'}, get) == {'6801': 'A Pitcher'}
+    assert asked == [daily.PEOPLE.format(ids='42,6801')] and daily.people_names(set(), get) == {}
 
 
 def test_a_started_game_with_no_pick_is_named(tmp_path):
