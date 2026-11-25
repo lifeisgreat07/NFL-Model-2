@@ -226,5 +226,11 @@
   "slot": "2026-11-24T16:00:00Z",
   "started": "2026-11-25T00:13:07Z",
   "delay_minutes": 493
+ },
+ {
+  "workflow": "nba-daily.yml",
+  "slot": "2026-11-24T21:30:00Z",
+  "started": "2026-11-25T04:30:00Z",
+  "delay_minutes": 420
  }
 ]
