@@ -1988,31 +1988,31 @@
  {
   "game_id": "2026020395",
   "pick": "DAL",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-25T21:01:48Z"
  },
  {
   "game_id": "2026020396",
   "pick": "MIN",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-25T21:01:48Z"
  },
  {
   "game_id": "2026020397",
   "pick": "COL",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-25T21:01:48Z"
  },
  {
   "game_id": "2026020398",
   "pick": "ANA",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-25T21:01:48Z"
  },
  {
   "game_id": "2026020399",
   "pick": "SEA",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-25T21:01:48Z"
  }
 ]
