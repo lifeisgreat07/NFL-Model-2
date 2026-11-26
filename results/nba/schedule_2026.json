@@ -1,5 +1,5 @@
 {
- "as_of": "2026-11-25",
+ "as_of": "2026-11-26",
  "games": [
   {
    "game_id": "401909088",
@@ -3478,10 +3478,10 @@
    "start_utc": "2026-11-26T01:30:00Z",
    "home": "HOU",
    "away": "PHX",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
+   "home_score": 116,
+   "away_score": 104,
    "neutral_site": false,
    "time_valid": true
   },
@@ -3491,10 +3491,10 @@
    "start_utc": "2026-11-26T03:00:00Z",
    "home": "GS",
    "away": "SAC",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
+   "home_score": 129,
+   "away_score": 110,
    "neutral_site": false,
    "time_valid": true
   },
@@ -3504,10 +3504,10 @@
    "start_utc": "2026-11-26T03:00:00Z",
    "home": "POR",
    "away": "SA",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
+   "home_score": 116,
+   "away_score": 111,
    "neutral_site": false,
    "time_valid": true
   },
