@@ -1,0 +1,100 @@
+[
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "LA",
+    "away": "KC",
+    "spread_line": 1.5
+  },
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "ATL",
+    "away": "DET",
+    "spread_line": -3.5
+  },
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "CHI",
+    "away": "JAX",
+    "spread_line": 3.0
+  },
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "CLE",
+    "away": "CIN",
+    "spread_line": -6.0
+  },
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "NO",
+    "away": "GB",
+    "spread_line": -4.5
+  },
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "NYG",
+    "away": "SF",
+    "spread_line": -6.5
+  },
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "TB",
+    "away": "LAC",
+    "spread_line": 5.5
+  },
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "TEN",
+    "away": "WAS",
+    "spread_line": -4.5
+  },
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "ARI",
+    "away": "PHI",
+    "spread_line": -3.0
+  },
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "DEN",
+    "away": "MIA",
+    "spread_line": 14.5
+  },
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "MIN",
+    "away": "CAR",
+    "spread_line": 5.5
+  },
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "NE",
+    "away": "BUF",
+    "spread_line": -12.5
+  },
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "PIT",
+    "away": "HOU",
+    "spread_line": -4.5
+  },
+  {
+    "captured_date": "2026-11-26",
+    "captured_utc": "2026-11-26T11:02:55Z",
+    "home": "SEA",
+    "away": "DAL",
+    "spread_line": 6.0
+  }
+]

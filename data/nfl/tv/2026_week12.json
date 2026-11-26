@@ -1,6 +1,7 @@
 {
   "reads": [
-    "2026-11-24T11:03:10Z"
+    "2026-11-24T11:03:10Z",
+    "2026-11-26T11:03:09Z"
   ],
   "changes": [],
   "games": [
@@ -59,7 +60,8 @@
       "home": "BUF",
       "territory": "NATIONAL",
       "listed": [
-        "NBC"
+        "NBC",
+        "Peacock"
       ]
     },
     {
@@ -90,7 +92,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
-      "read_at": "2026-11-24T11:03:10Z"
+      "read_at": "2026-11-26T11:03:09Z"
     },
     {
       "elias": "2026112902",
@@ -106,7 +108,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
-      "read_at": "2026-11-24T11:03:10Z"
+      "read_at": "2026-11-26T11:03:09Z"
     },
     {
       "elias": "2026112903",
@@ -122,7 +124,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
-      "read_at": "2026-11-24T11:03:10Z"
+      "read_at": "2026-11-26T11:03:09Z"
     },
     {
       "elias": "2026112904",
@@ -138,7 +140,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
-      "read_at": "2026-11-24T11:03:10Z"
+      "read_at": "2026-11-26T11:03:09Z"
     },
     {
       "elias": "2026112905",
@@ -154,7 +156,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
-      "read_at": "2026-11-24T11:03:10Z"
+      "read_at": "2026-11-26T11:03:09Z"
     },
     {
       "elias": "2026112906",
@@ -170,7 +172,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
-      "read_at": "2026-11-24T11:03:10Z"
+      "read_at": "2026-11-26T11:03:09Z"
     },
     {
       "elias": "2026112909",
@@ -186,7 +188,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
-      "read_at": "2026-11-24T11:03:10Z"
+      "read_at": "2026-11-26T11:03:09Z"
     },
     {
       "elias": "2026112907",
@@ -202,7 +204,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
-      "read_at": "2026-11-24T11:03:10Z"
+      "read_at": "2026-11-26T11:03:09Z"
     },
     {
       "elias": "2026112908",
@@ -218,7 +220,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
-      "read_at": "2026-11-24T11:03:10Z"
+      "read_at": "2026-11-26T11:03:09Z"
     },
     {
       "elias": "2026112901",
@@ -234,7 +236,7 @@
         "NBC"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
-      "read_at": "2026-11-24T11:03:10Z"
+      "read_at": "2026-11-26T11:03:09Z"
     },
     {
       "elias": "2026113000",
@@ -250,7 +252,7 @@
         "ESPN"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-12",
-      "read_at": "2026-11-24T11:03:10Z"
+      "read_at": "2026-11-26T11:03:09Z"
     }
   ]
 }

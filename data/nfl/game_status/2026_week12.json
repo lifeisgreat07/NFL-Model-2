@@ -2,14 +2,14 @@
   "season": 2026,
   "week": 12,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-24T11:03:02Z",
+  "read_at": "2026-11-26T11:02:59Z",
   "games": [
     {
       "away": "GB",
       "home": "LA",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 13,
+      "home_score": 26,
       "spread_line": 2.5,
       "neutral_site": false,
       "venue": "SoFi Stadium"
@@ -20,7 +20,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -2.5,
+      "spread_line": -1.5,
       "neutral_site": false,
       "venue": "Ford Field"
     },
@@ -50,7 +50,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -3.0,
+      "spread_line": -3.5,
       "neutral_site": false,
       "venue": "Acrisure Stadium"
     },
@@ -90,7 +90,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -6.5,
+      "spread_line": -6.0,
       "neutral_site": false,
       "venue": "Lucas Oil Stadium"
     },
@@ -100,7 +100,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -3.5,
+      "spread_line": -4.5,
       "neutral_site": false,
       "venue": "Hard Rock Stadium"
     },
@@ -130,7 +130,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -7.5,
+      "spread_line": -7.0,
       "neutral_site": false,
       "venue": "State Farm Stadium"
     },
@@ -140,7 +140,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 3.0,
+      "spread_line": 2.5,
       "neutral_site": false,
       "venue": "Levi's Stadium"
     },
@@ -150,7 +150,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 1.5,
+      "spread_line": -1.5,
       "neutral_site": false,
       "venue": "SoFi Stadium"
     },

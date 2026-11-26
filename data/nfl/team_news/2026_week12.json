@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 12,
-  "read_at": "2026-11-24T11:03:11Z",
+  "read_at": "2026-11-26T11:03:10Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-11-24T07:02:17Z"
+    "depth_chart_snapshot": "2026-11-26T07:01:42Z"
   },
   "teams": {
     "LA": {
@@ -14,7 +14,16 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Steve Avila",
+          "position": "G",
+          "injury": "Hamstring"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "GB": {
       "qb": {
@@ -22,7 +31,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 5
     },
     "DET": {
       "qb": {
@@ -30,7 +42,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 2
     },
     "CHI": {
       "qb": {
@@ -38,7 +53,16 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Kyler Gordon",
+          "position": "CB",
+          "injury": "Shoulder"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
     },
     "DAL": {
       "qb": {
@@ -46,7 +70,21 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Jake Ferguson",
+          "position": "TE",
+          "injury": "Knee"
+        },
+        {
+          "name": "Tyler Booker",
+          "position": "G",
+          "injury": "Ankle"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
     },
     "PHI": {
       "qb": {
@@ -54,7 +92,16 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Jonathan Jones",
+          "position": "CB",
+          "injury": "Ankle"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "BUF": {
       "qb": {
@@ -62,7 +109,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 5
     },
     "KC": {
       "qb": {
@@ -70,7 +120,16 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Kenneth Walker III",
+          "position": "RB",
+          "injury": "Groin"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "PIT": {
       "qb": {
@@ -78,7 +137,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "DEN": {
       "qb": {
@@ -86,7 +148,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "CIN": {
       "qb": {
@@ -94,7 +159,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "NO": {
       "qb": {
@@ -102,7 +170,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "CLE": {
       "qb": {
@@ -110,7 +181,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "LV": {
       "qb": {
@@ -118,7 +192,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "HOU": {
       "qb": {
@@ -126,7 +203,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "BAL": {
       "qb": {
@@ -134,7 +214,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "IND": {
       "qb": {
@@ -142,7 +225,10 @@
         "basis": "announced",
         "changed_from": "D.Jones"
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "NYG": {
       "qb": {
@@ -150,7 +236,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "MIA": {
       "qb": {
@@ -158,7 +247,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "NYJ": {
       "qb": {
@@ -166,7 +258,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "MIN": {
       "qb": {
@@ -174,7 +269,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "ATL": {
       "qb": {
@@ -182,7 +280,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "JAX": {
       "qb": {
@@ -190,7 +291,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "TEN": {
       "qb": {
@@ -198,7 +302,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "ARI": {
       "qb": {
@@ -206,7 +313,10 @@
         "basis": "override",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "WAS": {
       "qb": {
@@ -214,7 +324,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "SF": {
       "qb": {
@@ -222,7 +335,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "SEA": {
       "qb": {
@@ -230,7 +346,10 @@
         "basis": "announced",
         "changed_from": "D.Lock"
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "LAC": {
       "qb": {
@@ -238,7 +357,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "NE": {
       "qb": {
@@ -246,7 +368,10 @@
         "basis": "override",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "TB": {
       "qb": {
@@ -254,7 +379,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     },
     "CAR": {
       "qb": {
@@ -262,7 +390,10 @@
         "basis": "announced",
         "changed_from": null
       },
-      "injury_report": "not yet published"
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
     }
   }
 }
