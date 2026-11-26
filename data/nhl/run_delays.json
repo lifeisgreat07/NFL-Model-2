@@ -238,5 +238,11 @@
   "slot": "2026-11-25T21:00:00Z",
   "started": "2026-11-26T03:15:20Z",
   "delay_minutes": 375
+ },
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-26T14:00:00Z",
+  "started": "2026-11-26T22:44:20Z",
+  "delay_minutes": 524
  }
 ]
