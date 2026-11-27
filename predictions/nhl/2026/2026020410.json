@@ -1,0 +1,84 @@
+{
+ "game_id": "2026020410",
+ "season": 2026,
+ "slate": "2026-11-27",
+ "start_utc": "2026-11-27T21:00:00Z",
+ "home": "SJS",
+ "away": "VGK",
+ "model_a": 0.3375,
+ "model_b": null,
+ "pick": "VGK",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": -1.40399,
+  "shot_matchup": -7.143823,
+  "goalie_matchup_2000": -0.001423
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8482137,
+   "name": "Yaroslav Askarov",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8478499,
+   "name": "Adin Hill",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-26",
+  "read_utc": "2026-11-27T14:01:41Z",
+  "home": [
+   {
+    "name": "Igor Chernyshov",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jacob Trouba",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Kiefer Sherwood",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Marc Gatcomb",
+    "position": "C",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-27T14:01:41Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14802,
+  "training_games_priced": 7767,
+  "training_ids_sha256": "63b9432d30bd18f615300f732c3a096e40da340660f41ecf5eb42e804fe52664"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "7da34185a86af60c62a5ec2c71fc9222be395d44"
+}

@@ -1,0 +1,74 @@
+{
+ "game_id": "2026020407",
+ "season": 2026,
+ "slate": "2026-11-27",
+ "start_utc": "2026-11-27T20:00:00Z",
+ "home": "CBJ",
+ "away": "DET",
+ "model_a": 0.5453,
+ "model_b": null,
+ "pick": "CBJ",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": -0.033186,
+  "shot_matchup": -0.147093,
+  "goalie_matchup_2000": 0.002224
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8482982,
+   "name": "Jet Greaves",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8476434,
+   "name": "John Gibson",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-26",
+  "read_utc": "2026-11-27T14:01:41Z",
+  "home": [
+   {
+    "name": "Denton Mateychuk",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Sam Montembeault",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Simon Edvinsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Wallinder",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-27T14:01:41Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14802,
+  "training_games_priced": 7767,
+  "training_ids_sha256": "63b9432d30bd18f615300f732c3a096e40da340660f41ecf5eb42e804fe52664"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "7da34185a86af60c62a5ec2c71fc9222be395d44"
+}
