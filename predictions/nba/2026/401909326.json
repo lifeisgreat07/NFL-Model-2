@@ -1,0 +1,84 @@
+{
+ "game_id": "401909326",
+ "season": 2026,
+ "slate": "2026-11-27",
+ "start_utc": "2026-11-28T00:00:00Z",
+ "home": "NY",
+ "away": "MIA",
+ "model_a": 0.6683,
+ "model_b": 0.5773,
+ "pick": "NY",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7586,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": 5.217969,
+  "efficiency_matchup": 5.339102,
+  "availability_matchup": -0.241422
+ },
+ "market": {
+  "game_id": "401909326",
+  "home": "NY",
+  "away": "MIA",
+  "start_utc": "2026-11-28T00:00:00Z",
+  "read_utc": "2026-11-27T21:31:34Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -148.0,
+  "away_price": 124.0,
+  "home_prob": 0.5721
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-27T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "6585",
+    "name": "Andre Drummond",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2528426",
+    "name": "Jordan Clarkson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3136195",
+    "name": "Karl-Anthony Towns",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4431823",
+    "name": "Miles McBride",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3934719",
+    "name": "OG Anunoby",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3032977",
+    "name": "Giannis Antetokounmpo",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-27T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14328,
+  "training_games_priced": 14287,
+  "training_ids_sha256": "11ef06753cf734e845a7d195a6f499d7149f8e184baa35d2ff60038d788581b6"
+ },
+ "code_sha256": "ed3e89358d4e403fd52986f46ceb9596f477f1051009e3d9a25cc8f991191a34",
+ "code_commit": "b5db320a152d3aa63b350189203194c18fc1d3f1"
+}

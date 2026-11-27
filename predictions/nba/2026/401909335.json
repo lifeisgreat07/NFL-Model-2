@@ -1,0 +1,84 @@
+{
+ "game_id": "401909335",
+ "season": 2026,
+ "slate": "2026-11-27",
+ "start_utc": "2026-11-28T02:30:00Z",
+ "home": "LAC",
+ "away": "NO",
+ "model_a": 0.6939,
+ "model_b": 0.5454,
+ "pick": "LAC",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9629,
+  "away": 0.9246
+ },
+ "features": {
+  "point_matchup": 3.286647,
+  "efficiency_matchup": 3.247505,
+  "availability_matchup": 0.038334
+ },
+ "market": {
+  "game_id": "401909335",
+  "home": "LAC",
+  "away": "NO",
+  "start_utc": "2026-11-28T02:30:00Z",
+  "read_utc": "2026-11-27T21:31:34Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -135.0,
+  "away_price": 114.0,
+  "home_prob": 0.5514
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-27T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "6580",
+    "name": "Bradley Beal",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4396818",
+    "name": "Jordan Miller",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4683634",
+    "name": "Bennedict Mathurin",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3907497",
+    "name": "Dejounte Murray",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4683742",
+    "name": "Julian Reese",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4431675",
+    "name": "Trendon Watford",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-27T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14328,
+  "training_games_priced": 14287,
+  "training_ids_sha256": "11ef06753cf734e845a7d195a6f499d7149f8e184baa35d2ff60038d788581b6"
+ },
+ "code_sha256": "ed3e89358d4e403fd52986f46ceb9596f477f1051009e3d9a25cc8f991191a34",
+ "code_commit": "b5db320a152d3aa63b350189203194c18fc1d3f1"
+}

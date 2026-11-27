@@ -1,0 +1,84 @@
+{
+ "game_id": "401909329",
+ "season": 2026,
+ "slate": "2026-11-27",
+ "start_utc": "2026-11-28T00:30:00Z",
+ "home": "TOR",
+ "away": "BKN",
+ "model_a": 0.7947,
+ "model_b": 0.7572,
+ "pick": "TOR",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8886,
+  "away": 0.8975
+ },
+ "features": {
+  "point_matchup": 7.697401,
+  "efficiency_matchup": 7.294678,
+  "availability_matchup": -0.008894
+ },
+ "market": {
+  "game_id": "401909329",
+  "home": "TOR",
+  "away": "BKN",
+  "start_utc": "2026-11-28T00:30:00Z",
+  "read_utc": "2026-11-27T21:31:34Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -374.0,
+  "away_price": 297.0,
+  "home_prob": 0.758
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-27T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "4702656",
+    "name": "Alijah Martin",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6450",
+    "name": "Kawhi Leonard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432586",
+    "name": "Nate Bittle",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4395625",
+    "name": "RJ Barrett",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3150844",
+    "name": "Moritz Wagner",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5279130",
+    "name": "Nolan Traore",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-27T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14328,
+  "training_games_priced": 14287,
+  "training_ids_sha256": "11ef06753cf734e845a7d195a6f499d7149f8e184baa35d2ff60038d788581b6"
+ },
+ "code_sha256": "ed3e89358d4e403fd52986f46ceb9596f477f1051009e3d9a25cc8f991191a34",
+ "code_commit": "b5db320a152d3aa63b350189203194c18fc1d3f1"
+}
