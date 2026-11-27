@@ -4690,5 +4690,17 @@
   "home_prob": 0.6575,
   "read_utc": "2026-11-27T21:01:45Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020412",
+  "start_utc": "2026-11-28T00:30:00Z",
+  "home": "NYI",
+  "away": "WPG",
+  "book": "DraftKings",
+  "home_price": -122.0,
+  "away_price": 102.0,
+  "home_prob": 0.5261,
+  "read_utc": "2026-11-27T22:27:16Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]

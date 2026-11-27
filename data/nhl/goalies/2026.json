@@ -12013,5 +12013,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020427",
   "start_utc": "2026-11-29T03:00:00Z"
+ },
+ {
+  "date": "2026-11-27",
+  "home": "CHI",
+  "home_goalie": "Spencer Knight",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/BenPopeCST/status/2126435817048715513?a=Mqo2dTDud7n6lFi8sOw&s=20",
+  "away": "NYR",
+  "away_goalie": "Dylan Garand",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/MollieeWalkerr/status/2126409518376513706",
+  "read_utc": "2026-11-27T22:27:16Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020411",
+  "start_utc": "2026-11-27T22:30:00Z"
  }
 ]
