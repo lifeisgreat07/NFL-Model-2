@@ -1,0 +1,100 @@
+{
+ "game_id": "2026020412",
+ "season": 2026,
+ "slate": "2026-11-27",
+ "start_utc": "2026-11-28T00:30:00Z",
+ "home": "NYI",
+ "away": "WPG",
+ "model_a": 0.5538,
+ "model_b": 0.5314,
+ "pick": "NYI",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.070606,
+  "shot_matchup": 0.235871,
+  "goalie_matchup_2000": 0.001249
+ },
+ "market": {
+  "game_id": "2026020412",
+  "start_utc": "2026-11-28T00:30:00Z",
+  "home": "NYI",
+  "away": "WPG",
+  "book": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325,
+  "read_utc": "2026-11-27T21:01:45Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8473575,
+   "name": "Semyon Varlamov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/stefen_rosner/status/2126344543066804410"
+  },
+  "away": {
+   "player_id": 8479973,
+   "name": "Stuart Skinner",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/WiebesWorld/status/2126352523871052264?a=EWJTcmEnM4w9ma5qTeA&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-26",
+  "read_utc": "2026-11-27T21:01:45Z",
+  "home": [
+   {
+    "name": "Alexander Romanov",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kyle Palmieri",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Pulock",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Dylan DeMelo",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Isak Rosen",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Bjugstad",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Vladislav Namestnikov",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-27T21:01:45Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14802,
+  "training_games_priced": 7767,
+  "training_ids_sha256": "63b9432d30bd18f615300f732c3a096e40da340660f41ecf5eb42e804fe52664"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "4d75bae01d586b56c8ca9c1b050ac146dcdb9ec5"
+}

@@ -2018,19 +2018,19 @@
  {
   "game_id": "2026020400",
   "pick": "BOS",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-27T14:01:41Z"
  },
  {
   "game_id": "2026020401",
   "pick": "NJD",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-27T14:01:41Z"
  },
  {
   "game_id": "2026020402",
   "pick": "NSH",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-27T14:01:41Z"
  },
  {
@@ -2080,5 +2080,29 @@
   "pick": "VGK",
   "result": "pending",
   "saved_utc": "2026-11-27T14:01:41Z"
+ },
+ {
+  "game_id": "2026020411",
+  "pick": "NYR",
+  "result": "pending",
+  "saved_utc": "2026-11-27T21:01:45Z"
+ },
+ {
+  "game_id": "2026020412",
+  "pick": "NYI",
+  "result": "pending",
+  "saved_utc": "2026-11-27T21:01:45Z"
+ },
+ {
+  "game_id": "2026020413",
+  "pick": "BUF",
+  "result": "pending",
+  "saved_utc": "2026-11-27T21:01:45Z"
+ },
+ {
+  "game_id": "2026020414",
+  "pick": "EDM",
+  "result": "pending",
+  "saved_utc": "2026-11-27T21:01:45Z"
  }
 ]

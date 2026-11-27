@@ -1,0 +1,42 @@
+{
+ "game_id": "2026020412",
+ "season": 2026,
+ "slate": "2026-11-27",
+ "start_utc": "2026-11-28T00:30:00Z",
+ "home": "NYI",
+ "away": "WPG",
+ "model_a": 0.5421,
+ "model_b": 0.5285,
+ "neutral_site": false,
+ "price_used": true,
+ "price_note": null,
+ "features": {
+  "goal_matchup": 0.070606,
+  "shot_matchup": 0.235871,
+  "b2b_matchup": 0.0
+ },
+ "goalies": {
+  "home": 8473575,
+  "away": 8479973,
+  "used": false
+ },
+ "market": {
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325,
+  "read_utc": "2026-11-27T21:01:45Z"
+ },
+ "saved_utc": "2026-11-27T21:01:45Z",
+ "code": "nhl-day-sport-v3",
+ "registry": "experiments/nhl/stage105_v3/registry.json",
+ "H_days": 120.0,
+ "K_shots": null,
+ "never_a_pick": true,
+ "training_through": "2026-11-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14802,
+  "training_games_priced": 7758,
+  "training_ids_sha256": "63b9432d30bd18f615300f732c3a096e40da340660f41ecf5eb42e804fe52664"
+ }
+}

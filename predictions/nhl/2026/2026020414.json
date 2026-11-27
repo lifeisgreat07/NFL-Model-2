@@ -1,0 +1,105 @@
+{
+ "game_id": "2026020414",
+ "season": 2026,
+ "slate": "2026-11-27",
+ "start_utc": "2026-11-28T01:00:00Z",
+ "home": "EDM",
+ "away": "SEA",
+ "model_a": 0.6558,
+ "model_b": 0.665,
+ "pick": "EDM",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.942803,
+  "shot_matchup": 3.61991,
+  "goalie_matchup_2000": 0.000207
+ },
+ "market": {
+  "game_id": "2026020414",
+  "start_utc": "2026-11-28T01:00:00Z",
+  "home": "EDM",
+  "away": "SEA",
+  "book": "DraftKings",
+  "home_price": -218.0,
+  "away_price": 180.0,
+  "home_prob": 0.6575,
+  "read_utc": "2026-11-27T21:01:45Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8477465,
+   "name": "Tristan Jarry",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/EdmontonOilers/status/2126357313502273906?a=V-prWfPMkCfn3Ke8M_0&s=20"
+  },
+  "away": {
+   "player_id": 8475831,
+   "name": "Philipp Grubauer",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/Benton_Mike/status/2126384850634506572"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-26",
+  "read_utc": "2026-11-27T21:01:45Z",
+  "home": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Hallander",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Zach Hyman",
+    "position": "LW",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Jake O'Brien",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jared McCann",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-27T21:01:45Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14802,
+  "training_games_priced": 7767,
+  "training_ids_sha256": "63b9432d30bd18f615300f732c3a096e40da340660f41ecf5eb42e804fe52664"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "4d75bae01d586b56c8ca9c1b050ac146dcdb9ec5"
+}
