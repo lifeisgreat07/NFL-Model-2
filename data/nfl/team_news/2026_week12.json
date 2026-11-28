@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 12,
-  "read_at": "2026-11-27T15:05:45Z",
+  "read_at": "2026-11-28T05:17:51Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-11-27T07:01:55Z"
+    "depth_chart_snapshot": "2026-11-27T17:24:38Z"
   },
   "teams": {
     "LA": {
@@ -122,6 +122,11 @@
       },
       "injury_report": "published",
       "out": [
+        {
+          "name": "Jaylon Moore",
+          "position": "T",
+          "injury": "Ankle"
+        },
         {
           "name": "Kenneth Walker III",
           "position": "RB",
