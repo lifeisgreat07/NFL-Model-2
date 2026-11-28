@@ -2090,19 +2090,25 @@
  {
   "game_id": "2026020412",
   "pick": "NYI",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-27T21:01:45Z"
  },
  {
   "game_id": "2026020413",
   "pick": "BUF",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-27T21:01:45Z"
  },
  {
   "game_id": "2026020414",
   "pick": "EDM",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-27T21:01:45Z"
+ },
+ {
+  "game_id": "2026020415",
+  "pick": "VGK",
+  "result": "pending",
+  "saved_utc": "2026-11-28T14:01:52Z"
  }
 ]

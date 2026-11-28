@@ -1,0 +1,83 @@
+{
+ "game_id": "2026020415",
+ "season": 2026,
+ "slate": "2026-11-28",
+ "start_utc": "2026-11-28T21:00:00Z",
+ "home": "VGK",
+ "away": "MTL",
+ "model_a": 0.5991,
+ "model_b": null,
+ "pick": "VGK",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": 0.158916,
+  "shot_matchup": 4.038172,
+  "goalie_matchup_2000": -0.00059
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8478499,
+   "name": "Adin Hill",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8482487,
+   "name": "Jakub Dobes",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/renlavoietva/status/2126410434370503066"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-27",
+  "read_utc": "2026-11-28T14:01:52Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Chris Kreider",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ivan Demidov",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Josh Anderson",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kaiden Guhle",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Lucas Condotta",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mike Matheson",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-28T14:01:52Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-27",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14817,
+  "training_games_priced": 7771,
+  "training_ids_sha256": "e517f7c81129bf0d4dff0e75e2b15267a7be304e040452727a2fc31b10bc233c"
+ },
+ "code_sha256": "877b843e7a8fac134f233f9059a8dc41893cf00f08fa4f4bba56b7321a853f07",
+ "code_commit": "3cded403ca33d9684a4020d8b5045f4cfea23d72"
+}
