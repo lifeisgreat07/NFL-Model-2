@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 12,
-  "read_at": "2026-11-28T05:17:51Z",
+  "read_at": "2026-11-28T14:10:36Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-11-27T17:24:38Z"
+    "depth_chart_snapshot": "2026-11-28T09:35:17Z"
   },
   "teams": {
     "LA": {
@@ -171,7 +171,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Dalton Risner",
+          "position": "G",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -182,9 +188,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Juwan Johnson",
+          "position": "TE",
+          "injury": "Hamstring"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "CLE": {
       "qb": {
@@ -195,7 +207,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "LV": {
       "qb": {
@@ -204,9 +216,20 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Adam Butler",
+          "position": "DT",
+          "injury": "Concussion"
+        },
+        {
+          "name": "Tonka Hemingway",
+          "position": "DT",
+          "injury": "Stinger"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "HOU": {
       "qb": {
@@ -215,7 +238,18 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Danielle Hunter",
+          "position": "DE",
+          "injury": "Hamstring"
+        },
+        {
+          "name": "Keylan Rutledge",
+          "position": "G",
+          "injury": "Neck"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -226,7 +260,23 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Jaylinn Hawkins",
+          "position": "S",
+          "injury": "Knee"
+        },
+        {
+          "name": "Nnamdi Madubuike",
+          "position": "DT",
+          "injury": "Hamstring"
+        },
+        {
+          "name": "Olaivavega Ioane",
+          "position": "G",
+          "injury": "Hand"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -237,7 +287,18 @@
         "changed_from": "D.Jones"
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Charvarius Ward",
+          "position": "CB",
+          "injury": "Knee"
+        },
+        {
+          "name": "Jalen Travis",
+          "position": "T",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -248,7 +309,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Shelby Harris",
+          "position": "DT",
+          "injury": "Illness"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -259,7 +326,18 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Bradley Pinion",
+          "position": "P",
+          "injury": "Groin"
+        },
+        {
+          "name": "Julius Brents",
+          "position": "CB",
+          "injury": "Neck"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -281,9 +359,20 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Christian Darrisaw",
+          "position": "T",
+          "injury": "Shoulder"
+        },
+        {
+          "name": "Isaiah Rodgers",
+          "position": "CB",
+          "injury": "Thigh"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "ATL": {
       "qb": {
@@ -292,7 +381,18 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "DeMarcco Hellams",
+          "position": "S",
+          "injury": "Foot"
+        },
+        {
+          "name": "Matthew Bergeron",
+          "position": "G",
+          "injury": "Back"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -303,9 +403,20 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Bhayshul Tuten",
+          "position": "RB",
+          "injury": "Ankle"
+        },
+        {
+          "name": "Parker Washington",
+          "position": "WR",
+          "injury": "Shoulder"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "TEN": {
       "qb": {
@@ -314,9 +425,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Cordale Flott",
+          "position": "CB",
+          "injury": "Neck"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "ARI": {
       "qb": {
@@ -325,7 +442,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Carson Beck",
+          "position": "QB",
+          "injury": "Back"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -336,7 +459,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Amik Robertson",
+          "position": "CB",
+          "injury": "Ankle"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -347,9 +476,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Brock Purdy",
+          "position": "QB",
+          "injury": "Ankle"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 3
     },
     "SEA": {
       "qb": {
@@ -358,7 +493,23 @@
         "changed_from": "D.Lock"
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Abraham Lucas",
+          "position": "T",
+          "injury": "Ankle"
+        },
+        {
+          "name": "Jarran Reed",
+          "position": "DT",
+          "injury": "Toe"
+        },
+        {
+          "name": "Quenton Nelson",
+          "position": "G",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -369,9 +520,20 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Daiyan Henley",
+          "position": "LB",
+          "injury": "Knee"
+        },
+        {
+          "name": "Justin Herbert",
+          "position": "QB",
+          "injury": "Concussion"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "NE": {
       "qb": {
@@ -380,9 +542,20 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "A.J. Brown",
+          "position": "WR",
+          "injury": "Hamstring"
+        },
+        {
+          "name": "Carlton Davis III",
+          "position": "CB",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "TB": {
       "qb": {
